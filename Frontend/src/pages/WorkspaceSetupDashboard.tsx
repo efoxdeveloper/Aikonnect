@@ -33,7 +33,7 @@ type StepProps = {
 function SetupStep({ icon: Icon, title, description, complete, available, active, last }: StepProps) {
   const animatedIcon = useAnimatedIcon();
   return (
-    <div className={cn("group/step relative flex gap-4 rounded-lg pb-6 last:pb-0", active && "bg-[var(--brand-soft)]/55 px-3 py-3 last:pb-3")} onMouseEnter={animatedIcon.onMouseEnter} onMouseLeave={animatedIcon.onMouseLeave}>
+    <div className={cn("group/step relative flex gap-4 rounded-md pb-6 last:pb-0", active && "bg-[var(--brand-soft)]/55 px-3 py-3 last:pb-3")} onMouseEnter={animatedIcon.onMouseEnter} onMouseLeave={animatedIcon.onMouseLeave}>
       {!last && <span className={cn("absolute left-[19px] top-10 h-[calc(100%-24px)] w-px", complete ? "bg-[var(--brand)]/30" : "bg-[var(--border)]")} />}
       <div className={cn("relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full border transition-colors", complete ? "border-[var(--brand)] bg-[var(--brand)] text-white" : available ? "border-[var(--brand)]/25 bg-[var(--brand-soft)] text-[var(--brand)]" : "border-[var(--border)] bg-[#f7f8fa] text-[var(--text-muted)]")}>
         {complete ? <Check size={17} duration={0.55} aria-hidden="true" /> : <Icon ref={animatedIcon.ref} size={18} duration={0.7} aria-hidden="true" />}
@@ -104,7 +104,7 @@ export function WorkspaceSetupDashboard() {
         <span className="w-fit rounded-full border border-[var(--border)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)]">{allComplete ? "Ready to launch" : progress.completedSteps + " of " + progress.totalSteps + " complete"}</span>
       </div>
 
-      <section className="mt-5 overflow-hidden rounded-xl bg-[linear-gradient(120deg,#0f696d,#197b80)] text-white shadow-[0_8px_24px_rgba(17,107,111,.13)]">
+      <section className="mt-5 overflow-hidden rounded-md bg-[linear-gradient(120deg,#0f696d,#197b80)] text-white shadow-[0_8px_24px_rgba(17,107,111,.13)]">
         <div className="flex flex-col gap-5 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
           <div className="flex items-start gap-4">
             <div onMouseEnter={rocketIcon.onMouseEnter} onMouseLeave={rocketIcon.onMouseLeave} className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/12 text-white ring-1 ring-white/15">
@@ -127,7 +127,7 @@ export function WorkspaceSetupDashboard() {
       {connectionError && <div role="alert" className="mt-5 rounded-md bg-red-50 px-4 py-3 text-[var(--danger)]">{connectionError}</div>}
 
       {nextStep && (
-        <section className="mt-5 flex flex-col gap-4 rounded-xl border border-[var(--brand)]/15 bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:flex-row sm:items-center sm:justify-between sm:p-6" aria-labelledby="next-step-title">
+        <section className="mt-5 flex flex-col gap-4 rounded-md border border-[var(--brand)]/15 bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:flex-row sm:items-center sm:justify-between sm:p-6" aria-labelledby="next-step-title">
           <div className="flex min-w-0 items-start gap-3.5">
             <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[var(--brand-soft)] text-[var(--brand)]">{NextStepIcon && <NextStepIcon size={19} duration={0.7} aria-hidden="true" />}</div>
             <div className="min-w-0">
@@ -151,7 +151,7 @@ export function WorkspaceSetupDashboard() {
       )}
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_310px]">
-        <section className="rounded-xl border border-[var(--border-soft)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:p-6">
+        <section className="rounded-md border border-[var(--border-soft)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:p-6">
           <div className="flex items-start justify-between gap-4 border-b border-[var(--border-soft)] pb-4">
             <div>
               <h2 className="text-[16px] font-medium text-[var(--text-primary)]">Setup checklist</h2>
@@ -165,7 +165,7 @@ export function WorkspaceSetupDashboard() {
         </section>
 
         <aside className="space-y-5">
-          <section className="rounded-xl border border-[var(--border-soft)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)]">
+          <section className="rounded-md border border-[var(--border-soft)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)]">
             <h2 className="text-sm font-medium text-[var(--text-primary)]">Connection status</h2>
             <dl className="mt-4 space-y-3 text-xs">
               <div className="flex items-center justify-between"><dt className="text-[var(--text-muted)]">WhatsApp</dt><dd className={cn("rounded-md px-2 py-1 font-medium", whatsappStatusClass)}>{whatsappStatusLabel}</dd></div>
@@ -176,7 +176,7 @@ export function WorkspaceSetupDashboard() {
             </dl>
             {data.whatsapp.status === "DISCONNECTED" && <p className="mt-4 rounded-md bg-[var(--brand-soft)] px-3 py-2.5 text-xs text-[var(--brand)]">Connect WhatsApp to unlock phone number setup.</p>}
           </section>
-          <section className="rounded-xl border border-[#d7ebec] bg-[var(--brand-soft)] p-5">
+          <section className="rounded-md border border-[#d7ebec] bg-[var(--brand-soft)] p-5">
             <h2 className="text-sm font-medium text-[var(--brand)]">Need help?</h2>
             <p className="mt-2">You will need access to your Meta Business portfolio before connecting WhatsApp.</p>
             <Link to="/whatsapp-account" className="mt-3 inline-flex items-center text-xs font-medium text-[var(--brand)] hover:text-[var(--brand-hover)]">View requirements <ArrowRight size={13} duration={0.55} className="ml-1" aria-hidden="true" /></Link>
