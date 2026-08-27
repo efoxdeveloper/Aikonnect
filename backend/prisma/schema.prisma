@@ -1,0 +1,685 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DISABLED
+}
+
+enum MembershipStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}
+
+enum WhatsAppConnectionStatus {
+  DISCONNECTED
+  CONNECTING
+  CONNECTED
+  ERROR
+}
+
+enum WhatsAppPhoneNumberStatus {
+  PENDING
+  ACTIVE
+  DISCONNECTED
+  ERROR
+}
+
+enum ContactTaskStatus {
+  OPEN
+  COMPLETED
+}
+
+enum ContactCustomFieldType {
+  TEXT
+  NUMBER
+  DATE
+  BOOLEAN
+  SELECT
+  MULTI_SELECT
+}
+
+enum ContactConsentEventType {
+  OPT_IN
+  OPT_OUT
+  BLOCK
+  UNBLOCK
+}
+
+enum ConversationStatus {
+  OPEN
+  PENDING
+  RESOLVED
+  CLOSED
+}
+
+enum MessageDirection {
+  INCOMING
+  OUTGOING
+}
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
+  LOCATION
+  CONTACT
+  INTERACTIVE
+}
+
+enum TemplateStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  DELETED
+}
+
+model User {
+  id                         String                   @id @default(uuid()) @db.Uuid
+  email                      String                   @unique @db.VarChar(320)
+  passwordHash               String                   @map("password_hash")
+  firstName                  String                   @map("first_name") @db.VarChar(100)
+  lastName                   String                   @map("last_name") @db.VarChar(100)
+  phone                      String?                  @db.VarChar(30)
+  status                     UserStatus               @default(ACTIVE)
+  emailVerifiedAt            DateTime?                @map("email_verified_at") @db.Timestamptz(3)
+  lastLoginAt                DateTime?                @map("last_login_at") @db.Timestamptz(3)
+  createdAt                  DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt                  DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
+  ownedWorkspaces            Workspace[]              @relation("WorkspaceOwner")
+  memberships                WorkspaceMember[]
+  sessions                   Session[]
+  oauthAccounts              OAuthAccount[]
+  invitationsSent            WorkspaceInvitation[]    @relation("InvitationSender")
+  emailVerificationTokens    EmailVerificationToken[]
+  passwordResetTokens        PasswordResetToken[]
+  contactsCreated            Contact[]                @relation("ContactCreator")
+  contactsUpdated            Contact[]                @relation("ContactUpdater")
+  contactsDeleted            Contact[]                @relation("ContactDeleter")
+  contactTasksCreated        ContactTask[]            @relation("ContactTaskCreator")
+  contactTasksUpdated        ContactTask[]            @relation("ContactTaskUpdater")
+  contactNotesCreated        ContactNote[]            @relation("ContactNoteCreator")
+  contactNotesUpdated        ContactNote[]            @relation("ContactNoteUpdater")
+  contactNotesDeleted        ContactNote[]            @relation("ContactNoteDeleter")
+  contactSegmentsCreated     ContactSegment[]         @relation("ContactSegmentCreator")
+  contactSegmentsUpdated     ContactSegment[]         @relation("ContactSegmentUpdater")
+  contactCustomFieldsCreated ContactCustomField[]     @relation("ContactCustomFieldCreator")
+  contactCustomFieldsUpdated ContactCustomField[]     @relation("ContactCustomFieldUpdater")
+  contactConsentEvents       ContactConsentEvent[]    @relation("ContactConsentEventActor")
+  messagesCreated            Message[]                @relation("MessageCreator")
+  templatesCreated           Template[]               @relation("TemplateCreator")
+  templatesUpdated           Template[]               @relation("TemplateUpdater")
+  templatesDeleted           Template[]               @relation("TemplateDeleter")
+
+  @@index([status])
+  @@map("users")
+}
+
+model OAuthAccount {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @map("user_id") @db.Uuid
+  provider          String   @db.VarChar(50)
+  providerAccountId String   @map("provider_account_id") @db.VarChar(255)
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@unique([userId, provider])
+  @@index([userId])
+  @@map("oauth_accounts")
+}
+
+model Workspace {
+  id                       String                    @id @default(uuid()) @db.Uuid
+  name                     String                    @db.VarChar(160)
+  slug                     String                    @unique @db.VarChar(180)
+  companyName              String?                   @map("company_name") @db.VarChar(160)
+  companyWebsite           String?                   @map("company_website") @db.VarChar(500)
+  companyLocation          String?                   @map("company_location") @db.VarChar(200)
+  annualRevenue            String?                   @map("annual_revenue") @db.VarChar(50)
+  logoData                 String?                   @map("logo_data") @db.Text
+  country                  String?                   @db.VarChar(100)
+  timezone                 String?                   @db.VarChar(100)
+  onboardingCompletedAt    DateTime?                 @map("onboarding_completed_at") @db.Timestamptz(3)
+  ownerId                  String                    @map("owner_id") @db.Uuid
+  createdAt                DateTime                  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt                DateTime                  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  owner                    User                      @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  memberships              WorkspaceMember[]
+  roles                    Role[]
+  invitations              WorkspaceInvitation[]
+  setupProgress            WorkspaceSetupProgress?
+  whatsappBusinessAccounts WhatsAppBusinessAccount[]
+  contacts                 Contact[]
+  contactTags              ContactTag[]
+  contactTasks             ContactTask[]
+  contactNotes             ContactNote[]
+  contactSegments          ContactSegment[]
+  contactCustomFields      ContactCustomField[]
+  contactConsentEvents     ContactConsentEvent[]
+  conversations            Conversation[]
+  messages                 Message[]
+  templates                Template[]
+
+  @@index([ownerId])
+  @@map("workspaces")
+}
+
+model Template {
+  id            String         @id @default(uuid()) @db.Uuid
+  workspaceId   String         @map("workspace_id") @db.Uuid
+  name          String         @db.VarChar(160)
+  templateKey   String         @map("template_key") @db.VarChar(180)
+  category      String         @db.VarChar(40)
+  language      String         @db.VarChar(50)
+  templateType  String         @map("template_type") @db.VarChar(40)
+  headerType    String         @default("none") @map("header_type") @db.VarChar(20)
+  headerText    String?        @map("header_text") @db.VarChar(60)
+  headerFileName String?       @map("header_file_name") @db.VarChar(255)
+  body          String         @db.Text
+  footer        String?        @db.VarChar(60)
+  content       Json           @default("{}") @db.JsonB
+  status        TemplateStatus @default(DRAFT)
+  createdById   String?        @map("created_by_id") @db.Uuid
+  updatedById   String?        @map("updated_by_id") @db.Uuid
+  deletedById   String?        @map("deleted_by_id") @db.Uuid
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt     DateTime?      @map("deleted_at") @db.Timestamptz(3)
+  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy     User?          @relation("TemplateCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy     User?          @relation("TemplateUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+  deletedBy     User?          @relation("TemplateDeleter", fields: [deletedById], references: [id], onDelete: SetNull)
+
+  @@unique([workspaceId, templateKey])
+  @@index([workspaceId, status, updatedAt, id])
+  @@index([workspaceId, deletedAt, updatedAt, id])
+  @@index([createdById])
+  @@index([updatedById])
+  @@index([deletedById])
+  @@map("templates")
+}
+
+model Contact {
+  id                   String                    @id @default(uuid()) @db.Uuid
+  workspaceId          String                    @map("workspace_id") @db.Uuid
+  name                 String                    @db.VarChar(160)
+  phoneE164            String                    @map("phone_e164") @db.VarChar(20)
+  whatsappId           String?                   @map("whatsapp_id") @db.VarChar(64)
+  profileName          String?                   @map("profile_name") @db.VarChar(160)
+  email                String?                   @db.VarChar(320)
+  source               String                    @default("Manual") @db.VarChar(50)
+  whatsappOpted        Boolean                   @default(true) @map("whatsapp_opted")
+  whatsappOptInSource  String?                   @map("whatsapp_opt_in_source") @db.VarChar(100)
+  whatsappOptedInAt    DateTime?                 @map("whatsapp_opted_in_at") @db.Timestamptz(3)
+  whatsappOptOutSource String?                   @map("whatsapp_opt_out_source") @db.VarChar(100)
+  whatsappOptedOutAt   DateTime?                 @map("whatsapp_opted_out_at") @db.Timestamptz(3)
+  marketingBlocked     Boolean                   @default(false) @map("marketing_blocked")
+  marketingBlockedAt   DateTime?                 @map("marketing_blocked_at") @db.Timestamptz(3)
+  marketingBlockSource String?                   @map("marketing_block_source") @db.VarChar(100)
+  marketingBlockReason String?                   @map("marketing_block_reason") @db.VarChar(500)
+  customAttributes     Json                      @default("{}") @map("custom_attributes") @db.JsonB
+  createdById          String?                   @map("created_by_id") @db.Uuid
+  updatedById          String?                   @map("updated_by_id") @db.Uuid
+  deletedById          String?                   @map("deleted_by_id") @db.Uuid
+  createdAt            DateTime                  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime                  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt            DateTime?                 @map("deleted_at") @db.Timestamptz(3)
+  workspace            Workspace                 @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy            User?                     @relation("ContactCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy            User?                     @relation("ContactUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+  deletedBy            User?                     @relation("ContactDeleter", fields: [deletedById], references: [id], onDelete: SetNull)
+  tagAssignments       ContactTagAssignment[]
+  tasks                ContactTask[]
+  notes                ContactNote[]
+  customFieldValues    ContactCustomFieldValue[]
+  consentEvents        ContactConsentEvent[]
+  conversations        Conversation[]
+  messages             Message[]
+
+  @@index([workspaceId, deletedAt, createdAt, id])
+  @@index([workspaceId, deletedAt, name, id])
+  @@index([workspaceId, deletedAt, phoneE164, id])
+  @@index([workspaceId, deletedAt, email, id])
+  @@index([workspaceId, deletedAt, source, id])
+  @@index([workspaceId, deletedAt, profileName, id])
+  @@index([workspaceId, updatedAt, id])
+  @@index([workspaceId, source, createdAt])
+  @@index([workspaceId, deletedAt, whatsappOpted, marketingBlocked, id])
+  @@index([workspaceId, whatsappId])
+  @@index([createdById])
+  @@index([updatedById])
+  @@index([deletedById])
+  @@map("contacts")
+}
+
+model ContactConsentEvent {
+  id          String                  @id @default(uuid()) @db.Uuid
+  workspaceId String                  @map("workspace_id") @db.Uuid
+  contactId   String                  @map("contact_id") @db.Uuid
+  type        ContactConsentEventType
+  source      String                  @db.VarChar(100)
+  reason      String?                 @db.VarChar(500)
+  occurredAt  DateTime                @map("occurred_at") @db.Timestamptz(3)
+  actorUserId String?                 @map("actor_user_id") @db.Uuid
+  createdAt   DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
+  workspace   Workspace               @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contact     Contact                 @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  actorUser   User?                   @relation("ContactConsentEventActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, contactId, occurredAt, id])
+  @@index([actorUserId])
+  @@map("contact_consent_events")
+}
+
+model Conversation {
+  id                 String               @id @default(uuid()) @db.Uuid
+  workspaceId        String               @map("workspace_id") @db.Uuid
+  contactId          String               @map("contact_id") @db.Uuid
+  phoneNumberId      String?              @map("phone_number_id") @db.Uuid
+  channelKey         String               @default("whatsapp") @map("channel_key") @db.VarChar(50)
+  status             ConversationStatus   @default(OPEN)
+  unreadCount        Int                  @default(0) @map("unread_count")
+  lastMessagePreview String?              @map("last_message_preview") @db.Text
+  lastMessageAt      DateTime?            @map("last_message_at") @db.Timestamptz(3)
+  createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace          Workspace            @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contact            Contact              @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  phoneNumber        WhatsAppPhoneNumber? @relation(fields: [phoneNumberId], references: [id], onDelete: SetNull)
+  messages           Message[]
+
+  @@unique([workspaceId, contactId, channelKey])
+  @@index([workspaceId, status, lastMessageAt, id])
+  @@index([workspaceId, contactId, updatedAt, id])
+  @@index([phoneNumberId])
+  @@map("conversations")
+}
+
+model Message {
+  id             String           @id @default(uuid()) @db.Uuid
+  workspaceId    String           @map("workspace_id") @db.Uuid
+  conversationId String           @map("conversation_id") @db.Uuid
+  contactId      String           @map("contact_id") @db.Uuid
+  metaMessageId  String?          @map("meta_message_id") @db.VarChar(200)
+  direction      MessageDirection
+  type           MessageType
+  status         MessageStatus    @default(SENT)
+  text           String?          @db.Text
+  mediaId        String?          @map("media_id") @db.VarChar(255)
+  mediaUrl       String?          @map("media_url") @db.Text
+  payload        Json             @default("{}") @db.JsonB
+  sentAt         DateTime         @map("sent_at") @db.Timestamptz(3)
+  deliveredAt    DateTime?        @map("delivered_at") @db.Timestamptz(3)
+  readAt         DateTime?        @map("read_at") @db.Timestamptz(3)
+  failedAt       DateTime?        @map("failed_at") @db.Timestamptz(3)
+  failureReason  String?          @map("failure_reason") @db.Text
+  createdById    String?          @map("created_by_id") @db.Uuid
+  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace      Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  conversation   Conversation     @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  contact        Contact          @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  createdBy      User?            @relation("MessageCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@unique([workspaceId, metaMessageId])
+  @@index([workspaceId, conversationId, sentAt, id])
+  @@index([workspaceId, contactId, sentAt, id])
+  @@index([createdById])
+  @@map("messages")
+}
+
+model ContactCustomField {
+  id              String                    @id @default(uuid()) @db.Uuid
+  workspaceId     String                    @map("workspace_id") @db.Uuid
+  key             String                    @db.VarChar(80)
+  label           String                    @db.VarChar(120)
+  normalizedLabel String                    @map("normalized_label") @db.VarChar(120)
+  type            ContactCustomFieldType
+  options         Json                      @default("[]") @db.JsonB
+  required        Boolean                   @default(false)
+  position        Int                       @default(0)
+  archivedAt      DateTime?                 @map("archived_at") @db.Timestamptz(3)
+  createdById     String?                   @map("created_by_id") @db.Uuid
+  updatedById     String?                   @map("updated_by_id") @db.Uuid
+  createdAt       DateTime                  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime                  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace       Workspace                 @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy       User?                     @relation("ContactCustomFieldCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy       User?                     @relation("ContactCustomFieldUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+  values          ContactCustomFieldValue[]
+
+  @@unique([workspaceId, key])
+  @@unique([workspaceId, normalizedLabel])
+  @@index([workspaceId, archivedAt, position, id])
+  @@index([createdById])
+  @@index([updatedById])
+  @@map("contact_custom_fields")
+}
+
+model ContactCustomFieldValue {
+  id           String             @id @default(uuid()) @db.Uuid
+  workspaceId  String             @map("workspace_id") @db.Uuid
+  contactId    String             @map("contact_id") @db.Uuid
+  fieldId      String             @map("field_id") @db.Uuid
+  textValue    String?            @map("text_value") @db.Text
+  numberValue  Float?             @map("number_value")
+  dateValue    DateTime?          @map("date_value") @db.Date
+  booleanValue Boolean?           @map("boolean_value")
+  stringValues String[]           @default([]) @map("string_values")
+  createdAt    DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+  contact      Contact            @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  field        ContactCustomField @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@unique([contactId, fieldId])
+  @@index([workspaceId, fieldId, textValue, contactId])
+  @@index([workspaceId, fieldId, numberValue, contactId])
+  @@index([workspaceId, fieldId, dateValue, contactId])
+  @@index([workspaceId, fieldId, booleanValue, contactId])
+  @@index([stringValues], type: Gin)
+  @@index([contactId])
+  @@map("contact_custom_field_values")
+}
+
+model ContactSegment {
+  id             String    @id @default(uuid()) @db.Uuid
+  workspaceId    String    @map("workspace_id") @db.Uuid
+  name           String    @db.VarChar(120)
+  normalizedName String    @map("normalized_name") @db.VarChar(120)
+  definition     Json      @db.JsonB
+  createdById    String?   @map("created_by_id") @db.Uuid
+  updatedById    String?   @map("updated_by_id") @db.Uuid
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace      Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy      User?     @relation("ContactSegmentCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy      User?     @relation("ContactSegmentUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@unique([workspaceId, normalizedName])
+  @@index([workspaceId, updatedAt])
+  @@index([createdById])
+  @@index([updatedById])
+  @@map("contact_segments")
+}
+
+model ContactTask {
+  id          String            @id @default(uuid()) @db.Uuid
+  workspaceId String            @map("workspace_id") @db.Uuid
+  contactId   String            @map("contact_id") @db.Uuid
+  title       String            @db.VarChar(160)
+  description String?           @db.Text
+  dueAt       DateTime?         @map("due_at") @db.Timestamptz(3)
+  status      ContactTaskStatus @default(OPEN)
+  completedAt DateTime?         @map("completed_at") @db.Timestamptz(3)
+  createdById String?           @map("created_by_id") @db.Uuid
+  updatedById String?           @map("updated_by_id") @db.Uuid
+  createdAt   DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace   Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contact     Contact           @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  createdBy   User?             @relation("ContactTaskCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy   User?             @relation("ContactTaskUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, contactId, status, dueAt])
+  @@index([createdById])
+  @@index([updatedById])
+  @@map("contact_tasks")
+}
+
+model ContactNote {
+  id          String    @id @default(uuid()) @db.Uuid
+  workspaceId String    @map("workspace_id") @db.Uuid
+  contactId   String    @map("contact_id") @db.Uuid
+  title       String    @db.VarChar(160)
+  content     String    @db.Text
+  createdById String?   @map("created_by_id") @db.Uuid
+  updatedById String?   @map("updated_by_id") @db.Uuid
+  deletedById String?   @map("deleted_by_id") @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(3)
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contact     Contact   @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  createdBy   User?     @relation("ContactNoteCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy   User?     @relation("ContactNoteUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+  deletedBy   User?     @relation("ContactNoteDeleter", fields: [deletedById], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, contactId, deletedAt, createdAt])
+  @@index([createdById])
+  @@index([updatedById])
+  @@index([deletedById])
+  @@map("contact_notes")
+}
+
+model ContactTag {
+  id             String                 @id @default(uuid()) @db.Uuid
+  workspaceId    String                 @map("workspace_id") @db.Uuid
+  name           String                 @db.VarChar(50)
+  normalizedName String                 @map("normalized_name") @db.VarChar(50)
+  color          String?                @db.VarChar(20)
+  createdAt      DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime               @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace      Workspace              @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  assignments    ContactTagAssignment[]
+
+  @@unique([workspaceId, normalizedName])
+  @@index([workspaceId, name])
+  @@map("contact_tags")
+}
+
+model ContactTagAssignment {
+  contactId String     @map("contact_id") @db.Uuid
+  tagId     String     @map("tag_id") @db.Uuid
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  contact   Contact    @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  tag       ContactTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([contactId, tagId])
+  @@index([tagId, contactId])
+  @@map("contact_tag_assignments")
+}
+
+model WorkspaceSetupProgress {
+  workspaceId            String    @id @map("workspace_id") @db.Uuid
+  whatsappConnectedAt    DateTime? @map("whatsapp_connected_at") @db.Timestamptz(3)
+  phoneNumberConnectedAt DateTime? @map("phone_number_connected_at") @db.Timestamptz(3)
+  teammateInvitedAt      DateTime? @map("teammate_invited_at") @db.Timestamptz(3)
+  testMessageSentAt      DateTime? @map("test_message_sent_at") @db.Timestamptz(3)
+  completedAt            DateTime? @map("completed_at") @db.Timestamptz(3)
+  createdAt              DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt              DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace              Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@map("workspace_setup_progress")
+}
+
+model WhatsAppBusinessAccount {
+  id                   String                   @id @default(uuid()) @db.Uuid
+  workspaceId          String                   @map("workspace_id") @db.Uuid
+  metaBusinessId       String?                  @map("meta_business_id") @db.VarChar(100)
+  metaWabaId           String?                  @map("meta_waba_id") @db.VarChar(100)
+  displayName          String?                  @map("display_name") @db.VarChar(160)
+  status               WhatsAppConnectionStatus @default(DISCONNECTED)
+  encryptedAccessToken String?                  @map("encrypted_access_token")
+  tokenExpiresAt       DateTime?                @map("token_expires_at") @db.Timestamptz(3)
+  connectedAt          DateTime?                @map("connected_at") @db.Timestamptz(3)
+  lastSyncedAt         DateTime?                @map("last_synced_at") @db.Timestamptz(3)
+  lastError            String?                  @map("last_error")
+  createdAt            DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace            Workspace                @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  phoneNumbers         WhatsAppPhoneNumber[]
+
+  @@unique([workspaceId, metaWabaId])
+  @@index([workspaceId, status])
+  @@map("whatsapp_business_accounts")
+}
+
+model WhatsAppPhoneNumber {
+  id                 String                    @id @default(uuid()) @db.Uuid
+  businessAccountId  String                    @map("business_account_id") @db.Uuid
+  metaPhoneNumberId  String                    @map("meta_phone_number_id") @db.VarChar(100)
+  displayPhoneNumber String                    @map("display_phone_number") @db.VarChar(30)
+  verifiedName       String?                   @map("verified_name") @db.VarChar(160)
+  status             WhatsAppPhoneNumberStatus @default(PENDING)
+  qualityRating      String?                   @map("quality_rating") @db.VarChar(30)
+  messagingLimit     String?                   @map("messaging_limit") @db.VarChar(50)
+  connectedAt        DateTime?                 @map("connected_at") @db.Timestamptz(3)
+  lastSyncedAt       DateTime?                 @map("last_synced_at") @db.Timestamptz(3)
+  createdAt          DateTime                  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime                  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  businessAccount    WhatsAppBusinessAccount   @relation(fields: [businessAccountId], references: [id], onDelete: Cascade)
+  conversations      Conversation[]
+
+  @@unique([businessAccountId, metaPhoneNumberId])
+  @@index([businessAccountId, status])
+  @@map("whatsapp_phone_numbers")
+}
+
+model WorkspaceMember {
+  id          String           @id @default(uuid()) @db.Uuid
+  workspaceId String           @map("workspace_id") @db.Uuid
+  userId      String           @map("user_id") @db.Uuid
+  roleId      String           @map("role_id") @db.Uuid
+  status      MembershipStatus @default(ACTIVE)
+  joinedAt    DateTime         @default(now()) @map("joined_at") @db.Timestamptz(3)
+  updatedAt   DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace   Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role        Role             @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  @@unique([workspaceId, userId])
+  @@index([userId, status])
+  @@index([workspaceId, roleId])
+  @@map("workspace_members")
+}
+
+model Role {
+  id          String                @id @default(uuid()) @db.Uuid
+  workspaceId String                @map("workspace_id") @db.Uuid
+  name        String                @db.VarChar(80)
+  slug        String                @db.VarChar(80)
+  description String?               @db.VarChar(255)
+  isSystem    Boolean               @default(false) @map("is_system")
+  createdAt   DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime              @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace   Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  permissions RolePermission[]
+  memberships WorkspaceMember[]
+  invitations WorkspaceInvitation[]
+
+  @@unique([workspaceId, slug])
+  @@index([workspaceId])
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(uuid()) @db.Uuid
+  key         String           @unique @db.VarChar(100)
+  description String           @db.VarChar(255)
+  roles       RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String     @map("role_id") @db.Uuid
+  permissionId String     @map("permission_id") @db.Uuid
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+model WorkspaceInvitation {
+  id          String           @id @default(uuid()) @db.Uuid
+  workspaceId String           @map("workspace_id") @db.Uuid
+  email       String           @db.VarChar(320)
+  roleId      String           @map("role_id") @db.Uuid
+  tokenHash   String           @unique @map("token_hash") @db.Char(64)
+  status      InvitationStatus @default(PENDING)
+  invitedById String           @map("invited_by_id") @db.Uuid
+  expiresAt   DateTime         @map("expires_at") @db.Timestamptz(3)
+  acceptedAt  DateTime?        @map("accepted_at") @db.Timestamptz(3)
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace   Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  role        Role             @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  invitedBy   User             @relation("InvitationSender", fields: [invitedById], references: [id], onDelete: Restrict)
+
+  @@index([workspaceId, email, status])
+  @@index([expiresAt])
+  @@map("workspace_invitations")
+}
+
+model Session {
+  id               String    @id @default(uuid()) @db.Uuid
+  userId           String    @map("user_id") @db.Uuid
+  refreshTokenHash String    @unique @map("refresh_token_hash") @db.Char(64)
+  userAgent        String?   @map("user_agent")
+  ipAddress        String?   @map("ip_address") @db.VarChar(45)
+  expiresAt        DateTime  @map("expires_at") @db.Timestamptz(3)
+  lastUsedAt       DateTime  @default(now()) @map("last_used_at") @db.Timestamptz(3)
+  revokedAt        DateTime? @map("revoked_at") @db.Timestamptz(3)
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model EmailVerificationToken {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  tokenHash  String    @unique @map("token_hash") @db.Char(64)
+  expiresAt  DateTime  @map("expires_at") @db.Timestamptz(3)
+  consumedAt DateTime? @map("consumed_at") @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@map("email_verification_tokens")
+}
+
+model PasswordResetToken {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  tokenHash  String    @unique @map("token_hash") @db.Char(64)
+  expiresAt  DateTime  @map("expires_at") @db.Timestamptz(3)
+  consumedAt DateTime? @map("consumed_at") @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@map("password_reset_tokens")
+}

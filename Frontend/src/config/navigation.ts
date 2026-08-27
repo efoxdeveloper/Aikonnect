@@ -1,0 +1,81 @@
+import type { ForwardRefExoticComponent, RefAttributes } from "react";
+import {
+  ActivityIcon as Activity, BlocksIcon as Blocks, ChartNoAxesCombinedIcon as ChartNoAxesCombined,
+  ChartSplineIcon as ChartSpline, ContactRoundIcon as ContactRound, CreditCardIcon as CreditCard,
+  FileTextIcon as FileText, HouseIcon as House, LayoutDashboardIcon as PanelsTopLeft,
+  ListChecksIcon as ListTodo, MegaphoneIcon as Megaphone, MessageCircleIcon as MessageCircle,
+  MessageSquareTextIcon as MessageSquareText, MousePointerClickIcon as MousePointerClick,
+  SettingsIcon as Settings, ShoppingBagIcon as ShoppingBag, ShoppingCartIcon as ShoppingCart,
+  UserRoundIcon as UserRound,
+  UsersIcon as Users, UsersRoundIcon as UsersRound, WalletCardsIcon as WalletCards,
+  WaypointsIcon as Workflow, WebhookIcon as Webhook,
+} from "@animateicons/react/lucide";
+
+export interface AnimatedIconProps {
+  className?: string;
+  size?: number;
+  duration?: number;
+  isAnimated?: boolean;
+  color?: string;
+}
+
+export interface AnimatedIconHandle {
+  startAnimation: () => void;
+  stopAnimation: () => void;
+}
+
+export type AnimatedIcon = ForwardRefExoticComponent<AnimatedIconProps & RefAttributes<AnimatedIconHandle>>;
+
+export interface NavigationItem {
+  title: string;
+  url?: string;
+  icon: AnimatedIcon;
+  badge?: { text: string; variant: "danger" | "warning" | "success" };
+  children?: NavigationItem[];
+}
+
+export interface NavigationGroup { title: string; items: NavigationItem[]; }
+
+export const navigationGroups: NavigationGroup[] = [
+  { title: "Main", items: [
+    { title: "Dashboard", url: "/dashboard", icon: House, badge: { text: "New", variant: "danger" }, children: [
+      { title: "Overview", url: "/dashboard", icon: House },
+      { title: "Analytics", url: "/dashboard/analytics", icon: ChartSpline },
+      { title: "Activity", url: "/dashboard/activity", icon: Activity },
+    ] },
+    { title: "Inbox", url: "/inbox", icon: MessageSquareText, badge: { text: "12", variant: "danger" } },
+    { title: "Contacts", url: "/contacts", icon: Users },
+  ] },
+  { title: "Marketing", items: [
+    { title: "Campaigns", url: "/campaigns", icon: Megaphone },
+    { title: "Templates", url: "/templates", icon: FileText },
+    { title: "Automations", url: "/automations", icon: Workflow },
+    { title: "Click-to-WhatsApp Ads", url: "/click-to-whatsapp-ads", icon: MousePointerClick },
+  ] },
+  { title: "Sales & CRM", items: [
+    { title: "Leads", url: "/leads", icon: ContactRound },
+    { title: "Pipelines", url: "/pipelines", icon: PanelsTopLeft },
+    { title: "Tasks", url: "/tasks", icon: ListTodo },
+  ] },
+  { title: "Commerce", items: [
+    { title: "Catalog", url: "/catalog", icon: ShoppingBag },
+    { title: "Orders", url: "/orders", icon: ShoppingCart },
+    { title: "Payments", url: "/payments", icon: CreditCard },
+  ] },
+  { title: "Analytics", items: [
+    { title: "Reports", url: "/reports", icon: ChartNoAxesCombined },
+    { title: "Conversation Analytics", url: "/conversation-analytics", icon: ChartSpline },
+    { title: "Campaign Analytics", url: "/campaign-analytics", icon: ChartSpline },
+  ] },
+  { title: "Developer", items: [
+    { title: "Integrations", url: "/integrations", icon: Blocks },
+    { title: "API & Webhooks", url: "/api-webhooks", icon: Webhook },
+    { title: "Webhook Events", url: "/webhook-events", icon: Activity },
+  ] },
+  { title: "Settings", items: [
+    { title: "WhatsApp Account", url: "/whatsapp-account", icon: MessageCircle },
+    { title: "Team Members", url: "/team-members", icon: UsersRound },
+    { title: "Billing & Usage", url: "/billing", icon: WalletCards },
+    { title: "Settings", url: "/account-settings", icon: UserRound },
+  ] },
+];

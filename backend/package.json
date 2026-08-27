@@ -1,0 +1,59 @@
+{
+  "name": "interakt-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Scalable Express API for Interakt",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "cross-env RATE_LIMIT_MAX=1000 META_APP_SECRET=test-meta-app-secret-for-webhook META_WEBHOOK_VERIFY_TOKEN=test-webhook-verify-token tsx --test tests/*.test.ts",
+    "test:integration": "cross-env RATE_LIMIT_MAX=1000 META_APP_SECRET=test-meta-app-secret-for-webhook META_WEBHOOK_VERIFY_TOKEN=test-webhook-verify-token tsx --test tests/auth-workspace.integration.test.ts",
+    "db:check": "tsx src/scripts/check-database.ts",
+    "email:check": "tsx src/scripts/check-email.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "prisma:studio": "prisma studio",
+    "postinstall": "prisma generate"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "overrides": {
+    "deepmerge-ts": "^8.0.0"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.9.1",
+    "@prisma/client": "^7.9.1",
+    "compression": "^1.8.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.6.2",
+    "helmet": "^8.3.0",
+    "jose": "^6.2.10",
+    "nodemailer": "^9.0.5",
+    "pg": "^8.23.0",
+    "pino": "^10.3.1",
+    "pino-http": "^11.0.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.8.1",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.2.0",
+    "@types/nodemailer": "^8.0.1",
+    "@types/pg": "^8.23.1",
+    "cross-env": "^10.1.0",
+    "prisma": "^7.9.1",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2"
+  }
+}

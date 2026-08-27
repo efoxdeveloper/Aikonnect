@@ -1,0 +1,212 @@
+import { Router } from "express";
+import { asyncHandler } from "../../middleware/async-handler.js";
+import { validateBody, validateParams, validateQuery } from "../../middleware/validate.js";
+import { requireWorkspacePermission } from "../../middleware/workspace-access.js";
+import { PERMISSIONS } from "../workspaces/permissions.js";
+import * as controller from "./contact.controller.js";
+import * as activityController from "./contact-activity.controller.js";
+import * as customFieldController from "./contact-custom-field.controller.js";
+import { conversationRouter } from "../conversations/conversation.routes.js";
+import {
+  contactCustomFieldParamsSchema,
+  createContactCustomFieldSchema,
+  listContactCustomFieldsQuerySchema,
+  reorderContactCustomFieldsSchema,
+  updateContactCustomFieldSchema,
+} from "./contact-custom-field.schemas.js";
+import {
+  activityListQuerySchema,
+  activityParamsSchema,
+  createContactNoteSchema,
+  createContactTaskSchema,
+  noteParamsSchema,
+  taskParamsSchema,
+  updateContactNoteSchema,
+  updateContactTaskSchema,
+} from "./contact-activity.schemas.js";
+import {
+  bulkTagContactsSchema,
+  bulkDeleteContactsSchema,
+  contactParamsSchema,
+  contactSegmentParamsSchema,
+  contactWorkspaceParamsSchema,
+  createContactSegmentSchema,
+  createContactSchema,
+  importContactsSchema,
+  listContactsQuerySchema,
+  listContactSegmentsQuerySchema,
+  marketingEligibilitySchema,
+  tagListQuerySchema,
+  updateContactSegmentSchema,
+  updateContactSchema,
+} from "./contact.schemas.js";
+
+export const contactRouter = Router({ mergeParams: true });
+contactRouter.use(validateParams(contactWorkspaceParamsSchema));
+
+contactRouter.get(
+  "/",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_READ),
+  validateQuery(listContactsQuerySchema),
+  asyncHandler(controller.list),
+);
+contactRouter.get(
+  "/tags",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_READ),
+  validateQuery(tagListQuerySchema),
+  asyncHandler(controller.tags),
+);
+contactRouter.get(
+  "/custom-fields",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_FIELDS_VIEW),
+  validateQuery(listContactCustomFieldsQuerySchema),
+  asyncHandler(customFieldController.list),
+);
+contactRouter.post(
+  "/custom-fields",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_UPDATE),
+  validateBody(createContactCustomFieldSchema),
+  asyncHandler(customFieldController.create),
+);
+contactRouter.put(
+  "/custom-fields/order",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_UPDATE),
+  validateBody(reorderContactCustomFieldsSchema),
+  asyncHandler(customFieldController.reorder),
+);
+contactRouter.patch(
+  "/custom-fields/:fieldId",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_UPDATE),
+  validateParams(contactCustomFieldParamsSchema),
+  validateBody(updateContactCustomFieldSchema),
+  asyncHandler(customFieldController.update),
+);
+contactRouter.delete(
+  "/custom-fields/:fieldId",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_UPDATE),
+  validateParams(contactCustomFieldParamsSchema),
+  asyncHandler(customFieldController.archive),
+);
+contactRouter.get(
+  "/segments",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_READ),
+  validateQuery(listContactSegmentsQuerySchema),
+  asyncHandler(controller.segments),
+);
+contactRouter.post(
+  "/segments",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_UPDATE),
+  validateBody(createContactSegmentSchema),
+  asyncHandler(controller.createSegment),
+);
+contactRouter.patch(
+  "/segments/:segmentId",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_UPDATE),
+  validateParams(contactSegmentParamsSchema),
+  validateBody(updateContactSegmentSchema),
+  asyncHandler(controller.updateSegment),
+);
+contactRouter.delete(
+  "/segments/:segmentId",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_UPDATE),
+  validateParams(contactSegmentParamsSchema),
+  asyncHandler(controller.deleteSegment),
+);
+contactRouter.post(
+  "/import",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_CREATE),
+  validateBody(importContactsSchema),
+  asyncHandler(controller.importMany),
+);
+contactRouter.post(
+  "/bulk/delete",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_DELETE),
+  validateBody(bulkDeleteContactsSchema),
+  asyncHandler(controller.bulkDelete),
+);
+contactRouter.post(
+  "/bulk/tags",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_BULK_TAG),
+  validateBody(bulkTagContactsSchema),
+  asyncHandler(controller.bulkTags),
+);
+contactRouter.post(
+  "/marketing/eligibility",
+  requireWorkspacePermission(PERMISSIONS.CAMPAIGNS_SEND),
+  validateBody(marketingEligibilitySchema),
+  asyncHandler(controller.marketingEligibility),
+);
+contactRouter.use("/:contactId/conversations", conversationRouter);
+contactRouter.post(
+  "/",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_CREATE),
+  validateBody(createContactSchema),
+  asyncHandler(controller.create),
+);
+contactRouter.get(
+  "/:contactId/tasks",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_READ),
+  validateParams(activityParamsSchema),
+  validateQuery(activityListQuerySchema),
+  asyncHandler(activityController.tasks),
+);
+contactRouter.post(
+  "/:contactId/tasks",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_UPDATE),
+  validateParams(activityParamsSchema),
+  validateBody(createContactTaskSchema),
+  asyncHandler(activityController.createTask),
+);
+contactRouter.patch(
+  "/:contactId/tasks/:taskId",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_UPDATE),
+  validateParams(taskParamsSchema),
+  validateBody(updateContactTaskSchema),
+  asyncHandler(activityController.updateTask),
+);
+contactRouter.get(
+  "/:contactId/notes",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_READ),
+  validateParams(activityParamsSchema),
+  validateQuery(activityListQuerySchema),
+  asyncHandler(activityController.notes),
+);
+contactRouter.post(
+  "/:contactId/notes",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_UPDATE),
+  validateParams(activityParamsSchema),
+  validateBody(createContactNoteSchema),
+  asyncHandler(activityController.createNote),
+);
+contactRouter.patch(
+  "/:contactId/notes/:noteId",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_UPDATE),
+  validateParams(noteParamsSchema),
+  validateBody(updateContactNoteSchema),
+  asyncHandler(activityController.updateNote),
+);
+contactRouter.delete(
+  "/:contactId/notes/:noteId",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_UPDATE),
+  validateParams(noteParamsSchema),
+  asyncHandler(activityController.deleteNote),
+);
+contactRouter.get(
+  "/:contactId",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_READ),
+  validateParams(contactParamsSchema),
+  asyncHandler(controller.get),
+);
+contactRouter.patch(
+  "/:contactId",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_UPDATE),
+  validateParams(contactParamsSchema),
+  validateBody(updateContactSchema),
+  asyncHandler(controller.update),
+);
+contactRouter.delete(
+  "/:contactId",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_DELETE),
+  validateParams(contactParamsSchema),
+  asyncHandler(controller.remove),
+);
