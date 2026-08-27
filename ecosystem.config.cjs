@@ -14,6 +14,7 @@ module.exports = {
       kill_timeout: 10000,
       env: {
         NODE_ENV: "production",
+        PORT: 5006,
       },
     },
   ],

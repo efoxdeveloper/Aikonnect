@@ -9,7 +9,7 @@ const booleanFromString = z
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   HOST: z.string().default("0.0.0.0"),
-  PORT: z.coerce.number().int().positive().max(65535).default(4000),
+  PORT: z.coerce.number().int().positive().max(65535).default(5006),
   API_PREFIX: z.string().startsWith("/").default("/api/v1"),
   CORS_ORIGIN: z.string().default("http://localhost:5173"),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),

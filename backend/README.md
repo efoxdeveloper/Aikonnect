@@ -13,7 +13,7 @@ security middleware, rate limiting, health checks, and graceful shutdown.
 5. Verify PostgreSQL with `npm run db:check`.
 6. Start development mode with `npm run dev`.
 
-The API defaults to `http://localhost:4000`. Its health endpoints are:
+The API defaults to `http://localhost:5006`. Its health endpoints are:
 
 - `GET /api/v1/health`
 - `GET /api/v1/health/ready`
