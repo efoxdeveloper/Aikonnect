@@ -6,7 +6,6 @@ import {
   RocketIcon as Rocket,
   SendIcon as Send,
   StoreIcon as Store,
-  UsersIcon as Users,
 } from "@animateicons/react/lucide";
 import { Link } from "react-router-dom";
 import type { AnimatedIcon } from "@/config/navigation";
@@ -90,7 +89,6 @@ export function WorkspaceSetupDashboard() {
     { icon: Store, title: "Workspace created", description: `${data.workspace.name} is ready for your team.`, complete: progress.workspaceCreated, available: true },
     { icon: MessageSquare, title: "Connect WhatsApp Business", description: "Connect your Meta business portfolio and WhatsApp Business Account.", complete: progress.whatsappConnected, available: progress.workspaceCreated, action: connecting ? "Opening…" : "Connect", onAction: () => void start(), actionDisabled: connecting },
     { icon: Phone, title: "Connect a phone number", description: "Select an existing WhatsApp number or register a new business number.", complete: progress.phoneNumberConnected, available: progress.whatsappConnected, action: "Add number", to: "/whatsapp-account" },
-    { icon: Users, title: "Invite your team", description: "Add teammates and assign the permissions they need.", complete: progress.teammateInvited, available: progress.workspaceCreated, action: "Invite team", to: "/team-members" },
     { icon: Send, title: "Send a test message", description: "Confirm that your number, templates and webhook delivery are working.", complete: progress.testMessageSent, available: progress.phoneNumberConnected, action: "Send test", to: "/whatsapp-account" },
   ];
 

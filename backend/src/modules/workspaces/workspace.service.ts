@@ -139,15 +139,10 @@ export async function getWorkspaceSetup(workspaceId: string) {
   const phoneNumberConnected = workspace.whatsappBusinessAccounts.some(({ phoneNumbers }) =>
     phoneNumbers.some(({ status }) => status === "ACTIVE"),
   );
-  const teammateInvited =
-    workspace.memberships.length > 1 ||
-    workspace.invitations.length > 0 ||
-    Boolean(workspace.setupProgress?.teammateInvitedAt);
   const milestones = {
     workspaceCreated: Boolean(workspace.onboardingCompletedAt),
     whatsappConnected,
     phoneNumberConnected,
-    teammateInvited,
     testMessageSent: Boolean(workspace.setupProgress?.testMessageSentAt),
   };
   const completedSteps = Object.values(milestones).filter(Boolean).length;

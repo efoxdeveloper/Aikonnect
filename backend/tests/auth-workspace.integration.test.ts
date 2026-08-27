@@ -273,7 +273,6 @@ test("registration requires email verification before workspace RBAC and session
         workspaceCreated: boolean;
         whatsappConnected: boolean;
         phoneNumberConnected: boolean;
-        teammateInvited: boolean;
         testMessageSent: boolean;
         completedSteps: number;
         totalSteps: number;
@@ -288,11 +287,10 @@ test("registration requires email verification before workspace RBAC and session
     workspaceCreated: true,
     whatsappConnected: false,
     phoneNumberConnected: false,
-    teammateInvited: true,
     testMessageSent: false,
-    completedSteps: 2,
-    totalSteps: 5,
-    percentage: 40,
+    completedSteps: 1,
+    totalSteps: 4,
+    percentage: 25,
     completedAt: null,
   });
   assert.equal(setup.data.whatsapp.status, "DISCONNECTED");

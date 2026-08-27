@@ -7,7 +7,6 @@ export type WorkspaceSetupData = {
     workspaceCreated: boolean;
     whatsappConnected: boolean;
     phoneNumberConnected: boolean;
-    teammateInvited: boolean;
     testMessageSent: boolean;
     completedSteps: number;
     totalSteps: number;

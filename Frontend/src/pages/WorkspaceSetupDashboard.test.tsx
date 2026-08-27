@@ -18,11 +18,10 @@ const setupData: WorkspaceSetupData = {
     workspaceCreated: true,
     whatsappConnected: false,
     phoneNumberConnected: false,
-    teammateInvited: false,
     testMessageSent: false,
     completedSteps: 1,
-    totalSteps: 5,
-    percentage: 20,
+    totalSteps: 4,
+    percentage: 25,
     completedAt: null,
   },
   whatsapp: {
@@ -85,12 +84,13 @@ describe("workspace setup experience", () => {
     renderWithAuth(<WorkspaceSetupDashboard />, "/dashboard");
 
     expect(await screen.findByRole("heading", { name: "Welcome, Pawan" })).toBeInTheDocument();
-    expect(screen.getByText("20%")).toBeInTheDocument();
+    expect(screen.getByText("25%")).toBeInTheDocument();
     const connectButton = screen.getByRole("button", { name: "Connect" });
     expect(connectButton).toBeEnabled();
     fireEvent.click(connectButton);
     await waitFor(() => expect(login).toHaveBeenCalled());
     expect(screen.getByText("Workspace created")).toBeInTheDocument();
+    expect(screen.queryByText("Invite your team")).not.toBeInTheDocument();
     await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
       "/workspaces/workspace-1/setup",
       { headers: { authorization: "Bearer access-token" } },
