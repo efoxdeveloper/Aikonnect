@@ -19,6 +19,7 @@ import {
 import { contactRouter } from "../contacts/contact.routes.js";
 import { templateRouter } from "../templates/template.routes.js";
 import { inboxRouter } from "../conversations/conversation.routes.js";
+import { whatsappRouter } from "../whatsapp/whatsapp.routes.js";
 
 export const workspaceRouter = Router();
 
@@ -50,3 +51,4 @@ workspaceRouter.delete("/:workspaceId/roles/:roleId", requireWorkspacePermission
 workspaceRouter.use("/:workspaceId/contacts", contactRouter);
 workspaceRouter.use("/:workspaceId/templates", templateRouter);
 workspaceRouter.use("/:workspaceId/conversations", inboxRouter);
+workspaceRouter.use("/:workspaceId/whatsapp", whatsappRouter);

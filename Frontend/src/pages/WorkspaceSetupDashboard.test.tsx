@@ -1,13 +1,16 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AuthContext, type AuthContextValue } from "@/contexts/AuthContext";
 import { WorkspaceSetupDashboard } from "@/pages/WorkspaceSetupDashboard";
 import { WhatsAppAccountSetup } from "@/pages/WhatsAppAccountSetup";
 import { apiRequest } from "@/lib/api";
+import { loadFacebookSdk } from "@/lib/meta-embedded-signup";
 import type { WorkspaceSetupData } from "@/types/workspace";
 
 vi.mock("@/lib/api", () => ({ apiRequest: vi.fn() }));
+vi.mock("@/lib/meta-embedded-signup", () => ({ loadFacebookSdk: vi.fn() }));
+vi.mock("react-toastify", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
 const setupData: WorkspaceSetupData = {
   workspace: { id: "workspace-1", name: "Acme Support" },
@@ -86,11 +89,23 @@ describe("workspace setup experience", () => {
     ));
   });
 
-  it("shows the Meta requirements while the real connection is unavailable", async () => {
+  it("launches Meta Embedded Signup instead of asking for credentials", async () => {
+    const login = vi.fn((callback: (response: FacebookLoginResponse) => void) => callback({ authResponse: { code: "meta-auth-code" } }));
+    vi.mocked(loadFacebookSdk).mockResolvedValue({ init: vi.fn(), login });
     renderWithAuth(<WhatsAppAccountSetup />, "/whatsapp-account");
 
     expect(await screen.findByRole("heading", { name: "WhatsApp Business account" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Continue with Meta" })).toBeDisabled();
-    expect(screen.getByText(/App ID, App Secret, Configuration ID/i)).toBeInTheDocument();
+    const button = screen.getByRole("button", { name: "Continue with Meta" });
+    expect(button).toBeEnabled();
+    fireEvent.click(button);
+    await waitFor(() => expect(login).toHaveBeenCalled());
+    window.dispatchEvent(new MessageEvent("message", {
+      origin: "https://www.facebook.com",
+      data: JSON.stringify({ type: "WA_EMBEDDED_SIGNUP", event: "FINISH", data: { business_id: "business-1", waba_id: "waba-1", phone_number_id: "phone-1" } }),
+    }));
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/whatsapp/embedded-signup",
+      expect.objectContaining({ method: "POST", body: JSON.stringify({ code: "meta-auth-code", wabaId: "waba-1", phoneNumberId: "phone-1", businessId: "business-1" }) }),
+    ));
   });
 });

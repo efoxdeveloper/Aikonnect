@@ -1,0 +1,83 @@
+import assert from "node:assert/strict";
+import type { Server } from "node:http";
+import { after, before, test } from "node:test";
+import { app } from "../src/app.js";
+import { prisma } from "../src/database/prisma.js";
+import { decryptSecret } from "../src/utils/crypto.js";
+
+let server: Server;
+let apiBaseUrl: string;
+const createdEmails: string[] = [];
+
+before(async () => {
+  await new Promise<void>((resolve) => {
+    server = app.listen(0, "127.0.0.1", () => {
+      const address = server.address();
+      if (!address || typeof address === "string") throw new Error("Test API did not bind to TCP");
+      apiBaseUrl = `http://127.0.0.1:${address.port}/api/v1`;
+      resolve();
+    });
+  });
+});
+
+after(async () => {
+  const users = await prisma.user.findMany({ where: { email: { in: createdEmails } }, select: { id: true } });
+  const userIds = users.map(({ id }) => id);
+  if (userIds.length) {
+    await prisma.workspace.deleteMany({ where: { ownerId: { in: userIds } } });
+    await prisma.user.deleteMany({ where: { id: { in: userIds } } });
+  }
+  await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+  await prisma.$disconnect();
+});
+
+test("embedded signup requires workspace authentication and validates its callback data", async () => {
+  const anonymous = await fetch(`${apiBaseUrl}/workspaces/00000000-0000-0000-0000-000000000000/whatsapp/embedded-signup`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({}) });
+  assert.equal(anonymous.status, 401);
+});
+
+test("exchanges the signup code and stores the Meta account and phone against the workspace", async (testContext) => {
+  const suffix = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const email = `whatsapp-account-integration-${suffix}@example.com`;
+  createdEmails.push(email);
+  const registration = await fetch(`${apiBaseUrl}/auth/register`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ email, password: "IntegrationPassword123", firstName: "WhatsApp", lastName: "Tester", companyName: "WhatsApp Workspace", annualRevenue: "under-50-lakh" }),
+  });
+  assert.equal(registration.status, 201);
+  const registrationBody = (await registration.json()) as { data: { accessToken: string; workspace: { id: string }; verificationUrl: string } };
+  const verificationToken = new URL(registrationBody.data.verificationUrl).searchParams.get("token");
+  assert.ok(verificationToken);
+  await fetch(`${apiBaseUrl}/auth/verify-email`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token: verificationToken }) });
+  const authorization = { authorization: `Bearer ${registrationBody.data.accessToken}` };
+  const workspaceId = registrationBody.data.workspace.id;
+
+  const invalid = await fetch(`${apiBaseUrl}/workspaces/${workspaceId}/whatsapp/embedded-signup`, { method: "POST", headers: { ...authorization, "content-type": "application/json" }, body: JSON.stringify({ code: "only-code" }) });
+  assert.equal(invalid.status, 422);
+
+  const accessToken = `meta-user-token-${suffix}`;
+  const wabaId = `waba-${suffix}`;
+  const phoneNumberId = `phone-${suffix}`;
+  const responses = [
+    new Response(JSON.stringify({ access_token: accessToken, expires_in: 0 }), { status: 200 }),
+    new Response(JSON.stringify({ id: wabaId, name: "Test Business" }), { status: 200 }),
+    new Response(JSON.stringify({ id: phoneNumberId, display_phone_number: "+919876543210", verified_name: "Test Business", quality_rating: "GREEN", messaging_limit: "TIER_1" }), { status: 200 }),
+  ];
+  const originalFetch = globalThis.fetch;
+  testContext.mock.method(globalThis, "fetch", async (input, init) => String(input).startsWith("https://graph.facebook.com/")
+    ? responses.shift() ?? new Response("Unexpected Meta request", { status: 500 })
+    : originalFetch(input, init));
+  const connected = await fetch(`${apiBaseUrl}/workspaces/${workspaceId}/whatsapp/embedded-signup`, {
+    method: "POST",
+    headers: { ...authorization, "content-type": "application/json" },
+    body: JSON.stringify({ code: "meta-auth-code", businessId: `business-${suffix}`, wabaId, phoneNumberId }),
+  });
+  assert.equal(connected.status, 200);
+  const account = await prisma.whatsAppBusinessAccount.findFirstOrThrow({ where: { workspaceId, metaWabaId: wabaId } });
+  const phone = await prisma.whatsAppPhoneNumber.findFirstOrThrow({ where: { businessAccountId: account.id, metaPhoneNumberId: phoneNumberId } });
+  assert.equal(account.status, "CONNECTED");
+  assert.equal(phone.status, "ACTIVE");
+  assert.notEqual(account.encryptedAccessToken, accessToken);
+  assert.equal(decryptSecret(account.encryptedAccessToken!, "test-token-encryption-key-for-tests-32chars"), accessToken);
+});
