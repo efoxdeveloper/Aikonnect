@@ -13,6 +13,7 @@ import type { AnimatedIcon } from "@/config/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAnimatedIcon } from "@/hooks/use-animated-icon";
 import { useWorkspaceSetup } from "@/hooks/use-workspace-setup";
+import { useWhatsAppEmbeddedSignup } from "@/hooks/use-whatsapp-embedded-signup";
 import { cn } from "@/lib/utils";
 import { getActiveMembership } from "@/lib/workspace";
 
@@ -24,10 +25,12 @@ type StepProps = {
   available: boolean;
   action?: string;
   to?: string;
+  onAction?: () => void;
+  actionDisabled?: boolean;
   last?: boolean;
 };
 
-function SetupStep({ icon: Icon, title, description, complete, available, action, to, last }: StepProps) {
+function SetupStep({ icon: Icon, title, description, complete, available, action, to, onAction, actionDisabled, last }: StepProps) {
   const animatedIcon = useAnimatedIcon();
   const arrowIcon = useAnimatedIcon();
   return (
@@ -44,6 +47,11 @@ function SetupStep({ icon: Icon, title, description, complete, available, action
           </div>
           {complete ? (
             <span className="w-fit rounded-md bg-emerald-50 px-2.5 py-1 text-[11px] font-medium text-emerald-700">Complete</span>
+          ) : onAction && available ? (
+            <button type="button" disabled={actionDisabled} onClick={onAction} onMouseEnter={arrowIcon.onMouseEnter} onMouseLeave={arrowIcon.onMouseLeave} className="flex h-9 w-fit shrink-0 items-center justify-center rounded-md bg-[var(--brand)] px-3.5 text-xs font-medium text-white transition-colors hover:bg-[var(--brand-hover)] disabled:cursor-not-allowed disabled:opacity-60">
+              {action}
+              <ArrowRight ref={arrowIcon.ref} size={14} duration={0.55} className="ml-1.5" aria-hidden="true" />
+            </button>
           ) : to && available ? (
             <Link to={to} onMouseEnter={arrowIcon.onMouseEnter} onMouseLeave={arrowIcon.onMouseLeave} className="flex h-9 w-fit shrink-0 items-center justify-center rounded-md bg-[var(--brand)] px-3.5 text-xs font-medium text-white transition-colors hover:bg-[var(--brand-hover)]">
               {action}
@@ -71,6 +79,7 @@ export function WorkspaceSetupDashboard() {
     membership?.workspace.onboardingCompletedAt,
   );
   const rocketIcon = useAnimatedIcon();
+  const { connecting, error: connectionError, start } = useWhatsAppEmbeddedSignup({ workspaceId: membership?.workspace.id, accessToken, onConnected: refresh });
 
   if (loading) return <SetupLoading />;
   if (!membership) return <div className="p-8 text-sm text-[var(--text-secondary)]">No workspace is available for this account.</div>;
@@ -79,7 +88,7 @@ export function WorkspaceSetupDashboard() {
   const { progress } = data;
   const steps: StepProps[] = [
     { icon: Store, title: "Workspace created", description: `${data.workspace.name} is ready for your team.`, complete: progress.workspaceCreated, available: true },
-    { icon: MessageSquare, title: "Connect WhatsApp Business", description: "Connect your Meta business portfolio and WhatsApp Business Account.", complete: progress.whatsappConnected, available: progress.workspaceCreated, action: "Connect", to: "/whatsapp-account" },
+    { icon: MessageSquare, title: "Connect WhatsApp Business", description: "Connect your Meta business portfolio and WhatsApp Business Account.", complete: progress.whatsappConnected, available: progress.workspaceCreated, action: connecting ? "Opening…" : "Connect", onAction: () => void start(), actionDisabled: connecting },
     { icon: Phone, title: "Connect a phone number", description: "Select an existing WhatsApp number or register a new business number.", complete: progress.phoneNumberConnected, available: progress.whatsappConnected, action: "Add number", to: "/whatsapp-account" },
     { icon: Users, title: "Invite your team", description: "Add teammates and assign the permissions they need.", complete: progress.teammateInvited, available: progress.workspaceCreated, action: "Invite team", to: "/team-members" },
     { icon: Send, title: "Send a test message", description: "Confirm that your number, templates and webhook delivery are working.", complete: progress.testMessageSent, available: progress.phoneNumberConnected, action: "Send test", to: "/whatsapp-account" },
@@ -114,6 +123,8 @@ export function WorkspaceSetupDashboard() {
         </div>
         <div className="h-1.5 bg-white/15"><div className="h-full bg-white transition-[width] duration-500" style={{ width: `${progress.percentage}%` }} /></div>
       </section>
+
+      {connectionError && <div role="alert" className="mt-5 rounded-md bg-red-50 px-4 py-3 text-[var(--danger)]">{connectionError}</div>}
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_310px]">
         <section className="rounded-md border border-[var(--border-soft)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:p-7">

@@ -74,14 +74,22 @@ function renderWithAuth(component: React.ReactNode, route: string) {
 }
 
 describe("workspace setup experience", () => {
-  beforeEach(() => vi.mocked(apiRequest).mockResolvedValue(setupData));
+  beforeEach(() => {
+    vi.mocked(apiRequest).mockReset().mockResolvedValue(setupData);
+    vi.mocked(loadFacebookSdk).mockReset();
+  });
 
-  it("loads persisted progress and exposes the next available setup action", async () => {
+  it("opens Meta Embedded Signup directly from the Overview action", async () => {
+    const login = vi.fn();
+    vi.mocked(loadFacebookSdk).mockResolvedValue({ init: vi.fn(), login });
     renderWithAuth(<WorkspaceSetupDashboard />, "/dashboard");
 
     expect(await screen.findByRole("heading", { name: "Welcome, Pawan" })).toBeInTheDocument();
     expect(screen.getByText("20%")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Connect" })).toHaveAttribute("href", "/whatsapp-account");
+    const connectButton = screen.getByRole("button", { name: "Connect" });
+    expect(connectButton).toBeEnabled();
+    fireEvent.click(connectButton);
+    await waitFor(() => expect(login).toHaveBeenCalled());
     expect(screen.getByText("Workspace created")).toBeInTheDocument();
     await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
       "/workspaces/workspace-1/setup",
