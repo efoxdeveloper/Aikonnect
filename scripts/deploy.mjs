@@ -18,6 +18,7 @@ function run(command, args) {
     cwd: repositoryRoot,
     env: process.env,
     stdio: "inherit",
+    shell: process.platform === "win32" && (command.endsWith(".cmd") || command.endsWith(".bat")),
   });
 
   if (result.error) {
