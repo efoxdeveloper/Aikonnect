@@ -85,6 +85,8 @@ describe("workspace setup experience", () => {
 
     expect(await screen.findByRole("heading", { name: "Welcome, Pawan" })).toBeInTheDocument();
     expect(screen.getByText("25%")).toBeInTheDocument();
+    expect(screen.getByRole("progressbar", { name: "Workspace setup progress" })).toHaveAttribute("aria-valuenow", "25");
+    expect(screen.getByRole("heading", { name: "Connect WhatsApp Business", level: 2 })).toBeInTheDocument();
     const connectButton = screen.getByRole("button", { name: "Connect" });
     expect(connectButton).toBeEnabled();
     fireEvent.click(connectButton);
