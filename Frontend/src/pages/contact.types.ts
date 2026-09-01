@@ -7,6 +7,11 @@ export type Contact = {
   email: string;
   createdOn: string;
   source: string;
+  status?: string;
+  userId?: string | null;
+  accountOwnerId?: string | null;
+  accountOwner?: { id: string; firstName: string; lastName: string; email: string } | null;
+  dealValue?: number | null;
   tags: string[];
 };
 
@@ -47,6 +52,11 @@ export type ContactApiRecord = {
   profileName: string | null;
   email: string | null;
   source: string;
+  status: string;
+  userId: string | null;
+  accountOwnerId: string | null;
+  accountOwner: { id: string; firstName: string; lastName: string; email: string } | null;
+  dealValue: number | null;
   whatsappOpted: boolean;
   whatsappOptInSource: string | null;
   whatsappOptedInAt: string | null;

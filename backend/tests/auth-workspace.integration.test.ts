@@ -46,6 +46,20 @@ test("protected workspace routes reject anonymous requests", async () => {
   assert.equal(body.error.code, "AUTHENTICATION_REQUIRED");
 });
 
+test("automation routes reject anonymous requests", async () => {
+  const response = await fetch(`${baseUrl}/workspaces/not-a-workspace/automations`);
+  assert.equal(response.status, 401);
+  const body = (await response.json()) as { error: { code: string } };
+  assert.equal(body.error.code, "AUTHENTICATION_REQUIRED");
+});
+
+test("workflow routes reject anonymous requests", async () => {
+  const response = await fetch(`${baseUrl}/workspaces/not-a-workspace/workflows`);
+  assert.equal(response.status, 401);
+  const body = (await response.json()) as { error: { code: string } };
+  assert.equal(body.error.code, "AUTHENTICATION_REQUIRED");
+});
+
 test("registration validates required fields", async () => {
   const response = await fetch(`${baseUrl}/auth/register`, {
     method: "POST",

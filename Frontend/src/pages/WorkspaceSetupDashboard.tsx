@@ -45,11 +45,11 @@ function SetupStep({ icon: Icon, title, description, complete, available, active
             <p className="mt-1">{description}</p>
           </div>
           {complete ? (
-            <span className="w-fit rounded-md bg-emerald-50 px-2.5 py-1 text-[11px] font-medium text-emerald-700">Complete</span>
+            <span className="w-fit rounded-md bg-[#e9f7f1] px-2.5 py-1 text-[11px] font-medium text-[#137a57]">Complete</span>
           ) : active ? (
             <span className="w-fit shrink-0 rounded-md bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--brand)] ring-1 ring-inset ring-[var(--brand)]/15">Next</span>
           ) : (
-            <span className="w-fit rounded-md bg-[#f2f3f5] px-2.5 py-1 text-[11px] font-medium text-[var(--text-muted)]">Locked</span>
+            <span className="w-fit rounded-md bg-[var(--gray-100)] px-2.5 py-1 text-[11px] font-medium text-[var(--text-muted)]">Locked</span>
           )}
         </div>
       </div>
@@ -58,7 +58,7 @@ function SetupStep({ icon: Icon, title, description, complete, available, active
 }
 
 function SetupLoading() {
-  return <div className="mx-auto max-w-[1180px] animate-pulse px-5 py-7 sm:px-8"><div className="h-8 w-64 rounded-md bg-slate-200" /><div className="mt-6 h-36 rounded-md bg-slate-200" /><div className="mt-5 h-96 rounded-md bg-slate-200" /></div>;
+  return <div className="mx-auto max-w-[1180px] animate-pulse px-5 py-7 sm:px-8"><div className="h-8 w-64 rounded-md bg-[var(--gray-200)]" /><div className="mt-6 h-36 rounded-md bg-[var(--gray-200)]" /><div className="mt-5 h-96 rounded-md bg-[var(--gray-200)]" /></div>;
 }
 
 export function WorkspaceSetupDashboard() {
@@ -75,7 +75,7 @@ export function WorkspaceSetupDashboard() {
 
   if (loading) return <SetupLoading />;
   if (!membership) return <div className="p-8 text-sm text-[var(--text-secondary)]">No workspace is available for this account.</div>;
-  if (error || !data) return <div className="mx-auto max-w-[1180px] px-5 py-10 sm:px-8"><div className="rounded-md border border-red-100 bg-red-50 p-5 text-sm text-[var(--danger)]">{error ?? "Workspace setup is unavailable."}<button type="button" onClick={() => void refresh()} className="ml-3 font-medium underline">Try again</button></div></div>;
+  if (error || !data) return <div className="mx-auto max-w-[1180px] px-5 py-10 sm:px-8"><div className="rounded-md border border-[#f5dada] bg-[var(--danger-soft)] p-5 text-sm text-[var(--danger)]">{error ?? "Workspace setup is unavailable."}<button type="button" onClick={() => void refresh()} className="ml-3 font-medium underline">Try again</button></div></div>;
 
   const { progress } = data;
   const steps: StepProps[] = [
@@ -90,7 +90,7 @@ export function WorkspaceSetupDashboard() {
   const connectedAccount = data.whatsapp.accounts.find((account) => account.status === "CONNECTED") ?? data.whatsapp.accounts[0];
   const connectedPhone = connectedAccount?.phoneNumbers.find((phone) => phone.status === "ACTIVE") ?? connectedAccount?.phoneNumbers[0];
   const whatsappStatusLabel = data.whatsapp.status === "CONNECTED" ? "Connected" : data.whatsapp.status === "CONNECTING" ? "Connecting" : data.whatsapp.status === "ERROR" ? "Needs attention" : "Not connected";
-  const whatsappStatusClass = data.whatsapp.status === "CONNECTED" ? "bg-emerald-50 text-emerald-700" : data.whatsapp.status === "ERROR" ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-700";
+  const whatsappStatusClass = data.whatsapp.status === "CONNECTED" ? "bg-[var(--success-soft)] text-[var(--success)]" : data.whatsapp.status === "ERROR" ? "bg-[var(--danger-soft)] text-[var(--danger)]" : "bg-[var(--warning-soft)] text-[#a66a00]";
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden bg-[var(--page-background)]">
@@ -104,27 +104,27 @@ export function WorkspaceSetupDashboard() {
         <span className="w-fit rounded-full border border-[var(--border)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)]">{allComplete ? "Ready to launch" : progress.completedSteps + " of " + progress.totalSteps + " complete"}</span>
       </div>
 
-      <section className="mt-5 overflow-hidden rounded-md bg-[linear-gradient(120deg,#0f696d,#197b80)] text-white shadow-[0_8px_24px_rgba(17,107,111,.13)]">
+      <section className="mt-5 overflow-hidden rounded-md bg-[var(--green-900)] text-white shadow-[0_8px_24px_rgba(4,63,41,.13)]">
         <div className="flex flex-col gap-5 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
           <div className="flex items-start gap-4">
             <div onMouseEnter={rocketIcon.onMouseEnter} onMouseLeave={rocketIcon.onMouseLeave} className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/12 text-white ring-1 ring-white/15">
               <Rocket ref={rocketIcon.ref} size={21} duration={0.7} aria-hidden="true" />
             </div>
             <div>
-              <h2 className="text-[17px] font-medium">{allComplete ? "Your workspace is ready" : progress.completedSteps + " of " + progress.totalSteps + " steps complete"}</h2>
-              <p className="mt-1">{allComplete ? "You can now create campaigns and start conversations." : (nextStep?.title ?? "Complete your setup") + " is the next step."}</p>
+              <h2 className="!text-white text-[17px] font-medium">{allComplete ? "Your workspace is ready" : progress.completedSteps + " of " + progress.totalSteps + " steps complete"}</h2>
+              <div className="!text-white/70 mt-1">{allComplete ? "You can now create campaigns and start conversations." : (nextStep?.title ?? "Complete your setup") + " is the next step."}</div>
             </div>
           </div>
           <div className="flex items-center gap-4">
             <div className="relative flex size-[64px] items-center justify-center rounded-full" role="progressbar" aria-label="Workspace setup progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percentage} style={{ background: "conic-gradient(#ffffff " + progress.percentage + "%, rgba(255,255,255,.18) 0)" }}>
-              <div className="flex size-[52px] items-center justify-center rounded-full bg-[#176f74] text-sm font-medium">{progress.percentage}%</div>
+              <div className="flex size-[52px] items-center justify-center rounded-full bg-[var(--green-800)] text-sm font-medium">{progress.percentage}%</div>
             </div>
           </div>
         </div>
         <div className="h-1.5 bg-white/15"><div className="h-full bg-white transition-[width] duration-500" style={{ width: `${progress.percentage}%` }} /></div>
       </section>
 
-      {connectionError && <div role="alert" className="mt-5 rounded-md bg-red-50 px-4 py-3 text-[var(--danger)]">{connectionError}</div>}
+      {connectionError && <div role="alert" className="mt-5 rounded-md bg-[var(--danger-soft)] px-4 py-3 text-[var(--danger)]">{connectionError}</div>}
 
       {nextStep && (
         <section className="mt-5 flex flex-col gap-4 rounded-md border border-[var(--brand)]/15 bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:flex-row sm:items-center sm:justify-between sm:p-6" aria-labelledby="next-step-title">
@@ -174,9 +174,9 @@ export function WorkspaceSetupDashboard() {
               <div className="flex items-center justify-between border-t border-[var(--border-soft)] pt-3"><dt className="text-[var(--text-muted)]">Phone numbers</dt><dd className="font-medium text-[var(--text-primary)]">{data.whatsapp.phoneNumberCount}</dd></div>
               <div className="flex items-center justify-between border-t border-[var(--border-soft)] pt-3"><dt className="text-[var(--text-muted)]">Team members</dt><dd className="font-medium text-[var(--text-primary)]">{data.team.memberCount}</dd></div>
             </dl>
-            {data.whatsapp.status === "DISCONNECTED" && <p className="mt-4 rounded-md bg-[var(--brand-soft)] px-3 py-2.5 text-xs text-[var(--brand)]">Connect WhatsApp to unlock phone number setup.</p>}
+            {data.whatsapp.status === "DISCONNECTED" && <div className="mt-4 rounded-md bg-[var(--brand-soft)] px-3 py-2.5 text-xs text-[var(--brand)]">Connect WhatsApp to unlock phone number setup.</div>}
           </section>
-          <section className="rounded-md border border-[#d7ebec] bg-[var(--brand-soft)] p-5">
+          <section className="rounded-md border border-[var(--green-100)] bg-[var(--brand-subtle)] p-5">
             <h2 className="text-sm font-medium text-[var(--brand)]">Need help?</h2>
             <p className="mt-2">You will need access to your Meta Business portfolio before connecting WhatsApp.</p>
             <Link to="/whatsapp-account" className="mt-3 inline-flex items-center text-xs font-medium text-[var(--brand)] hover:text-[var(--brand-hover)]">View requirements <ArrowRight size={13} duration={0.55} className="ml-1" aria-hidden="true" /></Link>

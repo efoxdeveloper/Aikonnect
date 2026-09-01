@@ -9,6 +9,7 @@ import { ContactHub } from "@/pages/ContactHub";
 import { Campaigns } from "@/pages/Campaigns";
 import { TemplateBuilder } from "@/pages/TemplateBuilder";
 import { Templates } from "@/pages/Templates";
+import { Pipelines } from "@/pages/Pipelines";
 
 export function Dashboard() {
   const { pathname } = useLocation();
@@ -21,6 +22,7 @@ export function Dashboard() {
   if (pathname === "/contacts") return <ContactHub />;
   if (pathname === "/campaigns") return <Campaigns />;
   if (pathname === "/templates") return <Templates />;
+  if (pathname === "/pipelines") return <Pipelines />;
   if (pathname === "/createtemplate") return <TemplateBuilder />;
   return <div className="min-h-[calc(100vh-68px)]" />;
 }

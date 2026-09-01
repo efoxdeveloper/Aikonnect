@@ -27,6 +27,7 @@ describe("registration password visibility", () => {
       </AuthContext.Provider>,
     );
 
+    expect(screen.getByTestId("auth-shell")).toBeInTheDocument();
     const password = screen.getByLabelText("Password");
     const confirmation = screen.getByLabelText("Confirm password");
     expect(password).toHaveAttribute("type", "password");

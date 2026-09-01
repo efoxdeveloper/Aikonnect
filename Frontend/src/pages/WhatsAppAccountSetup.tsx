@@ -48,7 +48,7 @@ export function WhatsAppAccountSetup() {
 
           <ol className="mt-7 grid gap-3 sm:grid-cols-2">
             {["Sign in to Meta", "Choose your business", "Select a WhatsApp account", "Connect a phone number"].map((step, index) => (
-              <li key={step} className="flex items-center gap-3 rounded-md border border-[var(--border-soft)] bg-[#fafbfc] px-3.5 py-3 text-xs text-[var(--text-secondary)]"><span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white font-medium text-[var(--brand)] shadow-[0_1px_3px_rgba(30,40,55,.08)]">{index + 1}</span>{step}</li>
+              <li key={step} className="flex items-center gap-3 rounded-md border border-[var(--border-soft)] bg-[var(--surface-subtle)] px-3.5 py-3 text-xs text-[var(--text-secondary)]"><span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white font-medium text-[var(--brand)] shadow-[0_1px_3px_rgba(4,45,29,.06)]">{index + 1}</span>{step}</li>
             ))}
           </ol>
 
@@ -66,7 +66,7 @@ export function WhatsAppAccountSetup() {
               {requirements.map((requirement) => <li key={requirement} className="flex gap-2.5 text-xs leading-5 text-[var(--text-secondary)]"><Check size={14} duration={0.5} className="mt-0.5 shrink-0 text-[var(--success)]" aria-hidden="true" />{requirement}</li>)}
             </ul>
           </section>
-          <section className="rounded-md border border-[#d7ebec] bg-[var(--brand-soft)] p-5">
+          <section className="rounded-md border border-[var(--green-100)] bg-[var(--brand-subtle)] p-5">
             <h2 className="text-sm font-medium text-[var(--brand)]">Developer configuration</h2>
             <p className="mt-2">Sign in to Meta, choose your business and connect a WhatsApp phone number. Your credentials remain with Meta.</p>
           </section>

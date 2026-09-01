@@ -1,0 +1,1 @@
+ALTER TABLE "workflows" ADD COLUMN "edges" JSONB NOT NULL DEFAULT '[]';

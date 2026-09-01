@@ -108,6 +108,26 @@ export type WhatsAppBusinessAccount = Prisma.WhatsAppBusinessAccountModel
  */
 export type WhatsAppPhoneNumber = Prisma.WhatsAppPhoneNumberModel
 /**
+ * Model Automation
+ * 
+ */
+export type Automation = Prisma.AutomationModel
+/**
+ * Model AutomationLog
+ * 
+ */
+export type AutomationLog = Prisma.AutomationLogModel
+/**
+ * Model Workflow
+ * 
+ */
+export type Workflow = Prisma.WorkflowModel
+/**
+ * Model WorkflowRun
+ * 
+ */
+export type WorkflowRun = Prisma.WorkflowRunModel
+/**
  * Model WorkspaceMember
  * 
  */

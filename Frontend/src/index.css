@@ -1,34 +1,101 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import "@xyflow/react/dist/style.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Keep pipeline navigation fixed while each stage owns its contact-list scroll. */
+[data-testid="pipeline-kanban-scroll-region"] {
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+[data-testid="pipeline-kanban-surface"] {
+  height: 100%;
+  min-height: 0;
+  width: max-content;
+  overflow: hidden;
+}
+
+[data-testid^="pipeline-column-scroll-"] {
+  min-height: 0;
+  overflow-y: auto;
+}
+
 :root {
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --brand: #116b6f;
-  --brand-hover: #0d5d61;
-  --brand-soft: #e5f1f2;
-  --accent-blue: #3d67b1;
-  --accent-blue-soft: #eaf1ff;
-  --accent-amber: #ad7412;
-  --accent-amber-soft: #fff4d8;
-  --accent-purple: #7452b4;
-  --accent-purple-soft: #f1ecff;
-  --page-background: #f6f7fa;
+  --green-950: #052e27;
+  --green-900: #064e3b;
+  --green-800: #065f46;
+  --green-700: #047857;
+  --green-600: #059669;
+  --green-500: #10b981;
+  --green-300: #6ee7b7;
+  --green-100: #d1fae5;
+  --green-50: #ecfdf5;
+  --sidebar-deep: #043f32;
+  --sidebar-dark: #052e27;
+  --gray-50: #fafafa;
+  --gray-100: #f5f5f5;
+  --gray-200: #e7e7e7;
+  --gray-300: #d6d7d5;
+  --gray-500: #737373;
+  --gray-700: #404040;
+  --gray-900: #171717;
+  --brand: #047857;
+  --brand-accent: #10b981;
+  --brand-hover: #065f46;
+  --brand-pressed: #064e3b;
+  --brand-soft: #ecfdf5;
+  --brand-subtle: #f3f8f5;
+  --accent-blue: #3b72d9;
+  --accent-blue-soft: #eff6ff;
+  --accent-amber: #d99016;
+  --accent-amber-soft: #fff8e7;
+  --accent-purple: #7457d9;
+  --accent-purple-soft: #f5f3ff;
+  --page-background: #f7f9f8;
   --surface: #ffffff;
-  --text-primary: #292735;
-  --text-secondary: #666675;
-  --text-muted: #92929d;
-  --border: #dfe4e8;
-  --border-soft: #edf0f2;
-  --success: #00bf72;
-  --warning: #ffb515;
-  --danger: #ec5261;
-  --sidebar-width: 288px;
-  --sidebar-collapsed-width: 78px;
+  --surface-subtle: #fafbfa;
+  --surface-highlighted: #f3f8f5;
+  --text-primary: var(--gray-900);
+  --text-heading: #262626;
+  --text-body: #404040;
+  --text-secondary: #737373;
+  --text-muted: #a3a3a3;
+  --text-disabled: #c5c5c5;
+  --text-brand: #065f46;
+  --text-link: #047857;
+  --icon-muted: #5f6b65;
+  --border: #e5e9e7;
+  --border-strong: #d7deda;
+  --border-soft: #edf0ee;
+  --header-border: #e9ecea;
+  --success: #137a57;
+  --success-soft: #ecfdf5;
+  --warning: #a66a00;
+  --warning-soft: #fff7e8;
+  --danger: #b93737;
+  --danger-soft: #fef2f2;
+  --info: #315da8;
+  --info-soft: #eff6ff;
+  --premium: #6941c6;
+  --premium-soft: #f5f3ff;
+  --table-header: #f8faf9;
+  --table-hover: #f8fbf9;
+  --table-selected: #eff8f3;
+  --overlay: rgba(5, 46, 39, .36);
+  --sidebar-width: 272px;
+  --sidebar-collapsed-width: 76px;
   --header-height: 68px;
+  --interaction-duration: 200ms;
+  --interaction-ease: cubic-bezier(.2, .8, .2, 1);
   --radius: 0.5rem;
-  --ring: 17 106 111;
+  --ring: 21 150 106;
 }
 
 * { box-sizing: border-box; }
@@ -40,8 +107,9 @@ body {
   background: var(--page-background);
   color: var(--text-primary);
   font-family: var(--font-sans);
+  font-size: 14px;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 21px;
   letter-spacing: -0.005em;
   font-kerning: normal;
   font-variant-ligatures: common-ligatures contextual;
@@ -49,24 +117,25 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
-h1, h2, h3, h4 { letter-spacing: -0.018em; }
+h1, h2, h3, h4 { color: var(--text-heading); letter-spacing: -0.018em; }
+h1 { font-size: 28px; font-weight: 600; line-height: 34px; }
+h2 { font-size: 20px; font-weight: 600; line-height: 28px; }
 h3 {
   font-family: var(--font-sans);
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 1.25;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
 }
 p {
-  width: 100%;
-  margin-bottom: 0;
-  overflow: hidden;
+  margin: 0;
   font-family: var(--font-sans);
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  text-overflow: ellipsis;
+  line-height: 21px;
+  color: var(--text-body);
   user-select: auto;
-  white-space: nowrap;
+  white-space: normal;
 }
 [role="alert"] { color: var(--danger); }
 .contact-filter-toolbar button,
@@ -101,9 +170,104 @@ p {
   user-select: auto;
   white-space: nowrap;
 }
+.contact-data-table thead { height: 48px; }
+.contact-data-table thead { background-color: #f3f6f4 !important; }
+.contact-data-table thead th { height: 48px; vertical-align: middle; border-bottom: 1px solid var(--border-soft); }
+.contact-data-table thead h3 {
+  color: #4f5b55;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+}
+.contact-data-table tbody tr { height: 56px; }
+.contact-data-table tbody td { color: #303733; }
+.campaign-data-table thead { height: 48px; background-color: #f3f6f4 !important; }
+.campaign-data-table thead th { height: 48px; vertical-align: middle; border-bottom: 1px solid var(--border-soft); }
+.campaign-data-table thead h3 {
+  color: #4f5b55;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+}
+.campaign-data-table tbody tr { height: 56px; }
+.campaign-data-table tbody td { color: #303733; }
+@media (hover: hover) and (pointer: fine) {
+  .campaign-data-table tbody tr:hover { background-color: var(--table-hover) !important; }
+}
 button, input, select, textarea { font: inherit; letter-spacing: inherit; }
-button { cursor: pointer; }
-::selection { background: #c8e5e6; color: var(--brand-hover); }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not(.MuiInputBase-input):not(.border-0),
+select,
+textarea:not(.border-0) {
+  border-color: var(--border-strong);
+}
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not(.MuiInputBase-input):not(.border-0):focus,
+select:focus,
+textarea:not(.border-0):focus {
+  border-color: var(--brand-accent);
+  box-shadow: 0 0 0 3px rgba(21, 150, 106, .12);
+}
+input::placeholder,
+textarea::placeholder { color: #a3a3a3; }
+table thead { background-color: var(--table-header) !important; color: #525252; }
+table tbody tr { background-color: #ffffff; }
+table tbody tr[aria-selected="true"] { background-color: var(--table-selected) !important; }
+button:not(:disabled) { transition: background-color var(--interaction-duration) var(--interaction-ease), border-color var(--interaction-duration) var(--interaction-ease), color var(--interaction-duration) var(--interaction-ease), box-shadow var(--interaction-duration) var(--interaction-ease), transform var(--interaction-duration) var(--interaction-ease), opacity var(--interaction-duration) var(--interaction-ease); }
+button:not(:disabled):active { transform: scale(.98); }
+button:focus-visible { outline: 2px solid var(--brand-accent); outline-offset: 2px; }
+
+@media (hover: hover) and (pointer: fine) {
+  .interakt-button[data-variant="default"]:hover:not(:disabled) { background-color: var(--brand-hover); }
+  .interakt-button[data-variant="ghost"]:hover:not(:disabled) { background-color: var(--brand-soft); color: var(--brand); }
+  .interakt-button[data-variant="outline"]:hover:not(:disabled) { background-color: var(--brand-soft); color: var(--brand); }
+  .interakt-nav-item:not([data-active="true"]):hover { background-color: rgba(255, 255, 255, .07); color: rgba(255, 255, 255, .96); }
+  .interakt-nav-item[data-active="true"]:hover { background-color: rgba(16, 185, 129, .24); }
+  [data-sidebar-workspace]:hover { background-color: rgba(255, 255, 255, .09) !important; color: #ffffff !important; }
+  table tbody tr:hover { background-color: var(--table-hover); }
+}
+
+/* A contained Material-style press flash for navigation links. It only runs
+   while the pointer is down, so it cannot become a sticky touch hover state. */
+.interakt-nav-item {
+  isolation: isolate;
+}
+
+.interakt-nav-item > * {
+  position: relative;
+  z-index: 1;
+}
+
+.interakt-nav-item::after {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, .24) 0%, rgba(255, 255, 255, .09) 42%, transparent 72%);
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+}
+
+.interakt-nav-item:active::after {
+  animation: nav-press-ripple 320ms cubic-bezier(.2, .8, .2, 1);
+}
+.interakt-button[data-variant="default"]:active:not(:disabled),
+.interakt-button[data-variant="default"][data-pressed="true"] { background-color: var(--brand-pressed); box-shadow: inset 0 1px 2px rgba(4, 45, 29, .18); }
+.interakt-button[data-loading="true"][data-variant="default"] { background-color: var(--brand) !important; color: #fff !important; opacity: 1 !important; }
+button[role="switch"][aria-checked="true"] { background-color: var(--brand-accent) !important; }
+button[role="switch"][aria-checked="false"] { background-color: var(--gray-300) !important; }
+[data-testid="automations-table-panel"] tbody td:first-child button { color: var(--brand) !important; }
+[data-testid="automations-table-panel"] tbody td:nth-child(2) > div > span:first-child { background-color: var(--success-soft) !important; color: var(--success) !important; }
+[data-testid="automations-table-panel"] tbody td:nth-child(3) > div > span:first-child { background-color: var(--premium-soft) !important; color: var(--premium) !important; }
+
+@media (pointer: coarse) {
+  button:not(:disabled) { min-height: 44px; min-width: 44px; }
+}
+::selection { background: var(--green-100); color: var(--green-900); }
 
 .Toastify__toast-container {
   width: min(360px, calc(100vw - 24px));
@@ -123,7 +287,7 @@ button { cursor: pointer; }
   color: var(--text-primary);
   font-family: inherit;
   font-size: 13px;
-  box-shadow: 0 12px 32px rgba(31, 42, 55, .14);
+  box-shadow: 0 12px 32px rgba(4, 45, 29, .10);
 }
 .Toastify__progress-bar { height: 3px; }
 .Toastify__progress-bar--info,
@@ -133,17 +297,17 @@ button { cursor: pointer; }
 .interakt-phone-input {
   --react-international-phone-height: 40px;
   --react-international-phone-border-radius: 6px;
-  --react-international-phone-border-color: var(--border);
+  --react-international-phone-border-color: var(--border-strong);
   --react-international-phone-background-color: #fff;
   --react-international-phone-text-color: var(--text-primary);
   --react-international-phone-font-size: 14px;
   --react-international-phone-selected-dropdown-item-background-color: var(--brand-soft);
   --react-international-phone-selected-dropdown-item-text-color: var(--brand);
   --react-international-phone-dropdown-item-dial-code-color: var(--text-muted);
-  --react-international-phone-dropdown-shadow: 0 12px 30px rgba(31, 42, 55, .14);
+  --react-international-phone-dropdown-shadow: 0 12px 30px rgba(4, 45, 29, .10);
   position: relative;
 }
-.interakt-phone-input:focus-within { border-radius: 6px; box-shadow: 0 0 0 2px rgba(17, 107, 111, .1); }
+.interakt-phone-input:focus-within { border-radius: 6px; box-shadow: 0 0 0 3px rgba(21, 150, 106, .12); }
 .interakt-phone-input .react-international-phone-country-selector-button { width: 58px; }
 .interakt-phone-input .react-international-phone-country-selector-dropdown {
   z-index: 130;
@@ -190,12 +354,29 @@ button { cursor: pointer; }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+@keyframes nav-press-ripple {
+  0% { opacity: .9; transform: scale(.82); }
+  100% { opacity: 0; transform: scale(1.08); }
+}
+
+@keyframes auth-visual-in {
+  from { opacity: .18; transform: scale(1.015); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes auth-copy-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .collapsible-content[data-state="open"] { animation: collapsible-down 150ms cubic-bezier(.2,.8,.2,1); }
 .collapsible-content[data-state="closed"] { animation: collapsible-up 120ms cubic-bezier(.4,0,1,1); }
 .interactive-surface[data-state="open"] { animation: surface-in 150ms cubic-bezier(.2,.8,.2,1); transform-origin: var(--radix-popper-transform-origin); }
 .auth-card { animation: auth-card-in 520ms cubic-bezier(.16,1,.3,1) both; }
 .auth-logo { animation: auth-logo-in 620ms 120ms cubic-bezier(.16,1,.3,1) both; }
 .auth-step { animation: auth-step-in 240ms cubic-bezier(.2,.8,.2,1) both; }
+.auth-visual { animation: auth-visual-in 260ms cubic-bezier(.2,.8,.2,1) both; }
+.auth-copy { animation: auth-copy-in 320ms 40ms cubic-bezier(.2,.8,.2,1) both; }
 .workspace-onboarding-card { animation: workspace-onboarding-in 300ms cubic-bezier(.16,1,.3,1) both; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -205,11 +386,24 @@ button { cursor: pointer; }
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+
+  .interakt-nav-item:active::after {
+    animation: none;
+    opacity: .2;
+  }
+
+  .auth-visual {
+    animation: none;
+  }
+
+  .auth-copy {
+    animation: none;
+  }
 }
 
 @layer utilities {
   .scrollbar-subtle::-webkit-scrollbar { width: 4px; }
   .scrollbar-subtle::-webkit-scrollbar-track { background: transparent; }
   .scrollbar-subtle::-webkit-scrollbar-thumb { background: transparent; border-radius: 999px; }
-  .scrollbar-subtle:hover::-webkit-scrollbar-thumb { background: #dfe4e8; }
+  .scrollbar-subtle:hover::-webkit-scrollbar-thumb { background: var(--green-100); }
 }

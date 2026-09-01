@@ -268,6 +268,7 @@ export type ConversationWhereInput = {
   contact?: Prisma.XOR<Prisma.ContactScalarRelationFilter, Prisma.ContactWhereInput>
   phoneNumber?: Prisma.XOR<Prisma.WhatsAppPhoneNumberNullableScalarRelationFilter, Prisma.WhatsAppPhoneNumberWhereInput> | null
   messages?: Prisma.MessageListRelationFilter
+  workflowRuns?: Prisma.WorkflowRunListRelationFilter
 }
 
 export type ConversationOrderByWithRelationInput = {
@@ -286,6 +287,7 @@ export type ConversationOrderByWithRelationInput = {
   contact?: Prisma.ContactOrderByWithRelationInput
   phoneNumber?: Prisma.WhatsAppPhoneNumberOrderByWithRelationInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
+  workflowRuns?: Prisma.WorkflowRunOrderByRelationAggregateInput
 }
 
 export type ConversationWhereUniqueInput = Prisma.AtLeast<{
@@ -308,6 +310,7 @@ export type ConversationWhereUniqueInput = Prisma.AtLeast<{
   contact?: Prisma.XOR<Prisma.ContactScalarRelationFilter, Prisma.ContactWhereInput>
   phoneNumber?: Prisma.XOR<Prisma.WhatsAppPhoneNumberNullableScalarRelationFilter, Prisma.WhatsAppPhoneNumberWhereInput> | null
   messages?: Prisma.MessageListRelationFilter
+  workflowRuns?: Prisma.WorkflowRunListRelationFilter
 }, "id" | "workspaceId_contactId_channelKey">
 
 export type ConversationOrderByWithAggregationInput = {
@@ -359,6 +362,7 @@ export type ConversationCreateInput = {
   contact: Prisma.ContactCreateNestedOneWithoutConversationsInput
   phoneNumber?: Prisma.WhatsAppPhoneNumberCreateNestedOneWithoutConversationsInput
   messages?: Prisma.MessageCreateNestedManyWithoutConversationInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationUncheckedCreateInput = {
@@ -374,6 +378,7 @@ export type ConversationUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationUpdateInput = {
@@ -389,6 +394,7 @@ export type ConversationUpdateInput = {
   contact?: Prisma.ContactUpdateOneRequiredWithoutConversationsNestedInput
   phoneNumber?: Prisma.WhatsAppPhoneNumberUpdateOneWithoutConversationsNestedInput
   messages?: Prisma.MessageUpdateManyWithoutConversationNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateInput = {
@@ -404,6 +410,7 @@ export type ConversationUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationCreateManyInput = {
@@ -668,6 +675,20 @@ export type ConversationUncheckedUpdateManyWithoutPhoneNumberNestedInput = {
   deleteMany?: Prisma.ConversationScalarWhereInput | Prisma.ConversationScalarWhereInput[]
 }
 
+export type ConversationCreateNestedOneWithoutWorkflowRunsInput = {
+  create?: Prisma.XOR<Prisma.ConversationCreateWithoutWorkflowRunsInput, Prisma.ConversationUncheckedCreateWithoutWorkflowRunsInput>
+  connectOrCreate?: Prisma.ConversationCreateOrConnectWithoutWorkflowRunsInput
+  connect?: Prisma.ConversationWhereUniqueInput
+}
+
+export type ConversationUpdateOneRequiredWithoutWorkflowRunsNestedInput = {
+  create?: Prisma.XOR<Prisma.ConversationCreateWithoutWorkflowRunsInput, Prisma.ConversationUncheckedCreateWithoutWorkflowRunsInput>
+  connectOrCreate?: Prisma.ConversationCreateOrConnectWithoutWorkflowRunsInput
+  upsert?: Prisma.ConversationUpsertWithoutWorkflowRunsInput
+  connect?: Prisma.ConversationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ConversationUpdateToOneWithWhereWithoutWorkflowRunsInput, Prisma.ConversationUpdateWithoutWorkflowRunsInput>, Prisma.ConversationUncheckedUpdateWithoutWorkflowRunsInput>
+}
+
 export type ConversationCreateWithoutWorkspaceInput = {
   id?: string
   channelKey?: string
@@ -680,6 +701,7 @@ export type ConversationCreateWithoutWorkspaceInput = {
   contact: Prisma.ContactCreateNestedOneWithoutConversationsInput
   phoneNumber?: Prisma.WhatsAppPhoneNumberCreateNestedOneWithoutConversationsInput
   messages?: Prisma.MessageCreateNestedManyWithoutConversationInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationUncheckedCreateWithoutWorkspaceInput = {
@@ -694,6 +716,7 @@ export type ConversationUncheckedCreateWithoutWorkspaceInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationCreateOrConnectWithoutWorkspaceInput = {
@@ -751,6 +774,7 @@ export type ConversationCreateWithoutContactInput = {
   workspace: Prisma.WorkspaceCreateNestedOneWithoutConversationsInput
   phoneNumber?: Prisma.WhatsAppPhoneNumberCreateNestedOneWithoutConversationsInput
   messages?: Prisma.MessageCreateNestedManyWithoutConversationInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationUncheckedCreateWithoutContactInput = {
@@ -765,6 +789,7 @@ export type ConversationUncheckedCreateWithoutContactInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationCreateOrConnectWithoutContactInput = {
@@ -805,6 +830,7 @@ export type ConversationCreateWithoutMessagesInput = {
   workspace: Prisma.WorkspaceCreateNestedOneWithoutConversationsInput
   contact: Prisma.ContactCreateNestedOneWithoutConversationsInput
   phoneNumber?: Prisma.WhatsAppPhoneNumberCreateNestedOneWithoutConversationsInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationUncheckedCreateWithoutMessagesInput = {
@@ -819,6 +845,7 @@ export type ConversationUncheckedCreateWithoutMessagesInput = {
   lastMessageAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationCreateOrConnectWithoutMessagesInput = {
@@ -849,6 +876,7 @@ export type ConversationUpdateWithoutMessagesInput = {
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutConversationsNestedInput
   contact?: Prisma.ContactUpdateOneRequiredWithoutConversationsNestedInput
   phoneNumber?: Prisma.WhatsAppPhoneNumberUpdateOneWithoutConversationsNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateWithoutMessagesInput = {
@@ -863,6 +891,7 @@ export type ConversationUncheckedUpdateWithoutMessagesInput = {
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationCreateWithoutPhoneNumberInput = {
@@ -877,6 +906,7 @@ export type ConversationCreateWithoutPhoneNumberInput = {
   workspace: Prisma.WorkspaceCreateNestedOneWithoutConversationsInput
   contact: Prisma.ContactCreateNestedOneWithoutConversationsInput
   messages?: Prisma.MessageCreateNestedManyWithoutConversationInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationUncheckedCreateWithoutPhoneNumberInput = {
@@ -891,6 +921,7 @@ export type ConversationUncheckedCreateWithoutPhoneNumberInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutConversationInput
 }
 
 export type ConversationCreateOrConnectWithoutPhoneNumberInput = {
@@ -919,6 +950,82 @@ export type ConversationUpdateManyWithWhereWithoutPhoneNumberInput = {
   data: Prisma.XOR<Prisma.ConversationUpdateManyMutationInput, Prisma.ConversationUncheckedUpdateManyWithoutPhoneNumberInput>
 }
 
+export type ConversationCreateWithoutWorkflowRunsInput = {
+  id?: string
+  channelKey?: string
+  status?: $Enums.ConversationStatus
+  unreadCount?: number
+  lastMessagePreview?: string | null
+  lastMessageAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutConversationsInput
+  contact: Prisma.ContactCreateNestedOneWithoutConversationsInput
+  phoneNumber?: Prisma.WhatsAppPhoneNumberCreateNestedOneWithoutConversationsInput
+  messages?: Prisma.MessageCreateNestedManyWithoutConversationInput
+}
+
+export type ConversationUncheckedCreateWithoutWorkflowRunsInput = {
+  id?: string
+  workspaceId: string
+  contactId: string
+  phoneNumberId?: string | null
+  channelKey?: string
+  status?: $Enums.ConversationStatus
+  unreadCount?: number
+  lastMessagePreview?: string | null
+  lastMessageAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
+}
+
+export type ConversationCreateOrConnectWithoutWorkflowRunsInput = {
+  where: Prisma.ConversationWhereUniqueInput
+  create: Prisma.XOR<Prisma.ConversationCreateWithoutWorkflowRunsInput, Prisma.ConversationUncheckedCreateWithoutWorkflowRunsInput>
+}
+
+export type ConversationUpsertWithoutWorkflowRunsInput = {
+  update: Prisma.XOR<Prisma.ConversationUpdateWithoutWorkflowRunsInput, Prisma.ConversationUncheckedUpdateWithoutWorkflowRunsInput>
+  create: Prisma.XOR<Prisma.ConversationCreateWithoutWorkflowRunsInput, Prisma.ConversationUncheckedCreateWithoutWorkflowRunsInput>
+  where?: Prisma.ConversationWhereInput
+}
+
+export type ConversationUpdateToOneWithWhereWithoutWorkflowRunsInput = {
+  where?: Prisma.ConversationWhereInput
+  data: Prisma.XOR<Prisma.ConversationUpdateWithoutWorkflowRunsInput, Prisma.ConversationUncheckedUpdateWithoutWorkflowRunsInput>
+}
+
+export type ConversationUpdateWithoutWorkflowRunsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  channelKey?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutConversationsNestedInput
+  contact?: Prisma.ContactUpdateOneRequiredWithoutConversationsNestedInput
+  phoneNumber?: Prisma.WhatsAppPhoneNumberUpdateOneWithoutConversationsNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutConversationNestedInput
+}
+
+export type ConversationUncheckedUpdateWithoutWorkflowRunsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  contactId?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  channelKey?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
+}
+
 export type ConversationCreateManyWorkspaceInput = {
   id?: string
   contactId: string
@@ -944,6 +1051,7 @@ export type ConversationUpdateWithoutWorkspaceInput = {
   contact?: Prisma.ContactUpdateOneRequiredWithoutConversationsNestedInput
   phoneNumber?: Prisma.WhatsAppPhoneNumberUpdateOneWithoutConversationsNestedInput
   messages?: Prisma.MessageUpdateManyWithoutConversationNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateWithoutWorkspaceInput = {
@@ -958,6 +1066,7 @@ export type ConversationUncheckedUpdateWithoutWorkspaceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateManyWithoutWorkspaceInput = {
@@ -998,6 +1107,7 @@ export type ConversationUpdateWithoutContactInput = {
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutConversationsNestedInput
   phoneNumber?: Prisma.WhatsAppPhoneNumberUpdateOneWithoutConversationsNestedInput
   messages?: Prisma.MessageUpdateManyWithoutConversationNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateWithoutContactInput = {
@@ -1012,6 +1122,7 @@ export type ConversationUncheckedUpdateWithoutContactInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateManyWithoutContactInput = {
@@ -1052,6 +1163,7 @@ export type ConversationUpdateWithoutPhoneNumberInput = {
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutConversationsNestedInput
   contact?: Prisma.ContactUpdateOneRequiredWithoutConversationsNestedInput
   messages?: Prisma.MessageUpdateManyWithoutConversationNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateWithoutPhoneNumberInput = {
@@ -1066,6 +1178,7 @@ export type ConversationUncheckedUpdateWithoutPhoneNumberInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutConversationNestedInput
 }
 
 export type ConversationUncheckedUpdateManyWithoutPhoneNumberInput = {
@@ -1088,10 +1201,12 @@ export type ConversationUncheckedUpdateManyWithoutPhoneNumberInput = {
 
 export type ConversationCountOutputType = {
   messages: number
+  workflowRuns: number
 }
 
 export type ConversationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   messages?: boolean | ConversationCountOutputTypeCountMessagesArgs
+  workflowRuns?: boolean | ConversationCountOutputTypeCountWorkflowRunsArgs
 }
 
 /**
@@ -1111,6 +1226,13 @@ export type ConversationCountOutputTypeCountMessagesArgs<ExtArgs extends runtime
   where?: Prisma.MessageWhereInput
 }
 
+/**
+ * ConversationCountOutputType without action
+ */
+export type ConversationCountOutputTypeCountWorkflowRunsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkflowRunWhereInput
+}
+
 
 export type ConversationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1128,6 +1250,7 @@ export type ConversationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   phoneNumber?: boolean | Prisma.Conversation$phoneNumberArgs<ExtArgs>
   messages?: boolean | Prisma.Conversation$messagesArgs<ExtArgs>
+  workflowRuns?: boolean | Prisma.Conversation$workflowRunsArgs<ExtArgs>
   _count?: boolean | Prisma.ConversationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["conversation"]>
 
@@ -1185,6 +1308,7 @@ export type ConversationInclude<ExtArgs extends runtime.Types.Extensions.Interna
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   phoneNumber?: boolean | Prisma.Conversation$phoneNumberArgs<ExtArgs>
   messages?: boolean | Prisma.Conversation$messagesArgs<ExtArgs>
+  workflowRuns?: boolean | Prisma.Conversation$workflowRunsArgs<ExtArgs>
   _count?: boolean | Prisma.ConversationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ConversationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1205,6 +1329,7 @@ export type $ConversationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     contact: Prisma.$ContactPayload<ExtArgs>
     phoneNumber: Prisma.$WhatsAppPhoneNumberPayload<ExtArgs> | null
     messages: Prisma.$MessagePayload<ExtArgs>[]
+    workflowRuns: Prisma.$WorkflowRunPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1616,6 +1741,7 @@ export interface Prisma__ConversationClient<T, Null = never, ExtArgs extends run
   contact<T extends Prisma.ContactDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ContactDefaultArgs<ExtArgs>>): Prisma.Prisma__ContactClient<runtime.Types.Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   phoneNumber<T extends Prisma.Conversation$phoneNumberArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Conversation$phoneNumberArgs<ExtArgs>>): Prisma.Prisma__WhatsAppPhoneNumberClient<runtime.Types.Result.GetResult<Prisma.$WhatsAppPhoneNumberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   messages<T extends Prisma.Conversation$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Conversation$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  workflowRuns<T extends Prisma.Conversation$workflowRunsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Conversation$workflowRunsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2097,6 +2223,30 @@ export type Conversation$messagesArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
+}
+
+/**
+ * Conversation.workflowRuns
+ */
+export type Conversation$workflowRunsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkflowRun
+   */
+  select?: Prisma.WorkflowRunSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkflowRun
+   */
+  omit?: Prisma.WorkflowRunOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkflowRunInclude<ExtArgs> | null
+  where?: Prisma.WorkflowRunWhereInput
+  orderBy?: Prisma.WorkflowRunOrderByWithRelationInput | Prisma.WorkflowRunOrderByWithRelationInput[]
+  cursor?: Prisma.WorkflowRunWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkflowRunScalarFieldEnum | Prisma.WorkflowRunScalarFieldEnum[]
 }
 
 /**

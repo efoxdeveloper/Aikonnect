@@ -4,6 +4,8 @@ import type { Prisma } from "../../generated/prisma/client.js";
 import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
 import { prisma } from "../../database/prisma.js";
+import { runAutomationsForEvent } from "../automations/automation.executor.js";
+import { runWorkflowsForEvent } from "../workflows/workflow.executor.js";
 
 type JsonRecord = Record<string, unknown>;
 
@@ -112,12 +114,12 @@ async function ingestIncomingMessage(
   const normalizedPhone = from.startsWith("+") ? from : `+${from}`;
   const payload = JSON.parse(JSON.stringify(message)) as Prisma.InputJsonValue;
 
-  await prisma.$transaction(async (transaction) => {
+  return prisma.$transaction(async (transaction) => {
     const existingMessage = await transaction.message.findUnique({
       where: { workspaceId_metaMessageId: { workspaceId, metaMessageId } },
       select: { id: true },
     });
-    if (existingMessage) return;
+    if (existingMessage) return null;
 
     const existingContact = await transaction.contact.findFirst({
       where: {
@@ -170,6 +172,7 @@ async function ingestIncomingMessage(
       where: { id: conversation.id },
       data: { lastMessagePreview: text ?? type, lastMessageAt: sentAt, unreadCount: { increment: 1 } },
     });
+    return { contactId: contact.id, conversationId: conversation.id, messageId: metaMessageId, text, type, phoneNumber: normalizedPhone };
   });
 }
 
@@ -213,7 +216,26 @@ async function processPayload(payload: WhatsAppWebhookPayload) {
       const contacts = asArray(value.contacts);
       const contactNames = new Map(contacts.map((contact) => [asString(contact.wa_id), asString(asRecord(contact.profile)?.name)]));
       for (const message of asArray(value.messages) as WhatsAppMessage[]) {
-        await ingestIncomingMessage(phoneNumber.businessAccount.workspaceId, phoneNumber.id, message, contactNames.get(asString(message.from)));
+        const result = await ingestIncomingMessage(phoneNumber.businessAccount.workspaceId, phoneNumber.id, message, contactNames.get(asString(message.from)));
+        if (result) {
+          try {
+            await runAutomationsForEvent(phoneNumber.businessAccount.workspaceId, "MESSAGE_RECEIVED", {
+              contactId: result.contactId,
+              conversationId: result.conversationId,
+              message: { id: result.messageId, text: result.text, type: result.type, phoneNumber: result.phoneNumber },
+              triggerPayload: { type: "MESSAGE_RECEIVED", messageId: result.messageId, text: result.text, messageType: result.type },
+            });
+            await runWorkflowsForEvent(phoneNumber.businessAccount.workspaceId, "MESSAGE_RECEIVED", {
+              contactId: result.contactId,
+              conversationId: result.conversationId,
+              message: { id: result.messageId, text: result.text, type: result.type, phoneNumber: result.phoneNumber },
+              triggerPayload: { type: "MESSAGE_RECEIVED", messageId: result.messageId, text: result.text, messageType: result.type },
+            });
+          } catch (error) {
+            // Webhook acknowledgement must not be lost while a deployment is applying the automation migration.
+            logger.error({ workspaceId: phoneNumber.businessAccount.workspaceId, error }, "Automation processing was skipped for the WhatsApp event");
+          }
+        }
       }
       await ingestMessageStatuses(phoneNumber.businessAccount.workspaceId, asArray(value.statuses) as WhatsAppStatus[]);
     }

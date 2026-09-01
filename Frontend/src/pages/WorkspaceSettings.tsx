@@ -63,7 +63,7 @@ function Field({ label, id, value, onChange, icon: Icon, type = "text", disabled
       <label htmlFor={id} className="mb-2 block text-sm font-medium text-[var(--text-primary)]">{label}</label>
       <div onMouseEnter={icon.onMouseEnter} onMouseLeave={icon.onMouseLeave} className="group/field relative">
         <Icon ref={icon.ref} size={17} duration={0.65} className="pointer-events-none absolute left-3.5 top-1/2 z-10 -translate-y-1/2 text-[var(--text-muted)] transition-colors group-focus-within/field:text-[var(--brand)]" aria-hidden="true" />
-        <input id={id} type={type} value={value} disabled={disabled} onChange={(event) => onChange(event.target.value)} className="h-12 w-full rounded-md border border-[#d6dce0] bg-white pl-11 pr-3.5 text-sm text-[var(--text-primary)] outline-none transition-[border-color,box-shadow] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10 disabled:cursor-not-allowed disabled:bg-[#f7f8fa] disabled:text-[var(--text-muted)]" />
+        <input id={id} type={type} value={value} disabled={disabled} onChange={(event) => onChange(event.target.value)} className="h-12 w-full rounded-md border border-[var(--border-strong)] bg-white pl-11 pr-3.5 text-sm text-[var(--text-primary)] outline-none transition-[border-color,box-shadow] focus:border-[var(--brand-accent)] focus:ring-2 focus:ring-[var(--brand-accent)]/10 disabled:cursor-not-allowed disabled:bg-[var(--gray-100)] disabled:text-[var(--text-disabled)]" />
       </div>
     </div>
   );

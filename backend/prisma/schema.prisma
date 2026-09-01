@@ -99,6 +99,31 @@ enum TemplateStatus {
   DELETED
 }
 
+enum AutomationStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+}
+
+enum AutomationRunStatus {
+  RUNNING
+  SUCCESS
+  FAILED
+  SKIPPED
+}
+
+enum WorkflowStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+}
+
+enum WorkflowRunStatus {
+  WAITING
+  COMPLETED
+  FAILED
+}
+
 model User {
   id                         String                   @id @default(uuid()) @db.Uuid
   email                      String                   @unique @db.VarChar(320)
@@ -119,6 +144,7 @@ model User {
   emailVerificationTokens    EmailVerificationToken[]
   passwordResetTokens        PasswordResetToken[]
   contactsCreated            Contact[]                @relation("ContactCreator")
+  contactsOwned              Contact[]                @relation("ContactAccountOwner")
   contactsUpdated            Contact[]                @relation("ContactUpdater")
   contactsDeleted            Contact[]                @relation("ContactDeleter")
   contactTasksCreated        ContactTask[]            @relation("ContactTaskCreator")
@@ -135,6 +161,8 @@ model User {
   templatesCreated           Template[]               @relation("TemplateCreator")
   templatesUpdated           Template[]               @relation("TemplateUpdater")
   templatesDeleted           Template[]               @relation("TemplateDeleter")
+  automationsCreated         Automation[]             @relation("AutomationCreator")
+  workflowsCreated           Workflow[]               @relation("WorkflowCreator")
 
   @@index([status])
   @@map("users")
@@ -186,6 +214,10 @@ model Workspace {
   conversations            Conversation[]
   messages                 Message[]
   templates                Template[]
+  automations              Automation[]
+  automationLogs           AutomationLog[]
+  workflows                Workflow[]
+  workflowRuns             WorkflowRun[]
 
   @@index([ownerId])
   @@map("workspaces")
@@ -235,6 +267,10 @@ model Contact {
   profileName          String?                   @map("profile_name") @db.VarChar(160)
   email                String?                   @db.VarChar(320)
   source               String                    @default("Manual") @db.VarChar(50)
+  status               String                    @default("New Lead") @db.VarChar(50)
+  userId               String?                   @map("user_id") @db.VarChar(160)
+  accountOwnerId       String?                   @map("account_owner_id") @db.Uuid
+  dealValue            Decimal?                  @map("deal_value") @db.Decimal(14, 2)
   whatsappOpted        Boolean                   @default(true) @map("whatsapp_opted")
   whatsappOptInSource  String?                   @map("whatsapp_opt_in_source") @db.VarChar(100)
   whatsappOptedInAt    DateTime?                 @map("whatsapp_opted_in_at") @db.Timestamptz(3)
@@ -253,6 +289,7 @@ model Contact {
   deletedAt            DateTime?                 @map("deleted_at") @db.Timestamptz(3)
   workspace            Workspace                 @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   createdBy            User?                     @relation("ContactCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  accountOwner         User?                     @relation("ContactAccountOwner", fields: [accountOwnerId], references: [id], onDelete: SetNull)
   updatedBy            User?                     @relation("ContactUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
   deletedBy            User?                     @relation("ContactDeleter", fields: [deletedById], references: [id], onDelete: SetNull)
   tagAssignments       ContactTagAssignment[]
@@ -262,6 +299,8 @@ model Contact {
   consentEvents        ContactConsentEvent[]
   conversations        Conversation[]
   messages             Message[]
+  automationLogs       AutomationLog[]
+  workflowRuns         WorkflowRun[]
 
   @@index([workspaceId, deletedAt, createdAt, id])
   @@index([workspaceId, deletedAt, name, id])
@@ -271,6 +310,8 @@ model Contact {
   @@index([workspaceId, deletedAt, profileName, id])
   @@index([workspaceId, updatedAt, id])
   @@index([workspaceId, source, createdAt])
+  @@index([workspaceId, status, createdAt, id])
+  @@index([accountOwnerId])
   @@index([workspaceId, deletedAt, whatsappOpted, marketingBlocked, id])
   @@index([workspaceId, whatsappId])
   @@index([createdById])
@@ -314,6 +355,7 @@ model Conversation {
   contact            Contact              @relation(fields: [contactId], references: [id], onDelete: Cascade)
   phoneNumber        WhatsAppPhoneNumber? @relation(fields: [phoneNumberId], references: [id], onDelete: SetNull)
   messages           Message[]
+  workflowRuns       WorkflowRun[]
 
   @@unique([workspaceId, contactId, channelKey])
   @@index([workspaceId, status, lastMessageAt, id])
@@ -561,6 +603,97 @@ model WhatsAppPhoneNumber {
   @@unique([businessAccountId, metaPhoneNumberId])
   @@index([businessAccountId, status])
   @@map("whatsapp_phone_numbers")
+}
+
+model Automation {
+  id          String           @id @default(uuid()) @db.Uuid
+  workspaceId String           @map("workspace_id") @db.Uuid
+  name        String           @db.VarChar(160)
+  description String?          @db.Text
+  status      AutomationStatus @default(DRAFT)
+  trigger     Json             @db.JsonB
+  conditions  Json             @default("[]") @db.JsonB
+  actions     Json             @db.JsonB
+  runCount    Int              @default(0) @map("run_count")
+  lastRunAt   DateTime?        @map("last_run_at") @db.Timestamptz(3)
+  createdById String?          @map("created_by_id") @db.Uuid
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace   Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy   User?            @relation("AutomationCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  logs        AutomationLog[]
+
+  @@index([workspaceId, status, updatedAt])
+  @@index([workspaceId, createdAt])
+  @@map("automations")
+}
+
+model AutomationLog {
+  id               String             @id @default(uuid()) @db.Uuid
+  automationId     String             @map("automation_id") @db.Uuid
+  workspaceId      String             @map("workspace_id") @db.Uuid
+  contactId        String?            @map("contact_id") @db.Uuid
+  status           AutomationRunStatus
+  triggerPayload   Json               @default("{}") @map("trigger_payload") @db.JsonB
+  conditionResults Json               @default("[]") @map("condition_results") @db.JsonB
+  actionResults    Json               @default("[]") @map("action_results") @db.JsonB
+  error            String?            @db.Text
+  startedAt        DateTime           @default(now()) @map("started_at") @db.Timestamptz(3)
+  completedAt      DateTime?          @map("completed_at") @db.Timestamptz(3)
+  automation       Automation         @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  workspace        Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contact          Contact?           @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, automationId, startedAt])
+  @@index([workspaceId, contactId, startedAt])
+  @@map("automation_logs")
+}
+
+model Workflow {
+  id             String         @id @default(uuid()) @db.Uuid
+  workspaceId    String         @map("workspace_id") @db.Uuid
+  name           String         @db.VarChar(160)
+  description    String?        @db.Text
+  status         WorkflowStatus @default(DRAFT)
+  trigger        Json           @db.JsonB
+  conditions     Json           @default("[]") @db.JsonB
+  steps          Json           @db.JsonB
+  edges          Json           @default("[]") @db.JsonB
+  runCount       Int            @default(0) @map("run_count")
+  enrolledCount  Int            @default(0) @map("enrolled_count")
+  lastRunAt      DateTime?      @map("last_run_at") @db.Timestamptz(3)
+  createdById    String?        @map("created_by_id") @db.Uuid
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace      Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy      User?          @relation("WorkflowCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  runs           WorkflowRun[]
+
+  @@index([workspaceId, status, updatedAt])
+  @@index([workspaceId, createdAt])
+  @@map("workflows")
+}
+
+model WorkflowRun {
+  id             String           @id @default(uuid()) @db.Uuid
+  workflowId     String           @map("workflow_id") @db.Uuid
+  workspaceId    String           @map("workspace_id") @db.Uuid
+  contactId      String           @map("contact_id") @db.Uuid
+  conversationId String           @map("conversation_id") @db.Uuid
+  status         WorkflowRunStatus @default(WAITING)
+  currentStepId  String?          @map("current_step_id") @db.VarChar(80)
+  context        Json             @default("{}") @db.JsonB
+  startedAt      DateTime         @default(now()) @map("started_at") @db.Timestamptz(3)
+  updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  completedAt    DateTime?        @map("completed_at") @db.Timestamptz(3)
+  workflow       Workflow         @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  workspace      Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contact        Contact          @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  conversation   Conversation     @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, contactId, status, updatedAt])
+  @@index([workflowId, status, updatedAt])
+  @@map("workflow_runs")
 }
 
 model WorkspaceMember {

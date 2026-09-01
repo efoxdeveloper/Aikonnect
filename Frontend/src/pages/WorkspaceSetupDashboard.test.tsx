@@ -86,6 +86,9 @@ describe("workspace setup experience", () => {
     expect(await screen.findByRole("heading", { name: "Welcome, Pawan" })).toBeInTheDocument();
     expect(screen.getByText("25%")).toBeInTheDocument();
     expect(screen.getByRole("progressbar", { name: "Workspace setup progress" })).toHaveAttribute("aria-valuenow", "25");
+    const progressHeading = screen.getByRole("heading", { name: "1 of 4 steps complete", level: 2 });
+    expect(progressHeading).toHaveClass("!text-white");
+    expect(screen.getByText("Connect WhatsApp Business is the next step.")).toHaveClass("!text-white/70");
     expect(screen.getByRole("heading", { name: "Connect WhatsApp Business", level: 2 })).toBeInTheDocument();
     const connectButton = screen.getByRole("button", { name: "Connect" });
     expect(connectButton).toBeEnabled();

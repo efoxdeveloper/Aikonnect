@@ -117,6 +117,10 @@ export const listContactSegmentsQuerySchema = z.object({
 export const createContactSchema = z.object({
   name: contactName,
   phone: e164Phone,
+  status: z.string().trim().min(1).max(50).default("New Lead"),
+  userId: z.string().trim().min(1).max(160).optional(),
+  accountOwnerId: z.string().uuid().nullable().optional(),
+  dealValue: z.number().finite().nonnegative().nullable().optional(),
   whatsappId: optionalWhatsappId,
   profileName: optionalProfileName,
   email: optionalEmail,
@@ -133,8 +137,12 @@ export const createContactSchema = z.object({
 
 export const updateContactSchema = z
   .object({
-    name: contactName.optional(),
-    phone: e164Phone.optional(),
+  name: contactName.optional(),
+  phone: e164Phone.optional(),
+  status: z.string().trim().min(1).max(50).optional(),
+  userId: z.string().trim().min(1).max(160).nullable().optional(),
+  accountOwnerId: z.string().uuid().nullable().optional(),
+  dealValue: z.number().finite().nonnegative().nullable().optional(),
     whatsappId: optionalWhatsappId,
     profileName: optionalProfileName,
     email: optionalEmail,

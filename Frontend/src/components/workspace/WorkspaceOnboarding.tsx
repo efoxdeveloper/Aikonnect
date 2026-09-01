@@ -121,16 +121,16 @@ export function WorkspaceOnboarding() {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-[#102c35]/45 px-4 py-6 backdrop-blur-[3px]" role="presentation">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-[var(--overlay)] px-4 py-6 backdrop-blur-[3px]" role="presentation">
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="workspace-onboarding-title"
         onKeyDown={trapFocus}
-        className="workspace-onboarding-card relative w-full max-w-[520px] overflow-hidden rounded-md border border-white/80 bg-white shadow-[0_18px_50px_rgba(21,52,62,.16)]"
+        className="workspace-onboarding-card relative w-full max-w-[520px] overflow-hidden rounded-md border border-[var(--border)] bg-white shadow-[0_18px_50px_rgba(4,45,29,.14)]"
       >
-        <div className="absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,#116b6f,#4daeb1,#116b6f)]" />
+        <div className="absolute inset-x-0 top-0 h-1 bg-[var(--brand-accent)]" />
         <div className="px-6 pb-7 pt-8 sm:px-9 sm:pb-9 sm:pt-10">
           <div className="flex items-start gap-4">
             <div
@@ -215,7 +215,7 @@ export function WorkspaceOnboarding() {
               </div>
             </div>
 
-            {error && <p role="alert" className="rounded-md bg-red-50 px-3 py-2.5 text-center">{error}</p>}
+            {error && <p role="alert" className="rounded-md bg-[var(--danger-soft)] px-3 py-2.5 text-center">{error}</p>}
 
             <button
               type="submit"
@@ -223,7 +223,7 @@ export function WorkspaceOnboarding() {
               aria-busy={submitting}
               onMouseEnter={continueIcon.onMouseEnter}
               onMouseLeave={continueIcon.onMouseLeave}
-              className="group flex h-12 w-full items-center justify-center rounded-md bg-[var(--brand)] px-4 text-sm font-medium text-white shadow-[0_7px_16px_rgba(17,107,111,.18)] transition-[background-color,transform,box-shadow] hover:-translate-y-px hover:bg-[var(--brand-hover)] hover:shadow-[0_10px_20px_rgba(17,107,111,.22)] active:translate-y-0 disabled:cursor-wait disabled:opacity-65 disabled:hover:translate-y-0"
+              className="group flex h-12 w-full items-center justify-center rounded-md bg-[var(--brand)] px-4 text-sm font-medium text-white shadow-[0_6px_16px_rgba(4,63,41,.16)] transition-[background-color,transform,box-shadow] hover:bg-[var(--brand-hover)] active:bg-[var(--brand-pressed)] disabled:cursor-wait disabled:opacity-65"
             >
               {submitting ? "Creating workspace…" : "Create workspace"}
               <ArrowRight ref={continueIcon.ref} size={17} duration={0.6} className="ml-1" aria-hidden="true" />

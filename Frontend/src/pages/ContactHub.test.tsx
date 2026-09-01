@@ -352,7 +352,7 @@ describe("ContactHub", () => {
     expect(toolbar).toHaveClass("flex-nowrap", "min-w-0", "gap-2");
     expect(toolbar).not.toHaveClass("flex-wrap");
     expect(table).toHaveClass("contact-data-table", "bg-white");
-    expect(table.querySelector("thead")).toHaveClass("bg-white");
+    expect(table.querySelector("thead")).toHaveClass("contact-table-head", "bg-[var(--table-header)]");
     expect(screen.getByTestId("contact-table-scroll-region")).toHaveClass(
       "min-h-0",
       "flex-1",
@@ -362,8 +362,9 @@ describe("ContactHub", () => {
       "sticky",
       "top-0",
       "border-b",
-      "border-[#cbd5dc]",
-      "shadow-[inset_0_-1px_0_#cbd5dc]",
+      "border-[var(--border-soft)]",
+      "bg-[var(--table-header)]",
+      "shadow-[inset_0_-1px_0_var(--border-soft)]",
     );
     const contactNameHeader = screen.getByRole("columnheader", { name: "Contact Name" });
     expect(within(contactNameHeader).getByRole("heading", { level: 3, name: "Contact Name" })).toBeInTheDocument();
@@ -385,6 +386,13 @@ describe("ContactHub", () => {
       expect(within(header).queryByRole("button")).not.toBeInTheDocument();
     }
     expect(screen.getByRole("button", { name: "Configure sorting" })).toBeInTheDocument();
+  });
+
+  it("uses purple styling for contact tags", async () => {
+    render(<ContactHub />);
+    await screen.findByText("Shani Deshwal");
+
+    expect(screen.getAllByText("ctwa").some((tag) => tag.classList.contains("bg-[var(--premium-soft)]") && tag.classList.contains("text-[var(--premium)]"))).toBe(true);
   });
 
   it("builds and applies ordered multi-field sorting from the toolbar", async () => {
@@ -720,12 +728,6 @@ describe("ContactHub", () => {
     fireEvent.change(within(drawer).getByLabelText("Phone number"), {
       target: { value: "+91 9000000000" },
     });
-    fireEvent.change(within(drawer).getByLabelText(/WhatsApp ID/), {
-      target: { value: "919000000000" },
-    });
-    fireEvent.change(within(drawer).getByLabelText(/WhatsApp profile name/), {
-      target: { value: "Customer on WhatsApp" },
-    });
     fireEvent.change(within(drawer).getByLabelText(/Tags/), {
       target: { value: "new, vip" },
     });
@@ -742,8 +744,8 @@ describe("ContactHub", () => {
     expect(screen.getByText("vip")).toBeInTheDocument();
     expect(screen.getByText("Manual")).toBeInTheDocument();
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    expect(apiContacts[0]?.whatsappId).toBe("919000000000");
-    expect(apiContacts[0]?.profileName).toBe("Customer on WhatsApp");
+    expect(apiContacts[0]?.whatsappId).toBeNull();
+    expect(apiContacts[0]?.profileName).toBeNull();
     expect(apiContacts[0]?.customAttributes).toEqual({ company: "Acme India" });
     const createCall = vi.mocked(apiRequest).mock.calls.find(([path, options]) => new URL(String(path), "http://test.local").pathname.endsWith("/contacts") && options?.method === "POST");
     expect(JSON.parse(String(createCall?.[1]?.body))).toMatchObject({ whatsappOpted: true, whatsappConsentSource: "Manual" });

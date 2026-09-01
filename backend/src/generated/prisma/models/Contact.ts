@@ -20,8 +20,18 @@ export type ContactModel = runtime.Types.Result.DefaultSelection<Prisma.$Contact
 
 export type AggregateContact = {
   _count: ContactCountAggregateOutputType | null
+  _avg: ContactAvgAggregateOutputType | null
+  _sum: ContactSumAggregateOutputType | null
   _min: ContactMinAggregateOutputType | null
   _max: ContactMaxAggregateOutputType | null
+}
+
+export type ContactAvgAggregateOutputType = {
+  dealValue: runtime.Decimal | null
+}
+
+export type ContactSumAggregateOutputType = {
+  dealValue: runtime.Decimal | null
 }
 
 export type ContactMinAggregateOutputType = {
@@ -33,6 +43,10 @@ export type ContactMinAggregateOutputType = {
   profileName: string | null
   email: string | null
   source: string | null
+  status: string | null
+  userId: string | null
+  accountOwnerId: string | null
+  dealValue: runtime.Decimal | null
   whatsappOpted: boolean | null
   whatsappOptInSource: string | null
   whatsappOptedInAt: Date | null
@@ -59,6 +73,10 @@ export type ContactMaxAggregateOutputType = {
   profileName: string | null
   email: string | null
   source: string | null
+  status: string | null
+  userId: string | null
+  accountOwnerId: string | null
+  dealValue: runtime.Decimal | null
   whatsappOpted: boolean | null
   whatsappOptInSource: string | null
   whatsappOptedInAt: Date | null
@@ -85,6 +103,10 @@ export type ContactCountAggregateOutputType = {
   profileName: number
   email: number
   source: number
+  status: number
+  userId: number
+  accountOwnerId: number
+  dealValue: number
   whatsappOpted: number
   whatsappOptInSource: number
   whatsappOptedInAt: number
@@ -105,6 +127,14 @@ export type ContactCountAggregateOutputType = {
 }
 
 
+export type ContactAvgAggregateInputType = {
+  dealValue?: true
+}
+
+export type ContactSumAggregateInputType = {
+  dealValue?: true
+}
+
 export type ContactMinAggregateInputType = {
   id?: true
   workspaceId?: true
@@ -114,6 +144,10 @@ export type ContactMinAggregateInputType = {
   profileName?: true
   email?: true
   source?: true
+  status?: true
+  userId?: true
+  accountOwnerId?: true
+  dealValue?: true
   whatsappOpted?: true
   whatsappOptInSource?: true
   whatsappOptedInAt?: true
@@ -140,6 +174,10 @@ export type ContactMaxAggregateInputType = {
   profileName?: true
   email?: true
   source?: true
+  status?: true
+  userId?: true
+  accountOwnerId?: true
+  dealValue?: true
   whatsappOpted?: true
   whatsappOptInSource?: true
   whatsappOptedInAt?: true
@@ -166,6 +204,10 @@ export type ContactCountAggregateInputType = {
   profileName?: true
   email?: true
   source?: true
+  status?: true
+  userId?: true
+  accountOwnerId?: true
+  dealValue?: true
   whatsappOpted?: true
   whatsappOptInSource?: true
   whatsappOptedInAt?: true
@@ -223,6 +265,18 @@ export type ContactAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ContactAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ContactSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ContactMinAggregateInputType
@@ -253,6 +307,8 @@ export type ContactGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: ContactCountAggregateInputType | true
+  _avg?: ContactAvgAggregateInputType
+  _sum?: ContactSumAggregateInputType
   _min?: ContactMinAggregateInputType
   _max?: ContactMaxAggregateInputType
 }
@@ -266,6 +322,10 @@ export type ContactGroupByOutputType = {
   profileName: string | null
   email: string | null
   source: string
+  status: string
+  userId: string | null
+  accountOwnerId: string | null
+  dealValue: runtime.Decimal | null
   whatsappOpted: boolean
   whatsappOptInSource: string | null
   whatsappOptedInAt: Date | null
@@ -283,6 +343,8 @@ export type ContactGroupByOutputType = {
   updatedAt: Date
   deletedAt: Date | null
   _count: ContactCountAggregateOutputType | null
+  _avg: ContactAvgAggregateOutputType | null
+  _sum: ContactSumAggregateOutputType | null
   _min: ContactMinAggregateOutputType | null
   _max: ContactMaxAggregateOutputType | null
 }
@@ -314,6 +376,10 @@ export type ContactWhereInput = {
   profileName?: Prisma.StringNullableFilter<"Contact"> | string | null
   email?: Prisma.StringNullableFilter<"Contact"> | string | null
   source?: Prisma.StringFilter<"Contact"> | string
+  status?: Prisma.StringFilter<"Contact"> | string
+  userId?: Prisma.StringNullableFilter<"Contact"> | string | null
+  accountOwnerId?: Prisma.UuidNullableFilter<"Contact"> | string | null
+  dealValue?: Prisma.DecimalNullableFilter<"Contact"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFilter<"Contact"> | boolean
   whatsappOptInSource?: Prisma.StringNullableFilter<"Contact"> | string | null
   whatsappOptedInAt?: Prisma.DateTimeNullableFilter<"Contact"> | Date | string | null
@@ -332,6 +398,7 @@ export type ContactWhereInput = {
   deletedAt?: Prisma.DateTimeNullableFilter<"Contact"> | Date | string | null
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  accountOwner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   updatedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   deletedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   tagAssignments?: Prisma.ContactTagAssignmentListRelationFilter
@@ -341,6 +408,8 @@ export type ContactWhereInput = {
   consentEvents?: Prisma.ContactConsentEventListRelationFilter
   conversations?: Prisma.ConversationListRelationFilter
   messages?: Prisma.MessageListRelationFilter
+  automationLogs?: Prisma.AutomationLogListRelationFilter
+  workflowRuns?: Prisma.WorkflowRunListRelationFilter
 }
 
 export type ContactOrderByWithRelationInput = {
@@ -352,6 +421,10 @@ export type ContactOrderByWithRelationInput = {
   profileName?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   source?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
+  accountOwnerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  dealValue?: Prisma.SortOrderInput | Prisma.SortOrder
   whatsappOpted?: Prisma.SortOrder
   whatsappOptInSource?: Prisma.SortOrderInput | Prisma.SortOrder
   whatsappOptedInAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -370,6 +443,7 @@ export type ContactOrderByWithRelationInput = {
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
   createdBy?: Prisma.UserOrderByWithRelationInput
+  accountOwner?: Prisma.UserOrderByWithRelationInput
   updatedBy?: Prisma.UserOrderByWithRelationInput
   deletedBy?: Prisma.UserOrderByWithRelationInput
   tagAssignments?: Prisma.ContactTagAssignmentOrderByRelationAggregateInput
@@ -379,6 +453,8 @@ export type ContactOrderByWithRelationInput = {
   consentEvents?: Prisma.ContactConsentEventOrderByRelationAggregateInput
   conversations?: Prisma.ConversationOrderByRelationAggregateInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
+  automationLogs?: Prisma.AutomationLogOrderByRelationAggregateInput
+  workflowRuns?: Prisma.WorkflowRunOrderByRelationAggregateInput
 }
 
 export type ContactWhereUniqueInput = Prisma.AtLeast<{
@@ -393,6 +469,10 @@ export type ContactWhereUniqueInput = Prisma.AtLeast<{
   profileName?: Prisma.StringNullableFilter<"Contact"> | string | null
   email?: Prisma.StringNullableFilter<"Contact"> | string | null
   source?: Prisma.StringFilter<"Contact"> | string
+  status?: Prisma.StringFilter<"Contact"> | string
+  userId?: Prisma.StringNullableFilter<"Contact"> | string | null
+  accountOwnerId?: Prisma.UuidNullableFilter<"Contact"> | string | null
+  dealValue?: Prisma.DecimalNullableFilter<"Contact"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFilter<"Contact"> | boolean
   whatsappOptInSource?: Prisma.StringNullableFilter<"Contact"> | string | null
   whatsappOptedInAt?: Prisma.DateTimeNullableFilter<"Contact"> | Date | string | null
@@ -411,6 +491,7 @@ export type ContactWhereUniqueInput = Prisma.AtLeast<{
   deletedAt?: Prisma.DateTimeNullableFilter<"Contact"> | Date | string | null
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  accountOwner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   updatedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   deletedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   tagAssignments?: Prisma.ContactTagAssignmentListRelationFilter
@@ -420,6 +501,8 @@ export type ContactWhereUniqueInput = Prisma.AtLeast<{
   consentEvents?: Prisma.ContactConsentEventListRelationFilter
   conversations?: Prisma.ConversationListRelationFilter
   messages?: Prisma.MessageListRelationFilter
+  automationLogs?: Prisma.AutomationLogListRelationFilter
+  workflowRuns?: Prisma.WorkflowRunListRelationFilter
 }, "id">
 
 export type ContactOrderByWithAggregationInput = {
@@ -431,6 +514,10 @@ export type ContactOrderByWithAggregationInput = {
   profileName?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   source?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
+  accountOwnerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  dealValue?: Prisma.SortOrderInput | Prisma.SortOrder
   whatsappOpted?: Prisma.SortOrder
   whatsappOptInSource?: Prisma.SortOrderInput | Prisma.SortOrder
   whatsappOptedInAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -448,8 +535,10 @@ export type ContactOrderByWithAggregationInput = {
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ContactCountOrderByAggregateInput
+  _avg?: Prisma.ContactAvgOrderByAggregateInput
   _max?: Prisma.ContactMaxOrderByAggregateInput
   _min?: Prisma.ContactMinOrderByAggregateInput
+  _sum?: Prisma.ContactSumOrderByAggregateInput
 }
 
 export type ContactScalarWhereWithAggregatesInput = {
@@ -464,6 +553,10 @@ export type ContactScalarWhereWithAggregatesInput = {
   profileName?: Prisma.StringNullableWithAggregatesFilter<"Contact"> | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"Contact"> | string | null
   source?: Prisma.StringWithAggregatesFilter<"Contact"> | string
+  status?: Prisma.StringWithAggregatesFilter<"Contact"> | string
+  userId?: Prisma.StringNullableWithAggregatesFilter<"Contact"> | string | null
+  accountOwnerId?: Prisma.UuidNullableWithAggregatesFilter<"Contact"> | string | null
+  dealValue?: Prisma.DecimalNullableWithAggregatesFilter<"Contact"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolWithAggregatesFilter<"Contact"> | boolean
   whatsappOptInSource?: Prisma.StringNullableWithAggregatesFilter<"Contact"> | string | null
   whatsappOptedInAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Contact"> | Date | string | null
@@ -490,6 +583,9 @@ export type ContactCreateInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -505,6 +601,7 @@ export type ContactCreateInput = {
   deletedAt?: Date | string | null
   workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
   updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
   deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
   tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
@@ -514,6 +611,8 @@ export type ContactCreateInput = {
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateInput = {
@@ -525,6 +624,10 @@ export type ContactUncheckedCreateInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -548,6 +651,8 @@ export type ContactUncheckedCreateInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactUpdateInput = {
@@ -558,6 +663,9 @@ export type ContactUpdateInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -573,6 +681,7 @@ export type ContactUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
   updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
   deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
   tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
@@ -582,6 +691,8 @@ export type ContactUpdateInput = {
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateInput = {
@@ -593,6 +704,10 @@ export type ContactUncheckedUpdateInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -616,6 +731,8 @@ export type ContactUncheckedUpdateInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactCreateManyInput = {
@@ -627,6 +744,10 @@ export type ContactCreateManyInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -653,6 +774,9 @@ export type ContactUpdateManyMutationInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -677,6 +801,10 @@ export type ContactUncheckedUpdateManyInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -714,6 +842,10 @@ export type ContactCountOrderByAggregateInput = {
   profileName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   source?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  accountOwnerId?: Prisma.SortOrder
+  dealValue?: Prisma.SortOrder
   whatsappOpted?: Prisma.SortOrder
   whatsappOptInSource?: Prisma.SortOrder
   whatsappOptedInAt?: Prisma.SortOrder
@@ -732,6 +864,10 @@ export type ContactCountOrderByAggregateInput = {
   deletedAt?: Prisma.SortOrder
 }
 
+export type ContactAvgOrderByAggregateInput = {
+  dealValue?: Prisma.SortOrder
+}
+
 export type ContactMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
@@ -741,6 +877,10 @@ export type ContactMaxOrderByAggregateInput = {
   profileName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   source?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  accountOwnerId?: Prisma.SortOrder
+  dealValue?: Prisma.SortOrder
   whatsappOpted?: Prisma.SortOrder
   whatsappOptInSource?: Prisma.SortOrder
   whatsappOptedInAt?: Prisma.SortOrder
@@ -767,6 +907,10 @@ export type ContactMinOrderByAggregateInput = {
   profileName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   source?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
+  accountOwnerId?: Prisma.SortOrder
+  dealValue?: Prisma.SortOrder
   whatsappOpted?: Prisma.SortOrder
   whatsappOptInSource?: Prisma.SortOrder
   whatsappOptedInAt?: Prisma.SortOrder
@@ -784,15 +928,31 @@ export type ContactMinOrderByAggregateInput = {
   deletedAt?: Prisma.SortOrder
 }
 
+export type ContactSumOrderByAggregateInput = {
+  dealValue?: Prisma.SortOrder
+}
+
 export type ContactScalarRelationFilter = {
   is?: Prisma.ContactWhereInput
   isNot?: Prisma.ContactWhereInput
+}
+
+export type ContactNullableScalarRelationFilter = {
+  is?: Prisma.ContactWhereInput | null
+  isNot?: Prisma.ContactWhereInput | null
 }
 
 export type ContactCreateNestedManyWithoutCreatedByInput = {
   create?: Prisma.XOR<Prisma.ContactCreateWithoutCreatedByInput, Prisma.ContactUncheckedCreateWithoutCreatedByInput> | Prisma.ContactCreateWithoutCreatedByInput[] | Prisma.ContactUncheckedCreateWithoutCreatedByInput[]
   connectOrCreate?: Prisma.ContactCreateOrConnectWithoutCreatedByInput | Prisma.ContactCreateOrConnectWithoutCreatedByInput[]
   createMany?: Prisma.ContactCreateManyCreatedByInputEnvelope
+  connect?: Prisma.ContactWhereUniqueInput | Prisma.ContactWhereUniqueInput[]
+}
+
+export type ContactCreateNestedManyWithoutAccountOwnerInput = {
+  create?: Prisma.XOR<Prisma.ContactCreateWithoutAccountOwnerInput, Prisma.ContactUncheckedCreateWithoutAccountOwnerInput> | Prisma.ContactCreateWithoutAccountOwnerInput[] | Prisma.ContactUncheckedCreateWithoutAccountOwnerInput[]
+  connectOrCreate?: Prisma.ContactCreateOrConnectWithoutAccountOwnerInput | Prisma.ContactCreateOrConnectWithoutAccountOwnerInput[]
+  createMany?: Prisma.ContactCreateManyAccountOwnerInputEnvelope
   connect?: Prisma.ContactWhereUniqueInput | Prisma.ContactWhereUniqueInput[]
 }
 
@@ -814,6 +974,13 @@ export type ContactUncheckedCreateNestedManyWithoutCreatedByInput = {
   create?: Prisma.XOR<Prisma.ContactCreateWithoutCreatedByInput, Prisma.ContactUncheckedCreateWithoutCreatedByInput> | Prisma.ContactCreateWithoutCreatedByInput[] | Prisma.ContactUncheckedCreateWithoutCreatedByInput[]
   connectOrCreate?: Prisma.ContactCreateOrConnectWithoutCreatedByInput | Prisma.ContactCreateOrConnectWithoutCreatedByInput[]
   createMany?: Prisma.ContactCreateManyCreatedByInputEnvelope
+  connect?: Prisma.ContactWhereUniqueInput | Prisma.ContactWhereUniqueInput[]
+}
+
+export type ContactUncheckedCreateNestedManyWithoutAccountOwnerInput = {
+  create?: Prisma.XOR<Prisma.ContactCreateWithoutAccountOwnerInput, Prisma.ContactUncheckedCreateWithoutAccountOwnerInput> | Prisma.ContactCreateWithoutAccountOwnerInput[] | Prisma.ContactUncheckedCreateWithoutAccountOwnerInput[]
+  connectOrCreate?: Prisma.ContactCreateOrConnectWithoutAccountOwnerInput | Prisma.ContactCreateOrConnectWithoutAccountOwnerInput[]
+  createMany?: Prisma.ContactCreateManyAccountOwnerInputEnvelope
   connect?: Prisma.ContactWhereUniqueInput | Prisma.ContactWhereUniqueInput[]
 }
 
@@ -842,6 +1009,20 @@ export type ContactUpdateManyWithoutCreatedByNestedInput = {
   connect?: Prisma.ContactWhereUniqueInput | Prisma.ContactWhereUniqueInput[]
   update?: Prisma.ContactUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.ContactUpdateWithWhereUniqueWithoutCreatedByInput[]
   updateMany?: Prisma.ContactUpdateManyWithWhereWithoutCreatedByInput | Prisma.ContactUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.ContactScalarWhereInput | Prisma.ContactScalarWhereInput[]
+}
+
+export type ContactUpdateManyWithoutAccountOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.ContactCreateWithoutAccountOwnerInput, Prisma.ContactUncheckedCreateWithoutAccountOwnerInput> | Prisma.ContactCreateWithoutAccountOwnerInput[] | Prisma.ContactUncheckedCreateWithoutAccountOwnerInput[]
+  connectOrCreate?: Prisma.ContactCreateOrConnectWithoutAccountOwnerInput | Prisma.ContactCreateOrConnectWithoutAccountOwnerInput[]
+  upsert?: Prisma.ContactUpsertWithWhereUniqueWithoutAccountOwnerInput | Prisma.ContactUpsertWithWhereUniqueWithoutAccountOwnerInput[]
+  createMany?: Prisma.ContactCreateManyAccountOwnerInputEnvelope
+  set?: Prisma.ContactWhereUniqueInput | Prisma.ContactWhereUniqueInput[]
+  disconnect?: Prisma.ContactWhereUniqueInput | Prisma.ContactWhereUniqueInput[]
+  delete?: Prisma.ContactWhereUniqueInput | Prisma.ContactWhereUniqueInput[]
+  connect?: Prisma.ContactWhereUniqueInput | Prisma.ContactWhereUniqueInput[]
+  update?: Prisma.ContactUpdateWithWhereUniqueWithoutAccountOwnerInput | Prisma.ContactUpdateWithWhereUniqueWithoutAccountOwnerInput[]
+  updateMany?: Prisma.ContactUpdateManyWithWhereWithoutAccountOwnerInput | Prisma.ContactUpdateManyWithWhereWithoutAccountOwnerInput[]
   deleteMany?: Prisma.ContactScalarWhereInput | Prisma.ContactScalarWhereInput[]
 }
 
@@ -884,6 +1065,20 @@ export type ContactUncheckedUpdateManyWithoutCreatedByNestedInput = {
   connect?: Prisma.ContactWhereUniqueInput | Prisma.ContactWhereUniqueInput[]
   update?: Prisma.ContactUpdateWithWhereUniqueWithoutCreatedByInput | Prisma.ContactUpdateWithWhereUniqueWithoutCreatedByInput[]
   updateMany?: Prisma.ContactUpdateManyWithWhereWithoutCreatedByInput | Prisma.ContactUpdateManyWithWhereWithoutCreatedByInput[]
+  deleteMany?: Prisma.ContactScalarWhereInput | Prisma.ContactScalarWhereInput[]
+}
+
+export type ContactUncheckedUpdateManyWithoutAccountOwnerNestedInput = {
+  create?: Prisma.XOR<Prisma.ContactCreateWithoutAccountOwnerInput, Prisma.ContactUncheckedCreateWithoutAccountOwnerInput> | Prisma.ContactCreateWithoutAccountOwnerInput[] | Prisma.ContactUncheckedCreateWithoutAccountOwnerInput[]
+  connectOrCreate?: Prisma.ContactCreateOrConnectWithoutAccountOwnerInput | Prisma.ContactCreateOrConnectWithoutAccountOwnerInput[]
+  upsert?: Prisma.ContactUpsertWithWhereUniqueWithoutAccountOwnerInput | Prisma.ContactUpsertWithWhereUniqueWithoutAccountOwnerInput[]
+  createMany?: Prisma.ContactCreateManyAccountOwnerInputEnvelope
+  set?: Prisma.ContactWhereUniqueInput | Prisma.ContactWhereUniqueInput[]
+  disconnect?: Prisma.ContactWhereUniqueInput | Prisma.ContactWhereUniqueInput[]
+  delete?: Prisma.ContactWhereUniqueInput | Prisma.ContactWhereUniqueInput[]
+  connect?: Prisma.ContactWhereUniqueInput | Prisma.ContactWhereUniqueInput[]
+  update?: Prisma.ContactUpdateWithWhereUniqueWithoutAccountOwnerInput | Prisma.ContactUpdateWithWhereUniqueWithoutAccountOwnerInput[]
+  updateMany?: Prisma.ContactUpdateManyWithWhereWithoutAccountOwnerInput | Prisma.ContactUpdateManyWithWhereWithoutAccountOwnerInput[]
   deleteMany?: Prisma.ContactScalarWhereInput | Prisma.ContactScalarWhereInput[]
 }
 
@@ -955,6 +1150,14 @@ export type ContactUncheckedUpdateManyWithoutWorkspaceNestedInput = {
   update?: Prisma.ContactUpdateWithWhereUniqueWithoutWorkspaceInput | Prisma.ContactUpdateWithWhereUniqueWithoutWorkspaceInput[]
   updateMany?: Prisma.ContactUpdateManyWithWhereWithoutWorkspaceInput | Prisma.ContactUpdateManyWithWhereWithoutWorkspaceInput[]
   deleteMany?: Prisma.ContactScalarWhereInput | Prisma.ContactScalarWhereInput[]
+}
+
+export type NullableDecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type BoolFieldUpdateOperationsInput = {
@@ -1059,6 +1262,36 @@ export type ContactUpdateOneRequiredWithoutTagAssignmentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ContactUpdateToOneWithWhereWithoutTagAssignmentsInput, Prisma.ContactUpdateWithoutTagAssignmentsInput>, Prisma.ContactUncheckedUpdateWithoutTagAssignmentsInput>
 }
 
+export type ContactCreateNestedOneWithoutAutomationLogsInput = {
+  create?: Prisma.XOR<Prisma.ContactCreateWithoutAutomationLogsInput, Prisma.ContactUncheckedCreateWithoutAutomationLogsInput>
+  connectOrCreate?: Prisma.ContactCreateOrConnectWithoutAutomationLogsInput
+  connect?: Prisma.ContactWhereUniqueInput
+}
+
+export type ContactUpdateOneWithoutAutomationLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.ContactCreateWithoutAutomationLogsInput, Prisma.ContactUncheckedCreateWithoutAutomationLogsInput>
+  connectOrCreate?: Prisma.ContactCreateOrConnectWithoutAutomationLogsInput
+  upsert?: Prisma.ContactUpsertWithoutAutomationLogsInput
+  disconnect?: Prisma.ContactWhereInput | boolean
+  delete?: Prisma.ContactWhereInput | boolean
+  connect?: Prisma.ContactWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ContactUpdateToOneWithWhereWithoutAutomationLogsInput, Prisma.ContactUpdateWithoutAutomationLogsInput>, Prisma.ContactUncheckedUpdateWithoutAutomationLogsInput>
+}
+
+export type ContactCreateNestedOneWithoutWorkflowRunsInput = {
+  create?: Prisma.XOR<Prisma.ContactCreateWithoutWorkflowRunsInput, Prisma.ContactUncheckedCreateWithoutWorkflowRunsInput>
+  connectOrCreate?: Prisma.ContactCreateOrConnectWithoutWorkflowRunsInput
+  connect?: Prisma.ContactWhereUniqueInput
+}
+
+export type ContactUpdateOneRequiredWithoutWorkflowRunsNestedInput = {
+  create?: Prisma.XOR<Prisma.ContactCreateWithoutWorkflowRunsInput, Prisma.ContactUncheckedCreateWithoutWorkflowRunsInput>
+  connectOrCreate?: Prisma.ContactCreateOrConnectWithoutWorkflowRunsInput
+  upsert?: Prisma.ContactUpsertWithoutWorkflowRunsInput
+  connect?: Prisma.ContactWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ContactUpdateToOneWithWhereWithoutWorkflowRunsInput, Prisma.ContactUpdateWithoutWorkflowRunsInput>, Prisma.ContactUncheckedUpdateWithoutWorkflowRunsInput>
+}
+
 export type ContactCreateWithoutCreatedByInput = {
   id?: string
   name: string
@@ -1067,6 +1300,9 @@ export type ContactCreateWithoutCreatedByInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1081,6 +1317,7 @@ export type ContactCreateWithoutCreatedByInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
   updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
   deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
   tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
@@ -1090,6 +1327,8 @@ export type ContactCreateWithoutCreatedByInput = {
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateWithoutCreatedByInput = {
@@ -1101,6 +1340,10 @@ export type ContactUncheckedCreateWithoutCreatedByInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1123,6 +1366,8 @@ export type ContactUncheckedCreateWithoutCreatedByInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactCreateOrConnectWithoutCreatedByInput = {
@@ -1135,7 +1380,7 @@ export type ContactCreateManyCreatedByInputEnvelope = {
   skipDuplicates?: boolean
 }
 
-export type ContactCreateWithoutUpdatedByInput = {
+export type ContactCreateWithoutAccountOwnerInput = {
   id?: string
   name: string
   phoneE164: string
@@ -1143,6 +1388,9 @@ export type ContactCreateWithoutUpdatedByInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1158,6 +1406,7 @@ export type ContactCreateWithoutUpdatedByInput = {
   deletedAt?: Date | string | null
   workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
   deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
   tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
   tasks?: Prisma.ContactTaskCreateNestedManyWithoutContactInput
@@ -1166,6 +1415,96 @@ export type ContactCreateWithoutUpdatedByInput = {
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+}
+
+export type ContactUncheckedCreateWithoutAccountOwnerInput = {
+  id?: string
+  workspaceId: string
+  name: string
+  phoneE164: string
+  whatsappId?: string | null
+  profileName?: string | null
+  email?: string | null
+  source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: boolean
+  whatsappOptInSource?: string | null
+  whatsappOptedInAt?: Date | string | null
+  whatsappOptOutSource?: string | null
+  whatsappOptedOutAt?: Date | string | null
+  marketingBlocked?: boolean
+  marketingBlockedAt?: Date | string | null
+  marketingBlockSource?: string | null
+  marketingBlockReason?: string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: string | null
+  updatedById?: string | null
+  deletedById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  tagAssignments?: Prisma.ContactTagAssignmentUncheckedCreateNestedManyWithoutContactInput
+  tasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutContactInput
+  notes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutContactInput
+  customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
+  consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+}
+
+export type ContactCreateOrConnectWithoutAccountOwnerInput = {
+  where: Prisma.ContactWhereUniqueInput
+  create: Prisma.XOR<Prisma.ContactCreateWithoutAccountOwnerInput, Prisma.ContactUncheckedCreateWithoutAccountOwnerInput>
+}
+
+export type ContactCreateManyAccountOwnerInputEnvelope = {
+  data: Prisma.ContactCreateManyAccountOwnerInput | Prisma.ContactCreateManyAccountOwnerInput[]
+  skipDuplicates?: boolean
+}
+
+export type ContactCreateWithoutUpdatedByInput = {
+  id?: string
+  name: string
+  phoneE164: string
+  whatsappId?: string | null
+  profileName?: string | null
+  email?: string | null
+  source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: boolean
+  whatsappOptInSource?: string | null
+  whatsappOptedInAt?: Date | string | null
+  whatsappOptOutSource?: string | null
+  whatsappOptedOutAt?: Date | string | null
+  marketingBlocked?: boolean
+  marketingBlockedAt?: Date | string | null
+  marketingBlockSource?: string | null
+  marketingBlockReason?: string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
+  deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
+  tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
+  tasks?: Prisma.ContactTaskCreateNestedManyWithoutContactInput
+  notes?: Prisma.ContactNoteCreateNestedManyWithoutContactInput
+  customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
+  consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateWithoutUpdatedByInput = {
@@ -1177,6 +1516,10 @@ export type ContactUncheckedCreateWithoutUpdatedByInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1199,6 +1542,8 @@ export type ContactUncheckedCreateWithoutUpdatedByInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactCreateOrConnectWithoutUpdatedByInput = {
@@ -1219,6 +1564,9 @@ export type ContactCreateWithoutDeletedByInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1234,6 +1582,7 @@ export type ContactCreateWithoutDeletedByInput = {
   deletedAt?: Date | string | null
   workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
   updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
   tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
   tasks?: Prisma.ContactTaskCreateNestedManyWithoutContactInput
@@ -1242,6 +1591,8 @@ export type ContactCreateWithoutDeletedByInput = {
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateWithoutDeletedByInput = {
@@ -1253,6 +1604,10 @@ export type ContactUncheckedCreateWithoutDeletedByInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1275,6 +1630,8 @@ export type ContactUncheckedCreateWithoutDeletedByInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactCreateOrConnectWithoutDeletedByInput = {
@@ -1315,6 +1672,10 @@ export type ContactScalarWhereInput = {
   profileName?: Prisma.StringNullableFilter<"Contact"> | string | null
   email?: Prisma.StringNullableFilter<"Contact"> | string | null
   source?: Prisma.StringFilter<"Contact"> | string
+  status?: Prisma.StringFilter<"Contact"> | string
+  userId?: Prisma.StringNullableFilter<"Contact"> | string | null
+  accountOwnerId?: Prisma.UuidNullableFilter<"Contact"> | string | null
+  dealValue?: Prisma.DecimalNullableFilter<"Contact"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFilter<"Contact"> | boolean
   whatsappOptInSource?: Prisma.StringNullableFilter<"Contact"> | string | null
   whatsappOptedInAt?: Prisma.DateTimeNullableFilter<"Contact"> | Date | string | null
@@ -1331,6 +1692,22 @@ export type ContactScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Contact"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Contact"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Contact"> | Date | string | null
+}
+
+export type ContactUpsertWithWhereUniqueWithoutAccountOwnerInput = {
+  where: Prisma.ContactWhereUniqueInput
+  update: Prisma.XOR<Prisma.ContactUpdateWithoutAccountOwnerInput, Prisma.ContactUncheckedUpdateWithoutAccountOwnerInput>
+  create: Prisma.XOR<Prisma.ContactCreateWithoutAccountOwnerInput, Prisma.ContactUncheckedCreateWithoutAccountOwnerInput>
+}
+
+export type ContactUpdateWithWhereUniqueWithoutAccountOwnerInput = {
+  where: Prisma.ContactWhereUniqueInput
+  data: Prisma.XOR<Prisma.ContactUpdateWithoutAccountOwnerInput, Prisma.ContactUncheckedUpdateWithoutAccountOwnerInput>
+}
+
+export type ContactUpdateManyWithWhereWithoutAccountOwnerInput = {
+  where: Prisma.ContactScalarWhereInput
+  data: Prisma.XOR<Prisma.ContactUpdateManyMutationInput, Prisma.ContactUncheckedUpdateManyWithoutAccountOwnerInput>
 }
 
 export type ContactUpsertWithWhereUniqueWithoutUpdatedByInput = {
@@ -1373,6 +1750,9 @@ export type ContactCreateWithoutWorkspaceInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1387,6 +1767,7 @@ export type ContactCreateWithoutWorkspaceInput = {
   updatedAt?: Date | string
   deletedAt?: Date | string | null
   createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
   updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
   deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
   tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
@@ -1396,6 +1777,8 @@ export type ContactCreateWithoutWorkspaceInput = {
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateWithoutWorkspaceInput = {
@@ -1406,6 +1789,10 @@ export type ContactUncheckedCreateWithoutWorkspaceInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1429,6 +1816,8 @@ export type ContactUncheckedCreateWithoutWorkspaceInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactCreateOrConnectWithoutWorkspaceInput = {
@@ -1465,6 +1854,9 @@ export type ContactCreateWithoutConsentEventsInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1480,6 +1872,7 @@ export type ContactCreateWithoutConsentEventsInput = {
   deletedAt?: Date | string | null
   workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
   updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
   deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
   tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
@@ -1488,6 +1881,8 @@ export type ContactCreateWithoutConsentEventsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateWithoutConsentEventsInput = {
@@ -1499,6 +1894,10 @@ export type ContactUncheckedCreateWithoutConsentEventsInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1521,6 +1920,8 @@ export type ContactUncheckedCreateWithoutConsentEventsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactCreateOrConnectWithoutConsentEventsInput = {
@@ -1547,6 +1948,9 @@ export type ContactUpdateWithoutConsentEventsInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1562,6 +1966,7 @@ export type ContactUpdateWithoutConsentEventsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
   updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
   deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
   tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
@@ -1570,6 +1975,8 @@ export type ContactUpdateWithoutConsentEventsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateWithoutConsentEventsInput = {
@@ -1581,6 +1988,10 @@ export type ContactUncheckedUpdateWithoutConsentEventsInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1603,6 +2014,8 @@ export type ContactUncheckedUpdateWithoutConsentEventsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactCreateWithoutConversationsInput = {
@@ -1613,6 +2026,9 @@ export type ContactCreateWithoutConversationsInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1628,6 +2044,7 @@ export type ContactCreateWithoutConversationsInput = {
   deletedAt?: Date | string | null
   workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
   updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
   deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
   tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
@@ -1636,6 +2053,8 @@ export type ContactCreateWithoutConversationsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateWithoutConversationsInput = {
@@ -1647,6 +2066,10 @@ export type ContactUncheckedCreateWithoutConversationsInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1669,6 +2092,8 @@ export type ContactUncheckedCreateWithoutConversationsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactCreateOrConnectWithoutConversationsInput = {
@@ -1695,6 +2120,9 @@ export type ContactUpdateWithoutConversationsInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1710,6 +2138,7 @@ export type ContactUpdateWithoutConversationsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
   updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
   deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
   tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
@@ -1718,6 +2147,8 @@ export type ContactUpdateWithoutConversationsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateWithoutConversationsInput = {
@@ -1729,6 +2160,10 @@ export type ContactUncheckedUpdateWithoutConversationsInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1751,6 +2186,8 @@ export type ContactUncheckedUpdateWithoutConversationsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactCreateWithoutMessagesInput = {
@@ -1761,6 +2198,9 @@ export type ContactCreateWithoutMessagesInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1776,6 +2216,7 @@ export type ContactCreateWithoutMessagesInput = {
   deletedAt?: Date | string | null
   workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
   updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
   deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
   tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
@@ -1784,6 +2225,8 @@ export type ContactCreateWithoutMessagesInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateWithoutMessagesInput = {
@@ -1795,6 +2238,10 @@ export type ContactUncheckedCreateWithoutMessagesInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1817,6 +2264,8 @@ export type ContactUncheckedCreateWithoutMessagesInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactCreateOrConnectWithoutMessagesInput = {
@@ -1843,6 +2292,9 @@ export type ContactUpdateWithoutMessagesInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1858,6 +2310,7 @@ export type ContactUpdateWithoutMessagesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
   updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
   deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
   tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
@@ -1866,6 +2319,8 @@ export type ContactUpdateWithoutMessagesInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateWithoutMessagesInput = {
@@ -1877,6 +2332,10 @@ export type ContactUncheckedUpdateWithoutMessagesInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1899,6 +2358,8 @@ export type ContactUncheckedUpdateWithoutMessagesInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactCreateWithoutCustomFieldValuesInput = {
@@ -1909,6 +2370,9 @@ export type ContactCreateWithoutCustomFieldValuesInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1924,6 +2388,7 @@ export type ContactCreateWithoutCustomFieldValuesInput = {
   deletedAt?: Date | string | null
   workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
   updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
   deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
   tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
@@ -1932,6 +2397,8 @@ export type ContactCreateWithoutCustomFieldValuesInput = {
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateWithoutCustomFieldValuesInput = {
@@ -1943,6 +2410,10 @@ export type ContactUncheckedCreateWithoutCustomFieldValuesInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -1965,6 +2436,8 @@ export type ContactUncheckedCreateWithoutCustomFieldValuesInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactCreateOrConnectWithoutCustomFieldValuesInput = {
@@ -1991,6 +2464,9 @@ export type ContactUpdateWithoutCustomFieldValuesInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2006,6 +2482,7 @@ export type ContactUpdateWithoutCustomFieldValuesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
   updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
   deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
   tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
@@ -2014,6 +2491,8 @@ export type ContactUpdateWithoutCustomFieldValuesInput = {
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateWithoutCustomFieldValuesInput = {
@@ -2025,6 +2504,10 @@ export type ContactUncheckedUpdateWithoutCustomFieldValuesInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2047,6 +2530,8 @@ export type ContactUncheckedUpdateWithoutCustomFieldValuesInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactCreateWithoutTasksInput = {
@@ -2057,6 +2542,9 @@ export type ContactCreateWithoutTasksInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -2072,6 +2560,7 @@ export type ContactCreateWithoutTasksInput = {
   deletedAt?: Date | string | null
   workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
   updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
   deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
   tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
@@ -2080,6 +2569,8 @@ export type ContactCreateWithoutTasksInput = {
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateWithoutTasksInput = {
@@ -2091,6 +2582,10 @@ export type ContactUncheckedCreateWithoutTasksInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -2113,6 +2608,8 @@ export type ContactUncheckedCreateWithoutTasksInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactCreateOrConnectWithoutTasksInput = {
@@ -2139,6 +2636,9 @@ export type ContactUpdateWithoutTasksInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2154,6 +2654,7 @@ export type ContactUpdateWithoutTasksInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
   updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
   deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
   tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
@@ -2162,6 +2663,8 @@ export type ContactUpdateWithoutTasksInput = {
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateWithoutTasksInput = {
@@ -2173,6 +2676,10 @@ export type ContactUncheckedUpdateWithoutTasksInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2195,6 +2702,8 @@ export type ContactUncheckedUpdateWithoutTasksInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactCreateWithoutNotesInput = {
@@ -2205,6 +2714,9 @@ export type ContactCreateWithoutNotesInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -2220,6 +2732,7 @@ export type ContactCreateWithoutNotesInput = {
   deletedAt?: Date | string | null
   workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
   updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
   deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
   tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
@@ -2228,6 +2741,8 @@ export type ContactCreateWithoutNotesInput = {
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateWithoutNotesInput = {
@@ -2239,6 +2754,10 @@ export type ContactUncheckedCreateWithoutNotesInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -2261,6 +2780,8 @@ export type ContactUncheckedCreateWithoutNotesInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactCreateOrConnectWithoutNotesInput = {
@@ -2287,6 +2808,9 @@ export type ContactUpdateWithoutNotesInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2302,6 +2826,7 @@ export type ContactUpdateWithoutNotesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
   updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
   deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
   tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
@@ -2310,6 +2835,8 @@ export type ContactUpdateWithoutNotesInput = {
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateWithoutNotesInput = {
@@ -2321,6 +2848,10 @@ export type ContactUncheckedUpdateWithoutNotesInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2343,6 +2874,8 @@ export type ContactUncheckedUpdateWithoutNotesInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactCreateWithoutTagAssignmentsInput = {
@@ -2353,6 +2886,9 @@ export type ContactCreateWithoutTagAssignmentsInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -2368,6 +2904,7 @@ export type ContactCreateWithoutTagAssignmentsInput = {
   deletedAt?: Date | string | null
   workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
   createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
   updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
   deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
   tasks?: Prisma.ContactTaskCreateNestedManyWithoutContactInput
@@ -2376,6 +2913,8 @@ export type ContactCreateWithoutTagAssignmentsInput = {
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateWithoutTagAssignmentsInput = {
@@ -2387,6 +2926,10 @@ export type ContactUncheckedCreateWithoutTagAssignmentsInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -2409,6 +2952,8 @@ export type ContactUncheckedCreateWithoutTagAssignmentsInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactCreateOrConnectWithoutTagAssignmentsInput = {
@@ -2435,6 +2980,9 @@ export type ContactUpdateWithoutTagAssignmentsInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2450,6 +2998,7 @@ export type ContactUpdateWithoutTagAssignmentsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
   updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
   deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
   tasks?: Prisma.ContactTaskUpdateManyWithoutContactNestedInput
@@ -2458,6 +3007,8 @@ export type ContactUpdateWithoutTagAssignmentsInput = {
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateWithoutTagAssignmentsInput = {
@@ -2469,6 +3020,10 @@ export type ContactUncheckedUpdateWithoutTagAssignmentsInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2491,6 +3046,352 @@ export type ContactUncheckedUpdateWithoutTagAssignmentsInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+}
+
+export type ContactCreateWithoutAutomationLogsInput = {
+  id?: string
+  name: string
+  phoneE164: string
+  whatsappId?: string | null
+  profileName?: string | null
+  email?: string | null
+  source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: boolean
+  whatsappOptInSource?: string | null
+  whatsappOptedInAt?: Date | string | null
+  whatsappOptOutSource?: string | null
+  whatsappOptedOutAt?: Date | string | null
+  marketingBlocked?: boolean
+  marketingBlockedAt?: Date | string | null
+  marketingBlockSource?: string | null
+  marketingBlockReason?: string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
+  updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
+  deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
+  tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
+  tasks?: Prisma.ContactTaskCreateNestedManyWithoutContactInput
+  notes?: Prisma.ContactNoteCreateNestedManyWithoutContactInput
+  customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
+  consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+}
+
+export type ContactUncheckedCreateWithoutAutomationLogsInput = {
+  id?: string
+  workspaceId: string
+  name: string
+  phoneE164: string
+  whatsappId?: string | null
+  profileName?: string | null
+  email?: string | null
+  source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: boolean
+  whatsappOptInSource?: string | null
+  whatsappOptedInAt?: Date | string | null
+  whatsappOptOutSource?: string | null
+  whatsappOptedOutAt?: Date | string | null
+  marketingBlocked?: boolean
+  marketingBlockedAt?: Date | string | null
+  marketingBlockSource?: string | null
+  marketingBlockReason?: string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: string | null
+  updatedById?: string | null
+  deletedById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  tagAssignments?: Prisma.ContactTagAssignmentUncheckedCreateNestedManyWithoutContactInput
+  tasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutContactInput
+  notes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutContactInput
+  customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
+  consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+}
+
+export type ContactCreateOrConnectWithoutAutomationLogsInput = {
+  where: Prisma.ContactWhereUniqueInput
+  create: Prisma.XOR<Prisma.ContactCreateWithoutAutomationLogsInput, Prisma.ContactUncheckedCreateWithoutAutomationLogsInput>
+}
+
+export type ContactUpsertWithoutAutomationLogsInput = {
+  update: Prisma.XOR<Prisma.ContactUpdateWithoutAutomationLogsInput, Prisma.ContactUncheckedUpdateWithoutAutomationLogsInput>
+  create: Prisma.XOR<Prisma.ContactCreateWithoutAutomationLogsInput, Prisma.ContactUncheckedCreateWithoutAutomationLogsInput>
+  where?: Prisma.ContactWhereInput
+}
+
+export type ContactUpdateToOneWithWhereWithoutAutomationLogsInput = {
+  where?: Prisma.ContactWhereInput
+  data: Prisma.XOR<Prisma.ContactUpdateWithoutAutomationLogsInput, Prisma.ContactUncheckedUpdateWithoutAutomationLogsInput>
+}
+
+export type ContactUpdateWithoutAutomationLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  whatsappOptOutSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingBlockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlockSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingBlockReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
+  updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
+  deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
+  tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
+  tasks?: Prisma.ContactTaskUpdateManyWithoutContactNestedInput
+  notes?: Prisma.ContactNoteUpdateManyWithoutContactNestedInput
+  customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
+  consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+}
+
+export type ContactUncheckedUpdateWithoutAutomationLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  whatsappOptOutSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingBlockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlockSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingBlockReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tagAssignments?: Prisma.ContactTagAssignmentUncheckedUpdateManyWithoutContactNestedInput
+  tasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutContactNestedInput
+  notes?: Prisma.ContactNoteUncheckedUpdateManyWithoutContactNestedInput
+  customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
+  consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+}
+
+export type ContactCreateWithoutWorkflowRunsInput = {
+  id?: string
+  name: string
+  phoneE164: string
+  whatsappId?: string | null
+  profileName?: string | null
+  email?: string | null
+  source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: boolean
+  whatsappOptInSource?: string | null
+  whatsappOptedInAt?: Date | string | null
+  whatsappOptOutSource?: string | null
+  whatsappOptedOutAt?: Date | string | null
+  marketingBlocked?: boolean
+  marketingBlockedAt?: Date | string | null
+  marketingBlockSource?: string | null
+  marketingBlockReason?: string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
+  updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
+  deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
+  tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
+  tasks?: Prisma.ContactTaskCreateNestedManyWithoutContactInput
+  notes?: Prisma.ContactNoteCreateNestedManyWithoutContactInput
+  customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
+  consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+}
+
+export type ContactUncheckedCreateWithoutWorkflowRunsInput = {
+  id?: string
+  workspaceId: string
+  name: string
+  phoneE164: string
+  whatsappId?: string | null
+  profileName?: string | null
+  email?: string | null
+  source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: boolean
+  whatsappOptInSource?: string | null
+  whatsappOptedInAt?: Date | string | null
+  whatsappOptOutSource?: string | null
+  whatsappOptedOutAt?: Date | string | null
+  marketingBlocked?: boolean
+  marketingBlockedAt?: Date | string | null
+  marketingBlockSource?: string | null
+  marketingBlockReason?: string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: string | null
+  updatedById?: string | null
+  deletedById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  tagAssignments?: Prisma.ContactTagAssignmentUncheckedCreateNestedManyWithoutContactInput
+  tasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutContactInput
+  notes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutContactInput
+  customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
+  consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+}
+
+export type ContactCreateOrConnectWithoutWorkflowRunsInput = {
+  where: Prisma.ContactWhereUniqueInput
+  create: Prisma.XOR<Prisma.ContactCreateWithoutWorkflowRunsInput, Prisma.ContactUncheckedCreateWithoutWorkflowRunsInput>
+}
+
+export type ContactUpsertWithoutWorkflowRunsInput = {
+  update: Prisma.XOR<Prisma.ContactUpdateWithoutWorkflowRunsInput, Prisma.ContactUncheckedUpdateWithoutWorkflowRunsInput>
+  create: Prisma.XOR<Prisma.ContactCreateWithoutWorkflowRunsInput, Prisma.ContactUncheckedCreateWithoutWorkflowRunsInput>
+  where?: Prisma.ContactWhereInput
+}
+
+export type ContactUpdateToOneWithWhereWithoutWorkflowRunsInput = {
+  where?: Prisma.ContactWhereInput
+  data: Prisma.XOR<Prisma.ContactUpdateWithoutWorkflowRunsInput, Prisma.ContactUncheckedUpdateWithoutWorkflowRunsInput>
+}
+
+export type ContactUpdateWithoutWorkflowRunsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  whatsappOptOutSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingBlockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlockSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingBlockReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
+  updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
+  deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
+  tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
+  tasks?: Prisma.ContactTaskUpdateManyWithoutContactNestedInput
+  notes?: Prisma.ContactNoteUpdateManyWithoutContactNestedInput
+  customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
+  consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+}
+
+export type ContactUncheckedUpdateWithoutWorkflowRunsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  whatsappOptOutSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingBlockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlockSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingBlockReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tagAssignments?: Prisma.ContactTagAssignmentUncheckedUpdateManyWithoutContactNestedInput
+  tasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutContactNestedInput
+  notes?: Prisma.ContactNoteUncheckedUpdateManyWithoutContactNestedInput
+  customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
+  consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactCreateManyCreatedByInput = {
@@ -2502,6 +3403,10 @@ export type ContactCreateManyCreatedByInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -2519,6 +3424,36 @@ export type ContactCreateManyCreatedByInput = {
   deletedAt?: Date | string | null
 }
 
+export type ContactCreateManyAccountOwnerInput = {
+  id?: string
+  workspaceId: string
+  name: string
+  phoneE164: string
+  whatsappId?: string | null
+  profileName?: string | null
+  email?: string | null
+  source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: boolean
+  whatsappOptInSource?: string | null
+  whatsappOptedInAt?: Date | string | null
+  whatsappOptOutSource?: string | null
+  whatsappOptedOutAt?: Date | string | null
+  marketingBlocked?: boolean
+  marketingBlockedAt?: Date | string | null
+  marketingBlockSource?: string | null
+  marketingBlockReason?: string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: string | null
+  updatedById?: string | null
+  deletedById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+}
+
 export type ContactCreateManyUpdatedByInput = {
   id?: string
   workspaceId: string
@@ -2528,6 +3463,10 @@ export type ContactCreateManyUpdatedByInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -2554,6 +3493,10 @@ export type ContactCreateManyDeletedByInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -2579,6 +3522,9 @@ export type ContactUpdateWithoutCreatedByInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2593,6 +3539,7 @@ export type ContactUpdateWithoutCreatedByInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
   updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
   deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
   tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
@@ -2602,6 +3549,8 @@ export type ContactUpdateWithoutCreatedByInput = {
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateWithoutCreatedByInput = {
@@ -2613,6 +3562,10 @@ export type ContactUncheckedUpdateWithoutCreatedByInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2635,6 +3588,8 @@ export type ContactUncheckedUpdateWithoutCreatedByInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateManyWithoutCreatedByInput = {
@@ -2646,6 +3601,10 @@ export type ContactUncheckedUpdateManyWithoutCreatedByInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2663,7 +3622,7 @@ export type ContactUncheckedUpdateManyWithoutCreatedByInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-export type ContactUpdateWithoutUpdatedByInput = {
+export type ContactUpdateWithoutAccountOwnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2671,6 +3630,9 @@ export type ContactUpdateWithoutUpdatedByInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2686,6 +3648,7 @@ export type ContactUpdateWithoutUpdatedByInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
   deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
   tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
   tasks?: Prisma.ContactTaskUpdateManyWithoutContactNestedInput
@@ -2694,6 +3657,116 @@ export type ContactUpdateWithoutUpdatedByInput = {
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+}
+
+export type ContactUncheckedUpdateWithoutAccountOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  whatsappOptOutSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingBlockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlockSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingBlockReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tagAssignments?: Prisma.ContactTagAssignmentUncheckedUpdateManyWithoutContactNestedInput
+  tasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutContactNestedInput
+  notes?: Prisma.ContactNoteUncheckedUpdateManyWithoutContactNestedInput
+  customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
+  consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+}
+
+export type ContactUncheckedUpdateManyWithoutAccountOwnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  whatsappOptOutSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingBlockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlockSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingBlockReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type ContactUpdateWithoutUpdatedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  whatsappOptOutSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingBlockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlockSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingBlockReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
+  deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
+  tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
+  tasks?: Prisma.ContactTaskUpdateManyWithoutContactNestedInput
+  notes?: Prisma.ContactNoteUpdateManyWithoutContactNestedInput
+  customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
+  consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateWithoutUpdatedByInput = {
@@ -2705,6 +3778,10 @@ export type ContactUncheckedUpdateWithoutUpdatedByInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2727,6 +3804,8 @@ export type ContactUncheckedUpdateWithoutUpdatedByInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateManyWithoutUpdatedByInput = {
@@ -2738,6 +3817,10 @@ export type ContactUncheckedUpdateManyWithoutUpdatedByInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2763,6 +3846,9 @@ export type ContactUpdateWithoutDeletedByInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2778,6 +3864,7 @@ export type ContactUpdateWithoutDeletedByInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
   updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
   tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
   tasks?: Prisma.ContactTaskUpdateManyWithoutContactNestedInput
@@ -2786,6 +3873,8 @@ export type ContactUpdateWithoutDeletedByInput = {
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateWithoutDeletedByInput = {
@@ -2797,6 +3886,10 @@ export type ContactUncheckedUpdateWithoutDeletedByInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2819,6 +3912,8 @@ export type ContactUncheckedUpdateWithoutDeletedByInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateManyWithoutDeletedByInput = {
@@ -2830,6 +3925,10 @@ export type ContactUncheckedUpdateManyWithoutDeletedByInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2855,6 +3954,10 @@ export type ContactCreateManyWorkspaceInput = {
   profileName?: string | null
   email?: string | null
   source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: boolean
   whatsappOptInSource?: string | null
   whatsappOptedInAt?: Date | string | null
@@ -2881,6 +3984,9 @@ export type ContactUpdateWithoutWorkspaceInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2895,6 +4001,7 @@ export type ContactUpdateWithoutWorkspaceInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
   updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
   deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
   tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
@@ -2904,6 +4011,8 @@ export type ContactUpdateWithoutWorkspaceInput = {
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateWithoutWorkspaceInput = {
@@ -2914,6 +4023,10 @@ export type ContactUncheckedUpdateWithoutWorkspaceInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2937,6 +4050,8 @@ export type ContactUncheckedUpdateWithoutWorkspaceInput = {
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateManyWithoutWorkspaceInput = {
@@ -2947,6 +4062,10 @@ export type ContactUncheckedUpdateManyWithoutWorkspaceInput = {
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2978,6 +4097,8 @@ export type ContactCountOutputType = {
   consentEvents: number
   conversations: number
   messages: number
+  automationLogs: number
+  workflowRuns: number
 }
 
 export type ContactCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2988,6 +4109,8 @@ export type ContactCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   consentEvents?: boolean | ContactCountOutputTypeCountConsentEventsArgs
   conversations?: boolean | ContactCountOutputTypeCountConversationsArgs
   messages?: boolean | ContactCountOutputTypeCountMessagesArgs
+  automationLogs?: boolean | ContactCountOutputTypeCountAutomationLogsArgs
+  workflowRuns?: boolean | ContactCountOutputTypeCountWorkflowRunsArgs
 }
 
 /**
@@ -3049,6 +4172,20 @@ export type ContactCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Type
   where?: Prisma.MessageWhereInput
 }
 
+/**
+ * ContactCountOutputType without action
+ */
+export type ContactCountOutputTypeCountAutomationLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AutomationLogWhereInput
+}
+
+/**
+ * ContactCountOutputType without action
+ */
+export type ContactCountOutputTypeCountWorkflowRunsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkflowRunWhereInput
+}
+
 
 export type ContactSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3059,6 +4196,10 @@ export type ContactSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   profileName?: boolean
   email?: boolean
   source?: boolean
+  status?: boolean
+  userId?: boolean
+  accountOwnerId?: boolean
+  dealValue?: boolean
   whatsappOpted?: boolean
   whatsappOptInSource?: boolean
   whatsappOptedInAt?: boolean
@@ -3077,6 +4218,7 @@ export type ContactSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   deletedAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Contact$createdByArgs<ExtArgs>
+  accountOwner?: boolean | Prisma.Contact$accountOwnerArgs<ExtArgs>
   updatedBy?: boolean | Prisma.Contact$updatedByArgs<ExtArgs>
   deletedBy?: boolean | Prisma.Contact$deletedByArgs<ExtArgs>
   tagAssignments?: boolean | Prisma.Contact$tagAssignmentsArgs<ExtArgs>
@@ -3086,6 +4228,8 @@ export type ContactSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   consentEvents?: boolean | Prisma.Contact$consentEventsArgs<ExtArgs>
   conversations?: boolean | Prisma.Contact$conversationsArgs<ExtArgs>
   messages?: boolean | Prisma.Contact$messagesArgs<ExtArgs>
+  automationLogs?: boolean | Prisma.Contact$automationLogsArgs<ExtArgs>
+  workflowRuns?: boolean | Prisma.Contact$workflowRunsArgs<ExtArgs>
   _count?: boolean | Prisma.ContactCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["contact"]>
 
@@ -3098,6 +4242,10 @@ export type ContactSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   profileName?: boolean
   email?: boolean
   source?: boolean
+  status?: boolean
+  userId?: boolean
+  accountOwnerId?: boolean
+  dealValue?: boolean
   whatsappOpted?: boolean
   whatsappOptInSource?: boolean
   whatsappOptedInAt?: boolean
@@ -3116,6 +4264,7 @@ export type ContactSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   deletedAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Contact$createdByArgs<ExtArgs>
+  accountOwner?: boolean | Prisma.Contact$accountOwnerArgs<ExtArgs>
   updatedBy?: boolean | Prisma.Contact$updatedByArgs<ExtArgs>
   deletedBy?: boolean | Prisma.Contact$deletedByArgs<ExtArgs>
 }, ExtArgs["result"]["contact"]>
@@ -3129,6 +4278,10 @@ export type ContactSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   profileName?: boolean
   email?: boolean
   source?: boolean
+  status?: boolean
+  userId?: boolean
+  accountOwnerId?: boolean
+  dealValue?: boolean
   whatsappOpted?: boolean
   whatsappOptInSource?: boolean
   whatsappOptedInAt?: boolean
@@ -3147,6 +4300,7 @@ export type ContactSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   deletedAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Contact$createdByArgs<ExtArgs>
+  accountOwner?: boolean | Prisma.Contact$accountOwnerArgs<ExtArgs>
   updatedBy?: boolean | Prisma.Contact$updatedByArgs<ExtArgs>
   deletedBy?: boolean | Prisma.Contact$deletedByArgs<ExtArgs>
 }, ExtArgs["result"]["contact"]>
@@ -3160,6 +4314,10 @@ export type ContactSelectScalar = {
   profileName?: boolean
   email?: boolean
   source?: boolean
+  status?: boolean
+  userId?: boolean
+  accountOwnerId?: boolean
+  dealValue?: boolean
   whatsappOpted?: boolean
   whatsappOptInSource?: boolean
   whatsappOptedInAt?: boolean
@@ -3178,10 +4336,11 @@ export type ContactSelectScalar = {
   deletedAt?: boolean
 }
 
-export type ContactOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "name" | "phoneE164" | "whatsappId" | "profileName" | "email" | "source" | "whatsappOpted" | "whatsappOptInSource" | "whatsappOptedInAt" | "whatsappOptOutSource" | "whatsappOptedOutAt" | "marketingBlocked" | "marketingBlockedAt" | "marketingBlockSource" | "marketingBlockReason" | "customAttributes" | "createdById" | "updatedById" | "deletedById" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["contact"]>
+export type ContactOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "name" | "phoneE164" | "whatsappId" | "profileName" | "email" | "source" | "status" | "userId" | "accountOwnerId" | "dealValue" | "whatsappOpted" | "whatsappOptInSource" | "whatsappOptedInAt" | "whatsappOptOutSource" | "whatsappOptedOutAt" | "marketingBlocked" | "marketingBlockedAt" | "marketingBlockSource" | "marketingBlockReason" | "customAttributes" | "createdById" | "updatedById" | "deletedById" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["contact"]>
 export type ContactInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Contact$createdByArgs<ExtArgs>
+  accountOwner?: boolean | Prisma.Contact$accountOwnerArgs<ExtArgs>
   updatedBy?: boolean | Prisma.Contact$updatedByArgs<ExtArgs>
   deletedBy?: boolean | Prisma.Contact$deletedByArgs<ExtArgs>
   tagAssignments?: boolean | Prisma.Contact$tagAssignmentsArgs<ExtArgs>
@@ -3191,17 +4350,21 @@ export type ContactInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   consentEvents?: boolean | Prisma.Contact$consentEventsArgs<ExtArgs>
   conversations?: boolean | Prisma.Contact$conversationsArgs<ExtArgs>
   messages?: boolean | Prisma.Contact$messagesArgs<ExtArgs>
+  automationLogs?: boolean | Prisma.Contact$automationLogsArgs<ExtArgs>
+  workflowRuns?: boolean | Prisma.Contact$workflowRunsArgs<ExtArgs>
   _count?: boolean | Prisma.ContactCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ContactIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Contact$createdByArgs<ExtArgs>
+  accountOwner?: boolean | Prisma.Contact$accountOwnerArgs<ExtArgs>
   updatedBy?: boolean | Prisma.Contact$updatedByArgs<ExtArgs>
   deletedBy?: boolean | Prisma.Contact$deletedByArgs<ExtArgs>
 }
 export type ContactIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Contact$createdByArgs<ExtArgs>
+  accountOwner?: boolean | Prisma.Contact$accountOwnerArgs<ExtArgs>
   updatedBy?: boolean | Prisma.Contact$updatedByArgs<ExtArgs>
   deletedBy?: boolean | Prisma.Contact$deletedByArgs<ExtArgs>
 }
@@ -3211,6 +4374,7 @@ export type $ContactPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     workspace: Prisma.$WorkspacePayload<ExtArgs>
     createdBy: Prisma.$UserPayload<ExtArgs> | null
+    accountOwner: Prisma.$UserPayload<ExtArgs> | null
     updatedBy: Prisma.$UserPayload<ExtArgs> | null
     deletedBy: Prisma.$UserPayload<ExtArgs> | null
     tagAssignments: Prisma.$ContactTagAssignmentPayload<ExtArgs>[]
@@ -3220,6 +4384,8 @@ export type $ContactPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     consentEvents: Prisma.$ContactConsentEventPayload<ExtArgs>[]
     conversations: Prisma.$ConversationPayload<ExtArgs>[]
     messages: Prisma.$MessagePayload<ExtArgs>[]
+    automationLogs: Prisma.$AutomationLogPayload<ExtArgs>[]
+    workflowRuns: Prisma.$WorkflowRunPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3230,6 +4396,10 @@ export type $ContactPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     profileName: string | null
     email: string | null
     source: string
+    status: string
+    userId: string | null
+    accountOwnerId: string | null
+    dealValue: runtime.Decimal | null
     whatsappOpted: boolean
     whatsappOptInSource: string | null
     whatsappOptedInAt: Date | null
@@ -3642,6 +4812,7 @@ export interface Prisma__ContactClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   workspace<T extends Prisma.WorkspaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   createdBy<T extends Prisma.Contact$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  accountOwner<T extends Prisma.Contact$accountOwnerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$accountOwnerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   updatedBy<T extends Prisma.Contact$updatedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$updatedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   deletedBy<T extends Prisma.Contact$deletedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$deletedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   tagAssignments<T extends Prisma.Contact$tagAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$tagAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactTagAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3651,6 +4822,8 @@ export interface Prisma__ContactClient<T, Null = never, ExtArgs extends runtime.
   consentEvents<T extends Prisma.Contact$consentEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$consentEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactConsentEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   conversations<T extends Prisma.Contact$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messages<T extends Prisma.Contact$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  automationLogs<T extends Prisma.Contact$automationLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$automationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AutomationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  workflowRuns<T extends Prisma.Contact$workflowRunsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$workflowRunsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3688,6 +4861,10 @@ export interface ContactFieldRefs {
   readonly profileName: Prisma.FieldRef<"Contact", 'String'>
   readonly email: Prisma.FieldRef<"Contact", 'String'>
   readonly source: Prisma.FieldRef<"Contact", 'String'>
+  readonly status: Prisma.FieldRef<"Contact", 'String'>
+  readonly userId: Prisma.FieldRef<"Contact", 'String'>
+  readonly accountOwnerId: Prisma.FieldRef<"Contact", 'String'>
+  readonly dealValue: Prisma.FieldRef<"Contact", 'Decimal'>
   readonly whatsappOpted: Prisma.FieldRef<"Contact", 'Boolean'>
   readonly whatsappOptInSource: Prisma.FieldRef<"Contact", 'String'>
   readonly whatsappOptedInAt: Prisma.FieldRef<"Contact", 'DateTime'>
@@ -4124,6 +5301,25 @@ export type Contact$createdByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
+ * Contact.accountOwner
+ */
+export type Contact$accountOwnerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
  * Contact.updatedBy
  */
 export type Contact$updatedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4327,6 +5523,54 @@ export type Contact$messagesArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
+}
+
+/**
+ * Contact.automationLogs
+ */
+export type Contact$automationLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AutomationLog
+   */
+  select?: Prisma.AutomationLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AutomationLog
+   */
+  omit?: Prisma.AutomationLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AutomationLogInclude<ExtArgs> | null
+  where?: Prisma.AutomationLogWhereInput
+  orderBy?: Prisma.AutomationLogOrderByWithRelationInput | Prisma.AutomationLogOrderByWithRelationInput[]
+  cursor?: Prisma.AutomationLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AutomationLogScalarFieldEnum | Prisma.AutomationLogScalarFieldEnum[]
+}
+
+/**
+ * Contact.workflowRuns
+ */
+export type Contact$workflowRunsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkflowRun
+   */
+  select?: Prisma.WorkflowRunSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkflowRun
+   */
+  omit?: Prisma.WorkflowRunOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkflowRunInclude<ExtArgs> | null
+  where?: Prisma.WorkflowRunWhereInput
+  orderBy?: Prisma.WorkflowRunOrderByWithRelationInput | Prisma.WorkflowRunOrderByWithRelationInput[]
+  cursor?: Prisma.WorkflowRunWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkflowRunScalarFieldEnum | Prisma.WorkflowRunScalarFieldEnum[]
 }
 
 /**

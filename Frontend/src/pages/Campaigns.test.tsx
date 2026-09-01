@@ -116,6 +116,7 @@ describe("Campaigns", () => {
       "min-h-0",
       "overflow-auto",
     );
+    expect(screen.getByTestId("campaign-table-panel").querySelector("table")).toHaveClass("campaign-data-table");
     expect(screen.getByText("No campaigns yet")).toBeInTheDocument();
   });
 

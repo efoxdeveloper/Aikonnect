@@ -1,11 +1,11 @@
 import type { ForwardRefExoticComponent, RefAttributes } from "react";
 import {
   ActivityIcon as Activity, BlocksIcon as Blocks, ChartNoAxesCombinedIcon as ChartNoAxesCombined,
-  ChartSplineIcon as ChartSpline, ContactRoundIcon as ContactRound, CreditCardIcon as CreditCard,
+  ChartSplineIcon as ChartSpline, CreditCardIcon as CreditCard,
   FileTextIcon as FileText, HouseIcon as House, LayoutDashboardIcon as PanelsTopLeft,
   ListChecksIcon as ListTodo, MegaphoneIcon as Megaphone, MessageCircleIcon as MessageCircle,
   MessageSquareTextIcon as MessageSquareText, MousePointerClickIcon as MousePointerClick,
-  SettingsIcon as Settings, ShoppingBagIcon as ShoppingBag, ShoppingCartIcon as ShoppingCart,
+  ShoppingBagIcon as ShoppingBag, ShoppingCartIcon as ShoppingCart,
   UserRoundIcon as UserRound,
   UsersIcon as Users, UsersRoundIcon as UsersRound, WalletCardsIcon as WalletCards,
   WaypointsIcon as Workflow, WebhookIcon as Webhook,
@@ -44,16 +44,15 @@ export const navigationGroups: NavigationGroup[] = [
       { title: "Activity", url: "/dashboard/activity", icon: Activity },
     ] },
     { title: "Inbox", url: "/inbox", icon: MessageSquareText, badge: { text: "12", variant: "danger" } },
-    { title: "Contacts", url: "/contacts", icon: Users },
   ] },
   { title: "Marketing", items: [
     { title: "Campaigns", url: "/campaigns", icon: Megaphone },
     { title: "Templates", url: "/templates", icon: FileText },
-    { title: "Automations", url: "/automations", icon: Workflow },
+    { title: "Automation", url: "/automations", icon: Workflow },
     { title: "Click-to-WhatsApp Ads", url: "/click-to-whatsapp-ads", icon: MousePointerClick },
   ] },
   { title: "Sales & CRM", items: [
-    { title: "Leads", url: "/leads", icon: ContactRound },
+    { title: "Contacts", url: "/contacts", icon: Users },
     { title: "Pipelines", url: "/pipelines", icon: PanelsTopLeft },
     { title: "Tasks", url: "/tasks", icon: ListTodo },
   ] },

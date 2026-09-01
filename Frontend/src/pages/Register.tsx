@@ -1,35 +1,30 @@
 import { useState, type FormEvent } from "react";
-import { ArrowRightIcon as ArrowRight, CheckIcon as Check, ChevronLeftIcon as ChevronLeft, EyeIcon as Eye, EyeOffIcon as EyeOff, GlobeIcon as Globe2, IndianRupeeIcon as IndianRupee, LockIcon as Lock, MailIcon as Mail, MapPinIcon as MapPin, MessageSquareIcon as MessageSquare, PhoneIcon as Phone, SparklesIcon as Sparkles, StoreIcon as Building2, UserRoundIcon as UserRound } from "@animateicons/react/lucide";
+import { ArrowRightIcon as ArrowRight, CheckIcon as Check, ChevronLeftIcon as ChevronLeft, EyeIcon as Eye, EyeOffIcon as EyeOff, IndianRupeeIcon as IndianRupee } from "@animateicons/react/lucide";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { useAnimatedIcon } from "@/hooks/use-animated-icon";
-import type { AnimatedIcon } from "@/config/navigation";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
 import { ApiError } from "@/lib/api";
 import { getPasswordValidationError, toRegistrationRequest, type RegistrationFormData } from "@/pages/register.utils";
+import { AuthMark, AuthShell } from "@/components/auth/AuthShell";
+import { authTextFieldSx } from "@/components/auth/auth-text-field";
 
 type RegistrationData = RegistrationFormData;
 
 type RegistrationFieldProps = {
   id: keyof RegistrationData;
   label: string;
-  icon: AnimatedIcon;
   value: string;
   type?: string;
   autoComplete?: string;
   onChange: (field: keyof RegistrationData, value: string) => void;
 };
 
-function RegistrationField({ id, label, icon: Icon, value, type = "text", autoComplete, onChange }: RegistrationFieldProps) {
-  const animatedIcon = useAnimatedIcon();
+function RegistrationField({ id, label, value, type = "text", autoComplete, onChange }: RegistrationFieldProps) {
   return (
-    <div className="min-w-0">
-      <label htmlFor={id} className="mb-2 block truncate text-sm font-semibold text-[var(--text-primary)]">{label}</label>
-      <div onMouseEnter={animatedIcon.onMouseEnter} onMouseLeave={animatedIcon.onMouseLeave} onFocus={animatedIcon.onMouseEnter} onBlur={animatedIcon.onMouseLeave} className="group/input flex h-12 items-center rounded-md border border-[#d6dce0] bg-white px-3.5 shadow-[0_1px_2px_rgba(31,42,55,.03)] transition-[border-color,box-shadow] duration-150 focus-within:border-[var(--brand)] focus-within:shadow-[0_0_0_3px_rgba(17,107,111,.10)]">
-        <Icon ref={animatedIcon.ref} size={17} duration={0.7} className="mr-2.5 shrink-0 text-[var(--text-muted)] transition-colors group-focus-within/input:text-[var(--brand)]" aria-hidden="true" />
-        <input id={id} name={id} type={type} autoComplete={autoComplete} required value={value} onChange={(event) => onChange(id, event.target.value)} className="h-full min-w-0 flex-1 border-0 bg-transparent text-[14px] text-[var(--text-primary)] outline-none" />
-      </div>
-    </div>
+    <TextField id={id} name={id} type={type} autoComplete={autoComplete} label={label} required value={value} onChange={(event) => onChange(id, event.target.value)} fullWidth size="small" variant="outlined" sx={authTextFieldSx} slotProps={{ htmlInput: { "aria-label": label } }} />
   );
 }
 
@@ -43,21 +38,11 @@ type PasswordFieldProps = {
 };
 
 function PasswordField({ id, label, value, visible, onChange, onToggle }: PasswordFieldProps) {
-  const lockIcon = useAnimatedIcon();
   const eyeIcon = useAnimatedIcon();
   const fieldName = id === "confirmPassword" ? "confirm password" : "password";
 
   return (
-    <div className="min-w-0">
-      <label htmlFor={id} className="mb-2 block truncate text-sm font-semibold text-[var(--text-primary)]">{label}</label>
-      <div onMouseEnter={lockIcon.onMouseEnter} onMouseLeave={lockIcon.onMouseLeave} onFocus={lockIcon.onMouseEnter} onBlur={lockIcon.onMouseLeave} className="group/input flex h-12 items-center rounded-md border border-[#d6dce0] bg-white px-3.5 shadow-[0_1px_2px_rgba(31,42,55,.03)] transition-[border-color,box-shadow] duration-150 focus-within:border-[var(--brand)] focus-within:shadow-[0_0_0_3px_rgba(17,107,111,.10)]">
-        <Lock ref={lockIcon.ref} size={17} duration={0.7} className="mr-2.5 shrink-0 text-[var(--text-muted)] transition-colors group-focus-within/input:text-[var(--brand)]" aria-hidden="true" />
-        <input id={id} name={id} type={visible ? "text" : "password"} autoComplete="new-password" required value={value} onChange={(event) => onChange(id, event.target.value)} className="h-full min-w-0 flex-1 border-0 bg-transparent text-[14px] text-[var(--text-primary)] outline-none" />
-        <button type="button" aria-label={`${visible ? "Hide" : "Show"} ${fieldName}`} onMouseEnter={eyeIcon.onMouseEnter} onMouseLeave={eyeIcon.onMouseLeave} onClick={onToggle} className="ml-2 rounded-md p-1 text-[var(--text-muted)] transition-colors hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]">
-          {visible ? <EyeOff ref={eyeIcon.ref} size={18} duration={0.6} aria-hidden="true" /> : <Eye ref={eyeIcon.ref} size={18} duration={0.6} aria-hidden="true" />}
-        </button>
-      </div>
-    </div>
+    <TextField id={id} name={id} type={visible ? "text" : "password"} autoComplete="new-password" label={label} required value={value} onChange={(event) => onChange(id, event.target.value)} fullWidth size="small" variant="outlined" sx={authTextFieldSx} slotProps={{ htmlInput: { "aria-label": label }, input: { endAdornment: <InputAdornment position="end"><IconButton type="button" edge="end" size="small" aria-label={`${visible ? "Hide" : "Show"} ${fieldName}`} title={`${visible ? "Hide" : "Show"} ${fieldName}`} onMouseEnter={eyeIcon.onMouseEnter} onMouseLeave={eyeIcon.onMouseLeave} onClick={onToggle} sx={{ color: "var(--text-muted)", "&:hover": { color: "var(--brand)" } }}>{visible ? <EyeOff ref={eyeIcon.ref} size={18} duration={0.6} aria-hidden="true" /> : <Eye ref={eyeIcon.ref} size={18} duration={0.6} aria-hidden="true" />}</IconButton></InputAdornment> } }} />
   );
 }
 
@@ -84,8 +69,6 @@ export function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const logoIcon = useAnimatedIcon();
-  const sparkleIcon = useAnimatedIcon();
   const continueIcon = useAnimatedIcon();
   const revenueIcon = useAnimatedIcon();
   const backIcon = useAnimatedIcon();
@@ -122,21 +105,12 @@ export function Register() {
   };
 
   return (
-    <main className="relative isolate flex h-dvh items-center justify-center overflow-hidden bg-[#e8f6f7] px-4 py-8 sm:px-6 sm:py-10">
-      <img src="/images/auth-background.png" alt="" className="absolute inset-0 -z-20 size-full object-cover" />
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(255,255,255,.18),transparent_54%)]" />
-      <div className="pointer-events-none absolute left-[8%] top-[13%] size-36 rounded-full bg-white/20 blur-3xl" />
-      <div className="pointer-events-none absolute bottom-[8%] right-[8%] size-44 rounded-full bg-[#8fd9dc]/20 blur-3xl" />
-
-      <section aria-labelledby="register-title" className="auth-card relative w-full max-w-[540px] rounded-sm border border-white/85 bg-white/90 px-6 pb-7 pt-[62px] shadow-[0_16px_42px_rgba(30,72,86,.10),0_4px_14px_rgba(17,107,111,.05),inset_0_1px_0_rgba(255,255,255,.95)] backdrop-blur-xl sm:px-10 sm:pb-8">
-        <div onMouseEnter={() => { logoIcon.onMouseEnter(); sparkleIcon.onMouseEnter(); }} onMouseLeave={() => { logoIcon.onMouseLeave(); sparkleIcon.onMouseLeave(); }} className="auth-logo absolute left-1/2 top-0 flex size-[86px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[linear-gradient(145deg,#167a7f,#0b5f64)] text-white">
-          <MessageSquare ref={logoIcon.ref} size={40} duration={0.7} aria-hidden="true" />
-          <Sparkles ref={sparkleIcon.ref} size={14} duration={0.65} className="absolute right-3 top-3 text-[#a9edf0]" aria-hidden="true" />
-        </div>
-
+    <AuthShell contentClassName="max-w-[560px]">
+      <section aria-labelledby="register-title" className="w-full">
         <div className="text-center">
-          <h1 id="register-title" className="text-2xl font-semibold tracking-[-0.035em] text-[#145f64] sm:text-[26px]">Create your account</h1>
-          <p className="mx-auto mt-2">{step === 1 ? "Tell us who you are to get started." : "Now tell us a little about your business."}</p>
+          <AuthMark className="mx-auto" />
+          <h1 id="register-title" className="mt-4 text-[23px] font-semibold leading-tight tracking-[-0.035em] text-[var(--text-primary)]">Create your account</h1>
+          <div className="mt-2 text-[13px] text-[var(--text-secondary)]">{step === 1 ? "Tell us who you are to get started." : "Now tell us a little about your business."}</div>
         </div>
 
         <div className="mx-auto mt-5 flex max-w-[310px] items-center" aria-label={`Registration step ${step} of 2`}>
@@ -154,35 +128,35 @@ export function Register() {
         <form key={step} className="auth-step mt-6" onSubmit={handleSubmit}>
           {step === 1 ? (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3.5">
-                <RegistrationField id="firstName" label="First name" icon={UserRound} value={data.firstName} onChange={updateField} autoComplete="given-name" />
-                <RegistrationField id="lastName" label="Last name" icon={UserRound} value={data.lastName} onChange={updateField} autoComplete="family-name" />
+              <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+                <RegistrationField id="firstName" label="First name" value={data.firstName} onChange={updateField} autoComplete="given-name" />
+                <RegistrationField id="lastName" label="Last name" value={data.lastName} onChange={updateField} autoComplete="family-name" />
               </div>
-              <RegistrationField id="workEmail" label="Work email" icon={Mail} value={data.workEmail} onChange={updateField} type="email" autoComplete="email" />
-              <div className="grid grid-cols-2 gap-3.5">
+              <RegistrationField id="workEmail" label="Work email" value={data.workEmail} onChange={updateField} type="email" autoComplete="email" />
+              <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                 <PasswordField id="password" label="Password" value={data.password} visible={showPassword} onChange={updateField} onToggle={() => setShowPassword((visible) => !visible)} />
                 <PasswordField id="confirmPassword" label="Confirm password" value={data.confirmPassword} visible={showConfirmPassword} onChange={updateField} onToggle={() => setShowConfirmPassword((visible) => !visible)} />
               </div>
-              {error && <p role="alert" className="rounded-md bg-red-50 px-3 py-2.5 text-center">{error}</p>}
-              <button type="submit" onMouseEnter={continueIcon.onMouseEnter} onMouseLeave={continueIcon.onMouseLeave} className="group flex h-12 w-full items-center justify-center rounded-md bg-[linear-gradient(135deg,#15777c,#0d6267)] px-4 text-sm font-semibold text-white shadow-[0_10px_22px_rgba(17,107,111,.20)] transition-[transform,box-shadow,filter] duration-150 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_14px_28px_rgba(17,107,111,.25)] active:translate-y-0 active:scale-[.99]">
+              {error && <p role="alert" className="rounded-md bg-[var(--danger-soft)] px-3 py-2.5 text-center">{error}</p>}
+              <Button type="submit" onMouseEnter={continueIcon.onMouseEnter} onMouseLeave={continueIcon.onMouseLeave} className="group h-12 w-full rounded-md text-sm font-semibold shadow-[0_6px_16px_rgba(4,63,41,.16)]">
                 Continue
                 <ArrowRight ref={continueIcon.ref} size={16} duration={0.55} className="ml-2" aria-hidden="true" />
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-3.5">
-                <RegistrationField id="phone" label="Phone number" icon={Phone} value={data.phone} onChange={updateField} type="tel" autoComplete="tel" />
-                <RegistrationField id="companyName" label="Company name" icon={Building2} value={data.companyName} onChange={updateField} autoComplete="organization" />
+              <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+                <RegistrationField id="phone" label="Phone number" value={data.phone} onChange={updateField} type="tel" autoComplete="tel" />
+                <RegistrationField id="companyName" label="Company name" value={data.companyName} onChange={updateField} autoComplete="organization" />
               </div>
-              <div className="grid grid-cols-2 gap-3.5">
-                <RegistrationField id="companyWebsite" label="Company website" icon={Globe2} value={data.companyWebsite} onChange={updateField} type="url" autoComplete="url" />
-                <RegistrationField id="companyLocation" label="Company location" icon={MapPin} value={data.companyLocation} onChange={updateField} autoComplete="address-level2" />
+              <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+                <RegistrationField id="companyWebsite" label="Company website" value={data.companyWebsite} onChange={updateField} type="url" autoComplete="url" />
+                <RegistrationField id="companyLocation" label="Company location" value={data.companyLocation} onChange={updateField} autoComplete="address-level2" />
               </div>
               <div>
                 <label htmlFor="annualRevenue" className="mb-2 block text-sm font-semibold text-[var(--text-primary)]">Annual revenue</label>
                 <Select required value={data.annualRevenue} onValueChange={(value) => updateField("annualRevenue", value)}>
-                  <SelectTrigger id="annualRevenue" aria-label="Annual revenue" onMouseEnter={revenueIcon.onMouseEnter} onMouseLeave={revenueIcon.onMouseLeave} onFocus={revenueIcon.onMouseEnter} onBlur={revenueIcon.onMouseLeave} className="group/input h-12 border-[#d6dce0] px-3.5 shadow-[0_1px_2px_rgba(31,42,55,.03)] focus:shadow-[0_0_0_3px_rgba(17,107,111,.10)]">
+                  <SelectTrigger id="annualRevenue" aria-label="Annual revenue" onMouseEnter={revenueIcon.onMouseEnter} onMouseLeave={revenueIcon.onMouseLeave} onFocus={revenueIcon.onMouseEnter} onBlur={revenueIcon.onMouseLeave} className="group/input h-12 border-[var(--border-strong)] px-3.5 shadow-[0_1px_2px_rgba(4,45,29,.03)] focus:shadow-[0_0_0_3px_rgba(21,150,106,.12)]">
                     <span className="flex min-w-0 items-center">
                       <IndianRupee ref={revenueIcon.ref} size={17} duration={0.7} className="mr-2.5 shrink-0 text-[var(--text-muted)] transition-colors group-focus/input:text-[var(--brand)]" aria-hidden="true" />
                       <SelectValue placeholder="Select a revenue range" />
@@ -197,21 +171,20 @@ export function Register() {
                   </SelectContent>
                 </Select>
               </div>
-              {error && <p role="alert" className="rounded-md bg-red-50 px-3 py-2.5 text-center">{error}</p>}
+              {error && <p role="alert" className="rounded-md bg-[var(--danger-soft)] px-3 py-2.5 text-center">{error}</p>}
               <div className="grid grid-cols-[112px_1fr] gap-3">
-                <button type="button" disabled={submitting} onMouseEnter={backIcon.onMouseEnter} onMouseLeave={backIcon.onMouseLeave} onClick={() => setStep(1)} className="flex h-12 items-center justify-center rounded-md border border-[var(--border)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)] transition-[background-color,color] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)] disabled:opacity-60">
+                <Button type="button" variant="outline" disabled={submitting} onMouseEnter={backIcon.onMouseEnter} onMouseLeave={backIcon.onMouseLeave} onClick={() => setStep(1)} className="h-12 rounded-md text-sm font-semibold">
                   <ChevronLeft ref={backIcon.ref} size={16} duration={0.55} className="mr-1" aria-hidden="true" />
                   Back
-                </button>
-                <button type="submit" disabled={submitting} aria-busy={submitting} onMouseEnter={completeIcon.onMouseEnter} onMouseLeave={completeIcon.onMouseLeave} className="flex h-12 items-center justify-center rounded-md bg-[linear-gradient(135deg,#15777c,#0d6267)] px-4 text-sm font-semibold text-white shadow-[0_10px_22px_rgba(17,107,111,.20)] transition-[transform,box-shadow,filter] duration-150 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_14px_28px_rgba(17,107,111,.25)] active:translate-y-0 active:scale-[.99] disabled:cursor-wait disabled:opacity-70 disabled:hover:translate-y-0">{submitting ? "Creating account…" : "Create account"}<Check ref={completeIcon.ref} size={16} duration={0.55} className="ml-2" aria-hidden="true" /></button>
+                </Button>
+                <Button type="submit" disabled={submitting} aria-busy={submitting} onMouseEnter={completeIcon.onMouseEnter} onMouseLeave={completeIcon.onMouseLeave} className="h-12 rounded-md text-sm font-semibold shadow-[0_6px_16px_rgba(4,63,41,.16)]">{submitting ? "Creating account…" : "Create account"}<Check ref={completeIcon.ref} size={16} duration={0.55} className="ml-2" aria-hidden="true" /></Button>
               </div>
             </div>
           )}
         </form>
 
-        <p className="mt-5 text-center">Already have an account? <Link to="/login" className="font-semibold text-[var(--brand)] transition-colors hover:text-[var(--brand-hover)]">Log in</Link></p>
-        <p className="mt-3 text-center">By registering, you agree to our Terms of use and Privacy policy.</p>
+        <div className="mt-5 text-center text-[12px] text-[var(--text-secondary)]">Already have an account? <Link to="/login" className="font-semibold text-[var(--brand)] underline decoration-[var(--green-300)] underline-offset-3 hover:text-[var(--brand-hover)]">Log in</Link></div>
       </section>
-    </main>
+    </AuthShell>
   );
 }

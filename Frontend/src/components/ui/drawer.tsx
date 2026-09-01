@@ -17,7 +17,7 @@ const DrawerOverlay = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay>
 >(({ className, ...props }, ref) => (
-  <DrawerPrimitive.Overlay ref={ref} className={cn("fixed inset-0 z-50 bg-slate-900/20 backdrop-blur-[1px]", className)} {...props} />
+  <DrawerPrimitive.Overlay ref={ref} className={cn("fixed inset-0 z-50 bg-[var(--overlay)] backdrop-blur-[1px]", className)} {...props} />
 ));
 DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 
@@ -30,7 +30,7 @@ const DrawerContent = React.forwardRef<
     <DrawerPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed z-50 flex flex-col bg-white shadow-xl outline-none",
+        "fixed z-50 flex flex-col bg-white shadow-[0_18px_50px_rgba(4,45,29,.14)] outline-none",
         "data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-full data-[vaul-drawer-direction=right]:max-w-[440px]",
         "data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-full data-[vaul-drawer-direction=left]:max-w-[440px]",
         "data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:max-h-[96%]",
@@ -74,7 +74,7 @@ const DrawerCloseButton = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Close>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Close>
 >(({ className, ...props }, ref) => (
-  <DrawerPrimitive.Close ref={ref} aria-label="Close drawer" className={cn("absolute right-5 top-5 flex size-10 items-center justify-center rounded-full border border-[var(--border)] bg-white text-[var(--text-secondary)] shadow-sm hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]", className)} {...props}>
+  <DrawerPrimitive.Close ref={ref} aria-label="Close drawer" className={cn("absolute right-5 top-5 flex size-11 items-center justify-center rounded-full border border-[var(--border-strong)] bg-white text-[var(--text-secondary)] shadow-sm hover:bg-[var(--brand-subtle)] hover:text-[var(--brand)]", className)} {...props}>
     <X className="size-5" />
   </DrawerPrimitive.Close>
 ));

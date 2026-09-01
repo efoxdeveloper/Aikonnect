@@ -69,6 +69,10 @@ export const ModelName = {
   WorkspaceSetupProgress: 'WorkspaceSetupProgress',
   WhatsAppBusinessAccount: 'WhatsAppBusinessAccount',
   WhatsAppPhoneNumber: 'WhatsAppPhoneNumber',
+  Automation: 'Automation',
+  AutomationLog: 'AutomationLog',
+  Workflow: 'Workflow',
+  WorkflowRun: 'WorkflowRun',
   WorkspaceMember: 'WorkspaceMember',
   Role: 'Role',
   Permission: 'Permission',
@@ -179,6 +183,10 @@ export const ContactScalarFieldEnum = {
   profileName: 'profileName',
   email: 'email',
   source: 'source',
+  status: 'status',
+  userId: 'userId',
+  accountOwnerId: 'accountOwnerId',
+  dealValue: 'dealValue',
   whatsappOpted: 'whatsappOpted',
   whatsappOptInSource: 'whatsappOptInSource',
   whatsappOptedInAt: 'whatsappOptedInAt',
@@ -416,6 +424,80 @@ export const WhatsAppPhoneNumberScalarFieldEnum = {
 } as const
 
 export type WhatsAppPhoneNumberScalarFieldEnum = (typeof WhatsAppPhoneNumberScalarFieldEnum)[keyof typeof WhatsAppPhoneNumberScalarFieldEnum]
+
+
+export const AutomationScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  name: 'name',
+  description: 'description',
+  status: 'status',
+  trigger: 'trigger',
+  conditions: 'conditions',
+  actions: 'actions',
+  runCount: 'runCount',
+  lastRunAt: 'lastRunAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AutomationScalarFieldEnum = (typeof AutomationScalarFieldEnum)[keyof typeof AutomationScalarFieldEnum]
+
+
+export const AutomationLogScalarFieldEnum = {
+  id: 'id',
+  automationId: 'automationId',
+  workspaceId: 'workspaceId',
+  contactId: 'contactId',
+  status: 'status',
+  triggerPayload: 'triggerPayload',
+  conditionResults: 'conditionResults',
+  actionResults: 'actionResults',
+  error: 'error',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type AutomationLogScalarFieldEnum = (typeof AutomationLogScalarFieldEnum)[keyof typeof AutomationLogScalarFieldEnum]
+
+
+export const WorkflowScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  name: 'name',
+  description: 'description',
+  status: 'status',
+  trigger: 'trigger',
+  conditions: 'conditions',
+  steps: 'steps',
+  edges: 'edges',
+  runCount: 'runCount',
+  enrolledCount: 'enrolledCount',
+  lastRunAt: 'lastRunAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkflowScalarFieldEnum = (typeof WorkflowScalarFieldEnum)[keyof typeof WorkflowScalarFieldEnum]
+
+
+export const WorkflowRunScalarFieldEnum = {
+  id: 'id',
+  workflowId: 'workflowId',
+  workspaceId: 'workspaceId',
+  contactId: 'contactId',
+  conversationId: 'conversationId',
+  status: 'status',
+  currentStepId: 'currentStepId',
+  context: 'context',
+  startedAt: 'startedAt',
+  updatedAt: 'updatedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type WorkflowRunScalarFieldEnum = (typeof WorkflowRunScalarFieldEnum)[keyof typeof WorkflowRunScalarFieldEnum]
 
 
 export const WorkspaceMemberScalarFieldEnum = {

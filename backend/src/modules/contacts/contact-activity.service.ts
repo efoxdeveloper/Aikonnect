@@ -1,6 +1,6 @@
 import { prisma } from "../../database/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
-import type { ActivityListQuery, CreateContactNoteInput, CreateContactTaskInput, UpdateContactNoteInput, UpdateContactTaskInput } from "./contact-activity.schemas.js";
+import type { ActivityListQuery, CreateContactNoteInput, CreateContactTaskInput, UpdateContactNoteInput, UpdateContactTaskInput, WorkspaceTaskListQuery } from "./contact-activity.schemas.js";
 
 const actorSelect = { id: true, firstName: true, lastName: true, email: true } as const;
 
@@ -21,6 +21,29 @@ export async function listTasks(workspaceId: string, contactId: string, query: A
     prisma.contactTask.count({ where }),
     prisma.contactTask.findMany({ where, orderBy: [{ status: "asc" }, { dueAt: "asc" }, { createdAt: "desc" }], skip: (query.page - 1) * query.pageSize, take: query.pageSize, include: { createdBy: { select: actorSelect } } }),
   ]);
+  return { items, pagination: pagination(query, total) };
+}
+
+export async function listWorkspaceTasks(workspaceId: string, query: WorkspaceTaskListQuery) {
+  const where = {
+    workspaceId,
+    ...(query.status !== "all" ? { status: query.status } : {}),
+    ...(query.search ? { OR: [{ title: { contains: query.search, mode: "insensitive" as const } }, { contact: { name: { contains: query.search, mode: "insensitive" as const } } }] } : {}),
+  };
+  const [total, taskItems] = await prisma.$transaction([
+    prisma.contactTask.count({ where }),
+    prisma.contactTask.findMany({
+      where,
+      orderBy: [{ status: "asc" }, { dueAt: "asc" }, { createdAt: "desc" }],
+      skip: (query.page - 1) * query.pageSize,
+      take: query.pageSize,
+      include: {
+        contact: { select: { id: true, name: true, phoneE164: true } },
+        createdBy: { select: actorSelect },
+      },
+    }),
+  ]);
+  const items = taskItems.map(({ contact, ...task }) => ({ ...task, contact: { id: contact.id, name: contact.name, phone: contact.phoneE164 } }));
   return { items, pagination: pagination(query, total) };
 }
 

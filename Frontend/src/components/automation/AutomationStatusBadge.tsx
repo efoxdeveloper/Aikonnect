@@ -1,0 +1,3 @@
+import { cn } from "@/lib/utils";
+import type { AutomationStatus, AutomationRunStatus } from "@/types/automation";
+export function AutomationStatusBadge({ status }: { status: AutomationStatus | AutomationRunStatus }) { const labels: Record<string, string> = { ACTIVE: "Active", DRAFT: "Draft", PAUSED: "Paused", RUNNING: "Running", SUCCESS: "Success", FAILED: "Failed", SKIPPED: "Skipped" }; return <span className={cn("inline-flex rounded-md px-2.5 py-1 text-[11px] font-medium", status === "ACTIVE" || status === "SUCCESS" ? "bg-emerald-50 text-emerald-700" : status === "FAILED" ? "bg-red-50 text-red-700" : status === "RUNNING" ? "bg-blue-50 text-blue-700" : "bg-amber-50 text-amber-700")}>{labels[status] ?? status}</span>; }

@@ -19,6 +19,7 @@ function context(status: "authenticated" | "unauthenticated", verified = true): 
 describe("InvitationAccept", () => {
   it("offers sign in or registration when the invitee is logged out", () => {
     render(<AuthContext.Provider value={context("unauthenticated")}><MemoryRouter initialEntries={["/invitations/accept?token=invite-token"]}><InvitationAccept /></MemoryRouter></AuthContext.Provider>);
+    expect(screen.getByTestId("auth-shell")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /sign in to accept/i })).toHaveAttribute("href", "/login?invitation=invite-token");
     expect(screen.getByRole("link", { name: /create an account/i })).toHaveAttribute("href", "/register?invitation=invite-token");
   });

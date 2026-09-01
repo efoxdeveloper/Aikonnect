@@ -1,10 +1,14 @@
 import type { Request, Response } from "express";
 import { requireAuth } from "../../middleware/authenticate.js";
-import type { ActivityListQuery } from "./contact-activity.schemas.js";
+import type { ActivityListQuery, WorkspaceTaskListQuery } from "./contact-activity.schemas.js";
 import * as activityService from "./contact-activity.service.js";
 
 export async function tasks(request: Request, response: Response) {
   response.status(200).json({ success: true, data: await activityService.listTasks(request.params.workspaceId as string, request.params.contactId as string, request.validatedQuery as ActivityListQuery) });
+}
+
+export async function workspaceTasks(request: Request, response: Response) {
+  response.status(200).json({ success: true, data: await activityService.listWorkspaceTasks(request.params.workspaceId as string, request.validatedQuery as WorkspaceTaskListQuery) });
 }
 
 export async function createTask(request: Request, response: Response) {

@@ -137,3 +137,40 @@ export const TemplateStatus = {
 } as const
 
 export type TemplateStatus = (typeof TemplateStatus)[keyof typeof TemplateStatus]
+
+
+export const AutomationStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED'
+} as const
+
+export type AutomationStatus = (typeof AutomationStatus)[keyof typeof AutomationStatus]
+
+
+export const AutomationRunStatus = {
+  RUNNING: 'RUNNING',
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+  SKIPPED: 'SKIPPED'
+} as const
+
+export type AutomationRunStatus = (typeof AutomationRunStatus)[keyof typeof AutomationRunStatus]
+
+
+export const WorkflowStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED'
+} as const
+
+export type WorkflowStatus = (typeof WorkflowStatus)[keyof typeof WorkflowStatus]
+
+
+export const WorkflowRunStatus = {
+  WAITING: 'WAITING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type WorkflowRunStatus = (typeof WorkflowRunStatus)[keyof typeof WorkflowRunStatus]

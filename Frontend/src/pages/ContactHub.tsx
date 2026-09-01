@@ -25,6 +25,8 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { InternationalPhoneInput } from "@/components/ui/international-phone-input";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import {
@@ -111,13 +113,29 @@ function readStoredColumnPreferences(): ColumnPreferences {
   }
 }
 
-type CreateContactPayload = Pick<
+export type CreateContactPayload = Pick<
   ContactImportRecord,
   "name" | "phone" | "whatsappId" | "profileName" | "email" | "source" | "tags" | "customAttributes"
-> & { whatsappOpted: boolean; whatsappConsentSource: string; whatsappConsentAt: string };
+> & { status: string; userId: string; accountOwnerId: string | null; dealValue: number | null; whatsappOpted: boolean; whatsappConsentSource: string; whatsappConsentAt: string };
 type TagOption = { id: string; name: string; contactCount: number };
 type SavedContactSegment = { id: string; name: string; conditions: ContactSegmentCondition[]; createdAt: string; updatedAt: string };
 type ContactSegmentList = { items: SavedContactSegment[]; pagination: { total: number } };
+
+function AccountOwnerCombobox({
+  owners,
+  value,
+  onChange,
+  onOpen,
+}: {
+  owners: Array<{ id: string; firstName: string; lastName: string; email: string }>;
+  value: string;
+  onChange: (value: string) => void;
+  onOpen: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const selectedOwner = owners.find((owner) => owner.id === value);
+  return <Popover open={open} onOpenChange={(next) => { setOpen(next); if (next) onOpen(); }}><PopoverTrigger asChild><button type="button" role="combobox" aria-label="Account Owner" aria-expanded={open} className="flex h-11 w-full items-center justify-between rounded-md border border-[var(--border-strong)] bg-white px-3 text-left text-sm outline-none transition-colors hover:bg-[var(--brand-soft)] focus-visible:border-[var(--brand-accent)] focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]/10"><span className={selectedOwner ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]"}>{selectedOwner ? `${selectedOwner.firstName} ${selectedOwner.lastName}` : "Select Option"}</span><ChevronDown className="size-4 text-[var(--text-muted)]" /></button></PopoverTrigger><PopoverContent align="start" className="w-[min(360px,calc(100vw-48px))] p-0"><Command><CommandInput placeholder="Search account owner..." /><CommandList><CommandEmpty>No account owners found.</CommandEmpty>{owners.map((owner) => <CommandItem key={owner.id} value={`${owner.firstName} ${owner.lastName} ${owner.email}`} onSelect={() => { onChange(owner.id); setOpen(false); }}><span className="min-w-0 flex-1 truncate">{owner.firstName} {owner.lastName}</span>{owner.id === value && <Check className="size-4" />}</CommandItem>)}</CommandList></Command></PopoverContent></Popover>;
+}
 
 function SavedSegmentOption({
   segment,
@@ -162,7 +180,7 @@ function SavedSegmentOption({
             <DropdownMenuItem onSelect={onEdit} className="text-xs">
               <Pencil size={14} />Edit
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={onDelete} className="text-xs text-[var(--danger)] focus:bg-red-50 focus:text-[var(--danger)]">
+            <DropdownMenuItem onSelect={onDelete} className="text-xs text-[var(--danger)] focus:bg-[var(--danger-soft)] focus:text-[var(--danger)]">
               <Trash2 size={14} />Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -192,7 +210,7 @@ function ContactTableSkeletonRows({ columns }: { columns: Column[] }) {
 }
 
 function ContactDataCell({ column, contact }: { column: Column; contact: Contact }) {
-  if (column === "Contact Name") return <td className="max-w-[190px] px-3 py-3">{contact.name}</td>;
+  if (column === "Contact Name") return <td className="max-w-[210px] px-3 py-3"><span className="truncate font-medium text-[#252b28]">{contact.name}</span></td>;
   if (column === "Phone Number") return <td className="px-3 py-3">{formatPhoneForTable(contact.phone)}</td>;
   if (column === "Email ID") return <td className="px-3 py-3">{contact.email}</td>;
   if (column === "Created On") return <td className="px-3 py-3">{contact.createdOn}</td>;
@@ -200,7 +218,7 @@ function ContactDataCell({ column, contact }: { column: Column; contact: Contact
   return (
     <td className="px-3 py-3">
       {contact.tags.length
-        ? contact.tags.map((item) => <span key={item} className="mr-1 inline-flex rounded-full border border-[#a879ff] px-3 py-1 text-[11px] text-[#7b42e7]">{item}</span>)
+        ? contact.tags.map((item) => <span key={item} className="mr-1 inline-flex rounded-full border border-[#d9ccff] bg-[var(--premium-soft)] px-[9px] py-1 text-[12px] font-medium text-[var(--premium)]">{item}</span>)
         : "-"}
     </td>
   );
@@ -280,9 +298,9 @@ function SearchableTagFilter({
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
-        className="relative flex h-10 w-full items-center rounded-md border border-[var(--border)] bg-white py-2 pl-9 pr-8 text-left text-[13px] outline-none hover:bg-[var(--brand-soft)]"
+        className={cn("relative flex h-10 w-full items-center rounded-lg border border-[#dfe5e1] bg-white py-2 pl-9 pr-8 text-left text-[13px] outline-none hover:bg-[#f6f8f7]", value !== "all" && "border-[var(--brand-accent)] bg-[var(--brand-soft)] text-[var(--brand)]")}
       >
-        <Tag className="pointer-events-none absolute left-3 size-[15px] text-[var(--text-secondary)]" />
+        <Tag className={cn("pointer-events-none absolute left-3 size-[15px] text-[#64726c]", value !== "all" && "text-[var(--brand)]")} />
         <span className="truncate">
           {value === "all" ? "Select Tag" : value}
         </span>
@@ -294,7 +312,7 @@ function SearchableTagFilter({
         />
       </button>
       {open && (
-        <div className="absolute left-0 top-11 z-30 w-[250px] overflow-hidden rounded-md border border-[var(--border)] bg-white shadow-[0_12px_30px_rgba(31,42,55,.14)]">
+        <div className="absolute left-0 top-11 z-30 w-[250px] overflow-hidden rounded-md border border-[var(--border)] bg-white shadow-[0_12px_30px_rgba(4,45,29,.10)]">
           <div className="border-b border-[var(--border-soft)] p-2">
             <div className="relative">
               <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-[var(--text-muted)]" />
@@ -304,7 +322,7 @@ function SearchableTagFilter({
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search tags..."
-                className="h-9 w-full rounded-md border border-[var(--border)] bg-[#fbfcfd] pl-8 pr-3 text-xs outline-none focus:border-[var(--brand)]"
+                className="h-9 w-full rounded-md border border-[var(--border-strong)] bg-white pl-8 pr-3 text-xs outline-none focus:border-[var(--brand-accent)] focus:ring-2 focus:ring-[var(--brand-accent)]/10"
               />
             </div>
           </div>
@@ -332,7 +350,7 @@ function SearchableTagFilter({
                 onClick={() => selectTag(option)}
                 className="flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-xs hover:bg-[var(--brand-soft)]"
               >
-                <span className="inline-flex rounded-full border border-[#a879ff] px-2.5 py-0.5 text-[11px] font-medium text-[#7b42e7]">
+                <span className="inline-flex rounded-full border border-[#d9ccff] bg-[var(--premium-soft)] px-[9px] py-1 text-[12px] font-medium text-[var(--premium)]">
                   {option}
                 </span>
                 {value === option && <Check size={14} />}
@@ -353,7 +371,7 @@ function SearchableTagFilter({
   );
 }
 
-function ContactDrawer({
+export function ContactDrawer({
   open,
   onClose,
   onCreate,
@@ -366,8 +384,10 @@ function ContactDrawer({
 }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [whatsappId, setWhatsappId] = useState("");
-  const [profileName, setProfileName] = useState("");
+  const [userId, setUserId] = useState("");
+  const [status, setStatus] = useState("New Lead");
+  const [accountOwnerId, setAccountOwnerId] = useState("");
+  const [dealValue, setDealValue] = useState("");
   const [email, setEmail] = useState("");
   const [source, setSource] = useState("Manual");
   const [tags, setTags] = useState("");
@@ -377,9 +397,29 @@ function ContactDrawer({
   const [customAttributes, setCustomAttributes] = useState<Record<string, unknown>>({});
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { accessToken, user } = useAuth();
+  const workspaceId = getActiveMembership(user)?.workspace.id;
+  const [accountOwners, setAccountOwners] = useState<Array<{ id: string; firstName: string; lastName: string; email: string }>>([]);
+  const [ownersLoaded, setOwnersLoaded] = useState(false);
+  const otherCustomFields = customFields.filter((field) => !["lead_status", "account_owner", "user_id", "contact_deal_value"].includes(field.key));
+  useEffect(() => {
+    if (!open) return;
+    const currentUser = user ? { id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email } : null;
+    if (currentUser) {
+      setAccountOwners([currentUser]);
+      setAccountOwnerId((current) => current || currentUser.id);
+    }
+  }, [open, user]);
+  const loadAccountOwners = () => {
+    if (ownersLoaded || !workspaceId || !accessToken) return;
+    setOwnersLoaded(true);
+    void Promise.resolve(apiRequest<Array<{ user: { id: string; firstName: string; lastName: string; email: string } }>>(`/workspaces/${workspaceId}/members`, { headers: { authorization: `Bearer ${accessToken}` } }))
+      .then((members) => { if (Array.isArray(members) && members.length) setAccountOwners(members.map(({ user: member }) => member)); })
+      .catch(() => undefined);
+  };
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const missingRequired = customFields.find((field) => {
+    const missingRequired = otherCustomFields.find((field) => {
       const value = customAttributes[field.key];
       return field.required && (value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0));
     });
@@ -390,8 +430,10 @@ function ContactDrawer({
       await onCreate({
         name,
         phone,
-        whatsappId,
-        profileName,
+        status,
+        userId,
+        accountOwnerId: accountOwnerId || null,
+        dealValue: dealValue === "" ? null : Number(dealValue),
         email,
         source,
         tags: tags
@@ -405,8 +447,10 @@ function ContactDrawer({
       });
       setName("");
       setPhone("");
-      setWhatsappId("");
-      setProfileName("");
+      setUserId("");
+      setStatus("New Lead");
+      setAccountOwnerId("");
+      setDealValue("");
       setEmail("");
       setSource("Manual");
       setTags("");
@@ -447,7 +491,7 @@ function ContactDrawer({
                 htmlFor="contact-name"
                 className="mb-2 block text-sm font-medium"
               >
-                Contact name
+                Contact name<span aria-hidden="true" className="ml-1 text-[var(--danger)]">*</span>
               </label>
               <Input
                 id="contact-name"
@@ -461,7 +505,7 @@ function ContactDrawer({
                 htmlFor="contact-phone"
                 className="mb-2 block text-sm font-medium"
               >
-                Phone number
+                Phone number<span aria-hidden="true" className="ml-1 text-[var(--danger)]">*</span>
               </label>
               <InternationalPhoneInput
                 id="contact-phone"
@@ -471,40 +515,20 @@ function ContactDrawer({
               />
             </div>
             <div>
-              <label
-                htmlFor="contact-whatsapp-id"
-                className="mb-2 block text-sm font-medium"
-              >
-                WhatsApp ID{" "}
-                <span className="font-normal text-[var(--text-muted)]">
-                  (optional)
-                </span>
-              </label>
-              <Input
-                id="contact-whatsapp-id"
-                value={whatsappId}
-                maxLength={64}
-                onChange={(event) => setWhatsappId(event.target.value)}
-                placeholder="e.g. 919876543210"
-              />
+              <label htmlFor="contact-user-id" className="mb-2 block text-sm font-medium">User Id</label>
+              <Input id="contact-user-id" value={userId} onChange={(event) => setUserId(event.target.value)} placeholder="Enter input here" />
             </div>
             <div>
-              <label
-                htmlFor="contact-profile-name"
-                className="mb-2 block text-sm font-medium"
-              >
-                WhatsApp profile name{" "}
-                <span className="font-normal text-[var(--text-muted)]">
-                  (optional)
-                </span>
-              </label>
-              <Input
-                id="contact-profile-name"
-                value={profileName}
-                maxLength={160}
-                onChange={(event) => setProfileName(event.target.value)}
-                placeholder="Name shown on WhatsApp"
-              />
+              <label htmlFor="contact-status" className="mb-2 block text-sm font-medium">Status<span aria-hidden="true" className="ml-1 text-[var(--danger)]">*</span></label>
+              <select id="contact-status" required value={status} onChange={(event) => setStatus(event.target.value)} className="h-11 w-full rounded-md border border-[var(--border-strong)] bg-white px-3 text-sm outline-none focus:border-[var(--brand-accent)] focus:ring-2 focus:ring-[var(--brand-accent)]/10"><option>New Lead</option><option>Qualification</option><option>Needs Analysis</option><option>Proposal</option><option>Negotiation</option><option>Closed Won</option><option>Closed Lost</option></select>
+            </div>
+            <div>
+              <label htmlFor="contact-account-owner" className="mb-2 block text-sm font-medium">Account Owner<span aria-hidden="true" className="ml-1 text-[var(--danger)]">*</span></label>
+              <AccountOwnerCombobox owners={accountOwners} value={accountOwnerId} onChange={setAccountOwnerId} onOpen={loadAccountOwners} />
+            </div>
+            <div>
+              <label htmlFor="contact-deal-value" className="mb-2 block text-sm font-medium">Contact Deal Value</label>
+              <Input id="contact-deal-value" type="number" min="0" step="0.01" value={dealValue} onChange={(event) => setDealValue(event.target.value)} placeholder="Enter input here" />
             </div>
             <div>
               <label
@@ -566,12 +590,12 @@ function ContactDrawer({
                 Separate multiple tags with commas.
               </p>
             </div>
-            <div className="border-t border-[var(--border-soft)] pt-5"><h3>WhatsApp consent</h3><div className="mt-4 space-y-4"><div><label htmlFor="contact-whatsapp-opted" className="mb-2 block text-sm font-medium">Marketing consent</label><select id="contact-whatsapp-opted" aria-label="Marketing consent" value={whatsappOpted ? "true" : "false"} onChange={(event) => setWhatsappOpted(event.target.value === "true")} className="h-10 w-full rounded-md border border-[var(--border)] bg-white px-3 text-sm outline-none focus:border-[var(--brand)]"><option value="true">Opted in</option><option value="false">Opted out</option></select></div><div><label htmlFor="contact-consent-source" className="mb-2 block text-sm font-medium">Consent source</label><Input id="contact-consent-source" required maxLength={100} value={whatsappConsentSource} onChange={(event) => setWhatsappConsentSource(event.target.value)} placeholder="e.g. Website form, WhatsApp reply" /></div><div><label htmlFor="contact-consent-at" className="mb-2 block text-sm font-medium">Consent date and time</label><Input id="contact-consent-at" type="datetime-local" required value={whatsappConsentAt} max={new Date(Date.now() - new Date().getTimezoneOffset() * 60_000).toISOString().slice(0, 16)} onChange={(event) => setWhatsappConsentAt(event.target.value)} /></div>{!whatsappOpted && <p className="rounded-md bg-amber-50 px-3 py-2">Opted-out contacts are automatically blocked from marketing campaigns.</p>}</div></div>
-            {customFields.length > 0 && <div className="border-t border-[var(--border-soft)] pt-5"><h3>Custom fields</h3><div className="mt-4 space-y-5">{customFields.map((field) => <ContactCustomFieldInput key={field.id} field={field} value={customAttributes[field.key]} onChange={(value) => setCustomAttributes((current) => { const next = { ...current }; if (value === undefined || value === "" || (Array.isArray(value) && value.length === 0)) delete next[field.key]; else next[field.key] = value; return next; })} />)}</div></div>}
+            <fieldset className="border-t border-[var(--border-soft)] pt-5"><legend className="text-sm font-medium text-[var(--text-primary)]">WhatsApp Opted</legend><div className="mt-3 flex gap-5"><label className="flex cursor-pointer items-center gap-2 text-sm"><input type="radio" name="contact-whatsapp-opted" value="yes" checked={whatsappOpted} onChange={() => setWhatsappOpted(true)} className="size-4 accent-[var(--brand)]" />Yes</label><label className="flex cursor-pointer items-center gap-2 text-sm"><input type="radio" name="contact-whatsapp-opted" value="no" checked={!whatsappOpted} onChange={() => setWhatsappOpted(false)} className="size-4 accent-[var(--brand)]" />No</label></div>{!whatsappOpted && <div className="mt-3 rounded-md bg-[var(--warning-soft)] px-3 py-2 text-[#a66a00]">Opted-out contacts are automatically blocked from marketing campaigns.</div>}</fieldset>
+            {otherCustomFields.length > 0 && <div className="border-t border-[var(--border-soft)] pt-5"><h3>Custom fields</h3><div className="mt-4 space-y-5">{otherCustomFields.map((field) => <ContactCustomFieldInput key={field.id} field={field} value={customAttributes[field.key]} onChange={(value) => setCustomAttributes((current) => { const next = { ...current }; if (value === undefined || value === "" || (Array.isArray(value) && value.length === 0)) delete next[field.key]; else next[field.key] = value; return next; })} />)}</div></div>}
             {error && (
               <p
                 role="alert"
-                className="rounded-md bg-red-50 px-3 py-2"
+                className="rounded-md bg-[var(--danger-soft)] px-3 py-2"
               >
                 {error}
               </p>
@@ -991,20 +1015,20 @@ export function ContactHub() {
       data-testid="contact-page"
     >
       <div
-        className="flex-none border-b border-[var(--border)] bg-white shadow-[0_2px_8px_rgba(30,40,55,.04)]"
+        className="flex-none border-b border-[var(--border)] bg-white"
         data-testid="contact-page-header"
       >
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-5 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
-            <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[var(--brand)] text-white">
-              <Users size={21} />
+        <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-4 sm:flex-row sm:items-start sm:justify-between sm:px-6 lg:px-8">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 flex size-11 shrink-0 items-center justify-center rounded-full bg-[var(--brand-hover)] text-white">
+              <Users size={19} strokeWidth={1.9} />
             </div>
             <div>
-              <h1 className="text-[19px] font-medium leading-6">Contact Hub</h1>
-              <p className="mt-0.5">
+              <h1 className="text-[18px] font-medium leading-6 text-[var(--text-primary)]">Contact Hub</h1>
+              <div className="mt-1 text-[var(--text-secondary)]">
                 Seamlessly manage all your Contacts in one place for Sales,
                 Support and Beyond.
-              </p>
+              </div>
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -1012,7 +1036,7 @@ export function ContactHub() {
               type="button"
               disabled={!canCreate}
               onClick={() => setImportOpen(true)}
-              className="flex h-10 items-center rounded-md border border-[var(--border)] bg-white px-4 text-sm font-medium text-[var(--brand)] disabled:opacity-50"
+              className="flex h-10 items-center rounded-md border border-[var(--border-strong)] bg-white px-4 text-sm font-medium text-[#34443d] hover:bg-[#f6f8f7] disabled:opacity-50"
             >
               <FileDown size={17} className="mr-2" />
               Import Contacts
@@ -1021,7 +1045,7 @@ export function ContactHub() {
               type="button"
               disabled={!canCreate}
               onClick={() => setCreateOpen(true)}
-              className="flex h-10 items-center rounded-md bg-[var(--brand)] px-4 text-sm font-medium text-white disabled:opacity-50"
+              className="flex h-10 items-center rounded-md bg-[var(--brand)] px-4 text-sm font-medium text-white hover:bg-[var(--brand-hover)] active:bg-[var(--brand-pressed)] disabled:opacity-50"
             >
               <Plus size={18} className="mr-2" />
               Create Contacts
@@ -1045,17 +1069,17 @@ export function ContactHub() {
             />
           </div>
           <div ref={segmentRootRef} className="relative shrink-0">
-            <button type="button" aria-label="Segment" aria-expanded={segmentMenuOpen} onClick={() => { setSegmentMenuOpen((open) => !open); setColumnsOpen(false); setMoreOpen(false); }} className="relative flex h-10 w-[160px] items-center rounded-md border border-[var(--border)] bg-white py-2 pl-9 pr-8 text-left text-[13px]">
-              <ListFilter className="pointer-events-none absolute left-3 size-[16px] text-[var(--brand)]" />
+            <button type="button" aria-label="Segment" aria-expanded={segmentMenuOpen} onClick={() => { setSegmentMenuOpen((open) => !open); setColumnsOpen(false); setMoreOpen(false); }} className={cn("relative flex h-10 w-[160px] items-center rounded-lg border border-[#dfe5e1] bg-white py-2 pl-9 pr-8 text-left text-[13px]", activeSegment && "border-[var(--brand-accent)] bg-[var(--brand-soft)] text-[var(--brand)]")}>
+              <ListFilter className={cn("pointer-events-none absolute left-3 size-[16px] text-[#64726c]", activeSegment && "text-[var(--brand)]")} />
               <span className="truncate">{activeSegment?.name ?? "Segment"}</span>
               <ChevronDown className={cn("pointer-events-none absolute right-3 size-4 transition-transform", segmentMenuOpen && "rotate-180")} />
             </button>
             {segmentMenuOpen && (
-              <div className="absolute left-0 top-11 z-30 w-[300px] overflow-hidden rounded-md border border-[var(--border)] bg-white shadow-[0_12px_30px_rgba(31,42,55,.14)]">
+              <div className="absolute left-0 top-11 z-30 w-[300px] overflow-hidden rounded-md border border-[var(--border)] bg-white shadow-[0_12px_30px_rgba(4,45,29,.10)]">
                 <div className="border-b border-[var(--border-soft)] p-2">
                   <div className="relative">
                     <Search className="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-[var(--text-muted)]" />
-                    <input autoFocus aria-label="Search segments" value={segmentSearch} onChange={(event) => setSegmentSearch(event.target.value)} placeholder="Search saved segments..." className="h-9 w-full rounded-md border border-[var(--border)] bg-[#fbfcfd] pl-8 pr-3 text-xs outline-none focus:border-[var(--brand)]" />
+                    <input autoFocus aria-label="Search segments" value={segmentSearch} onChange={(event) => setSegmentSearch(event.target.value)} placeholder="Search saved segments..." className="h-9 w-full rounded-md border border-[var(--border-strong)] bg-white pl-8 pr-3 text-xs outline-none focus:border-[var(--brand-accent)] focus:ring-2 focus:ring-[var(--brand-accent)]/10" />
                   </div>
                 </div>
                 <div role="listbox" aria-label="Saved segments" className="max-h-56 overflow-y-auto p-1.5">
@@ -1095,7 +1119,7 @@ export function ContactHub() {
             type="button"
             disabled={selected.length === 0 || !canSendCampaigns || checkingCampaignEligibility}
             onClick={() => void sendCampaign()}
-            className="flex h-10 shrink-0 items-center rounded-md border border-[var(--border)] bg-white px-3 text-[13px] font-medium text-[var(--brand)] disabled:text-[var(--text-muted)]"
+            className="flex h-10 shrink-0 items-center rounded-lg border border-[#dfe5e1] bg-white px-3 text-[13px] font-medium text-[#47554f] hover:bg-[#f6f8f7] disabled:text-[var(--text-muted)]"
           >
             <Megaphone size={16} className="mr-2" />
             {checkingCampaignEligibility ? "Checking..." : "Send Campaign"}
@@ -1108,7 +1132,7 @@ export function ContactHub() {
                 setMoreOpen((open) => !open);
                 setColumnsOpen(false);
               }}
-              className="flex h-10 items-center rounded-md border border-[var(--border)] bg-white px-3 text-[13px]"
+              className="flex h-10 items-center rounded-lg border border-[#dfe5e1] bg-white px-3 text-[13px] text-[#47554f] hover:bg-[#f6f8f7]"
             >
               More Actions
               <ChevronDown size={15} className="ml-2" />
@@ -1154,7 +1178,7 @@ export function ContactHub() {
                 setColumnsOpen((open) => !open);
                 setMoreOpen(false);
               }}
-              className="flex h-10 items-center rounded-md border bg-white px-3 text-[13px]"
+              className="flex h-10 items-center rounded-lg border border-[#dfe5e1] bg-white px-3 text-[13px] text-[#47554f] hover:bg-[#f6f8f7]"
             >
               <Columns3 size={16} className="mr-2" />
               Modify Columns
@@ -1208,12 +1232,12 @@ export function ContactHub() {
         {error && (
           <p
             role="alert"
-            className="mt-3 flex-none rounded-md bg-red-50 px-3 py-2"
+            className="mt-3 flex-none rounded-md bg-[var(--danger-soft)] px-3 py-2"
           >
             {error}
           </p>
         )}
-        <section className="mt-6 flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-white shadow-[0_3px_12px_rgba(30,40,55,.045)]">
+        <section className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-[10px] border border-[#e3e8e5] bg-white shadow-[0_1px_2px_rgba(16,24,20,.04)]">
           <div
             ref={tableScrollRef}
             onScroll={handleTableScroll}
@@ -1221,7 +1245,7 @@ export function ContactHub() {
             data-testid="contact-table-scroll-region"
           >
             <table className="contact-data-table w-full min-w-[900px] border-collapse bg-white text-left">
-              <thead className="sticky top-0 z-10 border-b border-[#cbd5dc] bg-white shadow-[inset_0_-1px_0_#cbd5dc]">
+              <thead className="contact-table-head sticky top-0 z-10 border-b border-[var(--border-soft)] bg-[var(--table-header)] shadow-[inset_0_-1px_0_var(--border-soft)]">
                 <tr>
                   <th className="w-14 px-4 py-3.5">
                     <input
@@ -1246,7 +1270,7 @@ export function ContactHub() {
                     tabIndex={0}
                     onClick={() => navigate(`/contacts/${contact.id}`)}
                     onKeyDown={(event) => { if (event.key === "Enter") navigate(`/contacts/${contact.id}`); }}
-                    className="cursor-pointer border-b outline-none hover:bg-[var(--brand-soft)] focus-visible:bg-[var(--brand-soft)]"
+                    className="cursor-pointer border-b border-[var(--border-soft)] outline-none hover:bg-[var(--table-hover)] focus-visible:bg-[var(--table-selected)]"
                   >
                     <td className="px-4 py-3" onClick={(event) => event.stopPropagation()} onKeyDown={(event) => event.stopPropagation()}>
                       <input

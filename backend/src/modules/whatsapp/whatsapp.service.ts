@@ -1,7 +1,7 @@
 import { env } from "../../config/env.js";
 import { prisma } from "../../database/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
-import { encryptSecret } from "../../utils/crypto.js";
+import { decryptSecret, encryptSecret } from "../../utils/crypto.js";
 import type { EmbeddedSignupInput } from "./whatsapp.schemas.js";
 
 type MetaResponse = Record<string, unknown> & { error?: { message?: string } };
@@ -36,6 +36,53 @@ async function fetchMeta<T extends MetaResponse>(path: string, accessToken: stri
     headers: { authorization: `Bearer ${accessToken}` },
   });
   return parseMetaResponse(response) as Promise<T>;
+}
+
+async function postMeta<T extends MetaResponse>(path: string, accessToken: string, body: Record<string, unknown>): Promise<T> {
+  const response = await fetch(`https://graph.facebook.com/${env.META_GRAPH_API_VERSION}${path}`, {
+    method: "POST",
+    headers: { authorization: `Bearer ${accessToken}`, "content-type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  return parseMetaResponse(response) as Promise<T>;
+}
+
+/** Sends an automation reply and records it in the same conversation shown in Inbox. */
+export async function sendAutomationText(workspaceId: string, conversationId: string, body: string) {
+  const { encryptionKey } = requireMetaConfiguration();
+  const conversation = await prisma.conversation.findFirst({
+    where: { id: conversationId, workspaceId },
+    select: {
+      id: true, contactId: true, phoneNumberId: true, contact: { select: { phoneE164: true } },
+      phoneNumber: { select: { metaPhoneNumberId: true, businessAccount: { select: { encryptedAccessToken: true } } } },
+    },
+  });
+  if (!conversation) throw new AppError(404, "Conversation was not found", "CONVERSATION_NOT_FOUND");
+  if (!conversation.phoneNumber?.metaPhoneNumberId || !conversation.phoneNumber.businessAccount.encryptedAccessToken) {
+    throw new AppError(503, "Connect a WhatsApp phone number before sending automation messages", "WHATSAPP_NOT_CONNECTED");
+  }
+  const to = conversation.contact.phoneE164.replace(/\D/g, "");
+  if (!to) throw new AppError(422, "The contact does not have a valid WhatsApp number", "CONTACT_PHONE_INVALID");
+  const accessToken = decryptSecret(conversation.phoneNumber.businessAccount.encryptedAccessToken, encryptionKey);
+  const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(conversation.phoneNumber.metaPhoneNumberId)}/messages`, accessToken, {
+    messaging_product: "whatsapp",
+    to,
+    type: "text",
+    text: { body },
+  });
+  const sentAt = new Date();
+  const metaMessageId = sent.messages?.[0]?.id ?? null;
+  return prisma.$transaction(async (transaction) => {
+    const message = await transaction.message.create({
+      data: {
+        workspaceId, conversationId: conversation.id, contactId: conversation.contactId, metaMessageId,
+        direction: "OUTGOING", type: "TEXT", status: "SENT", text: body, payload: { source: "automation" }, sentAt,
+      },
+      select: { id: true, metaMessageId: true, sentAt: true },
+    });
+    await transaction.conversation.update({ where: { id: conversation.id }, data: { lastMessagePreview: body, lastMessageAt: sentAt } });
+    return message;
+  });
 }
 
 export async function completeEmbeddedSignup(workspaceId: string, input: EmbeddedSignupInput) {

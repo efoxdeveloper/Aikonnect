@@ -1,3 +1,5 @@
+import { beginRequest, endRequest } from "@/lib/request-events";
+
 const API_BASE_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:5006/api/v1").replace(/\/$/, "");
 
 type ApiEnvelope<T> = {
@@ -29,27 +31,32 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
   const headers = new Headers(options.headers);
   if (options.body && !headers.has("content-type")) headers.set("content-type", "application/json");
 
-  let response: Response;
+  beginRequest();
   try {
-    response = await fetch(`${API_BASE_URL}${path}`, {
-      ...options,
-      headers,
-      credentials: "include",
-    });
-  } catch {
-    throw new ApiError(0, "Unable to connect to the server. Please try again.", "NETWORK_ERROR");
-  }
+    let response: Response;
+    try {
+      response = await fetch(`${API_BASE_URL}${path}`, {
+        ...options,
+        headers,
+        credentials: "include",
+      });
+    } catch {
+      throw new ApiError(0, "Unable to connect to the server. Please try again.", "NETWORK_ERROR");
+    }
 
-  if (response.status === 204) return undefined as T;
-  const payload = (await response.json().catch(() => ({}))) as ApiEnvelope<T> & ErrorEnvelope;
-  if (!response.ok) {
-    throw new ApiError(
-      response.status,
-      payload.error?.message ?? "The request could not be completed.",
-      payload.error?.code,
-      payload.error?.details,
-    );
-  }
+    if (response.status === 204) return undefined as T;
+    const payload = (await response.json().catch(() => ({}))) as ApiEnvelope<T> & ErrorEnvelope;
+    if (!response.ok) {
+      throw new ApiError(
+        response.status,
+        payload.error?.message ?? "The request could not be completed.",
+        payload.error?.code,
+        payload.error?.details,
+      );
+    }
 
-  return payload.data;
+    return payload.data;
+  } finally {
+    endRequest();
+  }
 }

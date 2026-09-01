@@ -5,6 +5,11 @@ export const activityListQuerySchema = z.object({
   pageSize: z.coerce.number().int().min(1).max(100).default(50),
 });
 
+export const workspaceTaskListQuerySchema = activityListQuerySchema.extend({
+  status: z.enum(["all", "OPEN", "COMPLETED"]).default("all"),
+  search: z.string().trim().max(200).optional(),
+});
+
 export const createContactTaskSchema = z.object({
   title: z.string().trim().min(1).max(160),
   description: z.string().trim().max(5_000).optional(),
@@ -37,6 +42,7 @@ export const taskParamsSchema = activityParamsSchema.extend({ taskId: z.uuid() }
 export const noteParamsSchema = activityParamsSchema.extend({ noteId: z.uuid() });
 
 export type ActivityListQuery = z.infer<typeof activityListQuerySchema>;
+export type WorkspaceTaskListQuery = z.infer<typeof workspaceTaskListQuerySchema>;
 export type CreateContactTaskInput = z.infer<typeof createContactTaskSchema>;
 export type UpdateContactTaskInput = z.infer<typeof updateContactTaskSchema>;
 export type CreateContactNoteInput = z.infer<typeof createContactNoteSchema>;

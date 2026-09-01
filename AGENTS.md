@@ -38,8 +38,9 @@
   This section must be a full-width white band with a subtle bottom border and very light shadow.
 - Constrain the page-header contents to the same centered maximum width as the main content
   (`max-w-[1400px]` by default) and use consistent responsive horizontal padding.
-- Keep page titles compact: approximately 19px medium weight with a 12px secondary description,
-  tight line heights, and about 2px vertical spacing between title and description.
+- Keep page titles compact at approximately 19px medium weight with a tight line height.
+- Do not add subtitles, descriptions, helper text, or secondary copy beneath authenticated page
+  header titles unless the user explicitly requests it for that specific page.
 - Place primary page actions on the right side of the page header. Keep secondary actions outlined
   and the main action brand-filled. Allow actions to wrap beneath the title block on narrow screens.
 - Use `var(--page-background)` for the content area below the white page header. Keep filters and

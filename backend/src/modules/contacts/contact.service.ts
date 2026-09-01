@@ -25,6 +25,7 @@ const contactInclude = {
     orderBy: { tag: { name: "asc" as const } },
     select: { tag: { select: { id: true, name: true, color: true } } },
   },
+  accountOwner: { select: { id: true, firstName: true, lastName: true, email: true } },
 } satisfies Prisma.ContactInclude;
 
 type ContactRecord = Prisma.ContactGetPayload<{ include: typeof contactInclude }>;
@@ -45,6 +46,11 @@ function serializeContact(contact: ContactRecord, visibility: Visibility) {
     profileName: contact.profileName,
     email: contact.email,
     source: contact.source,
+    status: contact.status,
+    userId: contact.userId,
+    accountOwnerId: contact.accountOwnerId,
+    accountOwner: contact.accountOwner,
+    dealValue: contact.dealValue === null ? null : Number(contact.dealValue),
     whatsappOpted: contact.whatsappOpted,
     whatsappOptInSource: contact.whatsappOptInSource,
     whatsappOptedInAt: contact.whatsappOptedInAt,
@@ -206,6 +212,10 @@ function contactData(input: Partial<CreateContactInput> | UpdateContactInput, ac
   return {
     ...(input.name !== undefined ? { name: input.name } : {}),
     ...(input.phone !== undefined ? { phoneE164: input.phone } : {}),
+    ...(input.status !== undefined ? { status: input.status } : {}),
+    ...(input.userId !== undefined ? { userId: input.userId } : {}),
+    ...(input.accountOwnerId !== undefined ? { accountOwnerId: input.accountOwnerId } : {}),
+    ...(input.dealValue !== undefined ? { dealValue: input.dealValue } : {}),
     ...(input.whatsappId !== undefined ? { whatsappId: input.whatsappId } : {}),
     ...(input.profileName !== undefined ? { profileName: input.profileName } : {}),
     ...(input.email !== undefined ? { email: input.email } : {}),
@@ -400,6 +410,10 @@ export async function createContact(
           profileName: input.profileName,
           email: input.email ?? null,
           source: input.source,
+          status: input.status,
+          userId: input.userId,
+          accountOwnerId: input.accountOwnerId ?? null,
+          dealValue: input.dealValue ?? null,
           whatsappOpted: input.whatsappOpted,
           whatsappOptInSource: input.whatsappOpted ? consentSource : null,
           whatsappOptedInAt: input.whatsappOpted ? consentAt : null,

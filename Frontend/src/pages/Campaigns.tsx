@@ -1169,8 +1169,8 @@ export function Campaigns() {
             className="min-h-0 flex-1 overflow-auto"
             data-testid="campaign-table-scroll-region"
           >
-            <table className="w-full min-w-[1180px] border-collapse text-left">
-              <thead className="sticky top-0 z-10 border-b border-[var(--border)] bg-white">
+            <table className="campaign-data-table w-full min-w-[1180px] border-collapse text-left">
+              <thead className="sticky top-0 z-10 border-b border-[var(--border-soft)] bg-[var(--table-header)] shadow-[inset_0_-1px_0_var(--border-soft)]">
                 <tr>
                   {[
                     "Campaign Name",

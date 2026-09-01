@@ -23,6 +23,7 @@ import {
   taskParamsSchema,
   updateContactNoteSchema,
   updateContactTaskSchema,
+  workspaceTaskListQuerySchema,
 } from "./contact-activity.schemas.js";
 import {
   bulkTagContactsSchema,
@@ -142,6 +143,12 @@ contactRouter.post(
   requireWorkspacePermission(PERMISSIONS.CONTACTS_CREATE),
   validateBody(createContactSchema),
   asyncHandler(controller.create),
+);
+contactRouter.get(
+  "/tasks",
+  requireWorkspacePermission(PERMISSIONS.CONTACTS_READ),
+  validateQuery(workspaceTaskListQuerySchema),
+  asyncHandler(activityController.workspaceTasks),
 );
 contactRouter.get(
   "/:contactId/tasks",

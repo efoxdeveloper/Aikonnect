@@ -28,22 +28,22 @@ describe("global typography", () => {
     expect(stylesheet).not.toContain("Rubik");
   });
 
-  it("uses the global single-line paragraph style", () => {
+  it("uses the global SaaS body paragraph style", () => {
     const paragraphStyles = stylesheet.match(/p\s*\{([^}]*)\}/)?.[1] ?? "";
     expect(paragraphStyles).toMatch(/font-size:\s*14px;/);
     expect(paragraphStyles).toMatch(/font-weight:\s*400;/);
-    expect(paragraphStyles).toMatch(/text-overflow:\s*ellipsis;/);
-    expect(paragraphStyles).toMatch(/white-space:\s*nowrap;/);
-    expect(paragraphStyles).not.toMatch(/\bcolor\s*:/);
+    expect(paragraphStyles).toMatch(/line-height:\s*21px;/);
+    expect(paragraphStyles).toMatch(/color:\s*var\(--text-body\);/);
+    expect(paragraphStyles).toMatch(/white-space:\s*normal;/);
     expect(stylesheet).toMatch(/\[role="alert"\]\s*\{\s*color:\s*var\(--danger\);\s*\}/);
   });
 
   it("uses the Contact Hub title typography for global h3 headings", () => {
     const headingStyles = stylesheet.match(/h3\s*\{([^}]*)\}/)?.[1] ?? "";
     expect(headingStyles).toMatch(/font-family:\s*var\(--font-sans\);/);
-    expect(headingStyles).toMatch(/font-size:\s*15px;/);
-    expect(headingStyles).toMatch(/font-weight:\s*500;/);
-    expect(headingStyles).toMatch(/line-height:\s*1\.25;/);
+    expect(headingStyles).toMatch(/font-size:\s*16px;/);
+    expect(headingStyles).toMatch(/font-weight:\s*600;/);
+    expect(headingStyles).toMatch(/line-height:\s*24px;/);
   });
 
   it("does not override global paragraph typography with Tailwind utilities", () => {
@@ -59,7 +59,7 @@ describe("global typography", () => {
   it("uses paragraph typography for Contact Hub table data", () => {
     expect(stylesheet).toMatch(/\.contact-data-table tbody td\s*\{[\s\S]*?font-size:\s*14px;/);
     expect(stylesheet).toMatch(/\.contact-data-table tbody td\s*\{[\s\S]*?font-weight:\s*400;/);
-    expect(stylesheet).toMatch(/\.contact-data-table tbody td\s*\{[\s\S]*?color:\s*rgb\(34, 34, 34\);/);
+    expect(stylesheet).toMatch(/\.contact-data-table tbody td\s*\{[\s\S]*?color:\s*#303733;/);
     expect(stylesheet).toMatch(/\.contact-data-table tbody td\s*\{[\s\S]*?white-space:\s*nowrap;/);
   });
 

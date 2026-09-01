@@ -48,6 +48,7 @@ describe("VerifyEmail", () => {
 
   it("shows the signed-in user's email and resend control while waiting", () => {
     renderPage(context());
+    expect(screen.getByTestId("auth-shell")).toBeInTheDocument();
     expect(screen.getByText("owner@example.com")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /resend verification email/i })).toBeInTheDocument();
   });

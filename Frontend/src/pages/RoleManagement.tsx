@@ -123,7 +123,7 @@ function CreateRoleDialog({
   const submit = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); void onCreate(name, description); };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#102c35]/40 px-4 py-6 backdrop-blur-[2px]" role="presentation">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--overlay)] px-4 py-6 backdrop-blur-[2px]" role="presentation">
       <section role="dialog" aria-modal="true" aria-labelledby="create-role-title" className="w-full max-w-[460px] rounded-md border border-white/80 bg-white p-6 shadow-[0_18px_48px_rgba(21,52,62,.16)] sm:p-7">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3"><div onMouseEnter={sparkleIcon.onMouseEnter} onMouseLeave={sparkleIcon.onMouseLeave} className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[var(--brand-soft)] text-[var(--brand)]"><Sparkles ref={sparkleIcon.ref} size={19} duration={0.7} aria-hidden="true" /></div><div><h2 id="create-role-title" className="text-lg font-medium text-[var(--text-primary)]">Create a custom role</h2><p className="mt-1">The new role starts with Teammate permissions, which you can customize after creation.</p></div></div>
@@ -238,7 +238,7 @@ export function RoleManagement() {
 
       <div className="mt-6 overflow-x-auto border-b border-[var(--border)]" role="tablist" aria-label="Workspace roles">
         <div className="flex min-w-max gap-1">
-          {roles.map((role) => <button key={role.id} type="button" role="tab" aria-selected={role.id === selectedRoleId} onClick={() => setSelectedRoleId(role.id)} className={cn("relative flex h-11 items-center gap-2 px-4 text-sm font-medium transition-colors", role.id === selectedRoleId ? "text-[var(--brand)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]")}><span>{role.name}</span>{!role.isSystem && <span className="rounded-md bg-[#f0f2f4] px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-[var(--text-muted)]">Custom</span>}<span className="text-[10px] font-normal text-[var(--text-muted)]">{role.memberCount}</span>{role.id === selectedRoleId && <span className="absolute inset-x-2 bottom-0 h-0.5 bg-[var(--brand)]" />}</button>)}
+          {roles.map((role) => <button key={role.id} type="button" role="tab" aria-selected={role.id === selectedRoleId} onClick={() => setSelectedRoleId(role.id)} className={cn("relative flex h-11 items-center gap-2 px-4 text-sm font-medium transition-colors", role.id === selectedRoleId ? "text-[var(--brand)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]")}><span>{role.name}</span>{!role.isSystem && <span className="rounded-md bg-[var(--gray-100)] px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-[var(--text-muted)]">Custom</span>}<span className="text-[10px] font-normal text-[var(--text-muted)]">{role.memberCount}</span>{role.id === selectedRoleId && <span className="absolute inset-x-2 bottom-0 h-0.5 bg-[var(--brand-accent)]" />}</button>)}
         </div>
       </div>
 

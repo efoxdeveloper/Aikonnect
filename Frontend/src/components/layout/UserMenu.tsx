@@ -37,9 +37,9 @@ export function UserMenu() {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <button aria-label="Open profile menu" className="rounded-full outline-none transition-[transform,box-shadow] duration-150 ease-out hover:-translate-y-px hover:shadow-[0_3px_7px_rgba(31,42,55,.10)] active:translate-y-0 active:scale-[.94] focus-visible:ring-2 focus-visible:ring-[var(--brand)]/30">
+        <button type="button" aria-label="Open profile menu" title="Open profile menu" className="interakt-button size-11 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]/30">
           <Avatar className="size-[42px] border border-[var(--border)]">
-            <AvatarFallback className="bg-[#d7ecee] text-sm font-semibold text-[var(--brand)]">{initials}</AvatarFallback>
+            <AvatarFallback className="bg-[var(--brand-soft)] text-sm font-semibold text-[var(--brand)]">{initials}</AvatarFallback>
           </Avatar>
         </button>
       </DropdownMenuTrigger>
