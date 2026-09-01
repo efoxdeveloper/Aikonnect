@@ -417,6 +417,8 @@ export const WhatsAppPhoneNumberScalarFieldEnum = {
   status: 'status',
   qualityRating: 'qualityRating',
   messagingLimit: 'messagingLimit',
+  isOnBusinessApp: 'isOnBusinessApp',
+  platformType: 'platformType',
   connectedAt: 'connectedAt',
   lastSyncedAt: 'lastSyncedAt',
   createdAt: 'createdAt',

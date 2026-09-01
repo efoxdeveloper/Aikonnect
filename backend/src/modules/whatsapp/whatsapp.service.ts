@@ -47,6 +47,44 @@ async function postMeta<T extends MetaResponse>(path: string, accessToken: strin
   return parseMetaResponse(response) as Promise<T>;
 }
 
+type MetaPhoneNumber = MetaResponse & {
+  id?: string;
+  display_phone_number?: string;
+  verified_name?: string;
+  quality_rating?: string;
+  messaging_limit?: string;
+  is_on_biz_app?: boolean;
+  platform_type?: string;
+};
+
+const phoneNumberFields = "id,display_phone_number,verified_name,quality_rating,messaging_limit,is_on_biz_app,platform_type";
+
+async function findCoexistencePhoneNumber(wabaId: string, phoneNumberId: string | null | undefined, accessToken: string) {
+  if (phoneNumberId) {
+    return fetchMeta<MetaPhoneNumber>(`/${encodeURIComponent(phoneNumberId)}?fields=${phoneNumberFields}`, accessToken);
+  }
+  const response = await fetchMeta<{ data?: MetaPhoneNumber[] }>(
+    `/${encodeURIComponent(wabaId)}/phone_numbers?fields=${phoneNumberFields}`,
+    accessToken,
+  );
+  const coexistenceNumbers = (response.data ?? []).filter((phone) => phone.is_on_biz_app === true);
+  if (coexistenceNumbers.length !== 1) {
+    throw new AppError(422, "Meta did not identify exactly one WhatsApp Business App number for coexistence", "META_COEXISTENCE_PHONE_NOT_FOUND");
+  }
+  return coexistenceNumbers[0];
+}
+
+async function subscribeAppToWaba(wabaId: string, accessToken: string) {
+  return postMeta(`/${encodeURIComponent(wabaId)}/subscribed_apps`, accessToken, {});
+}
+
+async function requestCoexistenceSync(phoneNumberId: string, accessToken: string, syncType: "history" | "smb_app_state_sync") {
+  return postMeta<{ request_id?: string }>(`/${encodeURIComponent(phoneNumberId)}/smb_app_data`, accessToken, {
+    messaging_product: "whatsapp",
+    sync_type: syncType,
+  });
+}
+
 /** Sends an automation reply and records it in the same conversation shown in Inbox. */
 export async function sendAutomationText(workspaceId: string, conversationId: string, body: string) {
   const { encryptionKey } = requireMetaConfiguration();
@@ -91,13 +129,31 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
   const accessToken = typeof exchanged.access_token === "string" ? exchanged.access_token : undefined;
   if (!accessToken) throw new AppError(502, "Meta did not return an access token", "META_TOKEN_MISSING");
 
-  const [waba, phone] = await Promise.all([
-    fetchMeta<{ id?: string; name?: string }>(`/${encodeURIComponent(input.wabaId)}?fields=id,name`, accessToken),
-    fetchMeta<{ id?: string; display_phone_number?: string; verified_name?: string; quality_rating?: string; messaging_limit?: string }>(
-      `/${encodeURIComponent(input.phoneNumberId)}?fields=id,display_phone_number,verified_name,quality_rating,messaging_limit`,
-      accessToken,
-    ),
+  const waba = await fetchMeta<{ id?: string; name?: string }>(`/${encodeURIComponent(input.wabaId)}?fields=id,name`, accessToken);
+  if (waba.id !== input.wabaId) {
+    throw new AppError(502, "Meta returned a different WhatsApp Business Account", "META_WABA_MISMATCH");
+  }
+  const phone = await findCoexistencePhoneNumber(input.wabaId, input.phoneNumberId, accessToken);
+  if (!phone || !phone.id) throw new AppError(502, "Meta did not return a WhatsApp phone number", "META_PHONE_NUMBER_MISSING");
+  const metaPhoneNumberId = phone.id;
+  if (input.phoneNumberId && metaPhoneNumberId !== input.phoneNumberId) {
+    throw new AppError(502, "Meta returned a different WhatsApp phone number", "META_PHONE_NUMBER_MISMATCH");
+  }
+  if (phone.is_on_biz_app === false) {
+    throw new AppError(422, "The selected number is not enabled for WhatsApp Business App coexistence", "META_COEXISTENCE_NOT_ENABLED");
+  }
+  await subscribeAppToWaba(input.wabaId, accessToken);
+  const syncResults = await Promise.allSettled([
+    requestCoexistenceSync(metaPhoneNumberId, accessToken, "history"),
+    requestCoexistenceSync(metaPhoneNumberId, accessToken, "smb_app_state_sync"),
   ]);
+  const syncRequestIds = syncResults
+    .filter((result): result is PromiseFulfilledResult<{ request_id?: string }> => result.status === "fulfilled")
+    .map((result) => result.value.request_id)
+    .filter((requestId): requestId is string => typeof requestId === "string");
+  const syncWarnings = syncResults
+    .filter((result): result is PromiseRejectedResult => result.status === "rejected")
+    .map((result) => result.reason instanceof Error ? result.reason.message : "Coexistence sync request failed");
   const now = new Date();
   const tokenExpiresAt = typeof exchanged.expires_in === "number" && exchanged.expires_in > 0
     ? new Date(now.getTime() + exchanged.expires_in * 1000)
@@ -126,20 +182,22 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
         tokenExpiresAt,
         connectedAt: now,
         lastSyncedAt: now,
-        lastError: null,
+        lastError: syncWarnings.length > 0 ? syncWarnings.join("; ") : null,
       },
       select: { id: true, metaBusinessId: true, metaWabaId: true, displayName: true, status: true, connectedAt: true },
     });
     const phoneNumber = await transaction.whatsAppPhoneNumber.upsert({
-      where: { businessAccountId_metaPhoneNumberId: { businessAccountId: account.id, metaPhoneNumberId: input.phoneNumberId } },
+      where: { businessAccountId_metaPhoneNumberId: { businessAccountId: account.id, metaPhoneNumberId } },
       create: {
         businessAccountId: account.id,
-        metaPhoneNumberId: input.phoneNumberId,
-        displayPhoneNumber: typeof phone.display_phone_number === "string" ? phone.display_phone_number : input.phoneNumberId,
+        metaPhoneNumberId,
+        displayPhoneNumber: typeof phone.display_phone_number === "string" ? phone.display_phone_number : metaPhoneNumberId,
         verifiedName: typeof phone.verified_name === "string" ? phone.verified_name : null,
         qualityRating: typeof phone.quality_rating === "string" ? phone.quality_rating : null,
         messagingLimit: typeof phone.messaging_limit === "string" ? phone.messaging_limit : null,
         status: "ACTIVE",
+        isOnBusinessApp: phone.is_on_biz_app === true,
+        platformType: typeof phone.platform_type === "string" ? phone.platform_type : null,
         connectedAt: now,
         lastSyncedAt: now,
       },
@@ -149,6 +207,8 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
         qualityRating: typeof phone.quality_rating === "string" ? phone.quality_rating : undefined,
         messagingLimit: typeof phone.messaging_limit === "string" ? phone.messaging_limit : undefined,
         status: "ACTIVE",
+        isOnBusinessApp: phone.is_on_biz_app === true,
+        platformType: typeof phone.platform_type === "string" ? phone.platform_type : undefined,
         connectedAt: now,
         lastSyncedAt: now,
       },
@@ -159,6 +219,6 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
       create: { workspaceId, whatsappConnectedAt: now, phoneNumberConnectedAt: now },
       update: { whatsappConnectedAt: now, phoneNumberConnectedAt: now },
     });
-    return { account, phoneNumber };
+    return { account, phoneNumber, coexistence: true, syncRequestIds, syncWarnings };
   });
 }

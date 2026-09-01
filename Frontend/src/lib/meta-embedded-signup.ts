@@ -13,7 +13,7 @@ export function loadFacebookSdk(appId: string): Promise<FacebookSdk> {
         reject(new Error("Meta SDK could not be initialized."));
         return;
       }
-      window.FB.init({ appId, cookie: true, xfbml: true, version: "v23.0" });
+      window.FB.init({ appId, cookie: true, xfbml: true, version: "v25.0" });
       resolve(window.FB);
     };
 

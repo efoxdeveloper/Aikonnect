@@ -593,6 +593,8 @@ model WhatsAppPhoneNumber {
   status             WhatsAppPhoneNumberStatus @default(PENDING)
   qualityRating      String?                   @map("quality_rating") @db.VarChar(30)
   messagingLimit     String?                   @map("messaging_limit") @db.VarChar(50)
+  isOnBusinessApp    Boolean                   @default(false) @map("is_on_business_app")
+  platformType       String?                   @map("platform_type") @db.VarChar(30)
   connectedAt        DateTime?                 @map("connected_at") @db.Timestamptz(3)
   lastSyncedAt       DateTime?                 @map("last_synced_at") @db.Timestamptz(3)
   createdAt          DateTime                  @default(now()) @map("created_at") @db.Timestamptz(3)

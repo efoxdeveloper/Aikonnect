@@ -8,7 +8,7 @@ export const embeddedSignupSchema = z.object({
   code: z.string().trim().min(1).max(5_000),
   businessId: metaId.optional(),
   wabaId: metaId,
-  phoneNumberId: metaId,
+  phoneNumberId: metaId.optional().nullable(),
 });
 
 export type EmbeddedSignupInput = z.infer<typeof embeddedSignupSchema>;

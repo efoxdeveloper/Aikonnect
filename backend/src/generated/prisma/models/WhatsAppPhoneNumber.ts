@@ -33,6 +33,8 @@ export type WhatsAppPhoneNumberMinAggregateOutputType = {
   status: $Enums.WhatsAppPhoneNumberStatus | null
   qualityRating: string | null
   messagingLimit: string | null
+  isOnBusinessApp: boolean | null
+  platformType: string | null
   connectedAt: Date | null
   lastSyncedAt: Date | null
   createdAt: Date | null
@@ -48,6 +50,8 @@ export type WhatsAppPhoneNumberMaxAggregateOutputType = {
   status: $Enums.WhatsAppPhoneNumberStatus | null
   qualityRating: string | null
   messagingLimit: string | null
+  isOnBusinessApp: boolean | null
+  platformType: string | null
   connectedAt: Date | null
   lastSyncedAt: Date | null
   createdAt: Date | null
@@ -63,6 +67,8 @@ export type WhatsAppPhoneNumberCountAggregateOutputType = {
   status: number
   qualityRating: number
   messagingLimit: number
+  isOnBusinessApp: number
+  platformType: number
   connectedAt: number
   lastSyncedAt: number
   createdAt: number
@@ -80,6 +86,8 @@ export type WhatsAppPhoneNumberMinAggregateInputType = {
   status?: true
   qualityRating?: true
   messagingLimit?: true
+  isOnBusinessApp?: true
+  platformType?: true
   connectedAt?: true
   lastSyncedAt?: true
   createdAt?: true
@@ -95,6 +103,8 @@ export type WhatsAppPhoneNumberMaxAggregateInputType = {
   status?: true
   qualityRating?: true
   messagingLimit?: true
+  isOnBusinessApp?: true
+  platformType?: true
   connectedAt?: true
   lastSyncedAt?: true
   createdAt?: true
@@ -110,6 +120,8 @@ export type WhatsAppPhoneNumberCountAggregateInputType = {
   status?: true
   qualityRating?: true
   messagingLimit?: true
+  isOnBusinessApp?: true
+  platformType?: true
   connectedAt?: true
   lastSyncedAt?: true
   createdAt?: true
@@ -198,6 +210,8 @@ export type WhatsAppPhoneNumberGroupByOutputType = {
   status: $Enums.WhatsAppPhoneNumberStatus
   qualityRating: string | null
   messagingLimit: string | null
+  isOnBusinessApp: boolean
+  platformType: string | null
   connectedAt: Date | null
   lastSyncedAt: Date | null
   createdAt: Date
@@ -234,6 +248,8 @@ export type WhatsAppPhoneNumberWhereInput = {
   status?: Prisma.EnumWhatsAppPhoneNumberStatusFilter<"WhatsAppPhoneNumber"> | $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: Prisma.StringNullableFilter<"WhatsAppPhoneNumber"> | string | null
   messagingLimit?: Prisma.StringNullableFilter<"WhatsAppPhoneNumber"> | string | null
+  isOnBusinessApp?: Prisma.BoolFilter<"WhatsAppPhoneNumber"> | boolean
+  platformType?: Prisma.StringNullableFilter<"WhatsAppPhoneNumber"> | string | null
   connectedAt?: Prisma.DateTimeNullableFilter<"WhatsAppPhoneNumber"> | Date | string | null
   lastSyncedAt?: Prisma.DateTimeNullableFilter<"WhatsAppPhoneNumber"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"WhatsAppPhoneNumber"> | Date | string
@@ -251,6 +267,8 @@ export type WhatsAppPhoneNumberOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   qualityRating?: Prisma.SortOrderInput | Prisma.SortOrder
   messagingLimit?: Prisma.SortOrderInput | Prisma.SortOrder
+  isOnBusinessApp?: Prisma.SortOrder
+  platformType?: Prisma.SortOrderInput | Prisma.SortOrder
   connectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSyncedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -272,6 +290,8 @@ export type WhatsAppPhoneNumberWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumWhatsAppPhoneNumberStatusFilter<"WhatsAppPhoneNumber"> | $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: Prisma.StringNullableFilter<"WhatsAppPhoneNumber"> | string | null
   messagingLimit?: Prisma.StringNullableFilter<"WhatsAppPhoneNumber"> | string | null
+  isOnBusinessApp?: Prisma.BoolFilter<"WhatsAppPhoneNumber"> | boolean
+  platformType?: Prisma.StringNullableFilter<"WhatsAppPhoneNumber"> | string | null
   connectedAt?: Prisma.DateTimeNullableFilter<"WhatsAppPhoneNumber"> | Date | string | null
   lastSyncedAt?: Prisma.DateTimeNullableFilter<"WhatsAppPhoneNumber"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"WhatsAppPhoneNumber"> | Date | string
@@ -289,6 +309,8 @@ export type WhatsAppPhoneNumberOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   qualityRating?: Prisma.SortOrderInput | Prisma.SortOrder
   messagingLimit?: Prisma.SortOrderInput | Prisma.SortOrder
+  isOnBusinessApp?: Prisma.SortOrder
+  platformType?: Prisma.SortOrderInput | Prisma.SortOrder
   connectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSyncedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -310,6 +332,8 @@ export type WhatsAppPhoneNumberScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumWhatsAppPhoneNumberStatusWithAggregatesFilter<"WhatsAppPhoneNumber"> | $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: Prisma.StringNullableWithAggregatesFilter<"WhatsAppPhoneNumber"> | string | null
   messagingLimit?: Prisma.StringNullableWithAggregatesFilter<"WhatsAppPhoneNumber"> | string | null
+  isOnBusinessApp?: Prisma.BoolWithAggregatesFilter<"WhatsAppPhoneNumber"> | boolean
+  platformType?: Prisma.StringNullableWithAggregatesFilter<"WhatsAppPhoneNumber"> | string | null
   connectedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WhatsAppPhoneNumber"> | Date | string | null
   lastSyncedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WhatsAppPhoneNumber"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"WhatsAppPhoneNumber"> | Date | string
@@ -324,6 +348,8 @@ export type WhatsAppPhoneNumberCreateInput = {
   status?: $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: string | null
   messagingLimit?: string | null
+  isOnBusinessApp?: boolean
+  platformType?: string | null
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   createdAt?: Date | string
@@ -341,6 +367,8 @@ export type WhatsAppPhoneNumberUncheckedCreateInput = {
   status?: $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: string | null
   messagingLimit?: string | null
+  isOnBusinessApp?: boolean
+  platformType?: string | null
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   createdAt?: Date | string
@@ -356,6 +384,8 @@ export type WhatsAppPhoneNumberUpdateInput = {
   status?: Prisma.EnumWhatsAppPhoneNumberStatusFieldUpdateOperationsInput | $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messagingLimit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnBusinessApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  platformType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -373,6 +403,8 @@ export type WhatsAppPhoneNumberUncheckedUpdateInput = {
   status?: Prisma.EnumWhatsAppPhoneNumberStatusFieldUpdateOperationsInput | $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messagingLimit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnBusinessApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  platformType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -389,6 +421,8 @@ export type WhatsAppPhoneNumberCreateManyInput = {
   status?: $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: string | null
   messagingLimit?: string | null
+  isOnBusinessApp?: boolean
+  platformType?: string | null
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   createdAt?: Date | string
@@ -403,6 +437,8 @@ export type WhatsAppPhoneNumberUpdateManyMutationInput = {
   status?: Prisma.EnumWhatsAppPhoneNumberStatusFieldUpdateOperationsInput | $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messagingLimit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnBusinessApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  platformType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -418,6 +454,8 @@ export type WhatsAppPhoneNumberUncheckedUpdateManyInput = {
   status?: Prisma.EnumWhatsAppPhoneNumberStatusFieldUpdateOperationsInput | $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messagingLimit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnBusinessApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  platformType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -453,6 +491,8 @@ export type WhatsAppPhoneNumberCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   qualityRating?: Prisma.SortOrder
   messagingLimit?: Prisma.SortOrder
+  isOnBusinessApp?: Prisma.SortOrder
+  platformType?: Prisma.SortOrder
   connectedAt?: Prisma.SortOrder
   lastSyncedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -468,6 +508,8 @@ export type WhatsAppPhoneNumberMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   qualityRating?: Prisma.SortOrder
   messagingLimit?: Prisma.SortOrder
+  isOnBusinessApp?: Prisma.SortOrder
+  platformType?: Prisma.SortOrder
   connectedAt?: Prisma.SortOrder
   lastSyncedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -483,6 +525,8 @@ export type WhatsAppPhoneNumberMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   qualityRating?: Prisma.SortOrder
   messagingLimit?: Prisma.SortOrder
+  isOnBusinessApp?: Prisma.SortOrder
+  platformType?: Prisma.SortOrder
   connectedAt?: Prisma.SortOrder
   lastSyncedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -559,6 +603,8 @@ export type WhatsAppPhoneNumberCreateWithoutConversationsInput = {
   status?: $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: string | null
   messagingLimit?: string | null
+  isOnBusinessApp?: boolean
+  platformType?: string | null
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   createdAt?: Date | string
@@ -575,6 +621,8 @@ export type WhatsAppPhoneNumberUncheckedCreateWithoutConversationsInput = {
   status?: $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: string | null
   messagingLimit?: string | null
+  isOnBusinessApp?: boolean
+  platformType?: string | null
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   createdAt?: Date | string
@@ -605,6 +653,8 @@ export type WhatsAppPhoneNumberUpdateWithoutConversationsInput = {
   status?: Prisma.EnumWhatsAppPhoneNumberStatusFieldUpdateOperationsInput | $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messagingLimit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnBusinessApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  platformType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -621,6 +671,8 @@ export type WhatsAppPhoneNumberUncheckedUpdateWithoutConversationsInput = {
   status?: Prisma.EnumWhatsAppPhoneNumberStatusFieldUpdateOperationsInput | $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messagingLimit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnBusinessApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  platformType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -635,6 +687,8 @@ export type WhatsAppPhoneNumberCreateWithoutBusinessAccountInput = {
   status?: $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: string | null
   messagingLimit?: string | null
+  isOnBusinessApp?: boolean
+  platformType?: string | null
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   createdAt?: Date | string
@@ -650,6 +704,8 @@ export type WhatsAppPhoneNumberUncheckedCreateWithoutBusinessAccountInput = {
   status?: $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: string | null
   messagingLimit?: string | null
+  isOnBusinessApp?: boolean
+  platformType?: string | null
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   createdAt?: Date | string
@@ -695,6 +751,8 @@ export type WhatsAppPhoneNumberScalarWhereInput = {
   status?: Prisma.EnumWhatsAppPhoneNumberStatusFilter<"WhatsAppPhoneNumber"> | $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: Prisma.StringNullableFilter<"WhatsAppPhoneNumber"> | string | null
   messagingLimit?: Prisma.StringNullableFilter<"WhatsAppPhoneNumber"> | string | null
+  isOnBusinessApp?: Prisma.BoolFilter<"WhatsAppPhoneNumber"> | boolean
+  platformType?: Prisma.StringNullableFilter<"WhatsAppPhoneNumber"> | string | null
   connectedAt?: Prisma.DateTimeNullableFilter<"WhatsAppPhoneNumber"> | Date | string | null
   lastSyncedAt?: Prisma.DateTimeNullableFilter<"WhatsAppPhoneNumber"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"WhatsAppPhoneNumber"> | Date | string
@@ -709,6 +767,8 @@ export type WhatsAppPhoneNumberCreateManyBusinessAccountInput = {
   status?: $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: string | null
   messagingLimit?: string | null
+  isOnBusinessApp?: boolean
+  platformType?: string | null
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   createdAt?: Date | string
@@ -723,6 +783,8 @@ export type WhatsAppPhoneNumberUpdateWithoutBusinessAccountInput = {
   status?: Prisma.EnumWhatsAppPhoneNumberStatusFieldUpdateOperationsInput | $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messagingLimit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnBusinessApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  platformType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -738,6 +800,8 @@ export type WhatsAppPhoneNumberUncheckedUpdateWithoutBusinessAccountInput = {
   status?: Prisma.EnumWhatsAppPhoneNumberStatusFieldUpdateOperationsInput | $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messagingLimit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnBusinessApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  platformType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -753,6 +817,8 @@ export type WhatsAppPhoneNumberUncheckedUpdateManyWithoutBusinessAccountInput = 
   status?: Prisma.EnumWhatsAppPhoneNumberStatusFieldUpdateOperationsInput | $Enums.WhatsAppPhoneNumberStatus
   qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messagingLimit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnBusinessApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  platformType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -799,6 +865,8 @@ export type WhatsAppPhoneNumberSelect<ExtArgs extends runtime.Types.Extensions.I
   status?: boolean
   qualityRating?: boolean
   messagingLimit?: boolean
+  isOnBusinessApp?: boolean
+  platformType?: boolean
   connectedAt?: boolean
   lastSyncedAt?: boolean
   createdAt?: boolean
@@ -817,6 +885,8 @@ export type WhatsAppPhoneNumberSelectCreateManyAndReturn<ExtArgs extends runtime
   status?: boolean
   qualityRating?: boolean
   messagingLimit?: boolean
+  isOnBusinessApp?: boolean
+  platformType?: boolean
   connectedAt?: boolean
   lastSyncedAt?: boolean
   createdAt?: boolean
@@ -833,6 +903,8 @@ export type WhatsAppPhoneNumberSelectUpdateManyAndReturn<ExtArgs extends runtime
   status?: boolean
   qualityRating?: boolean
   messagingLimit?: boolean
+  isOnBusinessApp?: boolean
+  platformType?: boolean
   connectedAt?: boolean
   lastSyncedAt?: boolean
   createdAt?: boolean
@@ -849,13 +921,15 @@ export type WhatsAppPhoneNumberSelectScalar = {
   status?: boolean
   qualityRating?: boolean
   messagingLimit?: boolean
+  isOnBusinessApp?: boolean
+  platformType?: boolean
   connectedAt?: boolean
   lastSyncedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type WhatsAppPhoneNumberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "businessAccountId" | "metaPhoneNumberId" | "displayPhoneNumber" | "verifiedName" | "status" | "qualityRating" | "messagingLimit" | "connectedAt" | "lastSyncedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["whatsAppPhoneNumber"]>
+export type WhatsAppPhoneNumberOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "businessAccountId" | "metaPhoneNumberId" | "displayPhoneNumber" | "verifiedName" | "status" | "qualityRating" | "messagingLimit" | "isOnBusinessApp" | "platformType" | "connectedAt" | "lastSyncedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["whatsAppPhoneNumber"]>
 export type WhatsAppPhoneNumberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   businessAccount?: boolean | Prisma.WhatsAppBusinessAccountDefaultArgs<ExtArgs>
   conversations?: boolean | Prisma.WhatsAppPhoneNumber$conversationsArgs<ExtArgs>
@@ -883,6 +957,8 @@ export type $WhatsAppPhoneNumberPayload<ExtArgs extends runtime.Types.Extensions
     status: $Enums.WhatsAppPhoneNumberStatus
     qualityRating: string | null
     messagingLimit: string | null
+    isOnBusinessApp: boolean
+    platformType: string | null
     connectedAt: Date | null
     lastSyncedAt: Date | null
     createdAt: Date
@@ -1320,6 +1396,8 @@ export interface WhatsAppPhoneNumberFieldRefs {
   readonly status: Prisma.FieldRef<"WhatsAppPhoneNumber", 'WhatsAppPhoneNumberStatus'>
   readonly qualityRating: Prisma.FieldRef<"WhatsAppPhoneNumber", 'String'>
   readonly messagingLimit: Prisma.FieldRef<"WhatsAppPhoneNumber", 'String'>
+  readonly isOnBusinessApp: Prisma.FieldRef<"WhatsAppPhoneNumber", 'Boolean'>
+  readonly platformType: Prisma.FieldRef<"WhatsAppPhoneNumber", 'String'>
   readonly connectedAt: Prisma.FieldRef<"WhatsAppPhoneNumber", 'DateTime'>
   readonly lastSyncedAt: Prisma.FieldRef<"WhatsAppPhoneNumber", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"WhatsAppPhoneNumber", 'DateTime'>

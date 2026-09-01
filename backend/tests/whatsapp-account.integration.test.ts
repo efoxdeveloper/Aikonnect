@@ -62,15 +62,19 @@ test("exchanges the signup code and stores the Meta account and phone against th
   const accessToken = `meta-user-token-${suffix}`;
   const wabaId = `waba-${suffix}`;
   const phoneNumberId = `phone-${suffix}`;
-  const responses = [
-    new Response(JSON.stringify({ access_token: accessToken, expires_in: 0 }), { status: 200 }),
-    new Response(JSON.stringify({ id: wabaId, name: "Test Business" }), { status: 200 }),
-    new Response(JSON.stringify({ id: phoneNumberId, display_phone_number: "+919876543210", verified_name: "Test Business", quality_rating: "GREEN", messaging_limit: "TIER_1" }), { status: 200 }),
-  ];
+  const requests: string[] = [];
   const originalFetch = globalThis.fetch;
-  testContext.mock.method(globalThis, "fetch", async (input, init) => String(input).startsWith("https://graph.facebook.com/")
-    ? responses.shift() ?? new Response("Unexpected Meta request", { status: 500 })
-    : originalFetch(input, init));
+  testContext.mock.method(globalThis, "fetch", async (input, init) => {
+    const url = String(input);
+    if (!url.startsWith("https://graph.facebook.com/")) return originalFetch(input, init);
+    requests.push(`${init?.method ?? "GET"} ${url}`);
+    if (url.includes("/oauth/access_token")) return new Response(JSON.stringify({ access_token: accessToken, expires_in: 0 }), { status: 200 });
+    if (url.includes(`/${wabaId}?fields=id,name`)) return new Response(JSON.stringify({ id: wabaId, name: "Test Business" }), { status: 200 });
+    if (url.includes(`/${phoneNumberId}?fields=`)) return new Response(JSON.stringify({ id: phoneNumberId, display_phone_number: "+919876543210", verified_name: "Test Business", quality_rating: "GREEN", messaging_limit: "TIER_1", is_on_biz_app: true, platform_type: "CLOUD_API" }), { status: 200 });
+    if (url.includes(`/${wabaId}/subscribed_apps`)) return new Response(JSON.stringify({ success: true }), { status: 200 });
+    if (url.includes(`/${phoneNumberId}/smb_app_data`)) return new Response(JSON.stringify({ request_id: `request-${requests.length}` }), { status: 200 });
+    return new Response("Unexpected Meta request", { status: 500 });
+  });
   const connected = await fetch(`${apiBaseUrl}/workspaces/${workspaceId}/whatsapp/embedded-signup`, {
     method: "POST",
     headers: { ...authorization, "content-type": "application/json" },
@@ -81,6 +85,10 @@ test("exchanges the signup code and stores the Meta account and phone against th
   const phone = await prisma.whatsAppPhoneNumber.findFirstOrThrow({ where: { businessAccountId: account.id, metaPhoneNumberId: phoneNumberId } });
   assert.equal(account.status, "CONNECTED");
   assert.equal(phone.status, "ACTIVE");
+  assert.equal(phone.isOnBusinessApp, true);
+  assert.equal(phone.platformType, "CLOUD_API");
+  assert.ok(requests.some((request) => request.includes(`POST https://graph.facebook.com/`) && request.includes(`/${wabaId}/subscribed_apps`)));
+  assert.equal(requests.filter((request) => request.includes(`/${phoneNumberId}/smb_app_data`)).length, 2);
   assert.notEqual(account.encryptedAccessToken, accessToken);
   assert.equal(decryptSecret(account.encryptedAccessToken!, "test-token-encryption-key-for-tests-32chars"), accessToken);
 });

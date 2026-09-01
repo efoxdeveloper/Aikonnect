@@ -12,6 +12,7 @@ type JsonRecord = Record<string, unknown>;
 type WhatsAppMessage = JsonRecord & {
   id?: unknown;
   from?: unknown;
+  to?: unknown;
   timestamp?: unknown;
   type?: unknown;
 };
@@ -28,6 +29,9 @@ type WhatsAppChangeValue = JsonRecord & {
   messages?: unknown;
   statuses?: unknown;
   contacts?: unknown;
+  state_sync?: unknown;
+  message_echoes?: unknown;
+  history?: unknown;
 };
 
 type WhatsAppWebhookPayload = JsonRecord & { entry?: unknown };
@@ -94,7 +98,7 @@ async function workspacePhoneNumber(wabaId: string | undefined, phoneNumberId: s
       metaPhoneNumberId: phoneNumberId,
       ...(wabaId ? { businessAccount: { metaWabaId: wabaId } } : {}),
     },
-    select: { id: true, businessAccount: { select: { workspaceId: true } } },
+    select: { id: true, displayPhoneNumber: true, businessAccount: { select: { workspaceId: true } } },
   });
 }
 
@@ -176,6 +180,107 @@ async function ingestIncomingMessage(
   });
 }
 
+async function ingestMessageEcho(workspaceId: string, phoneNumberId: string, message: WhatsAppMessage) {
+  const metaMessageId = asString(message.id);
+  const customer = asString(message.to);
+  if (!metaMessageId || !customer) return;
+
+  const sentAt = messageSentAt(message);
+  const text = messageText(message);
+  const type = messageType(message);
+  const normalizedPhone = customer.startsWith("+") ? customer : `+${customer}`;
+  const payload = JSON.parse(JSON.stringify(message)) as Prisma.InputJsonValue;
+
+  return prisma.$transaction(async (transaction) => {
+    const existingMessage = await transaction.message.findUnique({
+      where: { workspaceId_metaMessageId: { workspaceId, metaMessageId } },
+      select: { id: true },
+    });
+    if (existingMessage) return null;
+
+    const existingContact = await transaction.contact.findFirst({
+      where: {
+        workspaceId,
+        deletedAt: null,
+        OR: [{ whatsappId: customer }, { phoneE164: normalizedPhone }],
+      },
+      select: { id: true },
+    });
+    const contact = existingContact
+      ? await transaction.contact.update({
+          where: { id: existingContact.id },
+          data: { whatsappId: customer, phoneE164: normalizedPhone, source: "WhatsApp" },
+          select: { id: true },
+        })
+      : await transaction.contact.create({
+          data: { workspaceId, name: normalizedPhone, phoneE164: normalizedPhone, whatsappId: customer, source: "WhatsApp", whatsappOpted: true },
+          select: { id: true },
+        });
+    const conversation = await transaction.conversation.upsert({
+      where: { workspaceId_contactId_channelKey: { workspaceId, contactId: contact.id, channelKey: "whatsapp" } },
+      create: { workspaceId, contactId: contact.id, phoneNumberId, channelKey: "whatsapp", status: "OPEN" },
+      update: { phoneNumberId },
+      select: { id: true },
+    });
+    await transaction.message.create({
+      data: { workspaceId, conversationId: conversation.id, contactId: contact.id, metaMessageId, direction: "OUTGOING", type, status: "SENT", text, mediaId: mediaId(message), payload, sentAt },
+    });
+    await transaction.conversation.update({
+      where: { id: conversation.id },
+      data: { lastMessagePreview: text ?? type, lastMessageAt: sentAt },
+    });
+    return { contactId: contact.id, conversationId: conversation.id, messageId: metaMessageId };
+  });
+}
+
+async function syncBusinessAppContacts(workspaceId: string, stateSync: JsonRecord[]) {
+  for (const item of stateSync) {
+    if (asString(item.type) !== "contact") continue;
+    const contactData = asRecord(item.contact);
+    const phone = asString(contactData?.phone_number);
+    if (!phone) continue;
+    const normalizedPhone = phone.startsWith("+") ? phone : `+${phone}`;
+    const fullName = asString(contactData?.full_name) ?? asString(contactData?.first_name) ?? normalizedPhone;
+    const action = asString(item.action);
+    const existing = await prisma.contact.findFirst({
+      where: { workspaceId, deletedAt: null, OR: [{ whatsappId: phone }, { phoneE164: normalizedPhone }] },
+      select: { id: true },
+    });
+    if (action === "remove") {
+      continue;
+    }
+    if (existing) {
+      await prisma.contact.update({ where: { id: existing.id }, data: { name: fullName, profileName: fullName, whatsappId: phone, phoneE164: normalizedPhone, source: "WhatsApp", whatsappOpted: true } });
+    } else {
+      await prisma.contact.create({ data: { workspaceId, name: fullName, profileName: fullName, phoneE164: normalizedPhone, whatsappId: phone, source: "WhatsApp", whatsappOpted: true } });
+    }
+  }
+}
+
+function digitsOnly(value: string) {
+  return value.replace(/\D/g, "");
+}
+
+async function ingestHistory(workspaceId: string, phoneNumberId: string, businessPhone: string, history: JsonRecord[]) {
+  const businessDigits = digitsOnly(businessPhone);
+  for (const chunk of history) {
+    for (const thread of asArray(chunk.threads)) {
+      const customer = asString(thread.id);
+      if (!customer) continue;
+      for (const historyMessage of asArray(thread.messages) as WhatsAppMessage[]) {
+        const from = asString(historyMessage.from);
+        const to = asString(historyMessage.to);
+        const isBusinessMessage = Boolean(from && digitsOnly(from) === businessDigits);
+        if (isBusinessMessage || (!from && to)) {
+          await ingestMessageEcho(workspaceId, phoneNumberId, { ...historyMessage, to: to ?? customer });
+        } else {
+          await ingestIncomingMessage(workspaceId, phoneNumberId, { ...historyMessage, from: from ?? customer }, undefined);
+        }
+      }
+    }
+  }
+}
+
 async function ingestMessageStatuses(workspaceId: string, statuses: WhatsAppStatus[]) {
   for (const status of statuses) {
     const metaMessageId = asString(status.id);
@@ -202,17 +307,46 @@ async function processPayload(payload: WhatsAppWebhookPayload) {
   for (const entry of asArray(payload.entry)) {
     const wabaId = asString(entry.id);
     for (const change of asArray(entry.changes)) {
-      if (asString(change.field) !== "messages") continue;
+      const field = asString(change.field);
       const value = asRecord(change.value) as WhatsAppChangeValue | null;
       if (!value) continue;
       const metadata = value.metadata;
       const phoneNumberId = asString(metadata?.phone_number_id);
+      const account = wabaId ? await prisma.whatsAppBusinessAccount.findFirst({ where: { metaWabaId: wabaId }, select: { id: true, workspaceId: true, status: true } }) : null;
+      if (field === "account_update") {
+        if (account) {
+          const eventName = asString(value.event) ?? asString(value.event_type);
+          const disconnected = eventName === "PARTNER_REMOVED" || eventName === "DISCONNECTED";
+          await prisma.whatsAppBusinessAccount.update({ where: { id: account.id }, data: { status: disconnected ? "ERROR" : "CONNECTED", lastSyncedAt: new Date(), ...(disconnected ? { lastError: eventName } : {}) } });
+          if (disconnected) await prisma.whatsAppPhoneNumber.updateMany({ where: { businessAccountId: account.id }, data: { status: "DISCONNECTED" } });
+        }
+        continue;
+      }
+      if (field === "smb_app_state_sync") {
+        if (account) await syncBusinessAppContacts(account.workspaceId, asArray(value.state_sync));
+        continue;
+      }
+      if (field === "history") {
+        if (phoneNumberId) {
+          const phoneNumber = await workspacePhoneNumber(wabaId, phoneNumberId);
+          if (phoneNumber) {
+            await ingestHistory(phoneNumber.businessAccount.workspaceId, phoneNumber.id, phoneNumber.displayPhoneNumber, asArray(value.history));
+          }
+        }
+        logger.info({ wabaId, phoneNumberId, historyItems: asArray(value.history).length }, "Processed WhatsApp coexistence history sync");
+        continue;
+      }
       if (!phoneNumberId) continue;
       const phoneNumber = await workspacePhoneNumber(wabaId, phoneNumberId);
       if (!phoneNumber) {
         logger.warn({ wabaId, phoneNumberId }, "Ignoring WhatsApp webhook for an unlinked phone number");
         continue;
       }
+      if (field === "smb_message_echoes") {
+        for (const echo of asArray(value.message_echoes) as WhatsAppMessage[]) await ingestMessageEcho(phoneNumber.businessAccount.workspaceId, phoneNumber.id, echo);
+        continue;
+      }
+      if (field !== "messages") continue;
       const contacts = asArray(value.contacts);
       const contactNames = new Map(contacts.map((contact) => [asString(contact.wa_id), asString(asRecord(contact.profile)?.name)]));
       for (const message of asArray(value.messages) as WhatsAppMessage[]) {

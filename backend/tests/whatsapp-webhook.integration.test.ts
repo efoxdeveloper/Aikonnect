@@ -86,3 +86,39 @@ test("ingests incoming WhatsApp messages into the mapped workspace and deduplica
   assert.equal(await prisma.message.count({ where: { workspaceId, metaMessageId: `wamid-${suffix}` } }), 1);
   assert.equal((await prisma.message.findFirstOrThrow({ where: { workspaceId, metaMessageId: `wamid-${suffix}` } })).text, "Hello from Meta");
 });
+
+test("ingests coexistence contact state and outbound message echoes", async () => {
+  const suffix = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const email = `webhook-coexistence-${suffix}@example.com`;
+  createdEmails.push(email);
+  const registration = await fetch(`${baseUrl.replace("/api/webhooks/whatsapp", "/api/v1")}/auth/register`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ email, password: "IntegrationPassword123", firstName: "Coex", lastName: "Tester", companyName: "Coex Workspace", annualRevenue: "under-50-lakh" }),
+  });
+  assert.equal(registration.status, 201);
+  const registrationBody = (await registration.json()) as { data: { workspace: { id: string } } };
+  const workspaceId = registrationBody.data.workspace.id;
+  const account = await prisma.whatsAppBusinessAccount.create({ data: { workspaceId, metaWabaId: `waba-coex-${suffix}`, status: "CONNECTED" } });
+  const phoneNumber = await prisma.whatsAppPhoneNumber.create({ data: { businessAccountId: account.id, metaPhoneNumberId: `phone-coex-${suffix}`, displayPhoneNumber: "+919876543210", status: "ACTIVE", isOnBusinessApp: true, platformType: "CLOUD_API" } });
+  const payload = {
+    object: "whatsapp_business_account",
+    entry: [{ id: account.metaWabaId, changes: [
+      { field: "smb_app_state_sync", value: { metadata: { phone_number_id: phoneNumber.metaPhoneNumberId }, state_sync: [{ type: "contact", action: "add", contact: { full_name: "Coex Customer", phone_number: "919812345678" } }] } },
+      { field: "smb_message_echoes", value: { metadata: { phone_number_id: phoneNumber.metaPhoneNumberId }, message_echoes: [{ to: "919812345678", id: `echo-${suffix}`, timestamp: "1750000000", type: "text", text: { body: "Sent from WhatsApp Business App" } }] } },
+      { field: "history", value: { metadata: { phone_number_id: phoneNumber.metaPhoneNumberId }, history: [{ metadata: { phase: 0, chunk_order: 1, progress: 100 }, threads: [{ id: "919812345678", messages: [{ from: "919812345678", id: `history-${suffix}`, timestamp: "1740000000", type: "text", text: { body: "Earlier conversation" } }] }] }] } },
+    ] }],
+  };
+  const body = JSON.stringify(payload);
+  assert.ok(configuredWebhookSecret);
+  const signature = createHmac("sha256", configuredWebhookSecret).update(body).digest("hex");
+  const response = await fetch(baseUrl, { method: "POST", headers: { "content-type": "application/json", "x-hub-signature-256": `sha256=${signature}` }, body });
+  assert.equal(response.status, 200);
+  assert.equal(await prisma.contact.count({ where: { workspaceId, whatsappId: "919812345678" } }), 1);
+  const echo = await prisma.message.findFirstOrThrow({ where: { workspaceId, metaMessageId: `echo-${suffix}` } });
+  assert.equal(echo.direction, "OUTGOING");
+  assert.equal(echo.text, "Sent from WhatsApp Business App");
+  const historyMessage = await prisma.message.findFirstOrThrow({ where: { workspaceId, metaMessageId: `history-${suffix}` } });
+  assert.equal(historyMessage.direction, "INCOMING");
+  assert.equal(historyMessage.text, "Earlier conversation");
+});

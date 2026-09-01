@@ -10,7 +10,7 @@ declare global {
     config_id: string;
     response_type: "code";
     override_default_response_type: true;
-    extras: { feature: "whatsapp_embedded_signup"; sessionInfoVersion: "3" };
+    extras: { setup: Record<string, never>; featureType: "whatsapp_business_app_onboarding"; sessionInfoVersion: "3" };
   };
 
   type FacebookSdk = {

@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { apiRequest, ApiError } from "@/lib/api";
 import { loadFacebookSdk } from "@/lib/meta-embedded-signup";
 
-type SignupData = { businessId?: string; wabaId: string; phoneNumberId: string };
+type SignupData = { businessId?: string; wabaId: string; phoneNumberId?: string };
 
 type UseWhatsAppEmbeddedSignupOptions = {
   workspaceId: string | undefined;
@@ -17,6 +17,11 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
   const codeRef = useRef<string | null>(null);
   const signupDataRef = useRef<SignupData | null>(null);
   const submittedRef = useRef(false);
+
+  useEffect(() => {
+    const appId = import.meta.env.VITE_META_APP_ID as string | undefined;
+    if (appId) void loadFacebookSdk(appId).catch(() => undefined);
+  }, []);
 
   const submitSignup = useCallback(async () => {
     const code = codeRef.current;
@@ -53,7 +58,9 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
       if (payload?.type !== "WA_EMBEDDED_SIGNUP") return;
       const eventName = typeof payload.event === "string" ? payload.event : "";
       if (eventName === "CANCEL" || eventName === "ERROR") {
-        setError("WhatsApp Embedded Signup was cancelled.");
+        const details = payload.data as Record<string, unknown> | undefined;
+        const providerMessage = typeof details?.error_message === "string" ? details.error_message : undefined;
+        setError(providerMessage ?? (eventName === "ERROR" ? "Meta could not complete WhatsApp Business App onboarding." : "WhatsApp Embedded Signup was cancelled."));
         setConnecting(false);
         return;
       }
@@ -61,12 +68,12 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
       const details = payload.data as Record<string, unknown> | undefined;
       const wabaId = typeof details?.waba_id === "string" ? details.waba_id : undefined;
       const phoneNumberId = typeof details?.phone_number_id === "string" ? details.phone_number_id : undefined;
-      if (!wabaId || !phoneNumberId) {
-        setError("Meta did not return a WhatsApp account and phone number.");
+      if (!wabaId) {
+        setError("Meta did not return a WhatsApp Business Account.");
         setConnecting(false);
         return;
       }
-      signupDataRef.current = { wabaId, phoneNumberId, ...(typeof details?.business_id === "string" ? { businessId: details.business_id } : {}) };
+      signupDataRef.current = { wabaId, ...(phoneNumberId ? { phoneNumberId } : {}), ...(typeof details?.business_id === "string" ? { businessId: details.business_id } : {}) };
       void submitSignup();
     };
     window.addEventListener("message", receiveSignupMessage);
@@ -83,7 +90,8 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
       const appId = import.meta.env.VITE_META_APP_ID as string | undefined;
       const configId = import.meta.env.VITE_META_CONFIG_ID as string | undefined;
       if (!appId || !configId) throw new Error("Meta Embedded Signup is not configured for this environment.");
-      const facebook = await loadFacebookSdk(appId);
+      const facebook = window.FB;
+      if (!facebook) throw new Error("Meta SDK is still loading. Please wait a moment and try again.");
       facebook.login((response) => {
         const code = response.authResponse?.code;
         if (!code) {
@@ -93,7 +101,16 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
         }
         codeRef.current = code;
         void submitSignup();
-      }, { config_id: configId, response_type: "code", override_default_response_type: true, extras: { feature: "whatsapp_embedded_signup", sessionInfoVersion: "3" } });
+      }, {
+        config_id: configId,
+        response_type: "code",
+        override_default_response_type: true,
+        extras: {
+          setup: {},
+          featureType: "whatsapp_business_app_onboarding",
+          sessionInfoVersion: "3",
+        },
+      });
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : "Meta Embedded Signup could not be started.");
       setConnecting(false);
