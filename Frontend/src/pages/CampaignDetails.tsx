@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import {
   ArrowLeft,
   CalendarClock,
@@ -10,8 +10,10 @@ import {
   RefreshCw,
   Users,
 } from "lucide-react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { ApiError, apiRequest } from "@/lib/api";
 import { getActiveMembership } from "@/lib/workspace";
 import { cn } from "@/lib/utils";
 
@@ -33,11 +35,16 @@ type Campaign = {
   createdBy: string;
   category: string;
   template: string;
+  templateBody: string | null;
   audience: string;
   recipientCount: number | null;
   status: CampaignStatus;
   attempted: number;
   sent: number;
+  delivered: number;
+  read: number;
+  failed: number;
+  totalCost: number | null;
   deliveredRate: number | null;
   readRate: number | null;
   replied: number | null;
@@ -45,8 +52,6 @@ type Campaign = {
   updatedAt: string;
   buttonTracking: ButtonTrackingRecord[];
 };
-
-const storagePrefix = "interakt-campaigns-v1";
 const statusLabels: Record<CampaignStatus, string> = {
   DRAFT: "Draft",
   SCHEDULED: "Scheduled",
@@ -77,11 +82,11 @@ function normalizeCampaign(value: unknown): Campaign | null {
     !("name" in value)
   )
     return null;
-  const item = value as Partial<Campaign> & {
-    delivered?: unknown;
-    scheduledAt?: string | null;
-  };
+  const item = value as Partial<Campaign> & { scheduledAt?: string | null; templateKey?: string | null; templateBody?: string | null; audienceLabel?: string | null };
   const sent = typeof item.sent === "number" ? item.sent : 0;
+  const delivered = typeof item.delivered === "number" ? item.delivered : 0;
+  const read = typeof item.read === "number" ? item.read : 0;
+  const failed = typeof item.failed === "number" ? item.failed : 0;
   const status =
     typeof item.status === "string" && item.status in statusLabels
       ? (item.status as CampaignStatus)
@@ -108,8 +113,9 @@ function normalizeCampaign(value: unknown): Campaign | null {
       item.kind === "ongoing" || item.kind === "api" ? item.kind : "one_time",
     createdBy: item.createdBy || "You",
     category: item.category || "Marketing",
-    template: item.template || "product_update",
-    audience: item.audience || "All opted-in contacts",
+    template: item.template || item.templateKey || "product_update",
+    templateBody: item.templateBody ?? null,
+    audience: item.audience || item.audienceLabel || "All opted-in contacts",
     recipientCount:
       typeof item.recipientCount === "number" ? item.recipientCount : null,
     status,
@@ -120,37 +126,17 @@ function normalizeCampaign(value: unknown): Campaign | null {
           ? item.recipientCount
           : 0,
     sent,
-    deliveredRate:
-      typeof item.deliveredRate === "number"
-        ? item.deliveredRate
-        : sent && typeof item.delivered === "number"
-          ? Math.round((item.delivered / sent) * 100)
-          : null,
-    readRate: typeof item.readRate === "number" ? item.readRate : null,
-    replied: typeof item.replied === "number" ? item.replied : null,
+    delivered,
+    read,
+    failed,
+    deliveredRate: sent ? Math.round((delivered / sent) * 100) : null,
+    readRate: sent ? Math.round((read / sent) * 100) : null,
+    replied: sent && typeof item.replied === "number" ? Math.round((item.replied / sent) * 100) : null,
     setLiveAt: item.setLiveAt || item.scheduledAt || null,
     updatedAt: item.updatedAt || new Date(0).toISOString(),
+    totalCost: typeof item.totalCost === "number" ? item.totalCost : null,
     buttonTracking,
   };
-}
-
-function readCampaign(
-  workspaceId: string | undefined,
-  campaignId: string | undefined,
-) {
-  if (!workspaceId || !campaignId || typeof window === "undefined") return null;
-  try {
-    const stored = JSON.parse(
-      window.localStorage.getItem(`${storagePrefix}:${workspaceId}`) ?? "[]",
-    ) as unknown;
-    if (!Array.isArray(stored)) return null;
-    return (
-      stored.map(normalizeCampaign).find((item) => item?.id === campaignId) ??
-      null
-    );
-  } catch {
-    return null;
-  }
 }
 
 function formatDate(value: string | null, withTime = false) {
@@ -274,13 +260,24 @@ function MetricCard({
 export function CampaignDetails() {
   const { campaignId } = useParams<{ campaignId: string }>();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, accessToken } = useAuth();
   const membership = getActiveMembership(user);
+  const workspaceId = membership?.workspace.id;
+  const [campaign, setCampaign] = useState<Campaign | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [refreshVersion, setRefreshVersion] = useState(0);
-  const campaign = useMemo(
-    () => readCampaign(membership?.workspace.id, campaignId),
-    [campaignId, membership?.workspace.id, refreshVersion],
-  );
+
+  useEffect(() => {
+    if (!workspaceId || !accessToken || !campaignId) { setLoading(false); return; }
+    let active = true;
+    setLoading(true); setError("");
+    void apiRequest<unknown>(`/workspaces/${workspaceId}/campaigns/${campaignId}`, { headers: { authorization: `Bearer ${accessToken}` } })
+      .then((result) => { if (active) setCampaign(normalizeCampaign(result)); })
+      .catch((caughtError) => { if (active) setError(caughtError instanceof ApiError ? caughtError.message : "Unable to load campaign details."); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [accessToken, campaignId, refreshVersion, workspaceId]);
 
   if (!membership || !membership.role.permissions.includes("campaigns.read")) {
     return (
@@ -294,12 +291,15 @@ export function CampaignDetails() {
       </div>
     );
   }
+  if (loading) {
+    return <div className="flex h-full items-center justify-center bg-[var(--page-background)] text-sm text-[var(--text-secondary)]">Loading campaign…</div>;
+  }
   if (!campaign) {
     return (
       <div className="flex h-full flex-col items-center justify-center bg-[var(--page-background)] p-6 text-center">
         <h1 className="text-lg font-medium">Campaign not found</h1>
         <div className="mt-2 text-sm text-[var(--text-secondary)]">
-          This campaign may have been removed or is no longer available.
+          {error || "This campaign may have been removed or is no longer available."}
         </div>
         <button
           type="button"
@@ -320,34 +320,10 @@ export function CampaignDetails() {
     campaign.readRate === null
       ? null
       : Math.round((campaign.sent * campaign.readRate) / 100);
-  const otherFailures = campaign.attempted > campaign.sent ? 1 : 0;
-  const limitedByMeta = Math.max(
-    campaign.attempted - campaign.sent - otherFailures,
-    0,
-  );
-  const templateName = campaign.name.toLowerCase().includes("carousel")
-    ? "DPS Carousel"
-    : templateLabel(campaign.template);
-  const messageBody = campaign.name.toLowerCase().includes("carousel")
-    ? "EduFox School ERP – Trusted by DPS Bulandshahr, DPS HRDC for a Smooth ERP Transformation.\n\n⚙️ Implementation in 45 Days\n15+ Years of Trust\nRobust Mobile App\nSecure Data Migration\n\nDiscover why leading schools choose EduFox"
-    : "Your approved WhatsApp template message will appear here.";
-  const notificationName = campaign.name.toLowerCase().startsWith("dps")
-    ? "DPS - R2 - Read Excluded"
-    : campaign.name;
-  const totalCost = campaign.sent * 0.87;
-  const buttonTracking = campaign.buttonTracking.length
-    ? campaign.buttonTracking
-    : campaign.name.toLowerCase().includes("carousel")
-      ? [
-          {
-            name: "Discover why leading schools choose EduFox",
-            type: "URL",
-            clicks: 0,
-            clickPercentage: 0,
-            users: 0,
-          },
-        ]
-      : [];
+  const otherFailures = campaign.failed;
+  const templateName = templateLabel(campaign.template);
+  const messageBody = campaign.templateBody || "Your approved WhatsApp template message will appear here.";
+  const buttonTracking = campaign.buttonTracking;
 
   return (
     <div
@@ -384,7 +360,7 @@ export function CampaignDetails() {
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
-            <span>Total Campaign Cost: ₹ {totalCost.toFixed(2)}</span>
+            <span>Total Campaign Cost: {campaign.totalCost === null ? "--" : `₹ ${campaign.totalCost.toFixed(2)}`}</span>
             <Info className="size-4 text-[var(--text-secondary)]" />
           </div>
         </div>
@@ -539,11 +515,11 @@ export function CampaignDetails() {
                     Users
                   </span>
                   <span className="rounded bg-slate-50 px-3 py-2">
-                    Notification Sent Campaign Name is {notificationName}
+                        {campaign.audience}
                   </span>
                   <span>And</span>
                   <span className="rounded bg-slate-50 px-3 py-2">
-                    Notification Sent Error is {limitedByMeta ? "131049" : "--"}
+                    Failed recipients: {campaign.failed}
                   </span>
                 </dd>
               </div>
@@ -558,28 +534,7 @@ export function CampaignDetails() {
                   </div>
                   <div className="mt-4 rounded border border-[var(--border)] px-3.5 py-7 text-[14px] leading-5 text-[var(--text-primary)] sm:px-4">
                     <div className="text-[13px]">Body</div>
-                    {campaign.name.toLowerCase().includes("carousel") ? (
-                      <>
-                        <div className="mt-1">
-                          <strong>EduFox School ERP</strong> – Trusted by{" "}
-                          <strong>DPS Bulandshahr, DPS HRDC</strong> for a
-                          Smooth ERP Transformation.
-                        </div>
-                        <div className="mt-5 space-y-0.5 font-medium">
-                          <div>⚙️ Implementation in 45 Days</div>
-                          <div>◷ 15+ Years of Trust</div>
-                          <div>▦ Robust Mobile App</div>
-                          <div>🔒 Secure Data Migration</div>
-                        </div>
-                        <div className="mt-6 italic">
-                          Discover why leading schools choose EduFox
-                        </div>
-                      </>
-                    ) : (
-                      <div className="mt-1 whitespace-pre-line">
-                        {messageBody}
-                      </div>
-                    )}
+                    <div className="mt-1 whitespace-pre-line">{messageBody}</div>
                   </div>
                   <button
                     type="button"

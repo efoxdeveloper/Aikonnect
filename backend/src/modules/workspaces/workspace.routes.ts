@@ -22,6 +22,8 @@ import { inboxRouter } from "../conversations/conversation.routes.js";
 import { whatsappRouter } from "../whatsapp/whatsapp.routes.js";
 import { automationRouter } from "../automations/automation.routes.js";
 import { workflowRouter } from "../workflows/workflow.routes.js";
+import { campaignRouter } from "../campaigns/campaign.routes.js";
+import { reportRouter } from "../reports/report.routes.js";
 
 export const workspaceRouter = Router();
 
@@ -56,3 +58,5 @@ workspaceRouter.use("/:workspaceId/conversations", inboxRouter);
 workspaceRouter.use("/:workspaceId/whatsapp", whatsappRouter);
 workspaceRouter.use("/:workspaceId/automations", automationRouter);
 workspaceRouter.use("/:workspaceId/workflows", workflowRouter);
+workspaceRouter.use("/:workspaceId/campaigns", campaignRouter);
+workspaceRouter.use("/:workspaceId/reports", reportRouter);

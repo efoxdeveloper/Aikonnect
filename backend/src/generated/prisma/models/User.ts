@@ -257,6 +257,7 @@ export type UserWhereInput = {
   templatesDeleted?: Prisma.TemplateListRelationFilter
   automationsCreated?: Prisma.AutomationListRelationFilter
   workflowsCreated?: Prisma.WorkflowListRelationFilter
+  campaignsCreated?: Prisma.CampaignListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -298,6 +299,7 @@ export type UserOrderByWithRelationInput = {
   templatesDeleted?: Prisma.TemplateOrderByRelationAggregateInput
   automationsCreated?: Prisma.AutomationOrderByRelationAggregateInput
   workflowsCreated?: Prisma.WorkflowOrderByRelationAggregateInput
+  campaignsCreated?: Prisma.CampaignOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -342,6 +344,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   templatesDeleted?: Prisma.TemplateListRelationFilter
   automationsCreated?: Prisma.AutomationListRelationFilter
   workflowsCreated?: Prisma.WorkflowListRelationFilter
+  campaignsCreated?: Prisma.CampaignListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -417,6 +420,7 @@ export type UserCreateInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -458,6 +462,7 @@ export type UserUncheckedCreateInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUpdateInput = {
@@ -499,6 +504,7 @@ export type UserUpdateInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -540,6 +546,7 @@ export type UserUncheckedUpdateInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1004,6 +1011,22 @@ export type UserUpdateOneWithoutWorkflowsCreatedNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWorkflowsCreatedInput, Prisma.UserUpdateWithoutWorkflowsCreatedInput>, Prisma.UserUncheckedUpdateWithoutWorkflowsCreatedInput>
 }
 
+export type UserCreateNestedOneWithoutCampaignsCreatedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCampaignsCreatedInput, Prisma.UserUncheckedCreateWithoutCampaignsCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCampaignsCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutCampaignsCreatedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCampaignsCreatedInput, Prisma.UserUncheckedCreateWithoutCampaignsCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCampaignsCreatedInput
+  upsert?: Prisma.UserUpsertWithoutCampaignsCreatedInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCampaignsCreatedInput, Prisma.UserUpdateWithoutCampaignsCreatedInput>, Prisma.UserUncheckedUpdateWithoutCampaignsCreatedInput>
+}
+
 export type UserCreateNestedOneWithoutMembershipsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutMembershipsInput, Prisma.UserUncheckedCreateWithoutMembershipsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutMembershipsInput
@@ -1112,6 +1135,7 @@ export type UserCreateWithoutOauthAccountsInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutOauthAccountsInput = {
@@ -1152,6 +1176,7 @@ export type UserUncheckedCreateWithoutOauthAccountsInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutOauthAccountsInput = {
@@ -1208,6 +1233,7 @@ export type UserUpdateWithoutOauthAccountsInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOauthAccountsInput = {
@@ -1248,6 +1274,7 @@ export type UserUncheckedUpdateWithoutOauthAccountsInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutOwnedWorkspacesInput = {
@@ -1288,6 +1315,7 @@ export type UserCreateWithoutOwnedWorkspacesInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
@@ -1328,6 +1356,7 @@ export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutOwnedWorkspacesInput = {
@@ -1384,6 +1413,7 @@ export type UserUpdateWithoutOwnedWorkspacesInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
@@ -1424,6 +1454,7 @@ export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutTemplatesCreatedInput = {
@@ -1464,6 +1495,7 @@ export type UserCreateWithoutTemplatesCreatedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutTemplatesCreatedInput = {
@@ -1504,6 +1536,7 @@ export type UserUncheckedCreateWithoutTemplatesCreatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutTemplatesCreatedInput = {
@@ -1549,6 +1582,7 @@ export type UserCreateWithoutTemplatesUpdatedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutTemplatesUpdatedInput = {
@@ -1589,6 +1623,7 @@ export type UserUncheckedCreateWithoutTemplatesUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutTemplatesUpdatedInput = {
@@ -1634,6 +1669,7 @@ export type UserCreateWithoutTemplatesDeletedInput = {
   templatesUpdated?: Prisma.TemplateCreateNestedManyWithoutUpdatedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutTemplatesDeletedInput = {
@@ -1674,6 +1710,7 @@ export type UserUncheckedCreateWithoutTemplatesDeletedInput = {
   templatesUpdated?: Prisma.TemplateUncheckedCreateNestedManyWithoutUpdatedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutTemplatesDeletedInput = {
@@ -1730,6 +1767,7 @@ export type UserUpdateWithoutTemplatesCreatedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTemplatesCreatedInput = {
@@ -1770,6 +1808,7 @@ export type UserUncheckedUpdateWithoutTemplatesCreatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutTemplatesUpdatedInput = {
@@ -1821,6 +1860,7 @@ export type UserUpdateWithoutTemplatesUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTemplatesUpdatedInput = {
@@ -1861,6 +1901,7 @@ export type UserUncheckedUpdateWithoutTemplatesUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutTemplatesDeletedInput = {
@@ -1912,6 +1953,7 @@ export type UserUpdateWithoutTemplatesDeletedInput = {
   templatesUpdated?: Prisma.TemplateUpdateManyWithoutUpdatedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTemplatesDeletedInput = {
@@ -1952,6 +1994,7 @@ export type UserUncheckedUpdateWithoutTemplatesDeletedInput = {
   templatesUpdated?: Prisma.TemplateUncheckedUpdateManyWithoutUpdatedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutContactsCreatedInput = {
@@ -1992,6 +2035,7 @@ export type UserCreateWithoutContactsCreatedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContactsCreatedInput = {
@@ -2032,6 +2076,7 @@ export type UserUncheckedCreateWithoutContactsCreatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContactsCreatedInput = {
@@ -2077,6 +2122,7 @@ export type UserCreateWithoutContactsOwnedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContactsOwnedInput = {
@@ -2117,6 +2163,7 @@ export type UserUncheckedCreateWithoutContactsOwnedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContactsOwnedInput = {
@@ -2162,6 +2209,7 @@ export type UserCreateWithoutContactsUpdatedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContactsUpdatedInput = {
@@ -2202,6 +2250,7 @@ export type UserUncheckedCreateWithoutContactsUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContactsUpdatedInput = {
@@ -2247,6 +2296,7 @@ export type UserCreateWithoutContactsDeletedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContactsDeletedInput = {
@@ -2287,6 +2337,7 @@ export type UserUncheckedCreateWithoutContactsDeletedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContactsDeletedInput = {
@@ -2343,6 +2394,7 @@ export type UserUpdateWithoutContactsCreatedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactsCreatedInput = {
@@ -2383,6 +2435,7 @@ export type UserUncheckedUpdateWithoutContactsCreatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutContactsOwnedInput = {
@@ -2434,6 +2487,7 @@ export type UserUpdateWithoutContactsOwnedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactsOwnedInput = {
@@ -2474,6 +2528,7 @@ export type UserUncheckedUpdateWithoutContactsOwnedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutContactsUpdatedInput = {
@@ -2525,6 +2580,7 @@ export type UserUpdateWithoutContactsUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactsUpdatedInput = {
@@ -2565,6 +2621,7 @@ export type UserUncheckedUpdateWithoutContactsUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutContactsDeletedInput = {
@@ -2616,6 +2673,7 @@ export type UserUpdateWithoutContactsDeletedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactsDeletedInput = {
@@ -2656,6 +2714,7 @@ export type UserUncheckedUpdateWithoutContactsDeletedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutContactConsentEventsInput = {
@@ -2696,6 +2755,7 @@ export type UserCreateWithoutContactConsentEventsInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContactConsentEventsInput = {
@@ -2736,6 +2796,7 @@ export type UserUncheckedCreateWithoutContactConsentEventsInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContactConsentEventsInput = {
@@ -2792,6 +2853,7 @@ export type UserUpdateWithoutContactConsentEventsInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactConsentEventsInput = {
@@ -2832,6 +2894,7 @@ export type UserUncheckedUpdateWithoutContactConsentEventsInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutMessagesCreatedInput = {
@@ -2872,6 +2935,7 @@ export type UserCreateWithoutMessagesCreatedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutMessagesCreatedInput = {
@@ -2912,6 +2976,7 @@ export type UserUncheckedCreateWithoutMessagesCreatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutMessagesCreatedInput = {
@@ -2968,6 +3033,7 @@ export type UserUpdateWithoutMessagesCreatedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessagesCreatedInput = {
@@ -3008,6 +3074,7 @@ export type UserUncheckedUpdateWithoutMessagesCreatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutContactCustomFieldsCreatedInput = {
@@ -3048,6 +3115,7 @@ export type UserCreateWithoutContactCustomFieldsCreatedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContactCustomFieldsCreatedInput = {
@@ -3088,6 +3156,7 @@ export type UserUncheckedCreateWithoutContactCustomFieldsCreatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContactCustomFieldsCreatedInput = {
@@ -3133,6 +3202,7 @@ export type UserCreateWithoutContactCustomFieldsUpdatedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContactCustomFieldsUpdatedInput = {
@@ -3173,6 +3243,7 @@ export type UserUncheckedCreateWithoutContactCustomFieldsUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContactCustomFieldsUpdatedInput = {
@@ -3229,6 +3300,7 @@ export type UserUpdateWithoutContactCustomFieldsCreatedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactCustomFieldsCreatedInput = {
@@ -3269,6 +3341,7 @@ export type UserUncheckedUpdateWithoutContactCustomFieldsCreatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutContactCustomFieldsUpdatedInput = {
@@ -3320,6 +3393,7 @@ export type UserUpdateWithoutContactCustomFieldsUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactCustomFieldsUpdatedInput = {
@@ -3360,6 +3434,7 @@ export type UserUncheckedUpdateWithoutContactCustomFieldsUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutContactSegmentsCreatedInput = {
@@ -3400,6 +3475,7 @@ export type UserCreateWithoutContactSegmentsCreatedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContactSegmentsCreatedInput = {
@@ -3440,6 +3516,7 @@ export type UserUncheckedCreateWithoutContactSegmentsCreatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContactSegmentsCreatedInput = {
@@ -3485,6 +3562,7 @@ export type UserCreateWithoutContactSegmentsUpdatedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContactSegmentsUpdatedInput = {
@@ -3525,6 +3603,7 @@ export type UserUncheckedCreateWithoutContactSegmentsUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContactSegmentsUpdatedInput = {
@@ -3581,6 +3660,7 @@ export type UserUpdateWithoutContactSegmentsCreatedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactSegmentsCreatedInput = {
@@ -3621,6 +3701,7 @@ export type UserUncheckedUpdateWithoutContactSegmentsCreatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutContactSegmentsUpdatedInput = {
@@ -3672,6 +3753,7 @@ export type UserUpdateWithoutContactSegmentsUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactSegmentsUpdatedInput = {
@@ -3712,6 +3794,7 @@ export type UserUncheckedUpdateWithoutContactSegmentsUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutContactTasksCreatedInput = {
@@ -3752,6 +3835,7 @@ export type UserCreateWithoutContactTasksCreatedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContactTasksCreatedInput = {
@@ -3792,6 +3876,7 @@ export type UserUncheckedCreateWithoutContactTasksCreatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContactTasksCreatedInput = {
@@ -3837,6 +3922,7 @@ export type UserCreateWithoutContactTasksUpdatedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContactTasksUpdatedInput = {
@@ -3877,6 +3963,7 @@ export type UserUncheckedCreateWithoutContactTasksUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContactTasksUpdatedInput = {
@@ -3933,6 +4020,7 @@ export type UserUpdateWithoutContactTasksCreatedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactTasksCreatedInput = {
@@ -3973,6 +4061,7 @@ export type UserUncheckedUpdateWithoutContactTasksCreatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutContactTasksUpdatedInput = {
@@ -4024,6 +4113,7 @@ export type UserUpdateWithoutContactTasksUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactTasksUpdatedInput = {
@@ -4064,6 +4154,7 @@ export type UserUncheckedUpdateWithoutContactTasksUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutContactNotesCreatedInput = {
@@ -4104,6 +4195,7 @@ export type UserCreateWithoutContactNotesCreatedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContactNotesCreatedInput = {
@@ -4144,6 +4236,7 @@ export type UserUncheckedCreateWithoutContactNotesCreatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContactNotesCreatedInput = {
@@ -4189,6 +4282,7 @@ export type UserCreateWithoutContactNotesUpdatedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContactNotesUpdatedInput = {
@@ -4229,6 +4323,7 @@ export type UserUncheckedCreateWithoutContactNotesUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContactNotesUpdatedInput = {
@@ -4274,6 +4369,7 @@ export type UserCreateWithoutContactNotesDeletedInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutContactNotesDeletedInput = {
@@ -4314,6 +4410,7 @@ export type UserUncheckedCreateWithoutContactNotesDeletedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutContactNotesDeletedInput = {
@@ -4370,6 +4467,7 @@ export type UserUpdateWithoutContactNotesCreatedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactNotesCreatedInput = {
@@ -4410,6 +4508,7 @@ export type UserUncheckedUpdateWithoutContactNotesCreatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutContactNotesUpdatedInput = {
@@ -4461,6 +4560,7 @@ export type UserUpdateWithoutContactNotesUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactNotesUpdatedInput = {
@@ -4501,6 +4601,7 @@ export type UserUncheckedUpdateWithoutContactNotesUpdatedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUpsertWithoutContactNotesDeletedInput = {
@@ -4552,6 +4653,7 @@ export type UserUpdateWithoutContactNotesDeletedInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactNotesDeletedInput = {
@@ -4592,6 +4694,7 @@ export type UserUncheckedUpdateWithoutContactNotesDeletedInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutAutomationsCreatedInput = {
@@ -4632,6 +4735,7 @@ export type UserCreateWithoutAutomationsCreatedInput = {
   templatesUpdated?: Prisma.TemplateCreateNestedManyWithoutUpdatedByInput
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutAutomationsCreatedInput = {
@@ -4672,6 +4776,7 @@ export type UserUncheckedCreateWithoutAutomationsCreatedInput = {
   templatesUpdated?: Prisma.TemplateUncheckedCreateNestedManyWithoutUpdatedByInput
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutAutomationsCreatedInput = {
@@ -4728,6 +4833,7 @@ export type UserUpdateWithoutAutomationsCreatedInput = {
   templatesUpdated?: Prisma.TemplateUpdateManyWithoutUpdatedByNestedInput
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAutomationsCreatedInput = {
@@ -4768,6 +4874,7 @@ export type UserUncheckedUpdateWithoutAutomationsCreatedInput = {
   templatesUpdated?: Prisma.TemplateUncheckedUpdateManyWithoutUpdatedByNestedInput
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutWorkflowsCreatedInput = {
@@ -4808,6 +4915,7 @@ export type UserCreateWithoutWorkflowsCreatedInput = {
   templatesUpdated?: Prisma.TemplateCreateNestedManyWithoutUpdatedByInput
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutWorkflowsCreatedInput = {
@@ -4848,6 +4956,7 @@ export type UserUncheckedCreateWithoutWorkflowsCreatedInput = {
   templatesUpdated?: Prisma.TemplateUncheckedCreateNestedManyWithoutUpdatedByInput
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutWorkflowsCreatedInput = {
@@ -4904,6 +5013,7 @@ export type UserUpdateWithoutWorkflowsCreatedInput = {
   templatesUpdated?: Prisma.TemplateUpdateManyWithoutUpdatedByNestedInput
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkflowsCreatedInput = {
@@ -4944,6 +5054,187 @@ export type UserUncheckedUpdateWithoutWorkflowsCreatedInput = {
   templatesUpdated?: Prisma.TemplateUncheckedUpdateManyWithoutUpdatedByNestedInput
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserCreateWithoutCampaignsCreatedInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  phone?: string | null
+  status?: $Enums.UserStatus
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
+  invitationsSent?: Prisma.WorkspaceInvitationCreateNestedManyWithoutInvitedByInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  contactsCreated?: Prisma.ContactCreateNestedManyWithoutCreatedByInput
+  contactsOwned?: Prisma.ContactCreateNestedManyWithoutAccountOwnerInput
+  contactsUpdated?: Prisma.ContactCreateNestedManyWithoutUpdatedByInput
+  contactsDeleted?: Prisma.ContactCreateNestedManyWithoutDeletedByInput
+  contactTasksCreated?: Prisma.ContactTaskCreateNestedManyWithoutCreatedByInput
+  contactTasksUpdated?: Prisma.ContactTaskCreateNestedManyWithoutUpdatedByInput
+  contactNotesCreated?: Prisma.ContactNoteCreateNestedManyWithoutCreatedByInput
+  contactNotesUpdated?: Prisma.ContactNoteCreateNestedManyWithoutUpdatedByInput
+  contactNotesDeleted?: Prisma.ContactNoteCreateNestedManyWithoutDeletedByInput
+  contactSegmentsCreated?: Prisma.ContactSegmentCreateNestedManyWithoutCreatedByInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentCreateNestedManyWithoutUpdatedByInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldCreateNestedManyWithoutCreatedByInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldCreateNestedManyWithoutUpdatedByInput
+  contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutActorUserInput
+  messagesCreated?: Prisma.MessageCreateNestedManyWithoutCreatedByInput
+  templatesCreated?: Prisma.TemplateCreateNestedManyWithoutCreatedByInput
+  templatesUpdated?: Prisma.TemplateCreateNestedManyWithoutUpdatedByInput
+  templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
+  automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
+  workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserUncheckedCreateWithoutCampaignsCreatedInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  phone?: string | null
+  status?: $Enums.UserStatus
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
+  invitationsSent?: Prisma.WorkspaceInvitationUncheckedCreateNestedManyWithoutInvitedByInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  contactsCreated?: Prisma.ContactUncheckedCreateNestedManyWithoutCreatedByInput
+  contactsOwned?: Prisma.ContactUncheckedCreateNestedManyWithoutAccountOwnerInput
+  contactsUpdated?: Prisma.ContactUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactsDeleted?: Prisma.ContactUncheckedCreateNestedManyWithoutDeletedByInput
+  contactTasksCreated?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  contactTasksUpdated?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactNotesCreated?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  contactNotesUpdated?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactNotesDeleted?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutDeletedByInput
+  contactSegmentsCreated?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutCreatedByInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutActorUserInput
+  messagesCreated?: Prisma.MessageUncheckedCreateNestedManyWithoutCreatedByInput
+  templatesCreated?: Prisma.TemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  templatesUpdated?: Prisma.TemplateUncheckedCreateNestedManyWithoutUpdatedByInput
+  templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
+  automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
+  workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+}
+
+export type UserCreateOrConnectWithoutCampaignsCreatedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCampaignsCreatedInput, Prisma.UserUncheckedCreateWithoutCampaignsCreatedInput>
+}
+
+export type UserUpsertWithoutCampaignsCreatedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCampaignsCreatedInput, Prisma.UserUncheckedUpdateWithoutCampaignsCreatedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCampaignsCreatedInput, Prisma.UserUncheckedCreateWithoutCampaignsCreatedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCampaignsCreatedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCampaignsCreatedInput, Prisma.UserUncheckedUpdateWithoutCampaignsCreatedInput>
+}
+
+export type UserUpdateWithoutCampaignsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
+  invitationsSent?: Prisma.WorkspaceInvitationUpdateManyWithoutInvitedByNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  contactsCreated?: Prisma.ContactUpdateManyWithoutCreatedByNestedInput
+  contactsOwned?: Prisma.ContactUpdateManyWithoutAccountOwnerNestedInput
+  contactsUpdated?: Prisma.ContactUpdateManyWithoutUpdatedByNestedInput
+  contactsDeleted?: Prisma.ContactUpdateManyWithoutDeletedByNestedInput
+  contactTasksCreated?: Prisma.ContactTaskUpdateManyWithoutCreatedByNestedInput
+  contactTasksUpdated?: Prisma.ContactTaskUpdateManyWithoutUpdatedByNestedInput
+  contactNotesCreated?: Prisma.ContactNoteUpdateManyWithoutCreatedByNestedInput
+  contactNotesUpdated?: Prisma.ContactNoteUpdateManyWithoutUpdatedByNestedInput
+  contactNotesDeleted?: Prisma.ContactNoteUpdateManyWithoutDeletedByNestedInput
+  contactSegmentsCreated?: Prisma.ContactSegmentUpdateManyWithoutCreatedByNestedInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentUpdateManyWithoutUpdatedByNestedInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldUpdateManyWithoutCreatedByNestedInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldUpdateManyWithoutUpdatedByNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutActorUserNestedInput
+  messagesCreated?: Prisma.MessageUpdateManyWithoutCreatedByNestedInput
+  templatesCreated?: Prisma.TemplateUpdateManyWithoutCreatedByNestedInput
+  templatesUpdated?: Prisma.TemplateUpdateManyWithoutUpdatedByNestedInput
+  templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
+  automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
+  workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCampaignsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  invitationsSent?: Prisma.WorkspaceInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  contactsCreated?: Prisma.ContactUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactsOwned?: Prisma.ContactUncheckedUpdateManyWithoutAccountOwnerNestedInput
+  contactsUpdated?: Prisma.ContactUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactsDeleted?: Prisma.ContactUncheckedUpdateManyWithoutDeletedByNestedInput
+  contactTasksCreated?: Prisma.ContactTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactTasksUpdated?: Prisma.ContactTaskUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactNotesCreated?: Prisma.ContactNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactNotesUpdated?: Prisma.ContactNoteUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactNotesDeleted?: Prisma.ContactNoteUncheckedUpdateManyWithoutDeletedByNestedInput
+  contactSegmentsCreated?: Prisma.ContactSegmentUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutActorUserNestedInput
+  messagesCreated?: Prisma.MessageUncheckedUpdateManyWithoutCreatedByNestedInput
+  templatesCreated?: Prisma.TemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  templatesUpdated?: Prisma.TemplateUncheckedUpdateManyWithoutUpdatedByNestedInput
+  templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
+  automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
+  workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutMembershipsInput = {
@@ -4984,6 +5275,7 @@ export type UserCreateWithoutMembershipsInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -5024,6 +5316,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -5080,6 +5373,7 @@ export type UserUpdateWithoutMembershipsInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -5120,6 +5414,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutInvitationsSentInput = {
@@ -5160,6 +5455,7 @@ export type UserCreateWithoutInvitationsSentInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutInvitationsSentInput = {
@@ -5200,6 +5496,7 @@ export type UserUncheckedCreateWithoutInvitationsSentInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutInvitationsSentInput = {
@@ -5256,6 +5553,7 @@ export type UserUpdateWithoutInvitationsSentInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInvitationsSentInput = {
@@ -5296,6 +5594,7 @@ export type UserUncheckedUpdateWithoutInvitationsSentInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -5336,6 +5635,7 @@ export type UserCreateWithoutSessionsInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -5376,6 +5676,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -5432,6 +5733,7 @@ export type UserUpdateWithoutSessionsInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -5472,6 +5774,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutEmailVerificationTokensInput = {
@@ -5512,6 +5815,7 @@ export type UserCreateWithoutEmailVerificationTokensInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutEmailVerificationTokensInput = {
@@ -5552,6 +5856,7 @@ export type UserUncheckedCreateWithoutEmailVerificationTokensInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutEmailVerificationTokensInput = {
@@ -5608,6 +5913,7 @@ export type UserUpdateWithoutEmailVerificationTokensInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmailVerificationTokensInput = {
@@ -5648,6 +5954,7 @@ export type UserUncheckedUpdateWithoutEmailVerificationTokensInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutPasswordResetTokensInput = {
@@ -5688,6 +5995,7 @@ export type UserCreateWithoutPasswordResetTokensInput = {
   templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
@@ -5728,6 +6036,7 @@ export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
   templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
   automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
   workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
 }
 
 export type UserCreateOrConnectWithoutPasswordResetTokensInput = {
@@ -5784,6 +6093,7 @@ export type UserUpdateWithoutPasswordResetTokensInput = {
   templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
@@ -5824,6 +6134,7 @@ export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
   templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
   automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
   workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 
@@ -5859,6 +6170,7 @@ export type UserCountOutputType = {
   templatesDeleted: number
   automationsCreated: number
   workflowsCreated: number
+  campaignsCreated: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -5889,6 +6201,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   templatesDeleted?: boolean | UserCountOutputTypeCountTemplatesDeletedArgs
   automationsCreated?: boolean | UserCountOutputTypeCountAutomationsCreatedArgs
   workflowsCreated?: boolean | UserCountOutputTypeCountWorkflowsCreatedArgs
+  campaignsCreated?: boolean | UserCountOutputTypeCountCampaignsCreatedArgs
 }
 
 /**
@@ -6090,6 +6403,13 @@ export type UserCountOutputTypeCountWorkflowsCreatedArgs<ExtArgs extends runtime
   where?: Prisma.WorkflowWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCampaignsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CampaignWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -6130,6 +6450,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   templatesDeleted?: boolean | Prisma.User$templatesDeletedArgs<ExtArgs>
   automationsCreated?: boolean | Prisma.User$automationsCreatedArgs<ExtArgs>
   workflowsCreated?: boolean | Prisma.User$workflowsCreatedArgs<ExtArgs>
+  campaignsCreated?: boolean | Prisma.User$campaignsCreatedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -6204,6 +6525,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   templatesDeleted?: boolean | Prisma.User$templatesDeletedArgs<ExtArgs>
   automationsCreated?: boolean | Prisma.User$automationsCreatedArgs<ExtArgs>
   workflowsCreated?: boolean | Prisma.User$workflowsCreatedArgs<ExtArgs>
+  campaignsCreated?: boolean | Prisma.User$campaignsCreatedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -6239,6 +6561,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     templatesDeleted: Prisma.$TemplatePayload<ExtArgs>[]
     automationsCreated: Prisma.$AutomationPayload<ExtArgs>[]
     workflowsCreated: Prisma.$WorkflowPayload<ExtArgs>[]
+    campaignsCreated: Prisma.$CampaignPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -6673,6 +6996,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   templatesDeleted<T extends Prisma.User$templatesDeletedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$templatesDeletedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   automationsCreated<T extends Prisma.User$automationsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$automationsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AutomationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workflowsCreated<T extends Prisma.User$workflowsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workflowsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  campaignsCreated<T extends Prisma.User$campaignsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$campaignsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7751,6 +8075,30 @@ export type User$workflowsCreatedArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.WorkflowScalarFieldEnum | Prisma.WorkflowScalarFieldEnum[]
+}
+
+/**
+ * User.campaignsCreated
+ */
+export type User$campaignsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Campaign
+   */
+  select?: Prisma.CampaignSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Campaign
+   */
+  omit?: Prisma.CampaignOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignInclude<ExtArgs> | null
+  where?: Prisma.CampaignWhereInput
+  orderBy?: Prisma.CampaignOrderByWithRelationInput | Prisma.CampaignOrderByWithRelationInput[]
+  cursor?: Prisma.CampaignWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CampaignScalarFieldEnum | Prisma.CampaignScalarFieldEnum[]
 }
 
 /**

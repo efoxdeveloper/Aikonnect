@@ -10,6 +10,7 @@ import { Campaigns } from "@/pages/Campaigns";
 import { TemplateBuilder } from "@/pages/TemplateBuilder";
 import { Templates } from "@/pages/Templates";
 import { Pipelines } from "@/pages/Pipelines";
+import { Reports } from "@/pages/Reports";
 
 export function Dashboard() {
   const { pathname } = useLocation();
@@ -23,6 +24,7 @@ export function Dashboard() {
   if (pathname === "/campaigns") return <Campaigns />;
   if (pathname === "/templates") return <Templates />;
   if (pathname === "/pipelines") return <Pipelines />;
+  if (pathname === "/reports" || pathname === "/conversation-analytics" || pathname === "/campaign-analytics") return <Reports />;
   if (pathname === "/createtemplate") return <TemplateBuilder />;
   return <div className="min-h-[calc(100vh-68px)]" />;
 }

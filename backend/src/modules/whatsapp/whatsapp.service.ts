@@ -68,10 +68,11 @@ async function findCoexistencePhoneNumber(wabaId: string, phoneNumberId: string 
     accessToken,
   );
   const coexistenceNumbers = (response.data ?? []).filter((phone) => phone.is_on_biz_app === true);
-  if (coexistenceNumbers.length !== 1) {
-    throw new AppError(422, "Meta did not identify exactly one WhatsApp Business App number for coexistence", "META_COEXISTENCE_PHONE_NOT_FOUND");
+  const phoneNumbers = coexistenceNumbers.length ? coexistenceNumbers : response.data ?? [];
+  if (phoneNumbers.length !== 1) {
+    throw new AppError(422, "Meta did not identify exactly one WhatsApp phone number", "META_PHONE_NUMBER_NOT_FOUND");
   }
-  return coexistenceNumbers[0];
+  return phoneNumbers[0];
 }
 
 async function subscribeAppToWaba(wabaId: string, accessToken: string) {
@@ -142,25 +143,13 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
   if (phone.is_on_biz_app === false) {
     throw new AppError(422, "The selected number is not enabled for WhatsApp Business App coexistence", "META_COEXISTENCE_NOT_ENABLED");
   }
-  await subscribeAppToWaba(input.wabaId, accessToken);
-  const syncResults = await Promise.allSettled([
-    requestCoexistenceSync(metaPhoneNumberId, accessToken, "history"),
-    requestCoexistenceSync(metaPhoneNumberId, accessToken, "smb_app_state_sync"),
-  ]);
-  const syncRequestIds = syncResults
-    .filter((result): result is PromiseFulfilledResult<{ request_id?: string }> => result.status === "fulfilled")
-    .map((result) => result.value.request_id)
-    .filter((requestId): requestId is string => typeof requestId === "string");
-  const syncWarnings = syncResults
-    .filter((result): result is PromiseRejectedResult => result.status === "rejected")
-    .map((result) => result.reason instanceof Error ? result.reason.message : "Coexistence sync request failed");
   const now = new Date();
   const tokenExpiresAt = typeof exchanged.expires_in === "number" && exchanged.expires_in > 0
     ? new Date(now.getTime() + exchanged.expires_in * 1000)
     : null;
   const encryptedAccessToken = encryptSecret(accessToken, encryptionKey);
 
-  return prisma.$transaction(async (transaction) => {
+  const connected = await prisma.$transaction(async (transaction) => {
     const account = await transaction.whatsAppBusinessAccount.upsert({
       where: { workspaceId_metaWabaId: { workspaceId, metaWabaId: input.wabaId } },
       create: {
@@ -182,7 +171,7 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
         tokenExpiresAt,
         connectedAt: now,
         lastSyncedAt: now,
-        lastError: syncWarnings.length > 0 ? syncWarnings.join("; ") : null,
+        lastError: null,
       },
       select: { id: true, metaBusinessId: true, metaWabaId: true, displayName: true, status: true, connectedAt: true },
     });
@@ -219,6 +208,29 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
       create: { workspaceId, whatsappConnectedAt: now, phoneNumberConnectedAt: now },
       update: { whatsappConnectedAt: now, phoneNumberConnectedAt: now },
     });
-    return { account, phoneNumber, coexistence: true, syncRequestIds, syncWarnings };
+    return { account, phoneNumber, coexistence: phone.is_on_biz_app === true };
   });
+
+  // Meta may complete onboarding while optional webhook/history setup is still unavailable
+  // for the app. Keep the successful connection and surface those setup issues as warnings.
+  const postSetupResults = await Promise.allSettled([
+    subscribeAppToWaba(input.wabaId, accessToken),
+    ...(connected.coexistence ? [
+      requestCoexistenceSync(metaPhoneNumberId, accessToken, "history"),
+      requestCoexistenceSync(metaPhoneNumberId, accessToken, "smb_app_state_sync"),
+    ] : []),
+  ]);
+  const syncRequestIds = postSetupResults
+    .filter((result) => result.status === "fulfilled")
+    .map((result) => result.value)
+    .filter((value): value is { request_id?: unknown } => typeof value === "object" && value !== null && "request_id" in value)
+    .map((value) => value.request_id)
+    .filter((requestId): requestId is string => typeof requestId === "string");
+  const syncWarnings = postSetupResults
+    .filter((result): result is PromiseRejectedResult => result.status === "rejected")
+    .map((result) => result.reason instanceof Error ? result.reason.message : "WhatsApp post-setup request failed");
+  if (syncWarnings.length) {
+    await prisma.whatsAppBusinessAccount.update({ where: { id: connected.account.id }, data: { lastError: syncWarnings.join("; ") } });
+  }
+  return { ...connected, syncRequestIds, syncWarnings };
 }

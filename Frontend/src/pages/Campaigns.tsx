@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -57,6 +58,7 @@ type Campaign = {
   channel: "WhatsApp";
   kind: CampaignKind;
   createdBy: string;
+  createdById: string | null;
   category: string;
   template: string;
   audience: string;
@@ -64,6 +66,9 @@ type Campaign = {
   status: CampaignStatus;
   attempted: number;
   sent: number;
+  delivered: number;
+  read: number;
+  failed: number;
   deliveredRate: number | null;
   readRate: number | null;
   replied: number | null;
@@ -82,8 +87,10 @@ type CampaignTemplate = {
 type CampaignTemplateListResponse = {
   items: CampaignTemplate[];
 };
-
-const storagePrefix = "interakt-campaigns-v1";
+type CampaignListResponse = {
+  items: unknown[];
+  pagination: { page: number; pageSize: number; total: number; totalPages: number; hasNext: boolean; hasPrevious: boolean };
+};
 const templateOptions = [
   { value: "promotional_offer", label: "Promotional offer" },
   { value: "product_update", label: "Product update" },
@@ -123,19 +130,20 @@ function normalizeCampaign(value: unknown): Campaign | null {
     !("name" in value)
   )
     return null;
-  const item = value as Partial<Campaign> & {
-    delivered?: unknown;
-    scheduledAt?: string | null;
-  };
+  const item = value as Partial<Campaign> & { scheduledAt?: string | null; templateKey?: string | null };
   const sent = typeof item.sent === "number" ? item.sent : 0;
+  const delivered = typeof item.delivered === "number" ? item.delivered : 0;
+  const read = typeof item.read === "number" ? item.read : 0;
+  const failed = typeof item.failed === "number" ? item.failed : 0;
   return {
     id: String(item.id),
     name: String(item.name),
     channel: "WhatsApp",
     kind: validKind(item.kind),
     createdBy: item.createdBy || "You",
+    createdById: typeof item.createdById === "string" ? item.createdById : null,
     category: item.category || "Marketing",
-    template: item.template || templateOptions[0].value,
+    template: item.template || item.templateKey || templateOptions[0].value,
     audience: item.audience || "All opted-in contacts",
     recipientCount:
       typeof item.recipientCount === "number" ? item.recipientCount : null,
@@ -147,33 +155,15 @@ function normalizeCampaign(value: unknown): Campaign | null {
           ? item.recipientCount
           : 0,
     sent,
-    deliveredRate:
-      typeof item.deliveredRate === "number"
-        ? item.deliveredRate
-        : sent && typeof item.delivered === "number"
-          ? Number(((item.delivered / sent) * 100).toFixed(0))
-          : null,
-    readRate: typeof item.readRate === "number" ? item.readRate : null,
-    replied: typeof item.replied === "number" ? item.replied : null,
+    delivered,
+    read,
+    failed,
+    deliveredRate: sent ? Number(((delivered / sent) * 100).toFixed(0)) : null,
+    readRate: sent ? Number(((read / sent) * 100).toFixed(0)) : null,
+    replied: sent ? Number((((item.replied ?? 0) / sent) * 100).toFixed(0)) : null,
     setLiveAt: item.setLiveAt || item.scheduledAt || null,
     updatedAt: item.updatedAt || new Date(0).toISOString(),
   };
-}
-
-function readCampaigns(workspaceId: string | undefined): Campaign[] {
-  if (!workspaceId || typeof window === "undefined") return [];
-  try {
-    const value = JSON.parse(
-      window.localStorage.getItem(`${storagePrefix}:${workspaceId}`) ?? "[]",
-    ) as unknown;
-    return Array.isArray(value)
-      ? value
-          .map(normalizeCampaign)
-          .filter((item): item is Campaign => item !== null)
-      : [];
-  } catch {
-    return [];
-  }
 }
 
 function formatDate(value: string | null) {
@@ -292,8 +282,8 @@ function CreateCampaignDrawer({
   open,
   canSend,
   selectedContactCount,
+  selectedContactIds,
   kind,
-  createdBy,
   workspaceId,
   accessToken,
   onClose,
@@ -302,17 +292,24 @@ function CreateCampaignDrawer({
   open: boolean;
   canSend: boolean;
   selectedContactCount: number;
+  selectedContactIds: string[];
   kind: CampaignKind;
-  createdBy: string;
   workspaceId?: string;
   accessToken?: string | null;
   onClose: () => void;
-  onCreate: (
-    campaign: Omit<
-      Campaign,
-      "id" | "updatedAt" | "sent" | "deliveredRate" | "readRate" | "replied"
-    >,
-  ) => void;
+  onCreate: (campaign: {
+    name: string;
+    kind: CampaignKind;
+    category: string;
+    templateKey: string | null;
+    audienceType: Audience;
+    audienceLabel: string;
+    contactIds: string[];
+    phoneNumbers: string[];
+    launchMode: LaunchMode;
+    scheduledAt: string | null;
+    retryFailed: boolean;
+  }) => Promise<void>;
 }) {
   const [name, setName] = useState("");
   const [campaignKind, setCampaignKind] = useState(kind);
@@ -399,7 +396,7 @@ function CreateCampaignDrawer({
     (item) => item.status === "APPROVED",
   );
 
-  const submit = (action: "draft" | "live") => {
+  const submit = async (action: "draft" | "live") => {
     if (!name.trim()) {
       setError("Campaign name is required.");
       return;
@@ -443,28 +440,18 @@ function CreateCampaignDrawer({
               .map((number) => number.trim())
               .filter(Boolean).length
           : 0;
-    onCreate({
+    await onCreate({
       name: name.trim(),
-      channel: "WhatsApp",
       kind: campaignKind,
-      createdBy,
       category,
-      template,
-      audience: audienceLabel,
-      recipientCount: attempted || null,
-      status:
-        action === "draft"
-          ? "DRAFT"
-          : launchMode === "schedule"
-            ? "SCHEDULED"
-            : "RUNNING",
-      attempted,
-      setLiveAt:
-        action === "live"
-          ? launchMode === "schedule"
-            ? new Date(scheduledAt).toISOString()
-            : new Date().toISOString()
-          : null,
+      templateKey: template || null,
+      audienceType: audience,
+      audienceLabel,
+      contactIds: audience === "contacts" ? selectedContactIds : [],
+      phoneNumbers: audience === "manual" ? manualNumbers.split(/[\n,]+/).map((number) => number.trim()).filter(Boolean) : [],
+      launchMode: action === "draft" ? "draft" : launchMode,
+      scheduledAt: action === "live" && launchMode === "schedule" ? new Date(scheduledAt).toISOString() : null,
+      retryFailed,
     });
   };
 
@@ -859,10 +846,12 @@ export function Campaigns() {
   const selectedContactCount = (searchParams.get("contactIds") ?? "")
     .split(",")
     .filter(Boolean).length;
-  const createdBy = user ? `${user.firstName} ${user.lastName}`.trim() : "You";
-  const [campaigns, setCampaigns] = useState<Campaign[]>(() =>
-    readCampaigns(workspaceId),
-  );
+  const selectedContactIds = (searchParams.get("contactIds") ?? "").split(",").filter(Boolean);
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [totalCampaigns, setTotalCampaigns] = useState(0);
+  const [hasCampaigns, setHasCampaigns] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<CampaignStatus[]>([]);
   const [category, setCategory] = useState<string[]>([]);
@@ -872,37 +861,31 @@ export function Campaigns() {
   const [createOpen, setCreateOpen] = useState(
     selectedContactCount > 0 && canCreate,
   );
-  useEffect(() => setCampaigns(readCampaigns(workspaceId)), [workspaceId]);
-  useEffect(() => {
-    if (workspaceId && typeof window !== "undefined")
-      window.localStorage.setItem(
-        `${storagePrefix}:${workspaceId}`,
-        JSON.stringify(campaigns),
-      );
-  }, [campaigns, workspaceId]);
+  const loadCampaigns = useCallback(async () => {
+    if (!workspaceId || !accessToken || !canRead) { setCampaigns([]); setTotalCampaigns(0); setHasCampaigns(false); setLoading(false); return; }
+    setLoading(true); setError("");
+    const query = new URLSearchParams({ page: "1", pageSize: "100", kind });
+    if (search.trim()) query.set("search", search.trim());
+    if (status.length) query.set("status", status.join(","));
+    if (category.length) query.set("category", category[0] as string);
+    if (creator.length) query.set("createdById", creator[0] as string);
+    if (dateFilter.length === 1) query.set("hasSetLive", dateFilter[0] === "SET" ? "true" : "false");
+    try {
+      const result = await apiRequest<CampaignListResponse>(`/workspaces/${workspaceId}/campaigns?${query.toString()}`, { headers: { authorization: `Bearer ${accessToken}` } });
+      setCampaigns(result.items.map(normalizeCampaign).filter((item): item is Campaign => item !== null));
+      setTotalCampaigns(result.pagination.total);
+      if (result.pagination.total > 0) setHasCampaigns(true);
+    } catch (caughtError) {
+      setError(caughtError instanceof ApiError ? caughtError.message : "Unable to load campaigns.");
+    } finally { setLoading(false); }
+  }, [accessToken, canRead, category, creator, dateFilter, kind, search, status, workspaceId]);
+  useEffect(() => { void loadCampaigns(); }, [loadCampaigns]);
   const creators = useMemo(
-    () => [...new Set(campaigns.map((campaign) => campaign.createdBy))],
+    () => [...new Map(campaigns.map((campaign) => [campaign.createdById ?? campaign.createdBy, { value: campaign.createdById ?? campaign.createdBy, label: campaign.createdBy }])).values()],
     [campaigns],
   );
-  const kindCampaigns = useMemo(
-    () => campaigns.filter((campaign) => campaign.kind === kind),
-    [campaigns, kind],
-  );
-  const filteredCampaigns = useMemo(
-    () =>
-      kindCampaigns.filter((campaign) => {
-        const query = search.trim().toLowerCase();
-        return (
-          (!query || campaign.name.toLowerCase().includes(query)) &&
-          (!status.length || status.includes(campaign.status)) &&
-          (!category.length || category.includes(campaign.category)) &&
-          (!creator.length || creator.includes(campaign.createdBy)) &&
-          (!dateFilter.length ||
-            dateFilter.includes(campaign.setLiveAt ? "SET" : "UNSET"))
-        );
-      }),
-    [category, creator, dateFilter, kindCampaigns, search, status],
-  );
+  const kindCampaigns = totalCampaigns;
+  const filteredCampaigns = campaigns;
   if (!membership || !canRead)
     return (
       <div className="flex h-full items-center justify-center bg-[var(--page-background)] p-6">
@@ -919,22 +902,18 @@ export function Campaigns() {
         </section>
       </div>
     );
-  const createCampaign = (
-    campaign: Omit<
-      Campaign,
-      "id" | "updatedAt" | "sent" | "deliveredRate" | "readRate" | "replied"
-    >,
-  ) => {
-    const next: Campaign = {
-      ...campaign,
-      id: `campaign-${Date.now()}`,
-      updatedAt: new Date().toISOString(),
-      sent: 0,
-      deliveredRate: null,
-      readRate: null,
-      replied: null,
-    };
-    setCampaigns((current) => [next, ...current]);
+  const createCampaign = async (campaign: {
+    name: string; kind: CampaignKind; category: string; templateKey: string | null; audienceType: Audience;
+    audienceLabel: string; contactIds: string[]; phoneNumbers: string[]; launchMode: LaunchMode; scheduledAt: string | null; retryFailed: boolean;
+  }) => {
+    if (!workspaceId || !accessToken) return;
+    try {
+      await apiRequest(`/workspaces/${workspaceId}/campaigns`, { method: "POST", headers: { authorization: `Bearer ${accessToken}` }, body: JSON.stringify(campaign) });
+      await loadCampaigns();
+    } catch (caughtError) {
+      setError(caughtError instanceof ApiError ? caughtError.message : "Campaign could not be created.");
+      throw caughtError;
+    }
     setCreateOpen(false);
     setSearchParams({}, { replace: true });
   };
@@ -982,23 +961,14 @@ export function Campaigns() {
     link.remove();
     URL.revokeObjectURL(url);
   };
-  const duplicateCampaign = (campaign: Campaign) => {
-    if (!canCreate) return;
-    const now = new Date().toISOString();
-    const duplicate: Campaign = {
-      ...campaign,
-      id: `campaign-${Date.now()}`,
-      name: `${campaign.name} (Copy)`,
-      status: "DRAFT",
-      attempted: 0,
-      sent: 0,
-      deliveredRate: null,
-      readRate: null,
-      replied: null,
-      setLiveAt: null,
-      updatedAt: now,
-    };
-    setCampaigns((current) => [duplicate, ...current]);
+  const duplicateCampaign = async (campaign: Campaign) => {
+    if (!canCreate || !workspaceId || !accessToken) return;
+    try {
+      await apiRequest(`/workspaces/${workspaceId}/campaigns/${campaign.id}/duplicate`, { method: "POST", headers: { authorization: `Bearer ${accessToken}` } });
+      await loadCampaigns();
+    } catch (caughtError) {
+      setError(caughtError instanceof ApiError ? caughtError.message : "Campaign could not be duplicated.");
+    }
   };
   return (
     <div
@@ -1096,10 +1066,7 @@ export function Campaigns() {
             label="Created by"
             values={creator}
             onChange={setCreator}
-            options={creators.map((option) => ({
-              value: option,
-              label: option,
-            }))}
+            options={creators}
             icon={<UserRound size={15} />}
           />
           <FilterMultiSelect
@@ -1161,6 +1128,7 @@ export function Campaigns() {
             API campaigns
           </button>
         </div>
+        {error && <div role="alert" className="mt-3 flex-none rounded-md border border-red-100 bg-red-50 px-4 py-3 text-xs text-[var(--danger)]">{error}</div>}
         <section
           className="mt-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-md border border-[var(--border)] bg-white"
           data-testid="campaign-table-panel"
@@ -1195,7 +1163,7 @@ export function Campaigns() {
                 </tr>
               </thead>
               <tbody>
-                {filteredCampaigns.map((campaign) => (
+                {loading ? <tr><td colSpan={12} className="p-12 text-center text-xs text-[var(--text-secondary)]">Loading campaigns…</td></tr> : filteredCampaigns.map((campaign) => (
                   <tr
                     key={campaign.id}
                     className="cursor-pointer border-b border-[var(--border-soft)] text-sm text-[var(--text-primary)] hover:bg-[var(--brand-soft)] focus-within:bg-[var(--brand-soft)]"
@@ -1280,23 +1248,23 @@ export function Campaigns() {
                 ))}
               </tbody>
             </table>
-            {filteredCampaigns.length === 0 && (
+            {!loading && filteredCampaigns.length === 0 && (
               <div className="flex min-h-[260px] items-center justify-center px-6 py-14 text-center">
                 <div>
                   <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-[var(--brand-soft)] text-[var(--brand)]">
                     <Megaphone size={21} />
                   </div>
                   <h3 className="mt-4 text-[15px] font-medium">
-                    {kindCampaigns.length
+                    {hasCampaigns
                       ? "No campaigns match your filters"
                       : "No campaigns yet"}
                   </h3>
                   <div className="mx-auto mt-1.5 max-w-[390px] text-sm text-[var(--text-secondary)]">
-                    {kindCampaigns.length
+                    {hasCampaigns
                       ? "Try a different search or filter."
                       : "Create your first WhatsApp broadcast to start engaging opted-in contacts."}
                   </div>
-                  {!kindCampaigns.length && canCreate && (
+                  {!hasCampaigns && canCreate && (
                     <button
                       type="button"
                       onClick={() => setCreateOpen(true)}
@@ -1312,7 +1280,7 @@ export function Campaigns() {
           </div>
           <div className="flex flex-none items-center justify-between border-t border-[var(--border)] px-4 py-3 text-xs text-[var(--text-primary)]">
             <strong>
-              {filteredCampaigns.length} out of {kindCampaigns.length} Campaigns
+              {filteredCampaigns.length} out of {kindCampaigns} Campaigns
             </strong>
             <span className="text-[var(--text-secondary)]">
               WhatsApp campaigns are checked for consent before sending.
@@ -1324,8 +1292,8 @@ export function Campaigns() {
         open={createOpen}
         canSend={canSend}
         selectedContactCount={selectedContactCount}
+        selectedContactIds={selectedContactIds}
         kind={kind}
-        createdBy={createdBy}
         workspaceId={workspaceId}
         accessToken={accessToken}
         onClose={() => {

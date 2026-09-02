@@ -124,6 +124,30 @@ enum WorkflowRunStatus {
   FAILED
 }
 
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  RUNNING
+  COMPLETED
+  PAUSED
+}
+
+enum CampaignKind {
+  ONE_TIME
+  ONGOING
+  API
+}
+
+enum CampaignRecipientStatus {
+  PENDING
+  ATTEMPTED
+  SENT
+  DELIVERED
+  READ
+  REPLIED
+  FAILED
+}
+
 model User {
   id                         String                   @id @default(uuid()) @db.Uuid
   email                      String                   @unique @db.VarChar(320)
@@ -163,6 +187,7 @@ model User {
   templatesDeleted           Template[]               @relation("TemplateDeleter")
   automationsCreated         Automation[]             @relation("AutomationCreator")
   workflowsCreated           Workflow[]               @relation("WorkflowCreator")
+  campaignsCreated           Campaign[]               @relation("CampaignCreator")
 
   @@index([status])
   @@map("users")
@@ -218,6 +243,8 @@ model Workspace {
   automationLogs           AutomationLog[]
   workflows                Workflow[]
   workflowRuns             WorkflowRun[]
+  campaigns                Campaign[]
+  campaignRecipients       CampaignRecipient[]
 
   @@index([ownerId])
   @@map("workspaces")
@@ -301,6 +328,7 @@ model Contact {
   messages             Message[]
   automationLogs       AutomationLog[]
   workflowRuns         WorkflowRun[]
+  campaignRecipients   CampaignRecipient[]
 
   @@index([workspaceId, deletedAt, createdAt, id])
   @@index([workspaceId, deletedAt, name, id])
@@ -696,6 +724,74 @@ model WorkflowRun {
   @@index([workspaceId, contactId, status, updatedAt])
   @@index([workflowId, status, updatedAt])
   @@map("workflow_runs")
+}
+
+model Campaign {
+  id             String         @id @default(uuid()) @db.Uuid
+  workspaceId    String         @map("workspace_id") @db.Uuid
+  name           String         @db.VarChar(160)
+  channelKey     String         @default("whatsapp") @map("channel_key") @db.VarChar(50)
+  kind           CampaignKind   @default(ONE_TIME)
+  category       String         @default("Marketing") @db.VarChar(40)
+  templateKey    String?        @map("template_key") @db.VarChar(180)
+  templateName   String?        @map("template_name") @db.VarChar(160)
+  templateBody   String?        @map("template_body") @db.Text
+  buttonTracking Json           @default("[]") @map("button_tracking") @db.JsonB
+  audienceType   String         @map("audience_type") @db.VarChar(30)
+  audienceLabel  String         @map("audience_label") @db.VarChar(255)
+  audienceConfig Json           @default("{}") @map("audience_config") @db.JsonB
+  status         CampaignStatus @default(DRAFT)
+  recipientCount Int            @default(0) @map("recipient_count")
+  attempted      Int            @default(0)
+  sent           Int            @default(0)
+  delivered      Int            @default(0)
+  read           Int            @default(0)
+  replied        Int            @default(0)
+  failed         Int            @default(0)
+  scheduledAt    DateTime?      @map("scheduled_at") @db.Timestamptz(3)
+  setLiveAt      DateTime?      @map("set_live_at") @db.Timestamptz(3)
+  completedAt    DateTime?      @map("completed_at") @db.Timestamptz(3)
+  totalCost      Decimal?       @map("total_cost") @db.Decimal(14, 2)
+  createdById    String?        @map("created_by_id") @db.Uuid
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace      Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy      User?          @relation("CampaignCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  recipients     CampaignRecipient[]
+
+  @@index([workspaceId, kind, status, updatedAt, id])
+  @@index([workspaceId, createdAt, id])
+  @@index([createdById])
+  @@map("campaigns")
+}
+
+model CampaignRecipient {
+  id             String                  @id @default(uuid()) @db.Uuid
+  campaignId     String                  @map("campaign_id") @db.Uuid
+  workspaceId    String                  @map("workspace_id") @db.Uuid
+  contactId      String?                 @map("contact_id") @db.Uuid
+  phoneE164      String                  @map("phone_e164") @db.VarChar(20)
+  status         CampaignRecipientStatus @default(PENDING)
+  metaMessageId  String?                 @map("meta_message_id") @db.VarChar(200)
+  attemptedAt    DateTime?               @map("attempted_at") @db.Timestamptz(3)
+  sentAt         DateTime?               @map("sent_at") @db.Timestamptz(3)
+  deliveredAt    DateTime?               @map("delivered_at") @db.Timestamptz(3)
+  readAt         DateTime?               @map("read_at") @db.Timestamptz(3)
+  repliedAt      DateTime?               @map("replied_at") @db.Timestamptz(3)
+  failedAt       DateTime?               @map("failed_at") @db.Timestamptz(3)
+  failureReason  String?                 @map("failure_reason") @db.Text
+  clickCount     Int                     @default(0) @map("click_count")
+  createdAt      DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime                @updatedAt @map("updated_at") @db.Timestamptz(3)
+  campaign       Campaign                @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  workspace      Workspace               @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contact        Contact?                @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  @@unique([campaignId, phoneE164])
+  @@index([workspaceId, status, updatedAt])
+  @@index([campaignId, status])
+  @@index([contactId])
+  @@map("campaign_recipients")
 }
 
 model WorkspaceMember {

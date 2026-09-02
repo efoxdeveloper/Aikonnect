@@ -73,6 +73,8 @@ export const ModelName = {
   AutomationLog: 'AutomationLog',
   Workflow: 'Workflow',
   WorkflowRun: 'WorkflowRun',
+  Campaign: 'Campaign',
+  CampaignRecipient: 'CampaignRecipient',
   WorkspaceMember: 'WorkspaceMember',
   Role: 'Role',
   Permission: 'Permission',
@@ -500,6 +502,63 @@ export const WorkflowRunScalarFieldEnum = {
 } as const
 
 export type WorkflowRunScalarFieldEnum = (typeof WorkflowRunScalarFieldEnum)[keyof typeof WorkflowRunScalarFieldEnum]
+
+
+export const CampaignScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  name: 'name',
+  channelKey: 'channelKey',
+  kind: 'kind',
+  category: 'category',
+  templateKey: 'templateKey',
+  templateName: 'templateName',
+  templateBody: 'templateBody',
+  buttonTracking: 'buttonTracking',
+  audienceType: 'audienceType',
+  audienceLabel: 'audienceLabel',
+  audienceConfig: 'audienceConfig',
+  status: 'status',
+  recipientCount: 'recipientCount',
+  attempted: 'attempted',
+  sent: 'sent',
+  delivered: 'delivered',
+  read: 'read',
+  replied: 'replied',
+  failed: 'failed',
+  scheduledAt: 'scheduledAt',
+  setLiveAt: 'setLiveAt',
+  completedAt: 'completedAt',
+  totalCost: 'totalCost',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CampaignScalarFieldEnum = (typeof CampaignScalarFieldEnum)[keyof typeof CampaignScalarFieldEnum]
+
+
+export const CampaignRecipientScalarFieldEnum = {
+  id: 'id',
+  campaignId: 'campaignId',
+  workspaceId: 'workspaceId',
+  contactId: 'contactId',
+  phoneE164: 'phoneE164',
+  status: 'status',
+  metaMessageId: 'metaMessageId',
+  attemptedAt: 'attemptedAt',
+  sentAt: 'sentAt',
+  deliveredAt: 'deliveredAt',
+  readAt: 'readAt',
+  repliedAt: 'repliedAt',
+  failedAt: 'failedAt',
+  failureReason: 'failureReason',
+  clickCount: 'clickCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CampaignRecipientScalarFieldEnum = (typeof CampaignRecipientScalarFieldEnum)[keyof typeof CampaignRecipientScalarFieldEnum]
 
 
 export const WorkspaceMemberScalarFieldEnum = {

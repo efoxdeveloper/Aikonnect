@@ -274,6 +274,8 @@ export type WorkspaceWhereInput = {
   automationLogs?: Prisma.AutomationLogListRelationFilter
   workflows?: Prisma.WorkflowListRelationFilter
   workflowRuns?: Prisma.WorkflowRunListRelationFilter
+  campaigns?: Prisma.CampaignListRelationFilter
+  campaignRecipients?: Prisma.CampaignRecipientListRelationFilter
 }
 
 export type WorkspaceOrderByWithRelationInput = {
@@ -311,6 +313,8 @@ export type WorkspaceOrderByWithRelationInput = {
   automationLogs?: Prisma.AutomationLogOrderByRelationAggregateInput
   workflows?: Prisma.WorkflowOrderByRelationAggregateInput
   workflowRuns?: Prisma.WorkflowRunOrderByRelationAggregateInput
+  campaigns?: Prisma.CampaignOrderByRelationAggregateInput
+  campaignRecipients?: Prisma.CampaignRecipientOrderByRelationAggregateInput
 }
 
 export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
@@ -351,6 +355,8 @@ export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
   automationLogs?: Prisma.AutomationLogListRelationFilter
   workflows?: Prisma.WorkflowListRelationFilter
   workflowRuns?: Prisma.WorkflowRunListRelationFilter
+  campaigns?: Prisma.CampaignListRelationFilter
+  campaignRecipients?: Prisma.CampaignRecipientListRelationFilter
 }, "id" | "slug">
 
 export type WorkspaceOrderByWithAggregationInput = {
@@ -427,6 +433,8 @@ export type WorkspaceCreateInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateInput = {
@@ -463,6 +471,8 @@ export type WorkspaceUncheckedCreateInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUpdateInput = {
@@ -499,6 +509,8 @@ export type WorkspaceUpdateInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateInput = {
@@ -535,6 +547,8 @@ export type WorkspaceUncheckedUpdateInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateManyInput = {
@@ -919,6 +933,34 @@ export type WorkspaceUpdateOneRequiredWithoutWorkflowRunsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutWorkflowRunsInput, Prisma.WorkspaceUpdateWithoutWorkflowRunsInput>, Prisma.WorkspaceUncheckedUpdateWithoutWorkflowRunsInput>
 }
 
+export type WorkspaceCreateNestedOneWithoutCampaignsInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutCampaignsInput, Prisma.WorkspaceUncheckedCreateWithoutCampaignsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutCampaignsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+}
+
+export type WorkspaceUpdateOneRequiredWithoutCampaignsNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutCampaignsInput, Prisma.WorkspaceUncheckedCreateWithoutCampaignsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutCampaignsInput
+  upsert?: Prisma.WorkspaceUpsertWithoutCampaignsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutCampaignsInput, Prisma.WorkspaceUpdateWithoutCampaignsInput>, Prisma.WorkspaceUncheckedUpdateWithoutCampaignsInput>
+}
+
+export type WorkspaceCreateNestedOneWithoutCampaignRecipientsInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutCampaignRecipientsInput, Prisma.WorkspaceUncheckedCreateWithoutCampaignRecipientsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutCampaignRecipientsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+}
+
+export type WorkspaceUpdateOneRequiredWithoutCampaignRecipientsNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutCampaignRecipientsInput, Prisma.WorkspaceUncheckedCreateWithoutCampaignRecipientsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutCampaignRecipientsInput
+  upsert?: Prisma.WorkspaceUpsertWithoutCampaignRecipientsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutCampaignRecipientsInput, Prisma.WorkspaceUpdateWithoutCampaignRecipientsInput>, Prisma.WorkspaceUncheckedUpdateWithoutCampaignRecipientsInput>
+}
+
 export type WorkspaceCreateNestedOneWithoutMembershipsInput = {
   create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutMembershipsInput, Prisma.WorkspaceUncheckedCreateWithoutMembershipsInput>
   connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutMembershipsInput
@@ -994,6 +1036,8 @@ export type WorkspaceCreateWithoutOwnerInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutOwnerInput = {
@@ -1029,6 +1073,8 @@ export type WorkspaceUncheckedCreateWithoutOwnerInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutOwnerInput = {
@@ -1110,6 +1156,8 @@ export type WorkspaceCreateWithoutTemplatesInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutTemplatesInput = {
@@ -1145,6 +1193,8 @@ export type WorkspaceUncheckedCreateWithoutTemplatesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutTemplatesInput = {
@@ -1196,6 +1246,8 @@ export type WorkspaceUpdateWithoutTemplatesInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutTemplatesInput = {
@@ -1231,6 +1283,8 @@ export type WorkspaceUncheckedUpdateWithoutTemplatesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutContactsInput = {
@@ -1266,6 +1320,8 @@ export type WorkspaceCreateWithoutContactsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutContactsInput = {
@@ -1301,6 +1357,8 @@ export type WorkspaceUncheckedCreateWithoutContactsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutContactsInput = {
@@ -1352,6 +1410,8 @@ export type WorkspaceUpdateWithoutContactsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutContactsInput = {
@@ -1387,6 +1447,8 @@ export type WorkspaceUncheckedUpdateWithoutContactsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutContactConsentEventsInput = {
@@ -1422,6 +1484,8 @@ export type WorkspaceCreateWithoutContactConsentEventsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutContactConsentEventsInput = {
@@ -1457,6 +1521,8 @@ export type WorkspaceUncheckedCreateWithoutContactConsentEventsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutContactConsentEventsInput = {
@@ -1508,6 +1574,8 @@ export type WorkspaceUpdateWithoutContactConsentEventsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutContactConsentEventsInput = {
@@ -1543,6 +1611,8 @@ export type WorkspaceUncheckedUpdateWithoutContactConsentEventsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutConversationsInput = {
@@ -1578,6 +1648,8 @@ export type WorkspaceCreateWithoutConversationsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutConversationsInput = {
@@ -1613,6 +1685,8 @@ export type WorkspaceUncheckedCreateWithoutConversationsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutConversationsInput = {
@@ -1664,6 +1738,8 @@ export type WorkspaceUpdateWithoutConversationsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutConversationsInput = {
@@ -1699,6 +1775,8 @@ export type WorkspaceUncheckedUpdateWithoutConversationsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutMessagesInput = {
@@ -1734,6 +1812,8 @@ export type WorkspaceCreateWithoutMessagesInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutMessagesInput = {
@@ -1769,6 +1849,8 @@ export type WorkspaceUncheckedCreateWithoutMessagesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutMessagesInput = {
@@ -1820,6 +1902,8 @@ export type WorkspaceUpdateWithoutMessagesInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutMessagesInput = {
@@ -1855,6 +1939,8 @@ export type WorkspaceUncheckedUpdateWithoutMessagesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutContactCustomFieldsInput = {
@@ -1890,6 +1976,8 @@ export type WorkspaceCreateWithoutContactCustomFieldsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutContactCustomFieldsInput = {
@@ -1925,6 +2013,8 @@ export type WorkspaceUncheckedCreateWithoutContactCustomFieldsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutContactCustomFieldsInput = {
@@ -1976,6 +2066,8 @@ export type WorkspaceUpdateWithoutContactCustomFieldsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutContactCustomFieldsInput = {
@@ -2011,6 +2103,8 @@ export type WorkspaceUncheckedUpdateWithoutContactCustomFieldsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutContactSegmentsInput = {
@@ -2046,6 +2140,8 @@ export type WorkspaceCreateWithoutContactSegmentsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutContactSegmentsInput = {
@@ -2081,6 +2177,8 @@ export type WorkspaceUncheckedCreateWithoutContactSegmentsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutContactSegmentsInput = {
@@ -2132,6 +2230,8 @@ export type WorkspaceUpdateWithoutContactSegmentsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutContactSegmentsInput = {
@@ -2167,6 +2267,8 @@ export type WorkspaceUncheckedUpdateWithoutContactSegmentsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutContactTasksInput = {
@@ -2202,6 +2304,8 @@ export type WorkspaceCreateWithoutContactTasksInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutContactTasksInput = {
@@ -2237,6 +2341,8 @@ export type WorkspaceUncheckedCreateWithoutContactTasksInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutContactTasksInput = {
@@ -2288,6 +2394,8 @@ export type WorkspaceUpdateWithoutContactTasksInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutContactTasksInput = {
@@ -2323,6 +2431,8 @@ export type WorkspaceUncheckedUpdateWithoutContactTasksInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutContactNotesInput = {
@@ -2358,6 +2468,8 @@ export type WorkspaceCreateWithoutContactNotesInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutContactNotesInput = {
@@ -2393,6 +2505,8 @@ export type WorkspaceUncheckedCreateWithoutContactNotesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutContactNotesInput = {
@@ -2444,6 +2558,8 @@ export type WorkspaceUpdateWithoutContactNotesInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutContactNotesInput = {
@@ -2479,6 +2595,8 @@ export type WorkspaceUncheckedUpdateWithoutContactNotesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutContactTagsInput = {
@@ -2514,6 +2632,8 @@ export type WorkspaceCreateWithoutContactTagsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutContactTagsInput = {
@@ -2549,6 +2669,8 @@ export type WorkspaceUncheckedCreateWithoutContactTagsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutContactTagsInput = {
@@ -2600,6 +2722,8 @@ export type WorkspaceUpdateWithoutContactTagsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutContactTagsInput = {
@@ -2635,6 +2759,8 @@ export type WorkspaceUncheckedUpdateWithoutContactTagsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutSetupProgressInput = {
@@ -2670,6 +2796,8 @@ export type WorkspaceCreateWithoutSetupProgressInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutSetupProgressInput = {
@@ -2705,6 +2833,8 @@ export type WorkspaceUncheckedCreateWithoutSetupProgressInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutSetupProgressInput = {
@@ -2756,6 +2886,8 @@ export type WorkspaceUpdateWithoutSetupProgressInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutSetupProgressInput = {
@@ -2791,6 +2923,8 @@ export type WorkspaceUncheckedUpdateWithoutSetupProgressInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutWhatsappBusinessAccountsInput = {
@@ -2826,6 +2960,8 @@ export type WorkspaceCreateWithoutWhatsappBusinessAccountsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutWhatsappBusinessAccountsInput = {
@@ -2861,6 +2997,8 @@ export type WorkspaceUncheckedCreateWithoutWhatsappBusinessAccountsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutWhatsappBusinessAccountsInput = {
@@ -2912,6 +3050,8 @@ export type WorkspaceUpdateWithoutWhatsappBusinessAccountsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutWhatsappBusinessAccountsInput = {
@@ -2947,6 +3087,8 @@ export type WorkspaceUncheckedUpdateWithoutWhatsappBusinessAccountsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutAutomationsInput = {
@@ -2982,6 +3124,8 @@ export type WorkspaceCreateWithoutAutomationsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutAutomationsInput = {
@@ -3017,6 +3161,8 @@ export type WorkspaceUncheckedCreateWithoutAutomationsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutAutomationsInput = {
@@ -3068,6 +3214,8 @@ export type WorkspaceUpdateWithoutAutomationsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutAutomationsInput = {
@@ -3103,6 +3251,8 @@ export type WorkspaceUncheckedUpdateWithoutAutomationsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutAutomationLogsInput = {
@@ -3138,6 +3288,8 @@ export type WorkspaceCreateWithoutAutomationLogsInput = {
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutAutomationLogsInput = {
@@ -3173,6 +3325,8 @@ export type WorkspaceUncheckedCreateWithoutAutomationLogsInput = {
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutAutomationLogsInput = {
@@ -3224,6 +3378,8 @@ export type WorkspaceUpdateWithoutAutomationLogsInput = {
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutAutomationLogsInput = {
@@ -3259,6 +3415,8 @@ export type WorkspaceUncheckedUpdateWithoutAutomationLogsInput = {
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutWorkflowsInput = {
@@ -3294,6 +3452,8 @@ export type WorkspaceCreateWithoutWorkflowsInput = {
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutWorkflowsInput = {
@@ -3329,6 +3489,8 @@ export type WorkspaceUncheckedCreateWithoutWorkflowsInput = {
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutWorkflowsInput = {
@@ -3380,6 +3542,8 @@ export type WorkspaceUpdateWithoutWorkflowsInput = {
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutWorkflowsInput = {
@@ -3415,6 +3579,8 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowsInput = {
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutWorkflowRunsInput = {
@@ -3450,6 +3616,8 @@ export type WorkspaceCreateWithoutWorkflowRunsInput = {
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutWorkflowRunsInput = {
@@ -3485,6 +3653,8 @@ export type WorkspaceUncheckedCreateWithoutWorkflowRunsInput = {
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutWorkflowRunsInput = {
@@ -3536,6 +3706,8 @@ export type WorkspaceUpdateWithoutWorkflowRunsInput = {
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutWorkflowRunsInput = {
@@ -3571,6 +3743,336 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowRunsInput = {
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceCreateWithoutCampaignsInput = {
+  id?: string
+  name: string
+  slug: string
+  companyName?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingCompletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
+  memberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceUncheckedCreateWithoutCampaignsInput = {
+  id?: string
+  name: string
+  slug: string
+  companyName?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingCompletedAt?: Date | string | null
+  ownerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceCreateOrConnectWithoutCampaignsInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutCampaignsInput, Prisma.WorkspaceUncheckedCreateWithoutCampaignsInput>
+}
+
+export type WorkspaceUpsertWithoutCampaignsInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutCampaignsInput, Prisma.WorkspaceUncheckedUpdateWithoutCampaignsInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutCampaignsInput, Prisma.WorkspaceUncheckedCreateWithoutCampaignsInput>
+  where?: Prisma.WorkspaceWhereInput
+}
+
+export type WorkspaceUpdateToOneWithWhereWithoutCampaignsInput = {
+  where?: Prisma.WorkspaceWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutCampaignsInput, Prisma.WorkspaceUncheckedUpdateWithoutCampaignsInput>
+}
+
+export type WorkspaceUpdateWithoutCampaignsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
+  memberships?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceUncheckedUpdateWithoutCampaignsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceCreateWithoutCampaignRecipientsInput = {
+  id?: string
+  name: string
+  slug: string
+  companyName?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingCompletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
+  memberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceUncheckedCreateWithoutCampaignRecipientsInput = {
+  id?: string
+  name: string
+  slug: string
+  companyName?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingCompletedAt?: Date | string | null
+  ownerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceCreateOrConnectWithoutCampaignRecipientsInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutCampaignRecipientsInput, Prisma.WorkspaceUncheckedCreateWithoutCampaignRecipientsInput>
+}
+
+export type WorkspaceUpsertWithoutCampaignRecipientsInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutCampaignRecipientsInput, Prisma.WorkspaceUncheckedUpdateWithoutCampaignRecipientsInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutCampaignRecipientsInput, Prisma.WorkspaceUncheckedCreateWithoutCampaignRecipientsInput>
+  where?: Prisma.WorkspaceWhereInput
+}
+
+export type WorkspaceUpdateToOneWithWhereWithoutCampaignRecipientsInput = {
+  where?: Prisma.WorkspaceWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutCampaignRecipientsInput, Prisma.WorkspaceUncheckedUpdateWithoutCampaignRecipientsInput>
+}
+
+export type WorkspaceUpdateWithoutCampaignRecipientsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
+  memberships?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceUncheckedUpdateWithoutCampaignRecipientsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutMembershipsInput = {
@@ -3606,6 +4108,8 @@ export type WorkspaceCreateWithoutMembershipsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutMembershipsInput = {
@@ -3641,6 +4145,8 @@ export type WorkspaceUncheckedCreateWithoutMembershipsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutMembershipsInput = {
@@ -3692,6 +4198,8 @@ export type WorkspaceUpdateWithoutMembershipsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutMembershipsInput = {
@@ -3727,6 +4235,8 @@ export type WorkspaceUncheckedUpdateWithoutMembershipsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutRolesInput = {
@@ -3762,6 +4272,8 @@ export type WorkspaceCreateWithoutRolesInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutRolesInput = {
@@ -3797,6 +4309,8 @@ export type WorkspaceUncheckedCreateWithoutRolesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutRolesInput = {
@@ -3848,6 +4362,8 @@ export type WorkspaceUpdateWithoutRolesInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutRolesInput = {
@@ -3883,6 +4399,8 @@ export type WorkspaceUncheckedUpdateWithoutRolesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutInvitationsInput = {
@@ -3918,6 +4436,8 @@ export type WorkspaceCreateWithoutInvitationsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutInvitationsInput = {
@@ -3953,6 +4473,8 @@ export type WorkspaceUncheckedCreateWithoutInvitationsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutInvitationsInput = {
@@ -4004,6 +4526,8 @@ export type WorkspaceUpdateWithoutInvitationsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutInvitationsInput = {
@@ -4039,6 +4563,8 @@ export type WorkspaceUncheckedUpdateWithoutInvitationsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateManyOwnerInput = {
@@ -4090,6 +4616,8 @@ export type WorkspaceUpdateWithoutOwnerInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutOwnerInput = {
@@ -4125,6 +4653,8 @@ export type WorkspaceUncheckedUpdateWithoutOwnerInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateManyWithoutOwnerInput = {
@@ -4167,6 +4697,8 @@ export type WorkspaceCountOutputType = {
   automationLogs: number
   workflows: number
   workflowRuns: number
+  campaigns: number
+  campaignRecipients: number
 }
 
 export type WorkspaceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4188,6 +4720,8 @@ export type WorkspaceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensi
   automationLogs?: boolean | WorkspaceCountOutputTypeCountAutomationLogsArgs
   workflows?: boolean | WorkspaceCountOutputTypeCountWorkflowsArgs
   workflowRuns?: boolean | WorkspaceCountOutputTypeCountWorkflowRunsArgs
+  campaigns?: boolean | WorkspaceCountOutputTypeCountCampaignsArgs
+  campaignRecipients?: boolean | WorkspaceCountOutputTypeCountCampaignRecipientsArgs
 }
 
 /**
@@ -4326,6 +4860,20 @@ export type WorkspaceCountOutputTypeCountWorkflowRunsArgs<ExtArgs extends runtim
   where?: Prisma.WorkflowRunWhereInput
 }
 
+/**
+ * WorkspaceCountOutputType without action
+ */
+export type WorkspaceCountOutputTypeCountCampaignsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CampaignWhereInput
+}
+
+/**
+ * WorkspaceCountOutputType without action
+ */
+export type WorkspaceCountOutputTypeCountCampaignRecipientsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CampaignRecipientWhereInput
+}
+
 
 export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -4362,6 +4910,8 @@ export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   automationLogs?: boolean | Prisma.Workspace$automationLogsArgs<ExtArgs>
   workflows?: boolean | Prisma.Workspace$workflowsArgs<ExtArgs>
   workflowRuns?: boolean | Prisma.Workspace$workflowRunsArgs<ExtArgs>
+  campaigns?: boolean | Prisma.Workspace$campaignsArgs<ExtArgs>
+  campaignRecipients?: boolean | Prisma.Workspace$campaignRecipientsArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workspace"]>
 
@@ -4440,6 +4990,8 @@ export type WorkspaceInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   automationLogs?: boolean | Prisma.Workspace$automationLogsArgs<ExtArgs>
   workflows?: boolean | Prisma.Workspace$workflowsArgs<ExtArgs>
   workflowRuns?: boolean | Prisma.Workspace$workflowRunsArgs<ExtArgs>
+  campaigns?: boolean | Prisma.Workspace$campaignsArgs<ExtArgs>
+  campaignRecipients?: boolean | Prisma.Workspace$campaignRecipientsArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WorkspaceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4472,6 +5024,8 @@ export type $WorkspacePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     automationLogs: Prisma.$AutomationLogPayload<ExtArgs>[]
     workflows: Prisma.$WorkflowPayload<ExtArgs>[]
     workflowRuns: Prisma.$WorkflowRunPayload<ExtArgs>[]
+    campaigns: Prisma.$CampaignPayload<ExtArgs>[]
+    campaignRecipients: Prisma.$CampaignRecipientPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4902,6 +5456,8 @@ export interface Prisma__WorkspaceClient<T, Null = never, ExtArgs extends runtim
   automationLogs<T extends Prisma.Workspace$automationLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$automationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AutomationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workflows<T extends Prisma.Workspace$workflowsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$workflowsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workflowRuns<T extends Prisma.Workspace$workflowRunsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$workflowRunsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  campaigns<T extends Prisma.Workspace$campaignsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$campaignsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  campaignRecipients<T extends Prisma.Workspace$campaignRecipientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$campaignRecipientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignRecipientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5794,6 +6350,54 @@ export type Workspace$workflowRunsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.WorkflowRunScalarFieldEnum | Prisma.WorkflowRunScalarFieldEnum[]
+}
+
+/**
+ * Workspace.campaigns
+ */
+export type Workspace$campaignsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Campaign
+   */
+  select?: Prisma.CampaignSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Campaign
+   */
+  omit?: Prisma.CampaignOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignInclude<ExtArgs> | null
+  where?: Prisma.CampaignWhereInput
+  orderBy?: Prisma.CampaignOrderByWithRelationInput | Prisma.CampaignOrderByWithRelationInput[]
+  cursor?: Prisma.CampaignWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CampaignScalarFieldEnum | Prisma.CampaignScalarFieldEnum[]
+}
+
+/**
+ * Workspace.campaignRecipients
+ */
+export type Workspace$campaignRecipientsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CampaignRecipient
+   */
+  select?: Prisma.CampaignRecipientSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CampaignRecipient
+   */
+  omit?: Prisma.CampaignRecipientOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CampaignRecipientInclude<ExtArgs> | null
+  where?: Prisma.CampaignRecipientWhereInput
+  orderBy?: Prisma.CampaignRecipientOrderByWithRelationInput | Prisma.CampaignRecipientOrderByWithRelationInput[]
+  cursor?: Prisma.CampaignRecipientWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CampaignRecipientScalarFieldEnum | Prisma.CampaignRecipientScalarFieldEnum[]
 }
 
 /**

@@ -1,5 +1,6 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
+import { toast } from "react-toastify";
 import { apiRequest } from "@/lib/api";
 import { loadFacebookSdk } from "@/lib/meta-embedded-signup";
 import { useWhatsAppEmbeddedSignup } from "./use-whatsapp-embedded-signup";
@@ -46,4 +47,19 @@ test("launches the Coexistence config and accepts a finish event without a phone
     "/workspaces/workspace-1/whatsapp/embedded-signup",
     expect.objectContaining({ method: "POST", body: JSON.stringify({ code: "signup-code", wabaId: "waba-1" }) }),
   ));
+});
+
+test("keeps a successful connection when the workspace status refresh fails", async () => {
+  const onConnected = vi.fn().mockRejectedValue(new Error("refresh failed"));
+  const { result } = renderHook(() => useWhatsAppEmbeddedSignup({ workspaceId: "workspace-1", accessToken: "access-token", onConnected }));
+  await result.current.start();
+  login.mock.calls[0]?.[0]({ authResponse: { code: "signup-code" } });
+  window.dispatchEvent(new MessageEvent("message", {
+    origin: "https://www.facebook.com",
+    data: JSON.stringify({ type: "WA_EMBEDDED_SIGNUP", event: "FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING", data: { waba_id: "waba-1" } }),
+  }));
+
+  await waitFor(() => expect(onConnected).toHaveBeenCalledOnce());
+  expect(vi.mocked(toast.error)).not.toHaveBeenCalled();
+  expect(vi.mocked(toast.success)).toHaveBeenCalledWith("WhatsApp Business account connected successfully.");
 });

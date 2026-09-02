@@ -174,3 +174,36 @@ export const WorkflowRunStatus = {
 } as const
 
 export type WorkflowRunStatus = (typeof WorkflowRunStatus)[keyof typeof WorkflowRunStatus]
+
+
+export const CampaignStatus = {
+  DRAFT: 'DRAFT',
+  SCHEDULED: 'SCHEDULED',
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  PAUSED: 'PAUSED'
+} as const
+
+export type CampaignStatus = (typeof CampaignStatus)[keyof typeof CampaignStatus]
+
+
+export const CampaignKind = {
+  ONE_TIME: 'ONE_TIME',
+  ONGOING: 'ONGOING',
+  API: 'API'
+} as const
+
+export type CampaignKind = (typeof CampaignKind)[keyof typeof CampaignKind]
+
+
+export const CampaignRecipientStatus = {
+  PENDING: 'PENDING',
+  ATTEMPTED: 'ATTEMPTED',
+  SENT: 'SENT',
+  DELIVERED: 'DELIVERED',
+  READ: 'READ',
+  REPLIED: 'REPLIED',
+  FAILED: 'FAILED'
+} as const
+
+export type CampaignRecipientStatus = (typeof CampaignRecipientStatus)[keyof typeof CampaignRecipientStatus]

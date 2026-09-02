@@ -36,14 +36,16 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
       });
       toast.success("WhatsApp Business account connected successfully.");
       setConnecting(false);
-      await onConnected?.();
     } catch (caughtError) {
       submittedRef.current = false;
       const message = caughtError instanceof ApiError ? caughtError.message : "WhatsApp could not be connected.";
       setError(message);
       toast.error(message);
       setConnecting(false);
+      return;
     }
+    // A refresh failure must not turn a successful Meta connection into a connection error.
+    try { await onConnected?.(); } catch { /* The next page refresh can retry loading workspace status. */ }
   }, [accessToken, onConnected, workspaceId]);
 
   useEffect(() => {

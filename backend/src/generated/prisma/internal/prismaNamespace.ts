@@ -419,6 +419,8 @@ export const ModelName = {
   AutomationLog: 'AutomationLog',
   Workflow: 'Workflow',
   WorkflowRun: 'WorkflowRun',
+  Campaign: 'Campaign',
+  CampaignRecipient: 'CampaignRecipient',
   WorkspaceMember: 'WorkspaceMember',
   Role: 'Role',
   Permission: 'Permission',
@@ -442,7 +444,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "oAuthAccount" | "workspace" | "template" | "contact" | "contactConsentEvent" | "conversation" | "message" | "contactCustomField" | "contactCustomFieldValue" | "contactSegment" | "contactTask" | "contactNote" | "contactTag" | "contactTagAssignment" | "workspaceSetupProgress" | "whatsAppBusinessAccount" | "whatsAppPhoneNumber" | "automation" | "automationLog" | "workflow" | "workflowRun" | "workspaceMember" | "role" | "permission" | "rolePermission" | "workspaceInvitation" | "session" | "emailVerificationToken" | "passwordResetToken"
+    modelProps: "user" | "oAuthAccount" | "workspace" | "template" | "contact" | "contactConsentEvent" | "conversation" | "message" | "contactCustomField" | "contactCustomFieldValue" | "contactSegment" | "contactTask" | "contactNote" | "contactTag" | "contactTagAssignment" | "workspaceSetupProgress" | "whatsAppBusinessAccount" | "whatsAppPhoneNumber" | "automation" | "automationLog" | "workflow" | "workflowRun" | "campaign" | "campaignRecipient" | "workspaceMember" | "role" | "permission" | "rolePermission" | "workspaceInvitation" | "session" | "emailVerificationToken" | "passwordResetToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2074,6 +2076,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Campaign: {
+      payload: Prisma.$CampaignPayload<ExtArgs>
+      fields: Prisma.CampaignFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CampaignFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CampaignFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        findFirst: {
+          args: Prisma.CampaignFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CampaignFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        findMany: {
+          args: Prisma.CampaignFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>[]
+        }
+        create: {
+          args: Prisma.CampaignCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        createMany: {
+          args: Prisma.CampaignCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CampaignCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>[]
+        }
+        delete: {
+          args: Prisma.CampaignDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        update: {
+          args: Prisma.CampaignUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        deleteMany: {
+          args: Prisma.CampaignDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CampaignUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CampaignUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>[]
+        }
+        upsert: {
+          args: Prisma.CampaignUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignPayload>
+        }
+        aggregate: {
+          args: Prisma.CampaignAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCampaign>
+        }
+        groupBy: {
+          args: Prisma.CampaignGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CampaignGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CampaignCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CampaignCountAggregateOutputType> | number
+        }
+      }
+    }
+    CampaignRecipient: {
+      payload: Prisma.$CampaignRecipientPayload<ExtArgs>
+      fields: Prisma.CampaignRecipientFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CampaignRecipientFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignRecipientPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CampaignRecipientFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignRecipientPayload>
+        }
+        findFirst: {
+          args: Prisma.CampaignRecipientFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignRecipientPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CampaignRecipientFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignRecipientPayload>
+        }
+        findMany: {
+          args: Prisma.CampaignRecipientFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignRecipientPayload>[]
+        }
+        create: {
+          args: Prisma.CampaignRecipientCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignRecipientPayload>
+        }
+        createMany: {
+          args: Prisma.CampaignRecipientCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CampaignRecipientCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignRecipientPayload>[]
+        }
+        delete: {
+          args: Prisma.CampaignRecipientDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignRecipientPayload>
+        }
+        update: {
+          args: Prisma.CampaignRecipientUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignRecipientPayload>
+        }
+        deleteMany: {
+          args: Prisma.CampaignRecipientDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CampaignRecipientUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CampaignRecipientUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignRecipientPayload>[]
+        }
+        upsert: {
+          args: Prisma.CampaignRecipientUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CampaignRecipientPayload>
+        }
+        aggregate: {
+          args: Prisma.CampaignRecipientAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCampaignRecipient>
+        }
+        groupBy: {
+          args: Prisma.CampaignRecipientGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CampaignRecipientGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CampaignRecipientCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CampaignRecipientCountAggregateOutputType> | number
+        }
+      }
+    }
     WorkspaceMember: {
       payload: Prisma.$WorkspaceMemberPayload<ExtArgs>
       fields: Prisma.WorkspaceMemberFieldRefs
@@ -3108,6 +3258,63 @@ export const WorkflowRunScalarFieldEnum = {
 export type WorkflowRunScalarFieldEnum = (typeof WorkflowRunScalarFieldEnum)[keyof typeof WorkflowRunScalarFieldEnum]
 
 
+export const CampaignScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  name: 'name',
+  channelKey: 'channelKey',
+  kind: 'kind',
+  category: 'category',
+  templateKey: 'templateKey',
+  templateName: 'templateName',
+  templateBody: 'templateBody',
+  buttonTracking: 'buttonTracking',
+  audienceType: 'audienceType',
+  audienceLabel: 'audienceLabel',
+  audienceConfig: 'audienceConfig',
+  status: 'status',
+  recipientCount: 'recipientCount',
+  attempted: 'attempted',
+  sent: 'sent',
+  delivered: 'delivered',
+  read: 'read',
+  replied: 'replied',
+  failed: 'failed',
+  scheduledAt: 'scheduledAt',
+  setLiveAt: 'setLiveAt',
+  completedAt: 'completedAt',
+  totalCost: 'totalCost',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CampaignScalarFieldEnum = (typeof CampaignScalarFieldEnum)[keyof typeof CampaignScalarFieldEnum]
+
+
+export const CampaignRecipientScalarFieldEnum = {
+  id: 'id',
+  campaignId: 'campaignId',
+  workspaceId: 'workspaceId',
+  contactId: 'contactId',
+  phoneE164: 'phoneE164',
+  status: 'status',
+  metaMessageId: 'metaMessageId',
+  attemptedAt: 'attemptedAt',
+  sentAt: 'sentAt',
+  deliveredAt: 'deliveredAt',
+  readAt: 'readAt',
+  repliedAt: 'repliedAt',
+  failedAt: 'failedAt',
+  failureReason: 'failureReason',
+  clickCount: 'clickCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CampaignRecipientScalarFieldEnum = (typeof CampaignRecipientScalarFieldEnum)[keyof typeof CampaignRecipientScalarFieldEnum]
+
+
 export const WorkspaceMemberScalarFieldEnum = {
   id: 'id',
   workspaceId: 'workspaceId',
@@ -3556,6 +3763,48 @@ export type ListEnumWorkflowRunStatusFieldRefInput<$PrismaModel> = FieldRefInput
 
 
 /**
+ * Reference to a field of type 'CampaignKind'
+ */
+export type EnumCampaignKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CampaignKind'>
+    
+
+
+/**
+ * Reference to a field of type 'CampaignKind[]'
+ */
+export type ListEnumCampaignKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CampaignKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CampaignStatus'
+ */
+export type EnumCampaignStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CampaignStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CampaignStatus[]'
+ */
+export type ListEnumCampaignStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CampaignStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CampaignRecipientStatus'
+ */
+export type EnumCampaignRecipientStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CampaignRecipientStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CampaignRecipientStatus[]'
+ */
+export type ListEnumCampaignRecipientStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CampaignRecipientStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'MembershipStatus'
  */
 export type EnumMembershipStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MembershipStatus'>
@@ -3755,6 +4004,8 @@ export type GlobalOmitConfig = {
   automationLog?: Prisma.AutomationLogOmit
   workflow?: Prisma.WorkflowOmit
   workflowRun?: Prisma.WorkflowRunOmit
+  campaign?: Prisma.CampaignOmit
+  campaignRecipient?: Prisma.CampaignRecipientOmit
   workspaceMember?: Prisma.WorkspaceMemberOmit
   role?: Prisma.RoleOmit
   permission?: Prisma.PermissionOmit

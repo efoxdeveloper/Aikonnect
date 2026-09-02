@@ -38,12 +38,12 @@ export interface NavigationGroup { title: string; items: NavigationItem[]; }
 
 export const navigationGroups: NavigationGroup[] = [
   { title: "Main", items: [
-    { title: "Dashboard", url: "/dashboard", icon: House, badge: { text: "New", variant: "danger" }, children: [
+    { title: "Dashboard", url: "/dashboard", icon: House, children: [
       { title: "Overview", url: "/dashboard", icon: House },
       { title: "Analytics", url: "/dashboard/analytics", icon: ChartSpline },
       { title: "Activity", url: "/dashboard/activity", icon: Activity },
     ] },
-    { title: "Inbox", url: "/inbox", icon: MessageSquareText, badge: { text: "12", variant: "danger" } },
+    { title: "Inbox", url: "/inbox", icon: MessageSquareText },
   ] },
   { title: "Marketing", items: [
     { title: "Campaigns", url: "/campaigns", icon: Megaphone },

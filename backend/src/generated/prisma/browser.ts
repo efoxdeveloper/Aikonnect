@@ -128,6 +128,16 @@ export type Workflow = Prisma.WorkflowModel
  */
 export type WorkflowRun = Prisma.WorkflowRunModel
 /**
+ * Model Campaign
+ * 
+ */
+export type Campaign = Prisma.CampaignModel
+/**
+ * Model CampaignRecipient
+ * 
+ */
+export type CampaignRecipient = Prisma.CampaignRecipientModel
+/**
  * Model WorkspaceMember
  * 
  */

@@ -71,7 +71,7 @@ test("exchanges the signup code and stores the Meta account and phone against th
     if (url.includes("/oauth/access_token")) return new Response(JSON.stringify({ access_token: accessToken, expires_in: 0 }), { status: 200 });
     if (url.includes(`/${wabaId}?fields=id,name`)) return new Response(JSON.stringify({ id: wabaId, name: "Test Business" }), { status: 200 });
     if (url.includes(`/${phoneNumberId}?fields=`)) return new Response(JSON.stringify({ id: phoneNumberId, display_phone_number: "+919876543210", verified_name: "Test Business", quality_rating: "GREEN", messaging_limit: "TIER_1", is_on_biz_app: true, platform_type: "CLOUD_API" }), { status: 200 });
-    if (url.includes(`/${wabaId}/subscribed_apps`)) return new Response(JSON.stringify({ success: true }), { status: 200 });
+    if (url.includes(`/${wabaId}/subscribed_apps`)) return new Response(JSON.stringify({ error: { message: "Webhook subscription is not available in this test app" } }), { status: 403 });
     if (url.includes(`/${phoneNumberId}/smb_app_data`)) return new Response(JSON.stringify({ request_id: `request-${requests.length}` }), { status: 200 });
     return new Response("Unexpected Meta request", { status: 500 });
   });
@@ -81,9 +81,12 @@ test("exchanges the signup code and stores the Meta account and phone against th
     body: JSON.stringify({ code: "meta-auth-code", businessId: `business-${suffix}`, wabaId, phoneNumberId }),
   });
   assert.equal(connected.status, 200);
+  const connectedBody = (await connected.json()) as { data: { syncWarnings: string[] } };
+  assert.equal(connectedBody.data.syncWarnings.length, 1);
   const account = await prisma.whatsAppBusinessAccount.findFirstOrThrow({ where: { workspaceId, metaWabaId: wabaId } });
   const phone = await prisma.whatsAppPhoneNumber.findFirstOrThrow({ where: { businessAccountId: account.id, metaPhoneNumberId: phoneNumberId } });
   assert.equal(account.status, "CONNECTED");
+  assert.match(account.lastError ?? "", /Meta could not complete the WhatsApp connection/);
   assert.equal(phone.status, "ACTIVE");
   assert.equal(phone.isOnBusinessApp, true);
   assert.equal(phone.platformType, "CLOUD_API");

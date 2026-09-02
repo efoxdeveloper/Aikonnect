@@ -60,3 +60,20 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
     endRequest();
   }
 }
+
+export async function downloadApiFile(path: string, accessToken: string): Promise<Blob> {
+  beginRequest();
+  try {
+    let response: Response;
+    try {
+      response = await fetch(`${API_BASE_URL}${path}`, { headers: { authorization: `Bearer ${accessToken}` }, credentials: "include" });
+    } catch {
+      throw new ApiError(0, "Unable to connect to the server. Please try again.", "NETWORK_ERROR");
+    }
+    if (!response.ok) {
+      const payload = (await response.json().catch(() => ({}))) as ErrorEnvelope;
+      throw new ApiError(response.status, payload.error?.message ?? "The file could not be downloaded.", payload.error?.code);
+    }
+    return response.blob();
+  } finally { endRequest(); }
+}
