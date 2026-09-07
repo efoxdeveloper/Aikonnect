@@ -5,9 +5,16 @@ import { apiRequest } from "@/lib/api";
 import { loadFacebookSdk } from "@/lib/meta-embedded-signup";
 import { useWhatsAppEmbeddedSignup } from "./use-whatsapp-embedded-signup";
 
-vi.mock("@/lib/api", () => ({ apiRequest: vi.fn(), ApiError: class ApiError extends Error {} }));
+vi.mock("@/lib/api", () => ({
+  apiRequest: vi.fn(),
+  ApiError: class ApiError extends Error {
+    constructor(public status: number, message: string, public code = "API_ERROR", public details?: unknown) {
+      super(message);
+    }
+  },
+}));
 vi.mock("@/lib/meta-embedded-signup", () => ({ loadFacebookSdk: vi.fn() }));
-vi.mock("react-toastify", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
+vi.mock("react-toastify", () => ({ toast: { success: vi.fn(), error: vi.fn(), warn: vi.fn() } }));
 
 const login = vi.fn();
 
@@ -62,4 +69,39 @@ test("keeps a successful connection when the workspace status refresh fails", as
   await waitFor(() => expect(onConnected).toHaveBeenCalledOnce());
   expect(vi.mocked(toast.error)).not.toHaveBeenCalled();
   expect(vi.mocked(toast.success)).toHaveBeenCalledWith("WhatsApp Business account connected successfully.");
+});
+
+test("shows the backend reason when Meta cannot complete the connection", async () => {
+  const message = "The server could not reach Meta while exchanging the signup code. The connection to Meta timed out. Please try again.";
+  const { ApiError } = await import("@/lib/api");
+  vi.mocked(apiRequest).mockRejectedValueOnce(new ApiError(502, message, "META_NETWORK_ERROR"));
+  const { result } = renderHook(() => useWhatsAppEmbeddedSignup({ workspaceId: "workspace-1", accessToken: "access-token" }));
+
+  await result.current.start();
+  login.mock.calls[0]?.[0]({ authResponse: { code: "signup-code" } });
+  window.dispatchEvent(new MessageEvent("message", {
+    origin: "https://www.facebook.com",
+    data: JSON.stringify({ type: "WA_EMBEDDED_SIGNUP", event: "FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING", data: { waba_id: "waba-1" } }),
+  }));
+
+  await waitFor(() => expect(vi.mocked(toast.error)).toHaveBeenCalledWith(message));
+  expect(result.current.error).toBe(message);
+});
+
+test("shows post-setup warnings without changing a successful connection into an error", async () => {
+  vi.mocked(apiRequest).mockResolvedValueOnce({ syncWarnings: ["Meta rejected the request while subscribing the app to WhatsApp webhooks: Permission denied."] });
+  const { result } = renderHook(() => useWhatsAppEmbeddedSignup({ workspaceId: "workspace-1", accessToken: "access-token" }));
+
+  await result.current.start();
+  login.mock.calls[0]?.[0]({ authResponse: { code: "signup-code" } });
+  window.dispatchEvent(new MessageEvent("message", {
+    origin: "https://www.facebook.com",
+    data: JSON.stringify({ type: "WA_EMBEDDED_SIGNUP", event: "FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING", data: { waba_id: "waba-1" } }),
+  }));
+
+  await waitFor(() => expect(vi.mocked(toast.warn)).toHaveBeenCalledWith(
+    "WhatsApp connected, but some Meta setup steps need attention: Meta rejected the request while subscribing the app to WhatsApp webhooks: Permission denied.",
+  ));
+  expect(vi.mocked(toast.success)).toHaveBeenCalledOnce();
+  expect(vi.mocked(toast.error)).not.toHaveBeenCalled();
 });

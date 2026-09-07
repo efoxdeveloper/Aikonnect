@@ -4,6 +4,7 @@ import { apiRequest, ApiError } from "@/lib/api";
 import { loadFacebookSdk } from "@/lib/meta-embedded-signup";
 
 type SignupData = { businessId?: string; wabaId: string; phoneNumberId?: string };
+type EmbeddedSignupResult = { syncWarnings?: string[] };
 
 type UseWhatsAppEmbeddedSignupOptions = {
   workspaceId: string | undefined;
@@ -29,12 +30,14 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
     if (!workspaceId || !accessToken || !code || !signupData || submittedRef.current) return;
     submittedRef.current = true;
     try {
-      await apiRequest(`/workspaces/${workspaceId}/whatsapp/embedded-signup`, {
+      const result = await apiRequest<EmbeddedSignupResult>(`/workspaces/${workspaceId}/whatsapp/embedded-signup`, {
         method: "POST",
         headers: { authorization: `Bearer ${accessToken}` },
         body: JSON.stringify({ code, ...signupData }),
       });
       toast.success("WhatsApp Business account connected successfully.");
+      const warnings = [...new Set(result?.syncWarnings?.filter(Boolean) ?? [])];
+      if (warnings.length) toast.warn(`WhatsApp connected, but some Meta setup steps need attention: ${warnings.join(" ")}`);
       setConnecting(false);
     } catch (caughtError) {
       submittedRef.current = false;

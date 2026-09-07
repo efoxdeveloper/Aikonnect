@@ -4,7 +4,32 @@ import { AppError } from "../../middleware/error-handler.js";
 import { decryptSecret, encryptSecret } from "../../utils/crypto.js";
 import type { EmbeddedSignupInput } from "./whatsapp.schemas.js";
 
-type MetaResponse = Record<string, unknown> & { error?: { message?: string } };
+type MetaResponse = Record<string, unknown> & {
+  error?: { message?: string; code?: number; error_subcode?: number };
+};
+
+type MetaRequestStage =
+  | "exchange_signup_code"
+  | "load_business_account"
+  | "load_phone_number"
+  | "list_phone_numbers"
+  | "subscribe_webhooks"
+  | "request_history_sync"
+  | "request_app_state_sync"
+  | "send_message";
+
+const META_REQUEST_TIMEOUT_MS = 15_000;
+
+const metaStageLabels: Record<MetaRequestStage, string> = {
+  exchange_signup_code: "exchanging the signup code",
+  load_business_account: "loading the WhatsApp Business Account",
+  load_phone_number: "loading the WhatsApp phone number",
+  list_phone_numbers: "finding the WhatsApp phone number",
+  subscribe_webhooks: "subscribing the app to WhatsApp webhooks",
+  request_history_sync: "requesting WhatsApp message history",
+  request_app_state_sync: "requesting WhatsApp Business App synchronization",
+  send_message: "sending the WhatsApp message",
+};
 
 function requireMetaConfiguration() {
   if (!env.META_APP_ID || !env.META_APP_SECRET || !env.META_TOKEN_ENCRYPTION_KEY) {
@@ -13,10 +38,68 @@ function requireMetaConfiguration() {
   return { appId: env.META_APP_ID, appSecret: env.META_APP_SECRET, encryptionKey: env.META_TOKEN_ENCRYPTION_KEY };
 }
 
-async function parseMetaResponse(response: Response): Promise<MetaResponse> {
-  const body = await response.json().catch(() => ({})) as MetaResponse;
+function networkFailureReason(error: unknown) {
+  if (error instanceof DOMException && (error.name === "TimeoutError" || error.name === "AbortError")) {
+    return `Meta did not respond within ${META_REQUEST_TIMEOUT_MS / 1_000} seconds.`;
+  }
+  const cause = error instanceof Error && "cause" in error && typeof error.cause === "object" && error.cause
+    ? error.cause as { code?: unknown }
+    : undefined;
+  const code = typeof cause?.code === "string" ? cause.code : undefined;
+  if (code === "ENOTFOUND" || code === "EAI_AGAIN") return "The server could not resolve Meta's network address.";
+  if (code === "ECONNREFUSED") return "Meta refused the server connection.";
+  if (code === "ECONNRESET" || code === "UND_ERR_SOCKET") return "The connection to Meta was interrupted.";
+  if (code === "ETIMEDOUT" || code === "UND_ERR_CONNECT_TIMEOUT" || code === "UND_ERR_HEADERS_TIMEOUT") {
+    return "The connection to Meta timed out.";
+  }
+  return "The server could not establish a connection to Meta.";
+}
+
+async function requestMeta(url: string | URL, init: RequestInit, stage: MetaRequestStage, attempts = 1) {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      return await fetch(url, { ...init, signal: AbortSignal.timeout(META_REQUEST_TIMEOUT_MS) });
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  const reason = networkFailureReason(lastError);
+  throw new AppError(
+    502,
+    `The server could not reach Meta while ${metaStageLabels[stage]}. ${reason} Please try again.`,
+    "META_NETWORK_ERROR",
+    { stage, reason, retryable: true },
+  );
+}
+
+async function parseMetaResponse(response: Response, stage: MetaRequestStage): Promise<MetaResponse> {
+  const parsedBody: unknown = await response.json().catch(() => undefined);
+  const body = typeof parsedBody === "object" && parsedBody !== null && !Array.isArray(parsedBody)
+    ? parsedBody as MetaResponse
+    : {};
   if (!response.ok || body.error) {
-    throw new AppError(502, "Meta could not complete the WhatsApp connection", "META_API_ERROR", { providerMessage: body.error?.message ?? "Unknown Meta API error" });
+    const providerMessage = (body.error?.message ?? response.statusText) || "Meta returned an error without a description.";
+    throw new AppError(
+      502,
+      `Meta rejected the request while ${metaStageLabels[stage]}: ${providerMessage}`,
+      "META_API_ERROR",
+      {
+        stage,
+        providerMessage,
+        providerStatus: response.status,
+        ...(typeof body.error?.code === "number" ? { providerCode: body.error.code } : {}),
+        ...(typeof body.error?.error_subcode === "number" ? { providerSubcode: body.error.error_subcode } : {}),
+      },
+    );
+  }
+  if (parsedBody === undefined || typeof parsedBody !== "object" || parsedBody === null || Array.isArray(parsedBody)) {
+    throw new AppError(
+      502,
+      `Meta returned an unexpected response while ${metaStageLabels[stage]}. Please try again.`,
+      "META_RESPONSE_INVALID",
+      { stage, providerStatus: response.status, retryable: true },
+    );
   }
   return body;
 }
@@ -27,24 +110,25 @@ async function exchangeSignupCode(input: EmbeddedSignupInput) {
   url.searchParams.set("client_id", appId);
   url.searchParams.set("client_secret", appSecret);
   url.searchParams.set("code", input.code);
-  const response = await fetch(url, { method: "GET" });
-  return parseMetaResponse(response);
+  // Authorization codes are single-use, so this exchange must not be retried automatically.
+  const response = await requestMeta(url, { method: "GET" }, "exchange_signup_code");
+  return parseMetaResponse(response, "exchange_signup_code");
 }
 
-async function fetchMeta<T extends MetaResponse>(path: string, accessToken: string): Promise<T> {
-  const response = await fetch(`https://graph.facebook.com/${env.META_GRAPH_API_VERSION}${path}`, {
+async function fetchMeta<T extends MetaResponse>(path: string, accessToken: string, stage: MetaRequestStage): Promise<T> {
+  const response = await requestMeta(`https://graph.facebook.com/${env.META_GRAPH_API_VERSION}${path}`, {
     headers: { authorization: `Bearer ${accessToken}` },
-  });
-  return parseMetaResponse(response) as Promise<T>;
+  }, stage, 2);
+  return parseMetaResponse(response, stage) as Promise<T>;
 }
 
-async function postMeta<T extends MetaResponse>(path: string, accessToken: string, body: Record<string, unknown>): Promise<T> {
-  const response = await fetch(`https://graph.facebook.com/${env.META_GRAPH_API_VERSION}${path}`, {
+async function postMeta<T extends MetaResponse>(path: string, accessToken: string, body: Record<string, unknown>, stage: MetaRequestStage): Promise<T> {
+  const response = await requestMeta(`https://graph.facebook.com/${env.META_GRAPH_API_VERSION}${path}`, {
     method: "POST",
     headers: { authorization: `Bearer ${accessToken}`, "content-type": "application/json" },
     body: JSON.stringify(body),
-  });
-  return parseMetaResponse(response) as Promise<T>;
+  }, stage);
+  return parseMetaResponse(response, stage) as Promise<T>;
 }
 
 type MetaPhoneNumber = MetaResponse & {
@@ -61,14 +145,23 @@ const phoneNumberFields = "id,display_phone_number,verified_name,quality_rating,
 
 async function findCoexistencePhoneNumber(wabaId: string, phoneNumberId: string | null | undefined, accessToken: string) {
   if (phoneNumberId) {
-    return fetchMeta<MetaPhoneNumber>(`/${encodeURIComponent(phoneNumberId)}?fields=${phoneNumberFields}`, accessToken);
+    return fetchMeta<MetaPhoneNumber>(`/${encodeURIComponent(phoneNumberId)}?fields=${phoneNumberFields}`, accessToken, "load_phone_number");
   }
   const response = await fetchMeta<{ data?: MetaPhoneNumber[] }>(
     `/${encodeURIComponent(wabaId)}/phone_numbers?fields=${phoneNumberFields}`,
     accessToken,
+    "list_phone_numbers",
   );
-  const coexistenceNumbers = (response.data ?? []).filter((phone) => phone.is_on_biz_app === true);
-  const phoneNumbers = coexistenceNumbers.length ? coexistenceNumbers : response.data ?? [];
+  if (!Array.isArray(response.data)) {
+    throw new AppError(
+      502,
+      "Meta returned an unexpected response while finding the WhatsApp phone number. Please try again.",
+      "META_RESPONSE_INVALID",
+      { stage: "list_phone_numbers", retryable: true },
+    );
+  }
+  const coexistenceNumbers = response.data.filter((phone) => phone.is_on_biz_app === true);
+  const phoneNumbers = coexistenceNumbers.length ? coexistenceNumbers : response.data;
   if (phoneNumbers.length !== 1) {
     throw new AppError(422, "Meta did not identify exactly one WhatsApp phone number", "META_PHONE_NUMBER_NOT_FOUND");
   }
@@ -76,14 +169,14 @@ async function findCoexistencePhoneNumber(wabaId: string, phoneNumberId: string 
 }
 
 async function subscribeAppToWaba(wabaId: string, accessToken: string) {
-  return postMeta(`/${encodeURIComponent(wabaId)}/subscribed_apps`, accessToken, {});
+  return postMeta(`/${encodeURIComponent(wabaId)}/subscribed_apps`, accessToken, {}, "subscribe_webhooks");
 }
 
 async function requestCoexistenceSync(phoneNumberId: string, accessToken: string, syncType: "history" | "smb_app_state_sync") {
   return postMeta<{ request_id?: string }>(`/${encodeURIComponent(phoneNumberId)}/smb_app_data`, accessToken, {
     messaging_product: "whatsapp",
     sync_type: syncType,
-  });
+  }, syncType === "history" ? "request_history_sync" : "request_app_state_sync");
 }
 
 /** Sends an automation reply and records it in the same conversation shown in Inbox. */
@@ -108,7 +201,7 @@ export async function sendAutomationText(workspaceId: string, conversationId: st
     to,
     type: "text",
     text: { body },
-  });
+  }, "send_message");
   const sentAt = new Date();
   const metaMessageId = sent.messages?.[0]?.id ?? null;
   return prisma.$transaction(async (transaction) => {
@@ -130,7 +223,7 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
   const accessToken = typeof exchanged.access_token === "string" ? exchanged.access_token : undefined;
   if (!accessToken) throw new AppError(502, "Meta did not return an access token", "META_TOKEN_MISSING");
 
-  const waba = await fetchMeta<{ id?: string; name?: string }>(`/${encodeURIComponent(input.wabaId)}?fields=id,name`, accessToken);
+  const waba = await fetchMeta<{ id?: string; name?: string }>(`/${encodeURIComponent(input.wabaId)}?fields=id,name`, accessToken, "load_business_account");
   if (waba.id !== input.wabaId) {
     throw new AppError(502, "Meta returned a different WhatsApp Business Account", "META_WABA_MISMATCH");
   }
