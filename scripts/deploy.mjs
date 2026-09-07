@@ -7,6 +7,10 @@ const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 const dryRun = process.argv.includes("--dry-run");
 const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
 const pm2Command = process.platform === "win32" ? "pm2.cmd" : "pm2";
+// Deployment machines are not required to have a developer Git identity. Use
+// an explicit bot identity for the generated release commit so deployment is
+// deterministic and does not depend on global Git configuration.
+const deployGitIdentity = ["-c", "user.name=Interakt Deploy Bot", "-c", "user.email=deploy@aikonnect.efoxtechnologies.com"];
 
 function run(command, args) {
   const displayCommand = [command, ...args].join(" ");
@@ -42,7 +46,7 @@ run(npmCommand, ["--prefix", "Frontend", "ci"]);
 // before building so the next deployment starts from a clean checkout.
 run(npmCommand, ["--prefix", "Frontend", "version", "patch", "--no-git-tag-version"]);
 run("git", ["add", "Frontend/package.json", "Frontend/package-lock.json"]);
-run("git", ["commit", "-m", "chore: bump frontend version for deployment"]);
+run("git", [...deployGitIdentity, "commit", "-m", "chore: bump frontend version for deployment"]);
 run("git", ["push", "origin", "main"]);
 run(npmCommand, ["--prefix", "backend", "run", "prisma:generate"]);
 run(npmCommand, ["--prefix", "backend", "run", "prisma:migrate:deploy"]);

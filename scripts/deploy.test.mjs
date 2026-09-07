@@ -13,6 +13,6 @@ test("deploy dry-run bumps, records and pushes the frontend patch version", () =
   });
   assert.equal(result.status, 0, result.stderr);
   assert.match(result.stdout, /Frontend version patch --no-git-tag-version/);
-  assert.match(result.stdout, /git commit -m chore: bump frontend version for deployment/);
+  assert.match(result.stdout, /git -c user\.name=Interakt Deploy Bot -c user\.email=deploy@aikonnect\.efoxtechnologies\.com commit -m chore: bump frontend version for deployment/);
   assert.match(result.stdout, /git push origin main/);
 });
