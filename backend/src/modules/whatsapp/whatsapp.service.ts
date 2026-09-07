@@ -18,7 +18,10 @@ type MetaRequestStage =
   | "request_app_state_sync"
   | "send_message";
 
-const META_REQUEST_TIMEOUT_MS = 15_000;
+// Some Windows hosts/proxies take several seconds to complete Meta's TLS
+// renegotiation even after TCP 443 is connected. Leave enough room for that
+// handshake while still bounding a genuinely unavailable provider.
+const META_REQUEST_TIMEOUT_MS = 60_000;
 
 const metaStageLabels: Record<MetaRequestStage, string> = {
   exchange_signup_code: "exchanging the signup code",
