@@ -18,9 +18,7 @@ type MetaRequestStage =
   | "request_app_state_sync"
   | "send_message";
 
-// Some Windows hosts/proxies take several seconds to complete Meta's TLS
-// renegotiation even after TCP 443 is connected. Leave enough room for that
-// handshake while still bounding a genuinely unavailable provider.
+// Allow for slow provider connections while bounding unavailable requests.
 const META_REQUEST_TIMEOUT_MS = 60_000;
 
 const metaStageLabels: Record<MetaRequestStage, string> = {
@@ -139,13 +137,13 @@ type MetaPhoneNumber = MetaResponse & {
   display_phone_number?: string;
   verified_name?: string;
   quality_rating?: string;
-  messaging_limit?: string;
   is_on_biz_app?: boolean;
   platform_type?: string;
 };
 
 // `messaging_limit` is not a valid field on the Graph API phone-number
 // resource in v25.0; requesting it makes the entire lookup fail with (#100).
+// Coexistence fields: https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/onboarding-business-app-users
 const phoneNumberFields = "id,display_phone_number,verified_name,quality_rating,is_on_biz_app,platform_type";
 
 async function findCoexistencePhoneNumber(wabaId: string, phoneNumberId: string | null | undefined, accessToken: string) {
@@ -157,7 +155,8 @@ async function findCoexistencePhoneNumber(wabaId: string, phoneNumberId: string 
     accessToken,
     "list_phone_numbers",
   );
-  if (!Array.isArray(response.data)) {
+  if (!Array.isArray(response.data) || response.data.some((phone) =>
+    typeof phone !== "object" || phone === null || Array.isArray(phone) || typeof phone.id !== "string")) {
     throw new AppError(
       502,
       "Meta returned an unexpected response while finding the WhatsApp phone number. Please try again.",
@@ -174,14 +173,23 @@ async function findCoexistencePhoneNumber(wabaId: string, phoneNumberId: string 
 }
 
 async function subscribeAppToWaba(wabaId: string, accessToken: string) {
-  return postMeta(`/${encodeURIComponent(wabaId)}/subscribed_apps`, accessToken, {}, "subscribe_webhooks");
+  const result = await postMeta(`/${encodeURIComponent(wabaId)}/subscribed_apps`, accessToken, {}, "subscribe_webhooks");
+  if (result.success !== true) {
+    throw new AppError(502, "Meta did not confirm the WhatsApp webhook subscription. Check the app's webhook configuration and permissions.", "META_RESPONSE_INVALID", { stage: "subscribe_webhooks" });
+  }
+  return result;
 }
 
 async function requestCoexistenceSync(phoneNumberId: string, accessToken: string, syncType: "history" | "smb_app_state_sync") {
-  return postMeta<{ request_id?: string }>(`/${encodeURIComponent(phoneNumberId)}/smb_app_data`, accessToken, {
+  const stage = syncType === "history" ? "request_history_sync" : "request_app_state_sync";
+  const result = await postMeta<{ request_id?: string }>(`/${encodeURIComponent(phoneNumberId)}/smb_app_data`, accessToken, {
     messaging_product: "whatsapp",
     sync_type: syncType,
-  }, syncType === "history" ? "request_history_sync" : "request_app_state_sync");
+  }, stage);
+  if (typeof result.request_id !== "string" || !result.request_id.trim()) {
+    throw new AppError(502, `Meta did not return a request ID while ${metaStageLabels[stage]}. Synchronization could not be confirmed.`, "META_RESPONSE_INVALID", { stage });
+  }
+  return result.request_id;
 }
 
 /** Sends an automation reply and records it in the same conversation shown in Inbox. */
@@ -241,6 +249,9 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
   if (phone.is_on_biz_app === false) {
     throw new AppError(422, "The selected number is not enabled for WhatsApp Business App coexistence", "META_COEXISTENCE_NOT_ENABLED");
   }
+  if (phone.is_on_biz_app !== true || phone.platform_type !== "CLOUD_API") {
+    throw new AppError(422, "Meta has not confirmed that this WhatsApp Business App number is connected to Cloud API. Complete the coexistence connection in WhatsApp Business App, then launch signup again.", "META_COEXISTENCE_INCOMPLETE");
+  }
   const now = new Date();
   const tokenExpiresAt = typeof exchanged.expires_in === "number" && exchanged.expires_in > 0
     ? new Date(now.getTime() + exchanged.expires_in * 1000)
@@ -281,7 +292,6 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
         displayPhoneNumber: typeof phone.display_phone_number === "string" ? phone.display_phone_number : metaPhoneNumberId,
         verifiedName: typeof phone.verified_name === "string" ? phone.verified_name : null,
         qualityRating: typeof phone.quality_rating === "string" ? phone.quality_rating : null,
-        messagingLimit: typeof phone.messaging_limit === "string" ? phone.messaging_limit : null,
         status: "ACTIVE",
         isOnBusinessApp: phone.is_on_biz_app === true,
         platformType: typeof phone.platform_type === "string" ? phone.platform_type : null,
@@ -292,7 +302,6 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
         displayPhoneNumber: typeof phone.display_phone_number === "string" ? phone.display_phone_number : undefined,
         verifiedName: typeof phone.verified_name === "string" ? phone.verified_name : undefined,
         qualityRating: typeof phone.quality_rating === "string" ? phone.quality_rating : undefined,
-        messagingLimit: typeof phone.messaging_limit === "string" ? phone.messaging_limit : undefined,
         status: "ACTIVE",
         isOnBusinessApp: phone.is_on_biz_app === true,
         platformType: typeof phone.platform_type === "string" ? phone.platform_type : undefined,
@@ -309,24 +318,28 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
     return { account, phoneNumber, coexistence: phone.is_on_biz_app === true };
   });
 
-  // Meta may complete onboarding while optional webhook/history setup is still unavailable
-  // for the app. Keep the successful connection and surface those setup issues as warnings.
-  const postSetupResults = await Promise.allSettled([
-    subscribeAppToWaba(input.wabaId, accessToken),
-    ...(connected.coexistence ? [
-      requestCoexistenceSync(metaPhoneNumberId, accessToken, "history"),
-      requestCoexistenceSync(metaPhoneNumberId, accessToken, "smb_app_state_sync"),
-    ] : []),
-  ]);
-  const syncRequestIds = postSetupResults
-    .filter((result) => result.status === "fulfilled")
-    .map((result) => result.value)
-    .filter((value): value is { request_id?: unknown } => typeof value === "object" && value !== null && "request_id" in value)
-    .map((value) => value.request_id)
-    .filter((requestId): requestId is string => typeof requestId === "string");
-  const syncWarnings = postSetupResults
-    .filter((result): result is PromiseRejectedResult => result.status === "rejected")
-    .map((result) => result.reason instanceof Error ? result.reason.message : "WhatsApp post-setup request failed");
+  // Persist first so incoming webhooks can resolve this phone. Meta requires WABA
+  // subscription before the one-time sync requests, then contacts before history:
+  // https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/onboarding-business-app-users
+  const syncRequestIds: string[] = [];
+  const syncWarnings: string[] = [];
+  let subscribed = false;
+  try {
+    await subscribeAppToWaba(input.wabaId, accessToken);
+    subscribed = true;
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : "WhatsApp webhook subscription failed.";
+    syncWarnings.push(`${reason} Contact and history synchronization were not started. Fix the webhook setup and complete signup again within Meta's 24-hour synchronization window.`);
+  }
+  if (subscribed && connected.coexistence) {
+    for (const syncType of ["smb_app_state_sync", "history"] as const) {
+      try {
+        syncRequestIds.push(await requestCoexistenceSync(metaPhoneNumberId, accessToken, syncType));
+      } catch (error) {
+        syncWarnings.push(error instanceof Error ? error.message : "WhatsApp synchronization request failed.");
+      }
+    }
+  }
   if (syncWarnings.length) {
     await prisma.whatsAppBusinessAccount.update({ where: { id: connected.account.id }, data: { lastError: syncWarnings.join("; ") } });
   }

@@ -71,10 +71,13 @@ test("keeps a successful connection when the workspace status refresh fails", as
   expect(vi.mocked(toast.success)).toHaveBeenCalledWith("WhatsApp Business account connected successfully.");
 });
 
-test("shows the backend reason when Meta cannot complete the connection", async () => {
-  const message = "The server could not reach Meta while exchanging the signup code. The connection to Meta timed out. Please try again.";
+test.each([
+  ["META_NETWORK_ERROR", "The server could not reach Meta while exchanging the signup code. The connection to Meta timed out. Please try again."],
+  ["META_API_ERROR", "Meta rejected the request while loading the WhatsApp phone number: (#100) Tried accessing nonexisting field (messaging_limit)"],
+  ["META_COEXISTENCE_INCOMPLETE", "Meta has not confirmed that this WhatsApp Business App number is connected to Cloud API. Complete the coexistence connection in WhatsApp Business App, then launch signup again."],
+])("shows the backend reason for %s", async (code, message) => {
   const { ApiError } = await import("@/lib/api");
-  vi.mocked(apiRequest).mockRejectedValueOnce(new ApiError(502, message, "META_NETWORK_ERROR"));
+  vi.mocked(apiRequest).mockRejectedValueOnce(new ApiError(code === "META_COEXISTENCE_INCOMPLETE" ? 422 : 502, message, code));
   const { result } = renderHook(() => useWhatsAppEmbeddedSignup({ workspaceId: "workspace-1", accessToken: "access-token" }));
 
   await result.current.start();

@@ -85,7 +85,7 @@ test("exchanges the signup code and stores the Meta account and phone against th
       }
       return new Response(JSON.stringify({ id: wabaId, name: "Test Business" }), { status: 200 });
     }
-    if (url.includes(`/${phoneNumberId}?fields=`)) return new Response(JSON.stringify({ id: phoneNumberId, display_phone_number: "+919876543210", verified_name: "Test Business", quality_rating: "GREEN", messaging_limit: "TIER_1", is_on_biz_app: true, platform_type: "CLOUD_API" }), { status: 200 });
+    if (url.includes(`/${phoneNumberId}?fields=`)) return new Response(JSON.stringify({ id: phoneNumberId, display_phone_number: "+919876543210", verified_name: "Test Business", quality_rating: "GREEN", is_on_biz_app: true, platform_type: "CLOUD_API" }), { status: 200 });
     if (url.includes(`/${wabaId}/subscribed_apps`)) return new Response(JSON.stringify({ error: { message: "Webhook subscription is not available in this test app" } }), { status: 403 });
     if (url.includes(`/${phoneNumberId}/smb_app_data`)) return new Response(JSON.stringify({ request_id: `request-${requests.length}` }), { status: 200 });
     return new Response("Unexpected Meta request", { status: 500 });
@@ -128,12 +128,14 @@ test("exchanges the signup code and stores the Meta account and phone against th
   assert.equal(phone.status, "ACTIVE");
   assert.equal(phone.isOnBusinessApp, true);
   assert.equal(phone.platformType, "CLOUD_API");
+  assert.equal(phone.messagingLimit, null);
   const phoneLookupRequest = requests.find((request) => request.includes(`GET https://graph.facebook.com/`) && request.includes(`/${phoneNumberId}?fields=`));
   assert.ok(phoneLookupRequest);
   assert.doesNotMatch(phoneLookupRequest, /messaging_limit/);
   assert.equal(businessAccountAttempts, 2);
   assert.ok(requests.some((request) => request.includes(`POST https://graph.facebook.com/`) && request.includes(`/${wabaId}/subscribed_apps`)));
-  assert.equal(requests.filter((request) => request.includes(`/${phoneNumberId}/smb_app_data`)).length, 2);
+  // Never consume the one-time sync before webhook subscription is confirmed.
+  assert.equal(requests.filter((request) => request.includes(`/${phoneNumberId}/smb_app_data`)).length, 0);
   assert.notEqual(account.encryptedAccessToken, accessToken);
   assert.equal(decryptSecret(account.encryptedAccessToken!, "test-token-encryption-key-for-tests-32chars"), accessToken);
 });
