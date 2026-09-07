@@ -35,9 +35,10 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
         headers: { authorization: `Bearer ${accessToken}` },
         body: JSON.stringify({ code, ...signupData }),
       });
-      toast.success("WhatsApp Business account connected successfully.");
       const warnings = [...new Set(result?.syncWarnings?.filter(Boolean) ?? [])];
-      if (warnings.length) toast.warn(`WhatsApp connected, but some Meta setup steps need attention: ${warnings.join(" ")}`);
+      toast.success(warnings.length
+        ? `WhatsApp Business account connected successfully. Optional setup needs attention: ${warnings.join(" ")}`
+        : "WhatsApp Business account connected successfully.");
       setConnecting(false);
     } catch (caughtError) {
       submittedRef.current = false;

@@ -91,7 +91,7 @@ test.each([
   expect(result.current.error).toBe(message);
 });
 
-test("shows post-setup warnings without changing a successful connection into an error", async () => {
+test("shows post-setup warnings in one successful connection notification", async () => {
   vi.mocked(apiRequest).mockResolvedValueOnce({ syncWarnings: ["Meta rejected the request while subscribing the app to WhatsApp webhooks: Permission denied."] });
   const { result } = renderHook(() => useWhatsAppEmbeddedSignup({ workspaceId: "workspace-1", accessToken: "access-token" }));
 
@@ -102,9 +102,10 @@ test("shows post-setup warnings without changing a successful connection into an
     data: JSON.stringify({ type: "WA_EMBEDDED_SIGNUP", event: "FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING", data: { waba_id: "waba-1" } }),
   }));
 
-  await waitFor(() => expect(vi.mocked(toast.warn)).toHaveBeenCalledWith(
-    "WhatsApp connected, but some Meta setup steps need attention: Meta rejected the request while subscribing the app to WhatsApp webhooks: Permission denied.",
+  await waitFor(() => expect(vi.mocked(toast.success)).toHaveBeenCalledWith(
+    "WhatsApp Business account connected successfully. Optional setup needs attention: Meta rejected the request while subscribing the app to WhatsApp webhooks: Permission denied.",
   ));
   expect(vi.mocked(toast.success)).toHaveBeenCalledOnce();
+  expect(vi.mocked(toast.warn)).not.toHaveBeenCalled();
   expect(vi.mocked(toast.error)).not.toHaveBeenCalled();
 });

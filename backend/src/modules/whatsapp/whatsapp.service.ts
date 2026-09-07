@@ -388,6 +388,12 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
   // https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/onboarding-business-app-users
   const syncRequestIds: string[] = [];
   const syncWarnings: string[] = [];
+  const syncWarningMessage = (syncType: "history" | "smb_app_state_sync", error: unknown) => {
+    const rawMessage = error instanceof Error ? error.message : "WhatsApp synchronization request failed.";
+    if (!/135000|generic user error/i.test(rawMessage)) return rawMessage;
+    const dataName = syncType === "history" ? "message history" : "contacts";
+    return `Meta did not allow ${dataName} synchronization. This can happen when sync permission was not granted in WhatsApp Business or Meta has not finished preparing the number. The WhatsApp connection is active; check Meta webhook/sync configuration.`;
+  };
   let subscribed = false;
   try {
     await subscribeAppToWaba(input.wabaId, accessToken);
@@ -401,7 +407,7 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
       try {
         syncRequestIds.push(await requestCoexistenceSync(metaPhoneNumberId, accessToken, syncType));
       } catch (error) {
-        syncWarnings.push(error instanceof Error ? error.message : "WhatsApp synchronization request failed.");
+        syncWarnings.push(syncWarningMessage(syncType, error));
       }
     }
   }

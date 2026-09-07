@@ -41,6 +41,7 @@ function fixture(t: TestContext, options: {
   subscriptionFails?: boolean;
   phoneFails?: boolean;
   syncFails?: boolean;
+  genericSyncError?: boolean;
   missingSyncId?: boolean;
 } = {}) {
   const steps: string[] = [];
@@ -101,7 +102,7 @@ function fixture(t: TestContext, options: {
       assert.equal(body.messaging_product, "whatsapp");
       assert.ok(["smb_app_state_sync", "history"].includes(body.sync_type));
       steps.push(body.sync_type);
-      if (options.syncFails && body.sync_type === "smb_app_state_sync") return json({ error: { message: "Contacts sync unavailable", code: 100 } }, 400);
+      if ((options.syncFails || options.genericSyncError) && body.sync_type === "smb_app_state_sync") return json({ error: { message: options.genericSyncError ? "(#135000) Generic user error" : "Contacts sync unavailable", code: options.genericSyncError ? 135000 : 100 } }, 400);
       return json(options.missingSyncId ? {} : { request_id: `request-${body.sync_type}` });
     }
     assert.fail(`Unexpected request: ${url.pathname}`);
@@ -159,6 +160,15 @@ test("a contacts sync failure is reported without retrying the one-time request 
   assert.deepEqual(result.syncRequestIds, ["request-history"]);
   assert.match(result.syncWarnings[0]!, /Contacts sync unavailable/);
   assert.equal(state.steps.filter((step) => step === "smb_app_state_sync").length, 1);
+});
+
+test("Meta generic sync errors are explained as optional setup warnings", async (t) => {
+  const state = fixture(t, { genericSyncError: true });
+  const result = await completeEmbeddedSignup("workspace-id", signup);
+  assert.match(result.syncWarnings[0]!, /did not allow contacts synchronization/i);
+  assert.doesNotMatch(result.syncWarnings[0]!, /135000|Generic user error/);
+  assert.equal(state.steps.filter((step) => step === "smb_app_state_sync").length, 1);
+  assert.equal(state.steps.includes("history"), true);
 });
 
 test("a sync response without a request ID is reported as unconfirmed", async (t) => {
