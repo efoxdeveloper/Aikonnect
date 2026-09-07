@@ -144,7 +144,9 @@ type MetaPhoneNumber = MetaResponse & {
   platform_type?: string;
 };
 
-const phoneNumberFields = "id,display_phone_number,verified_name,quality_rating,messaging_limit,is_on_biz_app,platform_type";
+// `messaging_limit` is not a valid field on the Graph API phone-number
+// resource in v25.0; requesting it makes the entire lookup fail with (#100).
+const phoneNumberFields = "id,display_phone_number,verified_name,quality_rating,is_on_biz_app,platform_type";
 
 async function findCoexistencePhoneNumber(wabaId: string, phoneNumberId: string | null | undefined, accessToken: string) {
   if (phoneNumberId) {

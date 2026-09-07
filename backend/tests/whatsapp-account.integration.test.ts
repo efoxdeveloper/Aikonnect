@@ -128,6 +128,9 @@ test("exchanges the signup code and stores the Meta account and phone against th
   assert.equal(phone.status, "ACTIVE");
   assert.equal(phone.isOnBusinessApp, true);
   assert.equal(phone.platformType, "CLOUD_API");
+  const phoneLookupRequest = requests.find((request) => request.includes(`GET https://graph.facebook.com/`) && request.includes(`/${phoneNumberId}?fields=`));
+  assert.ok(phoneLookupRequest);
+  assert.doesNotMatch(phoneLookupRequest, /messaging_limit/);
   assert.equal(businessAccountAttempts, 2);
   assert.ok(requests.some((request) => request.includes(`POST https://graph.facebook.com/`) && request.includes(`/${wabaId}/subscribed_apps`)));
   assert.equal(requests.filter((request) => request.includes(`/${phoneNumberId}/smb_app_data`)).length, 2);
