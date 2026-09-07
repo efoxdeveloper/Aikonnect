@@ -37,6 +37,13 @@ console.log("Deploying Interakt from " + repositoryRoot + (dryRun ? " (dry run)"
 run("git", ["pull", "--ff-only", "origin", "main"]);
 run(npmCommand, ["--prefix", "backend", "ci"]);
 run(npmCommand, ["--prefix", "Frontend", "ci"]);
+// Treat every deployment as a patch release so the sidebar version identifies
+// the build that was deployed. Commit and push the generated package metadata
+// before building so the next deployment starts from a clean checkout.
+run(npmCommand, ["--prefix", "Frontend", "version", "patch", "--no-git-tag-version"]);
+run("git", ["add", "Frontend/package.json", "Frontend/package-lock.json"]);
+run("git", ["commit", "-m", "chore: bump frontend version for deployment"]);
+run("git", ["push", "origin", "main"]);
 run(npmCommand, ["--prefix", "backend", "run", "prisma:generate"]);
 run(npmCommand, ["--prefix", "backend", "run", "prisma:migrate:deploy"]);
 run(npmCommand, ["--prefix", "backend", "run", "build"]);
