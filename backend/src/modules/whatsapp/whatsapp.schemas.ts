@@ -11,4 +11,8 @@ export const embeddedSignupSchema = z.object({
   phoneNumberId: metaId.optional().nullable(),
 });
 
+export const testMessageSchema = z.object({
+  to: z.string().trim().regex(/^\+[1-9]\d{6,14}$/, "Enter a valid international phone number, for example +919876543210"),
+});
+
 export type EmbeddedSignupInput = z.infer<typeof embeddedSignupSchema>;

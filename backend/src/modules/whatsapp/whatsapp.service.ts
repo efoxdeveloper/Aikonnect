@@ -230,6 +230,71 @@ export async function sendAutomationText(workspaceId: string, conversationId: st
   });
 }
 
+export async function sendTestMessage(workspaceId: string, to: string) {
+  const { encryptionKey } = requireMetaConfiguration();
+  const connection = await prisma.whatsAppBusinessAccount.findFirst({
+    where: {
+      workspaceId,
+      status: "CONNECTED",
+      encryptedAccessToken: { not: null },
+      phoneNumbers: { some: { status: "ACTIVE" } },
+    },
+    orderBy: { createdAt: "asc" },
+    select: {
+      id: true,
+      phoneNumbers: {
+        where: { status: "ACTIVE" },
+        orderBy: { createdAt: "asc" },
+        take: 1,
+        select: { id: true, metaPhoneNumberId: true },
+      },
+      encryptedAccessToken: true,
+    },
+  });
+  const phone = connection?.phoneNumbers[0];
+  if (!connection || !phone || !connection.encryptedAccessToken) {
+    throw new AppError(409, "Connect an active WhatsApp phone number before sending a test message.", "WHATSAPP_NOT_CONNECTED");
+  }
+
+  const accessToken = decryptSecret(connection.encryptedAccessToken, encryptionKey);
+  const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(phone.metaPhoneNumberId)}/messages`, accessToken, {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: to.replace(/\D/g, ""),
+    type: "text",
+    text: { body: "This is a test message from Aikonnect." },
+  }, "send_message");
+  const messageId = sent.messages?.[0]?.id;
+  if (!messageId) throw new AppError(502, "Meta accepted the request but did not return a message ID. The test message could not be confirmed.", "META_RESPONSE_INVALID", { stage: "send_message" });
+  const sentAt = new Date();
+  await prisma.workspaceSetupProgress.upsert({
+    where: { workspaceId },
+    create: { workspaceId, testMessageSentAt: sentAt, completedAt: sentAt },
+    update: { testMessageSentAt: sentAt, completedAt: sentAt },
+  });
+  return { messageId, to, sentAt };
+}
+
+/** Removes the connection from this workspace. Full coexistence offboarding is done in WhatsApp Business. */
+export async function disconnectWhatsApp(workspaceId: string) {
+  const result = await prisma.$transaction(async (transaction) => {
+    const accounts = await transaction.whatsAppBusinessAccount.findMany({ where: { workspaceId }, select: { id: true } });
+    if (!accounts.length) throw new AppError(404, "No WhatsApp connection was found for this workspace", "WHATSAPP_NOT_CONNECTED");
+    const accountIds = accounts.map(({ id }) => id);
+    await transaction.whatsAppPhoneNumber.updateMany({ where: { businessAccountId: { in: accountIds } }, data: { status: "DISCONNECTED" } });
+    await transaction.whatsAppBusinessAccount.updateMany({
+      where: { id: { in: accountIds } },
+      data: { status: "DISCONNECTED", encryptedAccessToken: null, tokenExpiresAt: null, lastError: null },
+    });
+    await transaction.workspaceSetupProgress.updateMany({
+      where: { workspaceId },
+      data: { whatsappConnectedAt: null, phoneNumberConnectedAt: null, testMessageSentAt: null, completedAt: null },
+    });
+    return { disconnectedAccounts: accountIds.length };
+  });
+  return { ...result, message: "WhatsApp was removed from this workspace. To fully disconnect a coexistence number from Cloud API, open WhatsApp Business → Settings → Account → Business Platform → Disconnect Account." };
+}
+
 export async function completeEmbeddedSignup(workspaceId: string, input: EmbeddedSignupInput) {
   const { encryptionKey } = requireMetaConfiguration();
   const exchanged = await exchangeSignupCode(input);
