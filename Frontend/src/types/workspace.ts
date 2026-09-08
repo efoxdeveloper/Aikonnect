@@ -34,6 +34,8 @@ export type WorkspaceSetupData = {
         status: "PENDING" | "ACTIVE" | "DISCONNECTED" | "ERROR";
         qualityRating: string | null;
         messagingLimit: string | null;
+        isOnBusinessApp: boolean;
+        platformType: string | null;
         connectedAt: string | null;
         lastSyncedAt: string | null;
       }>;

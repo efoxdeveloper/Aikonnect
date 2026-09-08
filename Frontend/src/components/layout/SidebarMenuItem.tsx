@@ -26,7 +26,7 @@ const buttonSx = {
   transition: "background-color 180ms ease, color 180ms ease, transform 180ms ease",
   "&:hover": { backgroundColor: "rgba(255,255,255,.09)" },
   "&:active": { transform: "scale(.98)" },
-  "&[data-active=true]": { backgroundColor: "rgba(255,255,255,.055)", color: "#fff", fontWeight: 600, boxShadow: "inset 3px 0 0 #34d399" },
+  "&[data-active=true]": { backgroundColor: "rgba(255,255,255,.055)", color: "#fff", fontWeight: 600 },
   "&[data-active=true] .MuiListItemIcon-root": { color: "#6ee7b7" },
   "&:focus-visible": { outline: "2px solid rgba(110,231,183,.7)", outlineOffset: 2 },
 };

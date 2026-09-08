@@ -192,6 +192,56 @@ async function requestCoexistenceSync(phoneNumberId: string, accessToken: string
   return result.request_id;
 }
 
+async function requestWorkspaceCoexistenceSync(workspaceId: string) {
+  const { encryptionKey } = requireMetaConfiguration();
+  const account = await prisma.whatsAppBusinessAccount.findFirst({
+    where: { workspaceId, status: "CONNECTED", encryptedAccessToken: { not: null } },
+    select: {
+      id: true,
+      metaWabaId: true,
+      encryptedAccessToken: true,
+      phoneNumbers: {
+        where: { status: "ACTIVE" },
+        select: { id: true, metaPhoneNumberId: true, isOnBusinessApp: true, platformType: true },
+        orderBy: { updatedAt: "desc" },
+      },
+    },
+  });
+  const phone = account?.phoneNumbers.find((item) => item.isOnBusinessApp && item.platformType === "CLOUD_API") ?? account?.phoneNumbers[0];
+  if (!account || !phone?.isOnBusinessApp || phone.platformType !== "CLOUD_API" || !account.metaWabaId || !account.encryptedAccessToken) {
+    throw new AppError(409, "Connect a WhatsApp Business App number before syncing conversations.", "WHATSAPP_SYNC_UNAVAILABLE");
+  }
+
+  const accessToken = decryptSecret(account.encryptedAccessToken, encryptionKey);
+  const syncRequestIds: string[] = [];
+  const syncWarnings: string[] = [];
+  let subscribed = false;
+  try {
+    await subscribeAppToWaba(account.metaWabaId, accessToken);
+    subscribed = true;
+  } catch (error) {
+    syncWarnings.push(error instanceof Error ? error.message : "WhatsApp webhook subscription failed.");
+  }
+  if (subscribed) {
+    for (const syncType of ["smb_app_state_sync", "history"] as const) {
+      try {
+        syncRequestIds.push(await requestCoexistenceSync(phone.metaPhoneNumberId, accessToken, syncType));
+      } catch (error) {
+        syncWarnings.push(error instanceof Error ? error.message : `WhatsApp ${syncType} synchronization failed.`);
+      }
+    }
+  }
+  await prisma.whatsAppBusinessAccount.update({
+    where: { id: account.id },
+    data: { lastError: syncWarnings.length ? syncWarnings.join("; ") : null, lastSyncedAt: new Date() },
+  });
+  return { syncRequestIds, syncWarnings };
+}
+
+export async function syncWhatsApp(workspaceId: string) {
+  return requestWorkspaceCoexistenceSync(workspaceId);
+}
+
 /** Sends an automation reply and records it in the same conversation shown in Inbox. */
 export async function sendAutomationText(workspaceId: string, conversationId: string, body: string) {
   const { encryptionKey } = requireMetaConfiguration();

@@ -10,7 +10,7 @@ vi.mock("@/lib/api", () => ({
   apiRequest: vi.fn(),
 }));
 
-const inboxPermission = ["inbox.read", "conversations.reply"];
+const inboxPermission = ["inbox.read", "conversations.reply", "whatsapp.manage"];
 const auth: AuthContextValue = {
   status: "authenticated",
   user: {
@@ -60,12 +60,12 @@ describe("Inbox", () => {
     expect(screen.getByRole("heading", { name: "All chats" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Channels" })).toHaveAttribute("aria-expanded", "false");
     expect(screen.getByRole("button", { name: "More filters" })).toHaveAttribute("aria-expanded", "false");
-    expect(screen.getByRole("button", { name: "All chats" })).toHaveClass("bg-[var(--brand)]");
-    expect(screen.getByRole("button", { name: "Assigned to me" })).not.toHaveClass("bg-[var(--brand)]");
-    expect(screen.getByRole("button", { name: "Unassigned" })).not.toHaveClass("bg-[var(--brand)]");
+    expect(screen.getByRole("button", { name: "All chats" })).toHaveClass("bg-[var(--brand-soft)]");
+    expect(screen.getByRole("button", { name: "Assigned to me" })).not.toHaveClass("bg-[var(--brand-soft)]");
+    expect(screen.getByRole("button", { name: "Unassigned" })).not.toHaveClass("bg-[var(--brand-soft)]");
     fireEvent.click(screen.getByRole("button", { name: "Unassigned" }));
-    expect(screen.getByRole("button", { name: "Unassigned" })).toHaveClass("bg-[var(--brand)]");
-    expect(screen.getByRole("button", { name: "All chats" })).not.toHaveClass("bg-[var(--brand)]");
+    expect(screen.getByRole("button", { name: "Unassigned" })).toHaveClass("bg-[var(--brand-soft)]");
+    expect(screen.getByRole("button", { name: "All chats" })).not.toHaveClass("bg-[var(--brand-soft)]");
     fireEvent.click(screen.getByRole("button", { name: "Channels" }));
     expect(screen.getByRole("button", { name: "All Channels" })).toBeInTheDocument();
     expect(await screen.findByRole("button", { name: /Aarav Sharma/ })).toBeInTheDocument();
@@ -86,6 +86,21 @@ describe("Inbox", () => {
       "/workspaces/workspace-1/contacts/contact-1/conversations/conversation-1/messages",
       expect.objectContaining({ method: "POST", body: expect.stringContaining("Here is the pricing.") }),
     );
+  });
+
+  it("requests a WhatsApp sync from the empty All chats state", async () => {
+    vi.mocked(apiRequest).mockImplementation(async (path, options = {}) => {
+      if (String(path).includes("/whatsapp/sync")) return { syncRequestIds: ["sync-1"], syncWarnings: [] } as never;
+      return { items: [], pagination: { page: 1, pageSize: 100, total: 0, totalPages: 1 } } as never;
+    });
+    renderPage();
+    const syncButton = await screen.findByRole("button", { name: "Sync now" });
+    fireEvent.click(syncButton);
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/whatsapp/sync",
+      { method: "POST", headers: { authorization: "Bearer access-token" } },
+    ));
+    expect(syncButton).toBeEnabled();
   });
 
   it("protects the inbox from roles without inbox permission", () => {

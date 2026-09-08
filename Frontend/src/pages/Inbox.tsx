@@ -21,6 +21,7 @@ import {
   Smile,
   Star,
   Tag,
+  RefreshCw,
   UserRound,
   UserX,
   Users,
@@ -115,6 +116,7 @@ export function Inbox() {
   const permissions = getActiveMembership(user)?.role.permissions ?? [];
   const canRead = permissions.includes("inbox.read");
   const canReply = permissions.includes("conversations.reply");
+  const canSync = permissions.includes("whatsapp.manage");
   const [folder, setFolder] = useState<InboxFolder>(undefined);
   const [activeFilter, setActiveFilter] = useState<ChatFilterKey>("All chats");
   const [channelFilter, setChannelFilter] = useState<ChannelFilter>("all");
@@ -130,6 +132,7 @@ export function Inbox() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [messageError, setMessageError] = useState("");
+  const [syncing, setSyncing] = useState(false);
 
   const selected = useMemo(
     () => conversations.find((conversation) => conversation.id === selectedId) ?? null,
@@ -219,6 +222,23 @@ export function Inbox() {
     }
   };
 
+  const syncNow = async () => {
+    if (!workspaceId || !accessToken || !canSync || syncing) return;
+    setSyncing(true);
+    setError("");
+    try {
+      await apiRequest(`/workspaces/${workspaceId}/whatsapp/sync`, {
+        method: "POST",
+        headers: { authorization: `Bearer ${accessToken}` },
+      });
+      await loadConversations();
+    } catch (caughtError) {
+      setError(friendlyError(caughtError, "Unable to sync WhatsApp conversations."));
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   if (!canRead) {
     return (
       <div className="flex h-full items-center justify-center bg-[var(--page-background)] p-6">
@@ -263,7 +283,7 @@ export function Inbox() {
             <div className="flex-none border-b border-[var(--border-soft)] p-3"><div className="relative"><Search className="pointer-events-none absolute left-2.5 top-2.5 text-[var(--text-muted)]" size={15} /><input aria-label="Search conversations" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search conversations" className="h-9 w-full rounded-md border border-[var(--border-strong)] bg-white pl-8 pr-3 text-xs outline-none focus:border-[var(--brand-accent)] focus:ring-2 focus:ring-[var(--brand-accent)]/10" /></div></div>
             <div className="min-h-0 flex-1 overflow-y-auto">
               {error && <div role="alert" className="m-3 rounded-md border border-[#f5dada] bg-[var(--danger-soft)] p-3 text-xs text-[var(--danger)]">{error}</div>}
-              {loading ? <div className="p-5 text-center text-xs text-[var(--text-secondary)]">Loading conversations...</div> : conversations.length === 0 ? <div className="p-8 text-center"><Users className="mx-auto text-[var(--text-muted)]" size={24} /><div className="mt-3 text-sm font-medium">No conversations yet</div><div className="mt-1 text-xs text-[var(--text-secondary)]">Incoming WhatsApp conversations will appear here.</div></div> : conversations.map((conversation) => <button key={conversation.id} type="button" onClick={() => setSelectedId(conversation.id)} className={cn("w-full border-b border-[var(--border-soft)] px-4 py-3 text-left hover:bg-[var(--table-hover)]", selectedId === conversation.id && "bg-[var(--table-selected)]")}><div className="flex items-start gap-2.5"><div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--brand-soft)] text-[11px] font-semibold text-[var(--brand)]">{initials(conversation.contact.name)}</div><div className="min-w-0 flex-1"><div className="flex items-center justify-between gap-2"><span className={cn("truncate text-xs", conversation.unreadCount ? "font-semibold text-[var(--text-primary)]" : "font-medium text-[var(--text-secondary)]")}>{conversation.contact.name}</span><span className="shrink-0 text-[10px] text-[var(--text-muted)]">{formatTime(conversation.lastMessageAt)}</span></div><div className="mt-1 truncate text-[11px] text-[var(--text-secondary)]">{conversation.lastMessagePreview || "No messages yet"}</div>{conversation.unreadCount > 0 && <span className="mt-1 inline-flex rounded-full bg-[#e9f7f1] px-1.5 py-0.5 text-[9px] font-semibold text-[#137a57]">{conversation.unreadCount} unread</span>}</div></div></button>)}
+              {loading ? <div className="p-5 text-center text-xs text-[var(--text-secondary)]">Loading conversations...</div> : conversations.length === 0 ? <div className="p-8 text-center"><Users className="mx-auto text-[var(--text-muted)]" size={24} /><div className="mt-3 text-sm font-medium">No conversations yet</div>{activeFilter === "All chats" && canSync && <button type="button" onClick={() => void syncNow()} disabled={syncing} className="mx-auto mt-4 inline-flex h-9 items-center gap-1.5 rounded-md bg-[var(--brand)] px-3 text-xs font-semibold text-white hover:bg-[var(--brand-hover)] disabled:cursor-wait disabled:opacity-60"><RefreshCw size={14} className={syncing ? "animate-spin" : undefined} />{syncing ? "Syncing..." : "Sync now"}</button>}</div> : conversations.map((conversation) => <button key={conversation.id} type="button" onClick={() => setSelectedId(conversation.id)} className={cn("w-full border-b border-[var(--border-soft)] px-4 py-3 text-left hover:bg-[var(--table-hover)]", selectedId === conversation.id && "bg-[var(--table-selected)]")}><div className="flex items-start gap-2.5"><div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--brand-soft)] text-[11px] font-semibold text-[var(--brand)]">{initials(conversation.contact.name)}</div><div className="min-w-0 flex-1"><div className="flex items-center justify-between gap-2"><span className={cn("truncate text-xs", conversation.unreadCount ? "font-semibold text-[var(--text-primary)]" : "font-medium text-[var(--text-secondary)]")}>{conversation.contact.name}</span><span className="shrink-0 text-[10px] text-[var(--text-muted)]">{formatTime(conversation.lastMessageAt)}</span></div><div className="mt-1 truncate text-[11px] text-[var(--text-secondary)]">{conversation.lastMessagePreview || "No messages yet"}</div>{conversation.unreadCount > 0 && <span className="mt-1 inline-flex rounded-full bg-[#e9f7f1] px-1.5 py-0.5 text-[9px] font-semibold text-[#137a57]">{conversation.unreadCount} unread</span>}</div></div></button>)}
             </div>
           </section>
           <section className={cn("min-h-0 flex-col", selected ? "flex" : "hidden lg:flex")} aria-label="Conversation thread">

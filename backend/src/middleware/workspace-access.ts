@@ -5,6 +5,10 @@ import { AppError } from "./error-handler.js";
 import { requireAuth } from "./authenticate.js";
 
 export function requireWorkspacePermission(permission: PermissionKey): RequestHandler {
+  return requireAnyWorkspacePermission(permission);
+}
+
+export function requireAnyWorkspacePermission(...requiredPermissions: PermissionKey[]): RequestHandler {
   return async (request, _response, next) => {
     try {
       const auth = requireAuth(request);
@@ -29,7 +33,7 @@ export function requireWorkspacePermission(permission: PermissionKey): RequestHa
       }
 
       const permissions = membership.role.permissions.map(({ permission: item }) => item.key);
-      if (!permissions.includes(permission)) {
+      if (!requiredPermissions.some((permission) => permissions.includes(permission))) {
         throw new AppError(403, "Your workspace role does not allow this action", "PERMISSION_DENIED");
       }
 

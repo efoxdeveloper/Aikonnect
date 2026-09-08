@@ -1,6 +1,7 @@
 import {
   ArrowRightIcon as ArrowRight,
   CheckIcon as Check,
+  CircleCheckIcon as CircleCheck,
   MessageSquareIcon as MessageSquare,
   PhoneIcon as Phone,
   RocketIcon as Rocket,
@@ -8,6 +9,7 @@ import {
   StoreIcon as Store,
 } from "@animateicons/react/lucide";
 import { Link } from "react-router-dom";
+import { BarChart3, Inbox as InboxIcon, Megaphone, Users, Workflow } from "lucide-react";
 import type { AnimatedIcon } from "@/config/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAnimatedIcon } from "@/hooks/use-animated-icon";
@@ -91,6 +93,7 @@ export function WorkspaceSetupDashboard() {
   const connectedPhone = connectedAccount?.phoneNumbers.find((phone) => phone.status === "ACTIVE") ?? connectedAccount?.phoneNumbers[0];
   const whatsappStatusLabel = data.whatsapp.status === "CONNECTED" ? "Connected" : data.whatsapp.status === "CONNECTING" ? "Connecting" : data.whatsapp.status === "ERROR" ? "Needs attention" : "Not connected";
   const whatsappStatusClass = data.whatsapp.status === "CONNECTED" ? "bg-[var(--success-soft)] text-[var(--success)]" : data.whatsapp.status === "ERROR" ? "bg-[var(--danger-soft)] text-[var(--danger)]" : "bg-[var(--warning-soft)] text-[#a66a00]";
+  const connectionType = connectedPhone?.isOnBusinessApp ? "App + Cloud API" : "Cloud API";
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden bg-[var(--page-background)]">
@@ -98,10 +101,9 @@ export function WorkspaceSetupDashboard() {
         <div className="mx-auto max-w-[1180px] px-5 py-6 sm:px-8 sm:py-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-[25px] font-medium tracking-[-0.025em] text-[var(--text-primary)]">Welcome, {user?.firstName}</h1>
-          <p className="mt-1">Get your workspace ready to start messaging customers.</p>
+          <h1 className="text-[25px] font-medium tracking-[-0.025em] text-[var(--text-primary)]">{allComplete ? "Dashboard" : `Welcome, ${user?.firstName}`}</h1>
         </div>
-        <span className="w-fit rounded-full border border-[var(--border)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)]">{allComplete ? "Ready to launch" : progress.completedSteps + " of " + progress.totalSteps + " complete"}</span>
+        <span className="w-fit rounded-full border border-[var(--border)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)]">{allComplete ? "Connected" : progress.completedSteps + " of " + progress.totalSteps + " complete"}</span>
       </div>
 
       <section className="mt-5 overflow-hidden rounded-md bg-[var(--green-900)] text-white shadow-[0_8px_24px_rgba(4,63,41,.13)]">
@@ -111,17 +113,17 @@ export function WorkspaceSetupDashboard() {
               <Rocket ref={rocketIcon.ref} size={21} duration={0.7} aria-hidden="true" />
             </div>
             <div>
-              <h2 className="!text-white text-[17px] font-medium">{allComplete ? "Your workspace is ready" : progress.completedSteps + " of " + progress.totalSteps + " steps complete"}</h2>
-              <div className="!text-white/70 mt-1">{allComplete ? "You can now create campaigns and start conversations." : (nextStep?.title ?? "Complete your setup") + " is the next step."}</div>
+              <h2 className="!text-white text-[17px] font-medium">{allComplete ? "WhatsApp is connected" : progress.completedSteps + " of " + progress.totalSteps + " steps complete"}</h2>
+              <div className="!text-white/70 mt-1">{allComplete ? (connectedPhone?.displayPhoneNumber ?? "Business number") : (nextStep?.title ?? "Complete your setup") + " is the next step."}</div>
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          {allComplete ? <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/12 px-3 py-2 text-xs font-medium text-white ring-1 ring-white/15"><CircleCheck size={15} aria-hidden="true" /> Connected</span> : <div className="flex items-center gap-4">
             <div className="relative flex size-[64px] items-center justify-center rounded-full" role="progressbar" aria-label="Workspace setup progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percentage} style={{ background: "conic-gradient(#ffffff " + progress.percentage + "%, rgba(255,255,255,.18) 0)" }}>
               <div className="flex size-[52px] items-center justify-center rounded-full bg-[var(--green-800)] text-sm font-medium">{progress.percentage}%</div>
             </div>
-          </div>
+          </div>}
         </div>
-        <div className="h-1.5 bg-white/15"><div className="h-full bg-white transition-[width] duration-500" style={{ width: `${progress.percentage}%` }} /></div>
+        {!allComplete && <div className="h-1.5 bg-white/15"><div className="h-full bg-white transition-[width] duration-500" style={{ width: `${progress.percentage}%` }} /></div>}
       </section>
 
       {connectionError && <div role="alert" className="mt-5 rounded-md bg-[var(--danger-soft)] px-4 py-3 text-[var(--danger)]">{connectionError}</div>}
@@ -151,7 +153,34 @@ export function WorkspaceSetupDashboard() {
       )}
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_310px]">
-        <section className="rounded-md border border-[var(--border-soft)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:p-6">
+        {allComplete ? (
+          <section data-testid="setup-complete-panel" aria-labelledby="setup-complete-title" className="rounded-md border border-[var(--border-soft)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:p-6">
+            <div className="flex flex-col gap-2 border-b border-[var(--border-soft)] pb-5 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="text-[10px] font-semibold uppercase tracking-[.08em] text-[var(--brand)]">Overview</div>
+                <h2 id="setup-complete-title" className="mt-1 text-[19px] font-medium tracking-[-0.02em] text-[var(--text-primary)]">Your workspace is ready</h2>
+              </div>
+              <Link to="/whatsapp-account" className="inline-flex w-fit items-center gap-1.5 rounded-md border border-[var(--border)] px-3 py-2 text-xs font-medium text-[var(--text-secondary)] hover:border-[var(--brand)]/30 hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]">Manage connection <ArrowRight size={13} aria-hidden="true" /></Link>
+            </div>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-md border border-[var(--border-soft)] bg-[var(--page-background)] p-4"><div className="flex items-center gap-2 text-[var(--text-muted)]"><Phone size={15} /><span className="text-xs">Connected number</span></div><div className="mt-3 truncate text-sm font-semibold text-[var(--text-primary)]">{connectedPhone?.displayPhoneNumber ?? "—"}</div></div>
+              <div className="rounded-md border border-[var(--border-soft)] bg-[var(--page-background)] p-4"><div className="flex items-center gap-2 text-[var(--text-muted)]"><MessageSquare size={15} /><span className="text-xs">Connection</span></div><div className="mt-3 text-sm font-semibold text-[var(--text-primary)]">{connectionType}</div></div>
+              <div className="rounded-md border border-[var(--border-soft)] bg-[var(--page-background)] p-4"><div className="flex items-center gap-2 text-[var(--text-muted)]"><Users size={15} /><span className="text-xs">Team members</span></div><div className="mt-3 text-sm font-semibold text-[var(--text-primary)]">{data.team.memberCount}</div></div>
+            </div>
+
+            <div className="mt-6">
+              <h3 className="text-sm font-medium text-[var(--text-primary)]">Quick actions</h3>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <Link to="/inbox" className="group flex items-center gap-3 rounded-md border border-[var(--border-soft)] p-3.5 transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-soft)]"><span className="flex size-9 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><InboxIcon size={17} /></span><span className="min-w-0 flex-1"><span className="block text-sm font-medium text-[var(--text-primary)]">Open inbox</span></span><ArrowRight size={15} className="text-[var(--text-muted)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--brand)]" /></Link>
+                <Link to="/campaigns" className="group flex items-center gap-3 rounded-md border border-[var(--border-soft)] p-3.5 transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-soft)]"><span className="flex size-9 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><Megaphone size={17} /></span><span className="min-w-0 flex-1"><span className="block text-sm font-medium text-[var(--text-primary)]">Create campaign</span></span><ArrowRight size={15} className="text-[var(--text-muted)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--brand)]" /></Link>
+                <Link to="/contacts" className="group flex items-center gap-3 rounded-md border border-[var(--border-soft)] p-3.5 transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-soft)]"><span className="flex size-9 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><Users size={17} /></span><span className="min-w-0 flex-1"><span className="block text-sm font-medium text-[var(--text-primary)]">View contacts</span></span><ArrowRight size={15} className="text-[var(--text-muted)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--brand)]" /></Link>
+                <Link to="/automations" className="group flex items-center gap-3 rounded-md border border-[var(--border-soft)] p-3.5 transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-soft)]"><span className="flex size-9 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><Workflow size={17} /></span><span className="min-w-0 flex-1"><span className="block text-sm font-medium text-[var(--text-primary)]">Set up automation</span></span><ArrowRight size={15} className="text-[var(--text-muted)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--brand)]" /></Link>
+              </div>
+            </div>
+          </section>
+        ) : (
+        <section data-testid="setup-checklist" className="rounded-md border border-[var(--border-soft)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:p-6">
           <div className="flex items-start justify-between gap-4 border-b border-[var(--border-soft)] pb-4">
             <div>
               <h2 className="text-[16px] font-medium text-[var(--text-primary)]">Setup checklist</h2>
@@ -163,6 +192,7 @@ export function WorkspaceSetupDashboard() {
             {steps.map((step, index) => <SetupStep key={step.title} {...step} active={step === nextStep} last={index === steps.length - 1} />)}
           </div>
         </section>
+        )}
 
         <aside className="space-y-5">
           <section className="rounded-md border border-[var(--border-soft)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)]">
@@ -176,11 +206,7 @@ export function WorkspaceSetupDashboard() {
             </dl>
             {data.whatsapp.status === "DISCONNECTED" && <div className="mt-4 rounded-md bg-[var(--brand-soft)] px-3 py-2.5 text-xs text-[var(--brand)]">Connect WhatsApp to unlock phone number setup.</div>}
           </section>
-          <section className="rounded-md border border-[var(--green-100)] bg-[var(--brand-subtle)] p-5">
-            <h2 className="text-sm font-medium text-[var(--brand)]">Need help?</h2>
-            <p className="mt-2">You will need access to your Meta Business portfolio before connecting WhatsApp.</p>
-            <Link to="/whatsapp-account" className="mt-3 inline-flex items-center text-xs font-medium text-[var(--brand)] hover:text-[var(--brand-hover)]">View requirements <ArrowRight size={13} duration={0.55} className="ml-1" aria-hidden="true" /></Link>
-          </section>
+          {allComplete ? <section className="rounded-md border border-[var(--green-100)] bg-[var(--brand-subtle)] p-5"><div className="flex items-center gap-2 text-[var(--brand)]"><BarChart3 size={16} /><h2 className="text-sm font-medium">Workspace health</h2></div><div className="mt-4 flex items-center gap-2 text-xs font-medium text-[var(--success)]"><span className="size-2 rounded-full bg-[var(--success)]" /> All systems operational</div></section> : <section className="rounded-md border border-[var(--green-100)] bg-[var(--brand-subtle)] p-5"><h2 className="text-sm font-medium text-[var(--brand)]">Need help?</h2><p className="mt-2">You will need access to your Meta Business portfolio before connecting WhatsApp.</p><Link to="/whatsapp-account" className="mt-3 inline-flex items-center text-xs font-medium text-[var(--brand)] hover:text-[var(--brand-hover)]">View requirements <ArrowRight size={13} duration={0.55} className="ml-1" aria-hidden="true" /></Link></section>}
         </aside>
       </div>
         </div>

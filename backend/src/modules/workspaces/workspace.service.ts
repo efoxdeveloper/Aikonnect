@@ -125,6 +125,8 @@ export async function getWorkspaceSetup(workspaceId: string) {
               status: true,
               qualityRating: true,
               messagingLimit: true,
+              isOnBusinessApp: true,
+              platformType: true,
               connectedAt: true,
               lastSyncedAt: true,
             },

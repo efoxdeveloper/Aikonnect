@@ -47,7 +47,7 @@ test("lists workspace conversations with contact context and unread filtering", 
     body: JSON.stringify({ email, password: "IntegrationPassword123", firstName: "Inbox", lastName: "Tester", companyName: "Inbox Workspace", annualRevenue: "under-50-lakh" }),
   });
   assert.equal(registration.status, 201);
-  const registrationBody = (await registration.json()) as { data: { accessToken: string; workspace: { id: string }; verificationUrl: string } };
+  const registrationBody = (await registration.json()) as { data: { accessToken: string; user: { id: string }; workspace: { id: string }; verificationUrl: string } };
   const token = new URL(registrationBody.data.verificationUrl).searchParams.get("token");
   assert.ok(token);
   await fetch(`${baseUrl}/auth/verify-email`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token }) });
@@ -74,6 +74,23 @@ test("lists workspace conversations with contact context and unread filtering", 
     body: JSON.stringify({ direction: "INCOMING", type: "TEXT", text: "Hello from WhatsApp" }),
   });
   assert.equal(messageResponse.status, 201);
+
+  const inboxRoleResponse = await fetch(`${baseUrl}/workspaces/${workspaceId}/roles`, {
+    method: "POST",
+    headers: { ...authorization, "content-type": "application/json" },
+    body: JSON.stringify({ name: `Inbox-only-${suffix}`, permissions: ["workspace.read", "inbox.read"] }),
+  });
+  assert.equal(inboxRoleResponse.status, 201);
+  const inboxRole = (await inboxRoleResponse.json()) as { data: { id: string } };
+  await prisma.workspaceMember.update({
+    where: { workspaceId_userId: { workspaceId, userId: registrationBody.data.user.id } },
+    data: { roleId: inboxRole.data.id },
+  });
+
+  const messagesForInboxRole = await fetch(`${baseUrl}/workspaces/${workspaceId}/contacts/${contact.data.id}/conversations/${conversation.data.id}/messages`, { headers: authorization });
+  assert.equal(messagesForInboxRole.status, 200, "Inbox members should be able to read conversation messages");
+  const messagesBody = (await messagesForInboxRole.json()) as { data: { items: Array<{ text: string | null }> } };
+  assert.deepEqual(messagesBody.data.items.map(({ text }) => text), ["Hello from WhatsApp"]);
 
   const list = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations?unreadOnly=true&search=Inbox`, { headers: authorization });
   assert.equal(list.status, 200);

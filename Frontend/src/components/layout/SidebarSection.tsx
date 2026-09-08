@@ -37,7 +37,7 @@ export function SidebarSection({ group, open: controlledOpen, onToggle }: { grou
         aria-expanded={open}
         aria-controls={`sidebar-section-${group.title.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`}
         onClick={toggle}
-        sx={{ minHeight: 40, width: "100%", borderRadius: 1, borderBottom: "1px solid rgba(255,255,255,.14)", px: 1.25, color: "rgba(255,255,255,.72)", fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 600, letterSpacing: "-.005em", lineHeight: "20px", textTransform: "none", justifyContent: "space-between", "&:hover": { backgroundColor: "rgba(255,255,255,.07)", color: "#fff", borderBottomColor: "rgba(255,255,255,.24)" } }}
+        sx={{ minHeight: 40, width: "100%", borderRadius: 1, borderBottom: "1px solid rgba(255,255,255,.1)", px: 1.25, color: "rgba(255,255,255,.72)", fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 600, letterSpacing: "-.005em", lineHeight: "20px", textTransform: "none", justifyContent: "space-between", "&:hover": { backgroundColor: "rgba(255,255,255,.07)", color: "#fff", borderBottomColor: "rgba(255,255,255,.16)" } }}
       >
         <Typography component="span" sx={{ color: "inherit", fontFamily: "inherit", fontSize: "inherit", fontWeight: "inherit", letterSpacing: "inherit", lineHeight: 1 }}>{group.title}</Typography>
         {open ? <ChevronDown size={15} duration={0.6} /> : <ChevronRight size={15} duration={0.6} />}

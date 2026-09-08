@@ -21,6 +21,11 @@ whatsappRouter.post(
   validateBody(testMessageSchema),
   asyncHandler(controller.sendTestMessage),
 );
+whatsappRouter.post(
+  "/sync",
+  requireWorkspacePermission(PERMISSIONS.WHATSAPP_MANAGE),
+  asyncHandler(controller.sync),
+);
 whatsappRouter.delete(
   "/connection",
   requireWorkspacePermission(PERMISSIONS.WHATSAPP_MANAGE),

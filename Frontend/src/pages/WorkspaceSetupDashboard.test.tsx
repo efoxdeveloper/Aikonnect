@@ -104,6 +104,62 @@ describe("workspace setup experience", () => {
     ));
   });
 
+  it("shows launch actions instead of the onboarding checklist when setup is complete", async () => {
+    const completed: WorkspaceSetupData = {
+      ...setupData,
+      progress: {
+        workspaceCreated: true,
+        whatsappConnected: true,
+        phoneNumberConnected: true,
+        testMessageSent: true,
+        completedSteps: 4,
+        totalSteps: 4,
+        percentage: 100,
+        completedAt: "2026-08-22T00:05:00.000Z",
+      },
+      whatsapp: {
+        status: "CONNECTED",
+        accountCount: 1,
+        phoneNumberCount: 1,
+        accounts: [{
+          id: "account-1",
+          metaBusinessId: "business-1",
+          metaWabaId: "waba-1",
+          displayName: "Acme Business",
+          status: "CONNECTED",
+          connectedAt: "2026-08-22T00:00:00.000Z",
+          lastSyncedAt: "2026-08-22T00:00:00.000Z",
+          lastError: null,
+          phoneNumbers: [{
+            id: "phone-1",
+            metaPhoneNumberId: "meta-phone-1",
+            displayPhoneNumber: "+919876543210",
+            verifiedName: "Acme",
+            status: "ACTIVE",
+            qualityRating: "GREEN",
+            messagingLimit: null,
+            isOnBusinessApp: true,
+            platformType: "CLOUD_API",
+            connectedAt: "2026-08-22T00:00:00.000Z",
+            lastSyncedAt: "2026-08-22T00:00:00.000Z",
+          }],
+        }],
+      },
+    };
+    vi.mocked(apiRequest).mockReset().mockResolvedValue(completed);
+    renderWithAuth(<WorkspaceSetupDashboard />, "/dashboard");
+
+    expect(await screen.findByRole("heading", { name: "Your workspace is ready", level: 2 })).toBeInTheDocument();
+    expect(screen.getByTestId("setup-complete-panel")).toBeInTheDocument();
+    expect(screen.queryByTestId("setup-checklist")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Open inbox/ })).toHaveAttribute("href", "/inbox");
+    expect(screen.getByRole("link", { name: /Create campaign/ })).toHaveAttribute("href", "/campaigns");
+    expect(screen.getByRole("link", { name: /View contacts/ })).toHaveAttribute("href", "/contacts");
+    expect(screen.getByRole("link", { name: /Set up automation/ })).toHaveAttribute("href", "/automations");
+    expect(screen.getByText("App + Cloud API")).toBeInTheDocument();
+    expect(screen.getByText("All systems operational")).toBeInTheDocument();
+  });
+
   it("launches Meta Embedded Signup instead of asking for credentials", async () => {
     const login = vi.fn((callback: (response: FacebookLoginResponse) => void) => callback({ authResponse: { code: "meta-auth-code" } }));
     vi.mocked(loadFacebookSdk).mockResolvedValue({ init: vi.fn(), login });
@@ -111,8 +167,10 @@ describe("workspace setup experience", () => {
     renderWithAuth(<WhatsAppAccountSetup />, "/whatsapp-account");
 
     expect(await screen.findByRole("heading", { name: "WhatsApp Business account" })).toBeInTheDocument();
-    const button = screen.getByRole("button", { name: "Continue with Meta" });
+    const button = screen.getByRole("button", { name: "Connect existing Business App" });
     expect(button).toBeEnabled();
+    expect(screen.getByRole("list", { name: "Coexistence setup steps" })).toBeInTheDocument();
+    expect(screen.getByText("The QR code appears inside Meta’s secure flow")).toBeInTheDocument();
     fireEvent.click(button);
     await waitFor(() => expect(login).toHaveBeenCalled());
     window.dispatchEvent(new MessageEvent("message", {
@@ -131,14 +189,16 @@ describe("workspace setup experience", () => {
       progress: { ...setupData.progress, whatsappConnected: true, phoneNumberConnected: true, completedSteps: 3, percentage: 75 },
       whatsapp: {
         status: "CONNECTED" as const, accountCount: 1, phoneNumberCount: 1,
-        accounts: [{ id: "account-1", metaBusinessId: "business-1", metaWabaId: "waba-1", displayName: "Acme Business", status: "CONNECTED" as const, connectedAt: "2026-08-22T00:00:00.000Z", lastSyncedAt: "2026-08-22T00:00:00.000Z", lastError: null, phoneNumbers: [{ id: "phone-1", metaPhoneNumberId: "meta-phone-1", displayPhoneNumber: "+919876543210", verifiedName: "Acme", status: "ACTIVE" as const, qualityRating: "GREEN", messagingLimit: null, connectedAt: "2026-08-22T00:00:00.000Z", lastSyncedAt: "2026-08-22T00:00:00.000Z" }] }],
+      accounts: [{ id: "account-1", metaBusinessId: "business-1", metaWabaId: "waba-1", displayName: "Acme Business", status: "CONNECTED" as const, connectedAt: "2026-08-22T00:00:00.000Z", lastSyncedAt: "2026-08-22T00:00:00.000Z", lastError: null, phoneNumbers: [{ id: "phone-1", metaPhoneNumberId: "meta-phone-1", displayPhoneNumber: "+919876543210", verifiedName: "Acme", status: "ACTIVE" as const, qualityRating: "GREEN", messagingLimit: null, isOnBusinessApp: true, platformType: "CLOUD_API", connectedAt: "2026-08-22T00:00:00.000Z", lastSyncedAt: "2026-08-22T00:00:00.000Z" }] }],
       },
     };
     vi.mocked(apiRequest).mockReset().mockResolvedValue(connected);
     vi.stubGlobal("confirm", vi.fn(() => true));
     renderWithAuth(<WhatsAppAccountSetup />, "/whatsapp-account");
     expect(await screen.findByText("WhatsApp is connected")).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Continue with Meta" })).not.toBeInTheDocument();
+    expect(screen.getByText("Coexistence active")).toBeInTheDocument();
+    expect(screen.getByText("Phone app")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Connect existing Business App" })).not.toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Test recipient phone number"), { target: { value: "+919876543210" } });
     fireEvent.click(screen.getByRole("button", { name: "Send test" }));
     await waitFor(() => expect(apiRequest).toHaveBeenCalledWith("/workspaces/workspace-1/whatsapp/test-message", expect.objectContaining({ method: "POST", body: JSON.stringify({ to: "+919876543210" }) })));
