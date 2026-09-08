@@ -2,6 +2,7 @@ import type { Prisma } from "../../generated/prisma/client.js";
 import { prisma } from "../../database/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { sendWhatsAppConversationText } from "../whatsapp/whatsapp.service.js";
+import { publishInboxRefresh } from "../../realtime/inbox.js";
 import type { ConversationListQuery, CreateConversationInput, CreateMessageInput, InboxConversationListQuery } from "./conversation.schemas.js";
 
 const conversationSelect = {
@@ -121,7 +122,7 @@ export async function createMessage(workspaceId: string, contactId: string, conv
     metaMessageId = sent.metaMessageId;
     sentAt = sent.sentAt;
   }
-  return prisma.$transaction(async (transaction) => {
+  const result = await prisma.$transaction(async (transaction) => {
     if (metaMessageId) {
       const existing = await transaction.message.findUnique({ where: { workspaceId_metaMessageId: { workspaceId, metaMessageId } }, select: messageSelect });
       if (existing) return { message: existing, deduplicated: true };
@@ -140,6 +141,8 @@ export async function createMessage(workspaceId: string, contactId: string, conv
     await transaction.conversation.update({ where: { id: conversationId, workspaceId, contactId }, data: { lastMessagePreview: input.text ?? input.type, lastMessageAt: sentAt, ...(input.direction === "INCOMING" ? { unreadCount: { increment: 1 } } : {}) } });
     return { message, deduplicated: false };
   });
+  if (!result.deduplicated) publishInboxRefresh(workspaceId, conversationId);
+  return result;
 }
 
 export async function contactHistory(workspaceId: string, contactId: string, query: ConversationListQuery) {

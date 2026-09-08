@@ -3,6 +3,7 @@ import { Router, type Request, type Response } from "express";
 import type { Prisma } from "../../generated/prisma/client.js";
 import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
+import { publishInboxRefresh } from "../../realtime/inbox.js";
 import { prisma } from "../../database/prisma.js";
 import { runAutomationsForEvent } from "../automations/automation.executor.js";
 import { runWorkflowsForEvent } from "../workflows/workflow.executor.js";
@@ -343,7 +344,10 @@ async function processPayload(payload: WhatsAppWebhookPayload) {
         continue;
       }
       if (field === "message_echoes" || field === "smb_message_echoes") {
-        for (const echo of asArray(value.message_echoes) as WhatsAppMessage[]) await ingestMessageEcho(phoneNumber.businessAccount.workspaceId, phoneNumber.id, echo);
+        for (const echo of asArray(value.message_echoes) as WhatsAppMessage[]) {
+          const result = await ingestMessageEcho(phoneNumber.businessAccount.workspaceId, phoneNumber.id, echo);
+          if (result) publishInboxRefresh(phoneNumber.businessAccount.workspaceId, result.conversationId);
+        }
         continue;
       }
       if (field !== "messages") continue;
@@ -352,6 +356,7 @@ async function processPayload(payload: WhatsAppWebhookPayload) {
       for (const message of asArray(value.messages) as WhatsAppMessage[]) {
         const result = await ingestIncomingMessage(phoneNumber.businessAccount.workspaceId, phoneNumber.id, message, contactNames.get(asString(message.from)));
         if (result) {
+          publishInboxRefresh(phoneNumber.businessAccount.workspaceId, result.conversationId);
           try {
             await runAutomationsForEvent(phoneNumber.businessAccount.workspaceId, "MESSAGE_RECEIVED", {
               contactId: result.contactId,
@@ -372,6 +377,7 @@ async function processPayload(payload: WhatsAppWebhookPayload) {
         }
       }
       await ingestMessageStatuses(phoneNumber.businessAccount.workspaceId, asArray(value.statuses) as WhatsAppStatus[]);
+      if (asArray(value.statuses).length) publishInboxRefresh(phoneNumber.businessAccount.workspaceId);
     }
   }
 }

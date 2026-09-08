@@ -1,6 +1,6 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AuthContext, type AuthContextValue } from "@/contexts/AuthContext";
 import { apiRequest } from "@/lib/api";
 import { Inbox } from "@/pages/Inbox";
@@ -8,6 +8,7 @@ import { Inbox } from "@/pages/Inbox";
 vi.mock("@/lib/api", () => ({
   ApiError: class ApiError extends Error {},
   apiRequest: vi.fn(),
+  getWebSocketUrl: vi.fn(() => "ws://localhost:5006/api/v1/ws/inbox"),
 }));
 
 const inboxPermission = ["inbox.read", "conversations.reply", "whatsapp.manage"];
@@ -45,6 +46,11 @@ function renderPage(value = auth) {
 }
 
 describe("Inbox", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.unstubAllGlobals();
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(apiRequest).mockImplementation(async (path, options = {}) => {
@@ -111,6 +117,39 @@ describe("Inbox", () => {
     renderPage();
     fireEvent.click(await screen.findByRole("button", { name: "Sync now" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Meta did not allow message history synchronization.");
+  });
+
+  it("refreshes the inbox when a realtime event arrives", async () => {
+    class FakeWebSocket {
+      static instances: FakeWebSocket[] = [];
+      onopen: (() => void) | null = null;
+      onmessage: ((event: { data: string }) => void) | null = null;
+      onclose: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      constructor(public readonly url: string) { FakeWebSocket.instances.push(this); }
+      close() { this.onclose?.(); }
+    }
+    vi.stubGlobal("WebSocket", FakeWebSocket);
+    renderPage();
+    await screen.findByText("Can you share the pricing?");
+    const socket = FakeWebSocket.instances[0];
+    expect(socket).toBeDefined();
+    act(() => socket.onopen?.());
+    expect(screen.getByTestId("inbox-connection-status")).toHaveTextContent("Live");
+    const callsBeforeEvent = vi.mocked(apiRequest).mock.calls.length;
+    act(() => socket.onmessage?.({ data: JSON.stringify({ type: "inbox.refresh", workspaceId: "workspace-1" }) }));
+    await waitFor(() => expect(vi.mocked(apiRequest).mock.calls.length).toBeGreaterThan(callsBeforeEvent));
+  });
+
+  it("polls the inbox when realtime is unavailable", async () => {
+    vi.stubGlobal("WebSocket", undefined);
+    vi.useFakeTimers();
+    renderPage();
+    await act(async () => { await Promise.resolve(); });
+    expect(screen.getByTestId("inbox-connection-status")).toHaveTextContent("Polling");
+    const callsBeforePoll = vi.mocked(apiRequest).mock.calls.length;
+    act(() => vi.advanceTimersByTime(5_000));
+    expect(vi.mocked(apiRequest).mock.calls.length).toBeGreaterThan(callsBeforePoll);
   });
 
   it("protects the inbox from roles without inbox permission", () => {

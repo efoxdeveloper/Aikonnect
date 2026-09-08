@@ -28,7 +28,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { ApiError, apiRequest } from "@/lib/api";
+import { ApiError, apiRequest, getWebSocketUrl } from "@/lib/api";
 import { getActiveMembership } from "@/lib/workspace";
 import { cn } from "@/lib/utils";
 
@@ -134,21 +134,24 @@ export function Inbox() {
   const [error, setError] = useState("");
   const [messageError, setMessageError] = useState("");
   const [syncing, setSyncing] = useState(false);
+  const [realtimeConnected, setRealtimeConnected] = useState(false);
 
   const selected = useMemo(
     () => conversations.find((conversation) => conversation.id === selectedId) ?? null,
     [conversations, selectedId],
   );
 
-  const loadConversations = useCallback(async () => {
+  const loadConversations = useCallback(async (showLoading = true) => {
     if (!workspaceId || !accessToken || !canRead) {
       setConversations([]);
       setSelectedId(null);
       setLoading(false);
       return;
     }
-    setLoading(true);
-    setError("");
+    if (showLoading) {
+      setLoading(true);
+      setError("");
+    }
     const parameters = new URLSearchParams({ page: "1", pageSize: "100", search });
     if (channelFilter !== "all") parameters.set("channelKey", channelFilter);
     if (folder === "UNREAD") parameters.set("unreadOnly", "true");
@@ -165,7 +168,7 @@ export function Inbox() {
     } catch (caughtError) {
       setError(friendlyError(caughtError, "Unable to load your inbox."));
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
   }, [accessToken, canRead, channelFilter, folder, search, workspaceId]);
 
@@ -198,6 +201,49 @@ export function Inbox() {
       active = false;
     };
   }, [accessToken, selected, workspaceId]);
+
+  useEffect(() => {
+    if (!workspaceId || !accessToken || !canRead || typeof WebSocket === "undefined") return;
+    let stopped = false;
+    let retryTimer: number | undefined;
+    let socket: WebSocket | null = null;
+
+    const connect = () => {
+      if (stopped) return;
+      socket = new WebSocket(getWebSocketUrl("/ws/inbox", accessToken, { workspaceId }));
+      socket.onopen = () => {
+        if (!stopped) setRealtimeConnected(true);
+      };
+      socket.onmessage = (event) => {
+        try {
+          const payload = JSON.parse(String(event.data)) as { type?: string; workspaceId?: string };
+          if (payload.type === "inbox.refresh" && payload.workspaceId === workspaceId) void loadConversations(false);
+        } catch {
+          // Ignore malformed realtime payloads; polling remains the fallback.
+        }
+      };
+      socket.onclose = () => {
+        if (stopped) return;
+        setRealtimeConnected(false);
+        retryTimer = window.setTimeout(connect, 3_000);
+      };
+      socket.onerror = () => socket?.close();
+    };
+
+    connect();
+    return () => {
+      stopped = true;
+      if (retryTimer !== undefined) window.clearTimeout(retryTimer);
+      socket?.close();
+      setRealtimeConnected(false);
+    };
+  }, [accessToken, canRead, loadConversations, workspaceId]);
+
+  useEffect(() => {
+    if (!workspaceId || !accessToken || !canRead) return;
+    const interval = window.setInterval(() => void loadConversations(false), realtimeConnected ? 30_000 : 5_000);
+    return () => window.clearInterval(interval);
+  }, [accessToken, canRead, loadConversations, realtimeConnected, workspaceId]);
 
   const sendMessage = async (event: FormEvent) => {
     event.preventDefault();
@@ -281,7 +327,7 @@ export function Inbox() {
             <div className="mt-5 flex items-center justify-between border-t border-[var(--border-soft)] px-2 pt-4 text-[11px]"><span className="font-medium text-[var(--text-secondary)]">{conversations.length} Chats</span><span className="text-[var(--text-muted)]">{conversations.filter((item) => item.unreadCount > 0).length} Unread</span></div>
           </aside>
           <section className={cn("flex min-h-0 flex-col border-r border-[var(--border-soft)]", selected && "hidden lg:flex")} aria-label="Conversation list">
-            <div className="flex flex-none items-center justify-between border-b border-[var(--border-soft)] px-4 py-3"><div><h2 className="text-sm font-semibold text-[var(--text-primary)]">{activeFilter}</h2><div className="mt-0.5 text-[11px] text-[var(--text-muted)]">{loading ? "Loading..." : `${conversations.length} chats`}</div></div><button type="button" aria-label="Conversation options" className="text-[var(--text-secondary)]"><MoreHorizontal size={17} /></button></div>
+            <div className="flex flex-none items-center justify-between border-b border-[var(--border-soft)] px-4 py-3"><div><h2 className="text-sm font-semibold text-[var(--text-primary)]">{activeFilter}</h2><div className="mt-0.5 flex items-center gap-2 text-[11px] text-[var(--text-muted)]"><span>{loading ? "Loading..." : `${conversations.length} chats`}</span><span data-testid="inbox-connection-status" className={cn("inline-flex items-center gap-1", realtimeConnected ? "text-[#16845f]" : "text-[var(--text-muted)]")}><span className={cn("size-1.5 rounded-full", realtimeConnected ? "bg-[#16845f]" : "bg-[#a7adb4]")} />{realtimeConnected ? "Live" : "Polling"}</span></div></div><button type="button" aria-label="Conversation options" className="text-[var(--text-secondary)]"><MoreHorizontal size={17} /></button></div>
             <div className="flex-none border-b border-[var(--border-soft)] p-3"><div className="relative"><Search className="pointer-events-none absolute left-2.5 top-2.5 text-[var(--text-muted)]" size={15} /><input aria-label="Search conversations" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search conversations" className="h-9 w-full rounded-md border border-[var(--border-strong)] bg-white pl-8 pr-3 text-xs outline-none focus:border-[var(--brand-accent)] focus:ring-2 focus:ring-[var(--brand-accent)]/10" /></div></div>
             <div className="min-h-0 flex-1 overflow-y-auto">
               {error && <div role="alert" className="m-3 rounded-md border border-[#f5dada] bg-[var(--danger-soft)] p-3 text-xs text-[var(--danger)]">{error}</div>}

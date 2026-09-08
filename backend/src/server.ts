@@ -4,12 +4,14 @@ import { configureNetworkResolution } from "./config/network.js";
 import { env } from "./config/env.js";
 import { logger } from "./config/logger.js";
 import { checkDatabaseConnection, closeDatabaseConnection } from "./database/prisma.js";
+import { attachInboxRealtime } from "./realtime/inbox.js";
 
 // Meta advertises IPv6 and IPv4 endpoints. Some Windows hosts resolve IPv6 first
 // even when their IPv6 route is unavailable, causing fetch() to hang until timeout.
 configureNetworkResolution();
 
 const server = createServer(app);
+const realtime = attachInboxRealtime(server);
 let shuttingDown = false;
 
 async function startServer(): Promise<void> {
@@ -37,6 +39,7 @@ async function shutdown(signal: NodeJS.Signals): Promise<void> {
     process.exit(1);
   }, 10_000);
   forceShutdown.unref();
+  realtime.close();
 
   server.close(async (serverError) => {
     try {

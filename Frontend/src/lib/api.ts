@@ -2,6 +2,14 @@ import { beginRequest, endRequest } from "@/lib/request-events";
 
 const API_BASE_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:5006/api/v1").replace(/\/$/, "");
 
+export function getWebSocketUrl(path: string, accessToken: string, parameters: Record<string, string> = {}) {
+  const endpoint = new URL(`${API_BASE_URL}${path}`, window.location.origin);
+  endpoint.protocol = endpoint.protocol === "https:" ? "wss:" : "ws:";
+  endpoint.searchParams.set("token", accessToken);
+  Object.entries(parameters).forEach(([key, value]) => endpoint.searchParams.set(key, value));
+  return endpoint.toString();
+}
+
 type ApiEnvelope<T> = {
   success: boolean;
   data: T;
