@@ -38,11 +38,7 @@ export interface NavigationGroup { title: string; items: NavigationItem[]; }
 
 export const navigationGroups: NavigationGroup[] = [
   { title: "Main", items: [
-    { title: "Dashboard", url: "/dashboard", icon: House, children: [
-      { title: "Overview", url: "/dashboard", icon: House },
-      { title: "Analytics", url: "/dashboard/analytics", icon: ChartSpline },
-      { title: "Activity", url: "/dashboard/activity", icon: Activity },
-    ] },
+    { title: "Dashboard", url: "/dashboard", icon: House },
     { title: "Inbox", url: "/inbox", icon: MessageSquareText },
   ] },
   { title: "Marketing", items: [
