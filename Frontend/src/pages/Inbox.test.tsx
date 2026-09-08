@@ -103,6 +103,16 @@ describe("Inbox", () => {
     expect(syncButton).toBeEnabled();
   });
 
+  it("shows Meta sync warnings after a rejected sync request", async () => {
+    vi.mocked(apiRequest).mockImplementation(async (path) => {
+      if (String(path).includes("/whatsapp/sync")) return { syncRequestIds: [], syncWarnings: ["Meta did not allow message history synchronization."] } as never;
+      return { items: [], pagination: { page: 1, pageSize: 100, total: 0, totalPages: 1 } } as never;
+    });
+    renderPage();
+    fireEvent.click(await screen.findByRole("button", { name: "Sync now" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Meta did not allow message history synchronization.");
+  });
+
   it("protects the inbox from roles without inbox permission", () => {
     renderPage({ ...auth, user: auth.user && { ...auth.user, memberships: [{ ...auth.user.memberships[0], role: { ...auth.user.memberships[0].role, permissions: [] } }] } });
     expect(screen.getByRole("heading", { name: "Inbox access is restricted" })).toBeInTheDocument();

@@ -192,6 +192,13 @@ async function requestCoexistenceSync(phoneNumberId: string, accessToken: string
   return result.request_id;
 }
 
+function coexistenceSyncWarning(syncType: "history" | "smb_app_state_sync", error: unknown) {
+  const rawMessage = error instanceof Error ? error.message : "WhatsApp synchronization request failed.";
+  if (!/135000|generic user error/i.test(rawMessage)) return rawMessage;
+  const dataName = syncType === "history" ? "message history" : "contacts";
+  return `Meta did not allow ${dataName} synchronization. Grant sync permission in the WhatsApp Business App and verify the Meta webhook is publicly reachable. The WhatsApp connection is active.`;
+}
+
 async function requestWorkspaceCoexistenceSync(workspaceId: string) {
   const { encryptionKey } = requireMetaConfiguration();
   const account = await prisma.whatsAppBusinessAccount.findFirst({
@@ -227,7 +234,7 @@ async function requestWorkspaceCoexistenceSync(workspaceId: string) {
       try {
         syncRequestIds.push(await requestCoexistenceSync(phone.metaPhoneNumberId, accessToken, syncType));
       } catch (error) {
-        syncWarnings.push(error instanceof Error ? error.message : `WhatsApp ${syncType} synchronization failed.`);
+        syncWarnings.push(coexistenceSyncWarning(syncType, error));
       }
     }
   }
@@ -240,6 +247,43 @@ async function requestWorkspaceCoexistenceSync(workspaceId: string) {
 
 export async function syncWhatsApp(workspaceId: string) {
   return requestWorkspaceCoexistenceSync(workspaceId);
+}
+
+export async function sendWhatsAppConversationText(workspaceId: string, conversationId: string, body: string) {
+  const { encryptionKey } = requireMetaConfiguration();
+  const conversation = await prisma.conversation.findFirst({
+    where: { id: conversationId, workspaceId },
+    select: {
+      id: true,
+      contact: { select: { phoneE164: true } },
+      phoneNumber: {
+        select: {
+          metaPhoneNumberId: true,
+          status: true,
+          businessAccount: { select: { status: true, encryptedAccessToken: true } },
+        },
+      },
+    },
+  });
+  if (!conversation) throw new AppError(404, "Conversation was not found", "CONVERSATION_NOT_FOUND");
+  if (conversation.phoneNumber?.status !== "ACTIVE" || conversation.phoneNumber.businessAccount.status !== "CONNECTED" || !conversation.phoneNumber.businessAccount.encryptedAccessToken) {
+    throw new AppError(503, "Connect an active WhatsApp phone number before sending messages", "WHATSAPP_NOT_CONNECTED");
+  }
+  const to = conversation.contact.phoneE164.replace(/\D/g, "");
+  if (!to) throw new AppError(422, "The contact does not have a valid WhatsApp number", "CONTACT_PHONE_INVALID");
+  if (!body.trim()) throw new AppError(422, "Message text cannot be empty", "MESSAGE_TEXT_REQUIRED");
+
+  const accessToken = decryptSecret(conversation.phoneNumber.businessAccount.encryptedAccessToken, encryptionKey);
+  const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(conversation.phoneNumber.metaPhoneNumberId)}/messages`, accessToken, {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to,
+    type: "text",
+    text: { body },
+  }, "send_message");
+  const metaMessageId = sent.messages?.[0]?.id;
+  if (!metaMessageId) throw new AppError(502, "Meta accepted the message but did not return a message ID. Please try again.", "META_RESPONSE_INVALID", { stage: "send_message" });
+  return { metaMessageId, sentAt: new Date() };
 }
 
 /** Sends an automation reply and records it in the same conversation shown in Inbox. */
@@ -438,12 +482,6 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
   // https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/onboarding-business-app-users
   const syncRequestIds: string[] = [];
   const syncWarnings: string[] = [];
-  const syncWarningMessage = (syncType: "history" | "smb_app_state_sync", error: unknown) => {
-    const rawMessage = error instanceof Error ? error.message : "WhatsApp synchronization request failed.";
-    if (!/135000|generic user error/i.test(rawMessage)) return rawMessage;
-    const dataName = syncType === "history" ? "message history" : "contacts";
-    return `Meta did not allow ${dataName} synchronization. This can happen when sync permission was not granted in WhatsApp Business or Meta has not finished preparing the number. The WhatsApp connection is active; check Meta webhook/sync configuration.`;
-  };
   let subscribed = false;
   try {
     await subscribeAppToWaba(input.wabaId, accessToken);
@@ -457,7 +495,7 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
       try {
         syncRequestIds.push(await requestCoexistenceSync(metaPhoneNumberId, accessToken, syncType));
       } catch (error) {
-        syncWarnings.push(syncWarningMessage(syncType, error));
+        syncWarnings.push(coexistenceSyncWarning(syncType, error));
       }
     }
   }

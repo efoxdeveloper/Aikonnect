@@ -310,7 +310,7 @@ test("contacts support workspace isolation, indexed filters, pagination, imports
   const otherWorkspaceContactId = ((await sameIdentityOtherWorkspace.json()) as { data: { id: string } }).data.id;
 
   const conversationResponse = await fetch(`${endpoint}/${contactIds[0]}/conversations`, {
-    method: "POST", headers, body: JSON.stringify({ channelKey: "whatsapp" }),
+    method: "POST", headers, body: JSON.stringify({ channelKey: "manual" }),
   });
   assert.equal(conversationResponse.status, 201);
   const conversationBody = (await conversationResponse.json()) as { data: { id: string; workspaceId: string; contactId: string } };

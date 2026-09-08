@@ -57,6 +57,7 @@ type PageResponse<T> = {
   items: T[];
   pagination: { page: number; pageSize: number; total: number; totalPages: number };
 };
+type SyncResponse = { syncRequestIds: string[]; syncWarnings: string[] };
 
 const channels: Array<{ label: string; value: ChannelFilter; icon: LucideIcon }> = [
   { label: "All Channels", value: "all", icon: InboxIcon },
@@ -227,11 +228,12 @@ export function Inbox() {
     setSyncing(true);
     setError("");
     try {
-      await apiRequest(`/workspaces/${workspaceId}/whatsapp/sync`, {
+      const result = await apiRequest<SyncResponse>(`/workspaces/${workspaceId}/whatsapp/sync`, {
         method: "POST",
         headers: { authorization: `Bearer ${accessToken}` },
       });
       await loadConversations();
+      if (result.syncWarnings.length) setError(result.syncWarnings.join(" "));
     } catch (caughtError) {
       setError(friendlyError(caughtError, "Unable to sync WhatsApp conversations."));
     } finally {

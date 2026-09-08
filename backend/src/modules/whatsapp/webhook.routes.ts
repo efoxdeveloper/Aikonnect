@@ -342,7 +342,7 @@ async function processPayload(payload: WhatsAppWebhookPayload) {
         logger.warn({ wabaId, phoneNumberId }, "Ignoring WhatsApp webhook for an unlinked phone number");
         continue;
       }
-      if (field === "smb_message_echoes") {
+      if (field === "message_echoes" || field === "smb_message_echoes") {
         for (const echo of asArray(value.message_echoes) as WhatsAppMessage[]) await ingestMessageEcho(phoneNumber.businessAccount.workspaceId, phoneNumber.id, echo);
         continue;
       }

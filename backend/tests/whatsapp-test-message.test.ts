@@ -10,6 +10,7 @@ Object.assign(process.env, {
   META_GRAPH_API_VERSION: "v25.0", LOG_LEVEL: "silent",
 });
 const { sendTestMessage, disconnectWhatsApp } = await import("../src/modules/whatsapp/whatsapp.service.js");
+const { createMessage } = await import("../src/modules/conversations/conversation.service.js");
 const { prisma } = await import("../src/database/prisma.js");
 const { AppError } = await import("../src/middleware/error-handler.js");
 const { testMessageSchema } = await import("../src/modules/whatsapp/whatsapp.schemas.js");
@@ -64,6 +65,54 @@ test("disconnect removes workspace credentials and marks numbers inactive", asyn
   assert.equal(calls[1][0], "account"); assert.equal(calls[1][1].data.encryptedAccessToken, null);
   assert.equal(calls[2][0], "progress"); assert.equal(calls[2][1].data.testMessageSentAt, null);
   assert.match(result.message, /fully disconnect.*WhatsApp Business/i);
+});
+
+test("conversation replies are sent through Meta before being saved", async (t) => {
+  const { encryptSecret } = await import("../src/utils/crypto.js");
+  const encryptedAccessToken = encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars");
+  const sentAt = new Date("2026-09-08T06:00:00.000Z");
+  const conversation = {
+    id: "conversation",
+    workspaceId: "workspace",
+    contactId: "contact",
+    phoneNumberId: "phone",
+    channelKey: "whatsapp",
+    contact: { phoneE164: "+919876543210" },
+    phoneNumber: { metaPhoneNumberId: "meta-phone", status: "ACTIVE", businessAccount: { status: "CONNECTED", encryptedAccessToken } },
+  };
+  let created = 0;
+  stub(t, prisma.conversation, "findFirst", async () => conversation);
+  stub(t, prisma.message, "findUnique", async () => null);
+  stub(t, prisma.message, "create", async (args: any) => { created += 1; return { id: "message", ...args.data, createdAt: sentAt, updatedAt: sentAt, deliveredAt: null, readAt: null, failedAt: null, failureReason: null }; });
+  stub(t, prisma.conversation, "update", async () => ({}));
+  stub(t, prisma, "$transaction", async (callback: (client: any) => Promise<unknown>) => callback(prisma));
+  stub(t, globalThis, "fetch", async (input: string | URL, init?: RequestInit) => {
+    assert.match(String(input), /\/v25\.0\/meta-phone\/messages$/);
+    assert.equal((init?.headers as Record<string, string>).authorization, "Bearer business-token");
+    assert.deepEqual(JSON.parse(String(init?.body)), { messaging_product: "whatsapp", recipient_type: "individual", to: "919876543210", type: "text", text: { body: "Hello from Inbox" } });
+    return new Response(JSON.stringify({ messages: [{ id: "wamid.reply" }] }), { status: 200 });
+  });
+
+  const result = await createMessage("workspace", "contact", "conversation", "user", { direction: "OUTGOING", type: "TEXT", status: "SENT", text: "Hello from Inbox", payload: {} });
+  assert.equal(result.message.metaMessageId, "wamid.reply");
+  assert.equal(created, 1);
+});
+
+test("a rejected Meta reply is not saved locally", async (t) => {
+  const { encryptSecret } = await import("../src/utils/crypto.js");
+  stub(t, prisma.conversation, "findFirst", async () => ({
+    id: "conversation", workspaceId: "workspace", contactId: "contact", phoneNumberId: "phone", channelKey: "whatsapp",
+    contact: { phoneE164: "+919876543210" },
+    phoneNumber: { metaPhoneNumberId: "meta-phone", status: "ACTIVE", businessAccount: { status: "CONNECTED", encryptedAccessToken: encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars") } },
+  }));
+  let created = 0;
+  stub(t, prisma.message, "create", async () => { created += 1; return {}; });
+  stub(t, globalThis, "fetch", async () => new Response(JSON.stringify({ error: { message: "(#131047) Re-engagement message" } }), { status: 400 }));
+  await assert.rejects(
+    createMessage("workspace", "contact", "conversation", "user", { direction: "OUTGOING", type: "TEXT", status: "SENT", text: "Hello from Inbox", payload: {} }),
+    (error: unknown) => { assert.ok(error instanceof AppError); assert.equal(error.statusCode, 502); assert.match(error.message, /Meta rejected.*sending the WhatsApp message/i); return true; },
+  );
+  assert.equal(created, 0);
 });
 
 test("test recipient validation requires an E.164 number", () => {

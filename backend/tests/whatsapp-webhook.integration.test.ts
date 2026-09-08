@@ -106,6 +106,7 @@ test("ingests coexistence contact state and outbound message echoes", async () =
     entry: [{ id: account.metaWabaId, changes: [
       { field: "smb_app_state_sync", value: { metadata: { phone_number_id: phoneNumber.metaPhoneNumberId }, state_sync: [{ type: "contact", action: "add", contact: { full_name: "Coex Customer", phone_number: "919812345678" } }] } },
       { field: "smb_message_echoes", value: { metadata: { phone_number_id: phoneNumber.metaPhoneNumberId }, message_echoes: [{ to: "919812345678", id: `echo-${suffix}`, timestamp: "1750000000", type: "text", text: { body: "Sent from WhatsApp Business App" } }] } },
+      { field: "message_echoes", value: { metadata: { phone_number_id: phoneNumber.metaPhoneNumberId }, message_echoes: [{ to: "919812345678", id: `message-echo-${suffix}`, timestamp: "1750000001", type: "text", text: { body: "Sent from WhatsApp Business App (message echo)" } }] } },
       { field: "history", value: { metadata: { phone_number_id: phoneNumber.metaPhoneNumberId }, history: [{ metadata: { phase: 0, chunk_order: 1, progress: 100 }, threads: [{ id: "919812345678", messages: [{ from: "919812345678", id: `history-${suffix}`, timestamp: "1740000000", type: "text", text: { body: "Earlier conversation" } }] }] }] } },
     ] }],
   };
@@ -118,6 +119,9 @@ test("ingests coexistence contact state and outbound message echoes", async () =
   const echo = await prisma.message.findFirstOrThrow({ where: { workspaceId, metaMessageId: `echo-${suffix}` } });
   assert.equal(echo.direction, "OUTGOING");
   assert.equal(echo.text, "Sent from WhatsApp Business App");
+  const messageEcho = await prisma.message.findFirstOrThrow({ where: { workspaceId, metaMessageId: `message-echo-${suffix}` } });
+  assert.equal(messageEcho.direction, "OUTGOING");
+  assert.equal(messageEcho.text, "Sent from WhatsApp Business App (message echo)");
   const historyMessage = await prisma.message.findFirstOrThrow({ where: { workspaceId, metaMessageId: `history-${suffix}` } });
   assert.equal(historyMessage.direction, "INCOMING");
   assert.equal(historyMessage.text, "Earlier conversation");

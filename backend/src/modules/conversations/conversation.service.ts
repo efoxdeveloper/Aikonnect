@@ -1,6 +1,7 @@
 import type { Prisma } from "../../generated/prisma/client.js";
 import { prisma } from "../../database/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
+import { sendWhatsAppConversationText } from "../whatsapp/whatsapp.service.js";
 import type { ConversationListQuery, CreateConversationInput, CreateMessageInput, InboxConversationListQuery } from "./conversation.schemas.js";
 
 const conversationSelect = {
@@ -111,16 +112,23 @@ export async function listMessages(workspaceId: string, contactId: string, conve
 }
 
 export async function createMessage(workspaceId: string, contactId: string, conversationId: string, actorUserId: string, input: CreateMessageInput) {
-  await requireConversation(workspaceId, contactId, conversationId);
-  const sentAt = input.sentAt ? new Date(input.sentAt) : new Date();
+  const conversation = await requireConversation(workspaceId, contactId, conversationId);
+  let sentAt = input.sentAt ? new Date(input.sentAt) : new Date();
+  let metaMessageId = input.metaMessageId;
+  if (input.direction === "OUTGOING" && input.type === "TEXT" && conversation.channelKey === "whatsapp") {
+    if (typeof input.text !== "string" || !input.text.trim()) throw new AppError(422, "Message text cannot be empty", "MESSAGE_TEXT_REQUIRED");
+    const sent = await sendWhatsAppConversationText(workspaceId, conversationId, input.text);
+    metaMessageId = sent.metaMessageId;
+    sentAt = sent.sentAt;
+  }
   return prisma.$transaction(async (transaction) => {
-    if (input.metaMessageId) {
-      const existing = await transaction.message.findUnique({ where: { workspaceId_metaMessageId: { workspaceId, metaMessageId: input.metaMessageId } }, select: messageSelect });
+    if (metaMessageId) {
+      const existing = await transaction.message.findUnique({ where: { workspaceId_metaMessageId: { workspaceId, metaMessageId } }, select: messageSelect });
       if (existing) return { message: existing, deduplicated: true };
     }
     const message = await transaction.message.create({
       data: {
-        workspaceId, contactId, conversationId, metaMessageId: input.metaMessageId, direction: input.direction, type: input.type,
+        workspaceId, contactId, conversationId, metaMessageId, direction: input.direction, type: input.type,
         status: input.status, text: input.text, mediaId: input.mediaId, mediaUrl: input.mediaUrl, payload: input.payload as Prisma.InputJsonValue,
         sentAt, createdById: actorUserId,
         ...(input.status === "DELIVERED" ? { deliveredAt: sentAt } : {}),
