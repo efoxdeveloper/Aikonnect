@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ApiError } from "@/lib/api";
 import { getPasswordValidationError, toRegistrationRequest, type RegistrationFormData } from "@/pages/register.utils";
 import { AuthMark, AuthShell } from "@/components/auth/AuthShell";
+import { GoogleButton } from "@/components/auth/GoogleButton";
 import { authTextFieldSx } from "@/components/auth/auth-text-field";
 
 type RegistrationData = RegistrationFormData;
@@ -112,6 +113,8 @@ export function Register() {
           <h1 id="register-title" className="mt-4 text-[23px] font-semibold leading-tight tracking-[-0.035em] text-[var(--text-primary)]">Create your account</h1>
           <div className="mt-2 text-[13px] text-[var(--text-secondary)]">{step === 1 ? "Tell us who you are to get started." : "Now tell us a little about your business."}</div>
         </div>
+
+        {step === 1 && <div className="mt-5"><GoogleButton label="Sign up with Google" /><div className="my-5 flex items-center gap-3" aria-hidden="true"><span className="h-px flex-1 bg-[var(--border-soft)]" /><span className="text-[10px] text-[var(--text-muted)]">Or continue with email</span><span className="h-px flex-1 bg-[var(--border-soft)]" /></div></div>}
 
         <div className="mx-auto mt-5 flex max-w-[310px] items-center" aria-label={`Registration step ${step} of 2`}>
           <div className="flex items-center gap-2">

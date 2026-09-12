@@ -25,6 +25,8 @@ const credentialRateLimit = rateLimit({
 
 authRouter.post("/register", credentialRateLimit, validateBody(registerSchema), asyncHandler(controller.register));
 authRouter.post("/login", credentialRateLimit, validateBody(loginSchema), asyncHandler(controller.login));
+authRouter.get("/google", asyncHandler(controller.googleStart));
+authRouter.get("/google/callback", asyncHandler(controller.googleCallback));
 authRouter.post("/refresh", asyncHandler(controller.refresh));
 authRouter.post("/logout", asyncHandler(controller.logout));
 authRouter.post("/forgot-password", credentialRateLimit, validateBody(forgotPasswordSchema), asyncHandler(controller.forgotPassword));

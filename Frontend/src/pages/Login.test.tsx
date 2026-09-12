@@ -34,6 +34,7 @@ describe("Login", () => {
     );
 
     expect(screen.getByTestId("auth-shell")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Login with Google" })).toBeInTheDocument();
     expect(screen.getByLabelText("Email")).toBeRequired();
     expect(screen.getByLabelText("Password")).toBeRequired();
     fireEvent.change(screen.getByLabelText("Email"), { target: { value: "owner@example.com" } });
@@ -52,6 +53,18 @@ describe("Login", () => {
     fireEvent.click(screen.getByRole("button", { name: "Show password" }));
     expect(password).toHaveAttribute("type", "text");
     expect(screen.getByRole("button", { name: "Hide password" })).toBeInTheDocument();
+  });
+
+  it("explains when Google needs an existing password account to be linked", () => {
+    render(
+      <AuthContext.Provider value={authValue()}>
+        <MemoryRouter initialEntries={["/login?google_error=GOOGLE_ACCOUNT_LINK_REQUIRED"]}>
+          <Login />
+        </MemoryRouter>
+      </AuthContext.Provider>,
+    );
+
+    expect(screen.getByRole("alert")).toHaveTextContent("Log in with your password instead");
   });
 
   it("keeps the sign-in button emerald while submitting", () => {

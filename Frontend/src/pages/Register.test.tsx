@@ -28,6 +28,7 @@ describe("registration password visibility", () => {
     );
 
     expect(screen.getByTestId("auth-shell")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Sign up with Google" })).toBeInTheDocument();
     const password = screen.getByLabelText("Password");
     const confirmation = screen.getByLabelText("Confirm password");
     expect(password).toHaveAttribute("type", "password");

@@ -3,6 +3,8 @@ import type { Server } from "node:http";
 import { after, before, test } from "node:test";
 import { app } from "../src/app.js";
 import { prisma } from "../src/database/prisma.js";
+import { loginWithGoogle } from "../src/modules/auth/auth.service.js";
+import { AppError } from "../src/middleware/error-handler.js";
 
 let server: Server;
 let baseUrl: string;
@@ -44,6 +46,41 @@ test("protected workspace routes reject anonymous requests", async () => {
   assert.equal(response.status, 401);
   const body = (await response.json()) as { error: { code: string } };
   assert.equal(body.error.code, "AUTHENTICATION_REQUIRED");
+});
+
+test("Google signup creates a verified user, linked identity, workspace, and reusable session", async () => {
+  const email = `google-integration-${Date.now()}@gmail.com`;
+  createdEmails.push(email);
+  const identity = {
+    providerAccountId: `google-${Date.now()}`,
+    email,
+    firstName: "Google",
+    lastName: "Integration",
+  };
+
+  const firstLogin = await loginWithGoogle(identity, { ipAddress: "127.0.0.1", userAgent: "google-test" });
+  assert.equal(firstLogin.user.email, email);
+  assert.ok(firstLogin.user.emailVerifiedAt);
+  assert.ok(firstLogin.workspace?.id);
+  assert.ok(firstLogin.accessToken);
+
+  const linked = await prisma.oAuthAccount.findUnique({ where: { provider_providerAccountId: { provider: "google", providerAccountId: identity.providerAccountId } } });
+  assert.equal(linked?.userId, firstLogin.user.id);
+
+  const secondLogin = await loginWithGoogle(identity, { userAgent: "google-test-repeat" });
+  assert.equal(secondLogin.user.id, firstLogin.user.id);
+  assert.notEqual(secondLogin.accessToken, firstLogin.accessToken);
+
+  const passwordEmail = `google-existing-${Date.now()}@example.com`;
+  createdEmails.push(passwordEmail);
+  const existingUser = await prisma.user.create({
+    data: { email: passwordEmail, passwordHash: "not-used-in-this-test", firstName: "Existing", lastName: "User" },
+  });
+  await assert.rejects(
+    () => loginWithGoogle({ ...identity, providerAccountId: `${identity.providerAccountId}-existing`, email: passwordEmail }, {}),
+    (error: unknown) => error instanceof AppError && error.code === "GOOGLE_ACCOUNT_LINK_REQUIRED",
+  );
+  assert.equal((await prisma.user.findUnique({ where: { id: existingUser.id }, select: { id: true } }))?.id, existingUser.id);
 });
 
 test("automation routes reject anonymous requests", async () => {

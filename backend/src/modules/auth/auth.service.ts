@@ -8,6 +8,7 @@ import { generateSecureToken, hashPassword, hashToken, verifyPassword } from "..
 import { signAccessToken } from "../../utils/tokens.js";
 import { sendPasswordResetEmail, sendVerificationEmail } from "../../services/email.service.js";
 import type { ChangeEmailInput, ChangePasswordInput, LoginInput, RegisterInput, ResetPasswordInput } from "./auth.schemas.js";
+import type { GoogleIdentity } from "./google-oauth.service.js";
 
 type SessionMetadata = { ipAddress?: string; userAgent?: string };
 
@@ -157,6 +158,64 @@ export async function login(input: LoginInput, metadata: SessionMetadata) {
   }
   const session = await createSession(user.id, metadata);
   return { user, ...session };
+}
+
+export async function loginWithGoogle(identity: GoogleIdentity, metadata: SessionMetadata) {
+  const linkedAccount = await prisma.oAuthAccount.findUnique({
+    where: { provider_providerAccountId: { provider: "google", providerAccountId: identity.providerAccountId } },
+    include: { user: true },
+  });
+
+  if (linkedAccount) {
+    if (linkedAccount.user.status !== "ACTIVE") {
+      throw new AppError(403, "This account is not active", "ACCOUNT_INACTIVE");
+    }
+    const user = await prisma.user.update({
+      where: { id: linkedAccount.userId },
+      data: { lastLoginAt: new Date() },
+      select: publicUserSelect,
+    });
+    await prisma.$transaction((transaction) => acceptPendingInvitations(transaction, user.id, user.email));
+    const session = await createSession(user.id, metadata);
+    return { user, ...session };
+  }
+
+  const existingEmail = await prisma.user.findUnique({ where: { email: identity.email }, select: { id: true } });
+  if (existingEmail) {
+    throw new AppError(409, "An account with this email already exists. Sign in with your password instead.", "GOOGLE_ACCOUNT_LINK_REQUIRED");
+  }
+
+  // Google-only accounts cannot authenticate with a password until they set one through password recovery.
+  const unusablePasswordHash = await hashPassword(generateSecureToken(48));
+  const result = await prisma.$transaction(async (transaction) => {
+    const user = await transaction.user.create({
+      data: {
+        email: identity.email,
+        passwordHash: unusablePasswordHash,
+        firstName: identity.firstName,
+        lastName: identity.lastName,
+        emailVerifiedAt: new Date(),
+      },
+      select: publicUserSelect,
+    });
+    const invitation = await transaction.workspaceInvitation.findFirst({
+      where: { email: identity.email, status: "PENDING", expiresAt: { gt: new Date() } },
+      select: { id: true },
+    });
+    const workspace = invitation
+      ? null
+      : (await createWorkspaceWithDefaults(transaction, user.id, {
+          name: `${identity.firstName}'s Workspace`,
+          companyName: `${identity.firstName}'s Workspace`,
+        })).workspace;
+    await transaction.oAuthAccount.create({
+      data: { userId: user.id, provider: "google", providerAccountId: identity.providerAccountId },
+    });
+    await acceptPendingInvitations(transaction, user.id, user.email);
+    return { user, workspace };
+  });
+  const session = await createSession(result.user.id, metadata);
+  return { ...result, ...session };
 }
 
 export async function refreshSession(refreshToken: string | undefined) {
