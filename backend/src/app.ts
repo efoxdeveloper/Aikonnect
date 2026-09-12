@@ -3,12 +3,12 @@ import compression from "compression";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import type { Request } from "express";
 import { pinoHttp } from "pino-http";
 import { corsOrigins, env } from "./config/env.js";
 import { logger } from "./config/logger.js";
+import { createRateLimiter } from "./config/rate-limit.js";
 import { errorHandler, notFoundHandler } from "./middleware/error-handler.js";
 import { whatsappWebhookRouter } from "./modules/whatsapp/webhook.routes.js";
 import { apiRouter } from "./routes/index.js";
@@ -67,14 +67,7 @@ app.use(
   }),
 );
 app.use(express.urlencoded({ extended: true, limit: "1mb" }));
-app.use(
-  rateLimit({
-    windowMs: env.RATE_LIMIT_WINDOW_MS,
-    limit: env.RATE_LIMIT_MAX,
-    standardHeaders: "draft-8",
-    legacyHeaders: false,
-  }),
-);
+app.use(createRateLimiter({ windowMs: env.RATE_LIMIT_WINDOW_MS, limit: env.RATE_LIMIT_MAX }));
 
 app.get("/", (_request, response) => {
   response.status(200).json({

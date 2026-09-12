@@ -1,8 +1,9 @@
 import { Router } from "express";
-import rateLimit from "express-rate-limit";
 import { authenticate } from "../../middleware/authenticate.js";
 import { asyncHandler } from "../../middleware/async-handler.js";
 import { validateBody } from "../../middleware/validate.js";
+import { env } from "../../config/env.js";
+import { createRateLimiter } from "../../config/rate-limit.js";
 import * as controller from "./auth.controller.js";
 import {
   changePasswordSchema,
@@ -16,12 +17,7 @@ import {
 
 export const authRouter = Router();
 
-const credentialRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 10,
-  standardHeaders: "draft-8",
-  legacyHeaders: false,
-});
+const credentialRateLimit = createRateLimiter({ windowMs: env.RATE_LIMIT_WINDOW_MS, limit: env.RATE_LIMIT_MAX });
 
 authRouter.post("/register", credentialRateLimit, validateBody(registerSchema), asyncHandler(controller.register));
 authRouter.post("/login", credentialRateLimit, validateBody(loginSchema), asyncHandler(controller.login));

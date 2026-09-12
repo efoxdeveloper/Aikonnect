@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { z } from "zod";
+import { defaultRateLimitConfig } from "./rate-limit.js";
 
 const booleanFromString = z
   .enum(["true", "false"])
@@ -14,8 +15,8 @@ const envSchema = z.object({
   CORS_ORIGIN: z.string().default("http://localhost:5173"),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
   TRUST_PROXY: booleanFromString,
-  RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(900_000),
-  RATE_LIMIT_MAX: z.coerce.number().int().positive().default(100),
+  RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(defaultRateLimitConfig.windowMs),
+  RATE_LIMIT_MAX: z.coerce.number().int().positive().default(defaultRateLimitConfig.limit),
   APP_URL: z.url(),
   ACCESS_TOKEN_SECRET: z.string().min(32),
   ACCESS_TOKEN_TTL_MINUTES: z.coerce.number().int().positive().default(15),
