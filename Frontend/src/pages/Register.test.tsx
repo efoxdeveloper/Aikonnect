@@ -65,5 +65,6 @@ describe("registration password visibility", () => {
     expect(phone).toHaveAttribute("type", "tel");
     expect(phone).toBeRequired();
     expect(screen.getByText("+91")).toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: "Industry" })).toBeInTheDocument();
   });
 });

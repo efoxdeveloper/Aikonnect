@@ -157,6 +157,7 @@ const defaultRoles: Array<{
 type WorkspaceDetails = {
   name: string;
   companyName?: string;
+  industry?: string;
   companyWebsite?: string;
   companyLocation?: string;
   annualRevenue?: string;
@@ -202,6 +203,7 @@ export async function createWorkspaceWithDefaults(
       name: details.name,
       slug,
       companyName: details.companyName,
+      industry: details.industry,
       companyWebsite: details.companyWebsite,
       companyLocation: details.companyLocation,
       annualRevenue: details.annualRevenue,

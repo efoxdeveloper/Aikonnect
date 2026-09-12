@@ -15,6 +15,19 @@ import { authTextFieldSx } from "@/components/auth/auth-text-field";
 
 type RegistrationData = RegistrationFormData;
 
+const industryOptions = [
+  ["ecommerce", "E-commerce"],
+  ["education", "Education"],
+  ["financial-services", "Financial services"],
+  ["healthcare", "Healthcare"],
+  ["real-estate", "Real estate"],
+  ["retail", "Retail"],
+  ["technology", "Technology"],
+  ["travel-hospitality", "Travel & hospitality"],
+  ["professional-services", "Professional services"],
+  ["other", "Other"],
+] as const;
+
 type RegistrationFieldProps = {
   id: keyof RegistrationData;
   label: string;
@@ -56,6 +69,7 @@ const initialData: RegistrationData = {
   lastName: "",
   phone: "",
   companyName: "",
+  industry: "",
   companyWebsite: "",
   companyLocation: "",
   annualRevenue: "",
@@ -157,23 +171,36 @@ export function Register() {
                 <RegistrationField id="companyWebsite" label="Company website" value={data.companyWebsite} onChange={updateField} type="url" autoComplete="url" />
                 <RegistrationField id="companyLocation" label="Company location" value={data.companyLocation} onChange={updateField} autoComplete="address-level2" />
               </div>
-              <div>
-                <label htmlFor="annualRevenue" className="mb-2 block text-sm font-semibold text-[var(--text-primary)]">Annual revenue</label>
-                <Select required value={data.annualRevenue} onValueChange={(value) => updateField("annualRevenue", value)}>
-                  <SelectTrigger id="annualRevenue" aria-label="Annual revenue" onMouseEnter={revenueIcon.onMouseEnter} onMouseLeave={revenueIcon.onMouseLeave} onFocus={revenueIcon.onMouseEnter} onBlur={revenueIcon.onMouseLeave} className="group/input h-12 border-[var(--border-strong)] px-3.5 shadow-[0_1px_2px_rgba(4,45,29,.03)] focus:shadow-[0_0_0_3px_rgba(21,150,106,.12)]">
-                    <span className="flex min-w-0 items-center">
-                      <IndianRupee ref={revenueIcon.ref} size={17} duration={0.7} className="mr-2.5 shrink-0 text-[var(--text-muted)] transition-colors group-focus/input:text-[var(--brand)]" aria-hidden="true" />
-                      <SelectValue placeholder="Select a revenue range" />
-                    </span>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="under-50-lakh">Under ₹50 lakh</SelectItem>
-                    <SelectItem value="50-lakh-1-crore">₹50 lakh – ₹1 crore</SelectItem>
-                    <SelectItem value="1-5-crore">₹1 crore – ₹5 crore</SelectItem>
-                    <SelectItem value="5-25-crore">₹5 crore – ₹25 crore</SelectItem>
-                    <SelectItem value="25-crore-plus">₹25 crore and above</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="industry" className="mb-2 block text-sm font-semibold text-[var(--text-primary)]">Industry</label>
+                  <Select value={data.industry} onValueChange={(value) => updateField("industry", value)}>
+                    <SelectTrigger id="industry" aria-label="Industry" className="h-12 border-[var(--border-strong)] px-3.5 shadow-[0_1px_2px_rgba(4,45,29,.03)] focus:shadow-[0_0_0_3px_rgba(21,150,106,.12)]">
+                      <SelectValue placeholder="Select your industry" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {industryOptions.map(([value, label]) => <SelectItem key={value} value={value}>{label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label htmlFor="annualRevenue" className="mb-2 block text-sm font-semibold text-[var(--text-primary)]">Annual revenue</label>
+                  <Select required value={data.annualRevenue} onValueChange={(value) => updateField("annualRevenue", value)}>
+                    <SelectTrigger id="annualRevenue" aria-label="Annual revenue" onMouseEnter={revenueIcon.onMouseEnter} onMouseLeave={revenueIcon.onMouseLeave} onFocus={revenueIcon.onMouseEnter} onBlur={revenueIcon.onMouseLeave} className="group/input h-12 border-[var(--border-strong)] px-3.5 shadow-[0_1px_2px_rgba(4,45,29,.03)] focus:shadow-[0_0_0_3px_rgba(21,150,106,.12)]">
+                      <span className="flex min-w-0 items-center">
+                        <IndianRupee ref={revenueIcon.ref} size={17} duration={0.7} className="mr-2.5 shrink-0 text-[var(--text-muted)] transition-colors group-focus/input:text-[var(--brand)]" aria-hidden="true" />
+                        <SelectValue placeholder="Select a revenue range" />
+                      </span>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="under-50-lakh">Under ₹50 lakh</SelectItem>
+                      <SelectItem value="50-lakh-1-crore">₹50 lakh – ₹1 crore</SelectItem>
+                      <SelectItem value="1-5-crore">₹1 crore – ₹5 crore</SelectItem>
+                      <SelectItem value="5-25-crore">₹5 crore – ₹25 crore</SelectItem>
+                      <SelectItem value="25-crore-plus">₹25 crore and above</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               {error && <p role="alert" className="rounded-md bg-[var(--danger-soft)] px-3 py-2.5 text-center">{error}</p>}
               <div className="grid grid-cols-[112px_1fr] gap-3">

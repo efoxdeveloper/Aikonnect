@@ -34,6 +34,7 @@ export type RegisterRequest = {
   lastName: string;
   phone: string;
   companyName: string;
+  industry?: string;
   companyWebsite?: string;
   companyLocation: string;
   annualRevenue: string;

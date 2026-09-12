@@ -29,6 +29,7 @@ export type WorkspaceMinAggregateOutputType = {
   name: string | null
   slug: string | null
   companyName: string | null
+  industry: string | null
   companyWebsite: string | null
   companyLocation: string | null
   annualRevenue: string | null
@@ -46,6 +47,7 @@ export type WorkspaceMaxAggregateOutputType = {
   name: string | null
   slug: string | null
   companyName: string | null
+  industry: string | null
   companyWebsite: string | null
   companyLocation: string | null
   annualRevenue: string | null
@@ -63,6 +65,7 @@ export type WorkspaceCountAggregateOutputType = {
   name: number
   slug: number
   companyName: number
+  industry: number
   companyWebsite: number
   companyLocation: number
   annualRevenue: number
@@ -82,6 +85,7 @@ export type WorkspaceMinAggregateInputType = {
   name?: true
   slug?: true
   companyName?: true
+  industry?: true
   companyWebsite?: true
   companyLocation?: true
   annualRevenue?: true
@@ -99,6 +103,7 @@ export type WorkspaceMaxAggregateInputType = {
   name?: true
   slug?: true
   companyName?: true
+  industry?: true
   companyWebsite?: true
   companyLocation?: true
   annualRevenue?: true
@@ -116,6 +121,7 @@ export type WorkspaceCountAggregateInputType = {
   name?: true
   slug?: true
   companyName?: true
+  industry?: true
   companyWebsite?: true
   companyLocation?: true
   annualRevenue?: true
@@ -206,6 +212,7 @@ export type WorkspaceGroupByOutputType = {
   name: string
   slug: string
   companyName: string | null
+  industry: string | null
   companyWebsite: string | null
   companyLocation: string | null
   annualRevenue: string | null
@@ -244,6 +251,7 @@ export type WorkspaceWhereInput = {
   name?: Prisma.StringFilter<"Workspace"> | string
   slug?: Prisma.StringFilter<"Workspace"> | string
   companyName?: Prisma.StringNullableFilter<"Workspace"> | string | null
+  industry?: Prisma.StringNullableFilter<"Workspace"> | string | null
   companyWebsite?: Prisma.StringNullableFilter<"Workspace"> | string | null
   companyLocation?: Prisma.StringNullableFilter<"Workspace"> | string | null
   annualRevenue?: Prisma.StringNullableFilter<"Workspace"> | string | null
@@ -285,6 +293,7 @@ export type WorkspaceOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   companyName?: Prisma.SortOrderInput | Prisma.SortOrder
+  industry?: Prisma.SortOrderInput | Prisma.SortOrder
   companyWebsite?: Prisma.SortOrderInput | Prisma.SortOrder
   companyLocation?: Prisma.SortOrderInput | Prisma.SortOrder
   annualRevenue?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -329,6 +338,7 @@ export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.WorkspaceWhereInput | Prisma.WorkspaceWhereInput[]
   name?: Prisma.StringFilter<"Workspace"> | string
   companyName?: Prisma.StringNullableFilter<"Workspace"> | string | null
+  industry?: Prisma.StringNullableFilter<"Workspace"> | string | null
   companyWebsite?: Prisma.StringNullableFilter<"Workspace"> | string | null
   companyLocation?: Prisma.StringNullableFilter<"Workspace"> | string | null
   annualRevenue?: Prisma.StringNullableFilter<"Workspace"> | string | null
@@ -370,6 +380,7 @@ export type WorkspaceOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   companyName?: Prisma.SortOrderInput | Prisma.SortOrder
+  industry?: Prisma.SortOrderInput | Prisma.SortOrder
   companyWebsite?: Prisma.SortOrderInput | Prisma.SortOrder
   companyLocation?: Prisma.SortOrderInput | Prisma.SortOrder
   annualRevenue?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -393,6 +404,7 @@ export type WorkspaceScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Workspace"> | string
   slug?: Prisma.StringWithAggregatesFilter<"Workspace"> | string
   companyName?: Prisma.StringNullableWithAggregatesFilter<"Workspace"> | string | null
+  industry?: Prisma.StringNullableWithAggregatesFilter<"Workspace"> | string | null
   companyWebsite?: Prisma.StringNullableWithAggregatesFilter<"Workspace"> | string | null
   companyLocation?: Prisma.StringNullableWithAggregatesFilter<"Workspace"> | string | null
   annualRevenue?: Prisma.StringNullableWithAggregatesFilter<"Workspace"> | string | null
@@ -410,6 +422,7 @@ export type WorkspaceCreateInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -450,6 +463,7 @@ export type WorkspaceUncheckedCreateInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -490,6 +504,7 @@ export type WorkspaceUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -530,6 +545,7 @@ export type WorkspaceUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -570,6 +586,7 @@ export type WorkspaceCreateManyInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -587,6 +604,7 @@ export type WorkspaceUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -603,6 +621,7 @@ export type WorkspaceUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -630,6 +649,7 @@ export type WorkspaceCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  industry?: Prisma.SortOrder
   companyWebsite?: Prisma.SortOrder
   companyLocation?: Prisma.SortOrder
   annualRevenue?: Prisma.SortOrder
@@ -647,6 +667,7 @@ export type WorkspaceMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  industry?: Prisma.SortOrder
   companyWebsite?: Prisma.SortOrder
   companyLocation?: Prisma.SortOrder
   annualRevenue?: Prisma.SortOrder
@@ -664,6 +685,7 @@ export type WorkspaceMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   slug?: Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  industry?: Prisma.SortOrder
   companyWebsite?: Prisma.SortOrder
   companyLocation?: Prisma.SortOrder
   annualRevenue?: Prisma.SortOrder
@@ -1050,6 +1072,7 @@ export type WorkspaceCreateWithoutOwnerInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -1089,6 +1112,7 @@ export type WorkspaceUncheckedCreateWithoutOwnerInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -1157,6 +1181,7 @@ export type WorkspaceScalarWhereInput = {
   name?: Prisma.StringFilter<"Workspace"> | string
   slug?: Prisma.StringFilter<"Workspace"> | string
   companyName?: Prisma.StringNullableFilter<"Workspace"> | string | null
+  industry?: Prisma.StringNullableFilter<"Workspace"> | string | null
   companyWebsite?: Prisma.StringNullableFilter<"Workspace"> | string | null
   companyLocation?: Prisma.StringNullableFilter<"Workspace"> | string | null
   annualRevenue?: Prisma.StringNullableFilter<"Workspace"> | string | null
@@ -1174,6 +1199,7 @@ export type WorkspaceCreateWithoutTemplatesInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -1213,6 +1239,7 @@ export type WorkspaceUncheckedCreateWithoutTemplatesInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -1268,6 +1295,7 @@ export type WorkspaceUpdateWithoutTemplatesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1307,6 +1335,7 @@ export type WorkspaceUncheckedUpdateWithoutTemplatesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1346,6 +1375,7 @@ export type WorkspaceCreateWithoutApiKeysInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -1385,6 +1415,7 @@ export type WorkspaceUncheckedCreateWithoutApiKeysInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -1440,6 +1471,7 @@ export type WorkspaceUpdateWithoutApiKeysInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1479,6 +1511,7 @@ export type WorkspaceUncheckedUpdateWithoutApiKeysInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1518,6 +1551,7 @@ export type WorkspaceCreateWithoutWebhookEndpointsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -1557,6 +1591,7 @@ export type WorkspaceUncheckedCreateWithoutWebhookEndpointsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -1612,6 +1647,7 @@ export type WorkspaceUpdateWithoutWebhookEndpointsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1651,6 +1687,7 @@ export type WorkspaceUncheckedUpdateWithoutWebhookEndpointsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1690,6 +1727,7 @@ export type WorkspaceCreateWithoutContactsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -1729,6 +1767,7 @@ export type WorkspaceUncheckedCreateWithoutContactsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -1784,6 +1823,7 @@ export type WorkspaceUpdateWithoutContactsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1823,6 +1863,7 @@ export type WorkspaceUncheckedUpdateWithoutContactsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1862,6 +1903,7 @@ export type WorkspaceCreateWithoutContactConsentEventsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -1901,6 +1943,7 @@ export type WorkspaceUncheckedCreateWithoutContactConsentEventsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -1956,6 +1999,7 @@ export type WorkspaceUpdateWithoutContactConsentEventsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1995,6 +2039,7 @@ export type WorkspaceUncheckedUpdateWithoutContactConsentEventsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2034,6 +2079,7 @@ export type WorkspaceCreateWithoutConversationsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -2073,6 +2119,7 @@ export type WorkspaceUncheckedCreateWithoutConversationsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -2128,6 +2175,7 @@ export type WorkspaceUpdateWithoutConversationsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2167,6 +2215,7 @@ export type WorkspaceUncheckedUpdateWithoutConversationsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2206,6 +2255,7 @@ export type WorkspaceCreateWithoutMessagesInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -2245,6 +2295,7 @@ export type WorkspaceUncheckedCreateWithoutMessagesInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -2300,6 +2351,7 @@ export type WorkspaceUpdateWithoutMessagesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2339,6 +2391,7 @@ export type WorkspaceUncheckedUpdateWithoutMessagesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2378,6 +2431,7 @@ export type WorkspaceCreateWithoutContactCustomFieldsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -2417,6 +2471,7 @@ export type WorkspaceUncheckedCreateWithoutContactCustomFieldsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -2472,6 +2527,7 @@ export type WorkspaceUpdateWithoutContactCustomFieldsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2511,6 +2567,7 @@ export type WorkspaceUncheckedUpdateWithoutContactCustomFieldsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2550,6 +2607,7 @@ export type WorkspaceCreateWithoutContactSegmentsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -2589,6 +2647,7 @@ export type WorkspaceUncheckedCreateWithoutContactSegmentsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -2644,6 +2703,7 @@ export type WorkspaceUpdateWithoutContactSegmentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2683,6 +2743,7 @@ export type WorkspaceUncheckedUpdateWithoutContactSegmentsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2722,6 +2783,7 @@ export type WorkspaceCreateWithoutContactTasksInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -2761,6 +2823,7 @@ export type WorkspaceUncheckedCreateWithoutContactTasksInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -2816,6 +2879,7 @@ export type WorkspaceUpdateWithoutContactTasksInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2855,6 +2919,7 @@ export type WorkspaceUncheckedUpdateWithoutContactTasksInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2894,6 +2959,7 @@ export type WorkspaceCreateWithoutContactNotesInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -2933,6 +2999,7 @@ export type WorkspaceUncheckedCreateWithoutContactNotesInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -2988,6 +3055,7 @@ export type WorkspaceUpdateWithoutContactNotesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3027,6 +3095,7 @@ export type WorkspaceUncheckedUpdateWithoutContactNotesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3066,6 +3135,7 @@ export type WorkspaceCreateWithoutContactTagsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -3105,6 +3175,7 @@ export type WorkspaceUncheckedCreateWithoutContactTagsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -3160,6 +3231,7 @@ export type WorkspaceUpdateWithoutContactTagsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3199,6 +3271,7 @@ export type WorkspaceUncheckedUpdateWithoutContactTagsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3238,6 +3311,7 @@ export type WorkspaceCreateWithoutSetupProgressInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -3277,6 +3351,7 @@ export type WorkspaceUncheckedCreateWithoutSetupProgressInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -3332,6 +3407,7 @@ export type WorkspaceUpdateWithoutSetupProgressInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3371,6 +3447,7 @@ export type WorkspaceUncheckedUpdateWithoutSetupProgressInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3410,6 +3487,7 @@ export type WorkspaceCreateWithoutWhatsappBusinessAccountsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -3449,6 +3527,7 @@ export type WorkspaceUncheckedCreateWithoutWhatsappBusinessAccountsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -3504,6 +3583,7 @@ export type WorkspaceUpdateWithoutWhatsappBusinessAccountsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3543,6 +3623,7 @@ export type WorkspaceUncheckedUpdateWithoutWhatsappBusinessAccountsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3582,6 +3663,7 @@ export type WorkspaceCreateWithoutAutomationsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -3621,6 +3703,7 @@ export type WorkspaceUncheckedCreateWithoutAutomationsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -3676,6 +3759,7 @@ export type WorkspaceUpdateWithoutAutomationsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3715,6 +3799,7 @@ export type WorkspaceUncheckedUpdateWithoutAutomationsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3754,6 +3839,7 @@ export type WorkspaceCreateWithoutAutomationLogsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -3793,6 +3879,7 @@ export type WorkspaceUncheckedCreateWithoutAutomationLogsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -3848,6 +3935,7 @@ export type WorkspaceUpdateWithoutAutomationLogsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3887,6 +3975,7 @@ export type WorkspaceUncheckedUpdateWithoutAutomationLogsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3926,6 +4015,7 @@ export type WorkspaceCreateWithoutWorkflowsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -3965,6 +4055,7 @@ export type WorkspaceUncheckedCreateWithoutWorkflowsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -4020,6 +4111,7 @@ export type WorkspaceUpdateWithoutWorkflowsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4059,6 +4151,7 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4098,6 +4191,7 @@ export type WorkspaceCreateWithoutWorkflowRunsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -4137,6 +4231,7 @@ export type WorkspaceUncheckedCreateWithoutWorkflowRunsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -4192,6 +4287,7 @@ export type WorkspaceUpdateWithoutWorkflowRunsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4231,6 +4327,7 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowRunsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4270,6 +4367,7 @@ export type WorkspaceCreateWithoutCampaignsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -4309,6 +4407,7 @@ export type WorkspaceUncheckedCreateWithoutCampaignsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -4364,6 +4463,7 @@ export type WorkspaceUpdateWithoutCampaignsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4403,6 +4503,7 @@ export type WorkspaceUncheckedUpdateWithoutCampaignsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4442,6 +4543,7 @@ export type WorkspaceCreateWithoutCampaignRecipientsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -4481,6 +4583,7 @@ export type WorkspaceUncheckedCreateWithoutCampaignRecipientsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -4536,6 +4639,7 @@ export type WorkspaceUpdateWithoutCampaignRecipientsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4575,6 +4679,7 @@ export type WorkspaceUncheckedUpdateWithoutCampaignRecipientsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4614,6 +4719,7 @@ export type WorkspaceCreateWithoutMembershipsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -4653,6 +4759,7 @@ export type WorkspaceUncheckedCreateWithoutMembershipsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -4708,6 +4815,7 @@ export type WorkspaceUpdateWithoutMembershipsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4747,6 +4855,7 @@ export type WorkspaceUncheckedUpdateWithoutMembershipsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4786,6 +4895,7 @@ export type WorkspaceCreateWithoutRolesInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -4825,6 +4935,7 @@ export type WorkspaceUncheckedCreateWithoutRolesInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -4880,6 +4991,7 @@ export type WorkspaceUpdateWithoutRolesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4919,6 +5031,7 @@ export type WorkspaceUncheckedUpdateWithoutRolesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4958,6 +5071,7 @@ export type WorkspaceCreateWithoutInvitationsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -4997,6 +5111,7 @@ export type WorkspaceUncheckedCreateWithoutInvitationsInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -5052,6 +5167,7 @@ export type WorkspaceUpdateWithoutInvitationsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5091,6 +5207,7 @@ export type WorkspaceUncheckedUpdateWithoutInvitationsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5130,6 +5247,7 @@ export type WorkspaceCreateManyOwnerInput = {
   name: string
   slug: string
   companyName?: string | null
+  industry?: string | null
   companyWebsite?: string | null
   companyLocation?: string | null
   annualRevenue?: string | null
@@ -5146,6 +5264,7 @@ export type WorkspaceUpdateWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5185,6 +5304,7 @@ export type WorkspaceUncheckedUpdateWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5224,6 +5344,7 @@ export type WorkspaceUncheckedUpdateManyWithoutOwnerInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   slug?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5460,6 +5581,7 @@ export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   name?: boolean
   slug?: boolean
   companyName?: boolean
+  industry?: boolean
   companyWebsite?: boolean
   companyLocation?: boolean
   annualRevenue?: boolean
@@ -5502,6 +5624,7 @@ export type WorkspaceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   name?: boolean
   slug?: boolean
   companyName?: boolean
+  industry?: boolean
   companyWebsite?: boolean
   companyLocation?: boolean
   annualRevenue?: boolean
@@ -5520,6 +5643,7 @@ export type WorkspaceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   name?: boolean
   slug?: boolean
   companyName?: boolean
+  industry?: boolean
   companyWebsite?: boolean
   companyLocation?: boolean
   annualRevenue?: boolean
@@ -5538,6 +5662,7 @@ export type WorkspaceSelectScalar = {
   name?: boolean
   slug?: boolean
   companyName?: boolean
+  industry?: boolean
   companyWebsite?: boolean
   companyLocation?: boolean
   annualRevenue?: boolean
@@ -5550,7 +5675,7 @@ export type WorkspaceSelectScalar = {
   updatedAt?: boolean
 }
 
-export type WorkspaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "companyName" | "companyWebsite" | "companyLocation" | "annualRevenue" | "logoData" | "country" | "timezone" | "onboardingCompletedAt" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["workspace"]>
+export type WorkspaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "companyName" | "industry" | "companyWebsite" | "companyLocation" | "annualRevenue" | "logoData" | "country" | "timezone" | "onboardingCompletedAt" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["workspace"]>
 export type WorkspaceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   memberships?: boolean | Prisma.Workspace$membershipsArgs<ExtArgs>
@@ -5618,6 +5743,7 @@ export type $WorkspacePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     name: string
     slug: string
     companyName: string | null
+    industry: string | null
     companyWebsite: string | null
     companyLocation: string | null
     annualRevenue: string | null
@@ -6079,6 +6205,7 @@ export interface WorkspaceFieldRefs {
   readonly name: Prisma.FieldRef<"Workspace", 'String'>
   readonly slug: Prisma.FieldRef<"Workspace", 'String'>
   readonly companyName: Prisma.FieldRef<"Workspace", 'String'>
+  readonly industry: Prisma.FieldRef<"Workspace", 'String'>
   readonly companyWebsite: Prisma.FieldRef<"Workspace", 'String'>
   readonly companyLocation: Prisma.FieldRef<"Workspace", 'String'>
   readonly annualRevenue: Prisma.FieldRef<"Workspace", 'String'>

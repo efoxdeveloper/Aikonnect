@@ -28,6 +28,7 @@ export async function listWorkspaces(userId: string) {
           name: true,
           slug: true,
           companyName: true,
+          industry: true,
           companyWebsite: true,
           companyLocation: true,
           annualRevenue: true,

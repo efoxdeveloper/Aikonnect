@@ -100,6 +100,7 @@ export async function register(input: RegisterInput, metadata: SessionMetadata) 
       : (await createWorkspaceWithDefaults(transaction, user.id, {
           name: input.workspaceName || input.companyName,
           companyName: input.companyName,
+          industry: input.industry,
           companyWebsite: input.companyWebsite || undefined,
           companyLocation: input.companyLocation || undefined,
           annualRevenue: input.annualRevenue,
@@ -269,6 +270,7 @@ export async function getCurrentUser(userId: string) {
               id: true,
               name: true,
               slug: true,
+              industry: true,
               country: true,
               timezone: true,
               onboardingCompletedAt: true,

@@ -23,6 +23,7 @@ describe("registration request mapping", () => {
       lastName: " User ",
       phone: " +910000000000 ",
       companyName: " Example Ltd ",
+      industry: "technology",
       companyWebsite: "",
       companyLocation: " Delhi ",
       annualRevenue: "under-50-lakh",
@@ -31,6 +32,7 @@ describe("registration request mapping", () => {
     expect(request.email).toBe("user@example.com");
     expect(request.password).toBe("Password123");
     expect(request.companyWebsite).toBeUndefined();
+    expect(request.industry).toBe("technology");
     expect(request).not.toHaveProperty("confirmPassword");
   });
 });

@@ -123,6 +123,7 @@ test("registration requires email verification before workspace RBAC and session
       firstName: "Integration",
       lastName: "Test",
       companyName: "Integration Test Workspace",
+      industry: "technology",
       annualRevenue: "under-50-lakh",
     }),
   });
@@ -186,6 +187,7 @@ test("registration requires email verification before workspace RBAC and session
       memberships: Array<{
         workspace: {
           id: string;
+          industry: string | null;
           onboardingCompletedAt: string | null;
           country: string | null;
           timezone: string | null;
@@ -195,6 +197,7 @@ test("registration requires email verification before workspace RBAC and session
     };
   };
   assert.equal(currentUser.data.email, correctedEmail);
+  assert.equal(currentUser.data.memberships[0]?.workspace.industry, "technology");
   assert.ok(currentUser.data.emailVerifiedAt);
   assert.equal(currentUser.data.memberships[0]?.role.slug, "owner");
   assert.ok(currentUser.data.memberships[0]?.role.permissions.includes("roles.manage"));

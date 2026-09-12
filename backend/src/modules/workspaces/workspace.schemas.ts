@@ -1,12 +1,15 @@
 import { z } from "zod";
 import { PERMISSIONS } from "./permissions.js";
+import { industryValues } from "./industry.js";
 
 const optionalText = (maximum: number) => z.string().trim().max(maximum).optional();
 const permissionValues = Object.values(PERMISSIONS) as [string, ...string[]];
+const industry = z.enum(industryValues);
 
 export const createWorkspaceSchema = z.object({
   name: z.string().trim().min(1).max(160),
   companyName: optionalText(160),
+  industry: industry.optional(),
   companyWebsite: z.union([z.url().max(500), z.literal("")]).optional(),
   companyLocation: optionalText(200),
   annualRevenue: optionalText(50),

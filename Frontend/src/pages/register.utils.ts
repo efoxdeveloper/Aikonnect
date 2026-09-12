@@ -6,6 +6,7 @@ export type RegistrationFormData = {
   lastName: string;
   phone: string;
   companyName: string;
+  industry: string;
   companyWebsite: string;
   companyLocation: string;
   annualRevenue: string;
@@ -29,6 +30,7 @@ export function toRegistrationRequest(data: RegistrationFormData, invitationToke
     lastName: data.lastName.trim(),
     phone: data.phone.trim(),
     companyName: data.companyName.trim(),
+    ...(data.industry ? { industry: data.industry } : {}),
     companyWebsite: data.companyWebsite.trim() || undefined,
     companyLocation: data.companyLocation.trim(),
     annualRevenue: data.annualRevenue,

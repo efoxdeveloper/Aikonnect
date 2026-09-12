@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { industryValues } from "../workspaces/industry.js";
 
 const email = z.email().max(320).transform((value) => value.trim().toLowerCase());
 const password = z
@@ -8,6 +9,7 @@ const password = z
   .regex(/[A-Za-z]/, "Password must contain a letter")
   .regex(/[0-9]/, "Password must contain a number");
 const optionalText = (maximum: number) => z.string().trim().max(maximum).optional();
+const industry = z.enum(industryValues);
 
 export const registerSchema = z.object({
   email,
@@ -18,6 +20,7 @@ export const registerSchema = z.object({
   phone: optionalText(30),
   workspaceName: optionalText(160),
   companyName: z.string().trim().min(1).max(160),
+  industry: industry.optional(),
   companyWebsite: z.union([z.url().max(500), z.literal("")]).optional(),
   companyLocation: optionalText(200),
   annualRevenue: z

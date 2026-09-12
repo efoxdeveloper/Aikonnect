@@ -3039,6 +3039,7 @@ export const WorkspaceScalarFieldEnum = {
   name: 'name',
   slug: 'slug',
   companyName: 'companyName',
+  industry: 'industry',
   companyWebsite: 'companyWebsite',
   companyLocation: 'companyLocation',
   annualRevenue: 'annualRevenue',
