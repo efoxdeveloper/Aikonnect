@@ -4,6 +4,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { useAnimatedIcon } from "@/hooks/use-animated-icon";
 import { Button } from "@/components/ui/button";
+import { InternationalPhoneInput } from "@/components/ui/international-phone-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
 import { ApiError } from "@/lib/api";
@@ -149,7 +150,7 @@ export function Register() {
           ) : (
             <div className="space-y-4">
               <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
-                <RegistrationField id="phone" label="Phone number" value={data.phone} onChange={updateField} type="tel" autoComplete="tel" />
+                <InternationalPhoneInput id="phone" required value={data.phone} onChange={(value) => updateField("phone", value)} />
                 <RegistrationField id="companyName" label="Company name" value={data.companyName} onChange={updateField} autoComplete="organization" />
               </div>
               <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">

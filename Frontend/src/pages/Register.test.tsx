@@ -43,4 +43,27 @@ describe("registration password visibility", () => {
     expect(confirmation).toHaveAttribute("type", "text");
     expect(screen.getByRole("button", { name: "Hide confirm password" })).toBeInTheDocument();
   });
+
+  it("uses the shared international phone input on the company step", () => {
+    render(
+      <AuthContext.Provider value={authValue}>
+        <MemoryRouter>
+          <Register />
+        </MemoryRouter>
+      </AuthContext.Provider>,
+    );
+
+    fireEvent.change(screen.getByLabelText("First name"), { target: { value: "Test" } });
+    fireEvent.change(screen.getByLabelText("Last name"), { target: { value: "User" } });
+    fireEvent.change(screen.getByLabelText("Work email"), { target: { value: "test@example.com" } });
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "Password123" } });
+    fireEvent.change(screen.getByLabelText("Confirm password"), { target: { value: "Password123" } });
+    fireEvent.click(screen.getByRole("button", { name: "Continue" }));
+
+    const phone = screen.getByLabelText("Phone number");
+    expect(phone).toHaveAttribute("id", "phone");
+    expect(phone).toHaveAttribute("type", "tel");
+    expect(phone).toBeRequired();
+    expect(screen.getByText("+91")).toBeInTheDocument();
+  });
 });
