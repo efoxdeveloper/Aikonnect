@@ -55,6 +55,8 @@ export const ModelName = {
   OAuthAccount: 'OAuthAccount',
   Workspace: 'Workspace',
   Template: 'Template',
+  PublicApiKey: 'PublicApiKey',
+  WebhookEndpoint: 'WebhookEndpoint',
   Contact: 'Contact',
   ContactConsentEvent: 'ContactConsentEvent',
   Conversation: 'Conversation',
@@ -180,6 +182,41 @@ export const TemplateScalarFieldEnum = {
 } as const
 
 export type TemplateScalarFieldEnum = (typeof TemplateScalarFieldEnum)[keyof typeof TemplateScalarFieldEnum]
+
+
+export const PublicApiKeyScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  createdById: 'createdById',
+  name: 'name',
+  keyPrefix: 'keyPrefix',
+  keyHash: 'keyHash',
+  scopes: 'scopes',
+  lastUsedAt: 'lastUsedAt',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PublicApiKeyScalarFieldEnum = (typeof PublicApiKeyScalarFieldEnum)[keyof typeof PublicApiKeyScalarFieldEnum]
+
+
+export const WebhookEndpointScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  createdById: 'createdById',
+  name: 'name',
+  url: 'url',
+  secretEncrypted: 'secretEncrypted',
+  events: 'events',
+  active: 'active',
+  lastDeliveredAt: 'lastDeliveredAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WebhookEndpointScalarFieldEnum = (typeof WebhookEndpointScalarFieldEnum)[keyof typeof WebhookEndpointScalarFieldEnum]
 
 
 export const ContactScalarFieldEnum = {

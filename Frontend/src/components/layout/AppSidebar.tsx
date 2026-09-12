@@ -3,8 +3,6 @@ import { Box, Drawer } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { navigationGroups, type NavigationItem } from "@/config/navigation";
-import { SidebarHeaderBrand } from "./SidebarHeader";
-import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 import { SidebarSection } from "./SidebarSection";
 
 const sidebarBackground = "linear-gradient(180deg,#064e3b 0%,#043f32 50%,#052e27 100%)";
@@ -29,8 +27,8 @@ export function SidebarVersion() {
 export function AppSidebar() {
   const { state, isMobile, openMobile, setOpenMobile } = useSidebar();
   const pathname = useLocation().pathname;
-  const activeSection = navigationGroups.find((group) => group.items.some((item) => isItemActive(item, pathname)))?.title;
-  const [openSection, setOpenSection] = useState<string | null>(activeSection ?? navigationGroups[0]?.title ?? null);
+  const activeSection = navigationGroups.find((group) => group.title && group.items.some((item) => isItemActive(item, pathname)))?.title;
+  const [openSection, setOpenSection] = useState<string | null>(activeSection ?? navigationGroups.find((group) => group.title)?.title ?? null);
   const width = isMobile ? "var(--sidebar-width)" : state === "collapsed" ? "var(--sidebar-collapsed-width)" : "var(--sidebar-width)";
 
   useEffect(() => {
@@ -48,8 +46,10 @@ export function AppSidebar() {
       "& .MuiDrawer-paper": {
         width,
         boxSizing: "border-box",
+        top: "var(--header-height)",
+        height: "calc(100% - var(--header-height))",
         overflow: "hidden",
-        borderRight: "1px solid rgba(255,255,255,.1)",
+        borderRight: "none",
         backgroundImage: sidebarBackground,
         color: "#fff",
         transition: "width 150ms ease-out",
@@ -57,9 +57,8 @@ export function AppSidebar() {
     }}
   >
     <Box sx={{ display: "flex", height: "100%", minHeight: 0, flexDirection: "column", fontFamily: "var(--font-sans)" }}>
-      <Box sx={{ flexShrink: 0 }}><SidebarHeaderBrand /><WorkspaceSwitcher /></Box>
-      <Box sx={{ minHeight: 0, flex: 1, overflowY: "auto", scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,.2) transparent", pb: 2 }}>
-        {navigationGroups.map((group) => <SidebarSection key={group.title} group={group} open={openSection === group.title} onToggle={() => setOpenSection((current) => current === group.title ? null : group.title)} />)}
+      <Box data-testid="sidebar-navigation" sx={{ minHeight: 0, flex: 1, overflowY: "auto", scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,.2) transparent", pt: 2, pb: 2 }}>
+        {navigationGroups.map((group, index) => <SidebarSection key={group.title ?? `primary-${index}`} group={group} open={group.title ? openSection === group.title : true} onToggle={() => { if (group.title) setOpenSection((current) => current === group.title ? null : group.title ?? null); }} />)}
       </Box>
       <Box sx={{ flexShrink: 0 }}><SidebarVersion /></Box>
     </Box>

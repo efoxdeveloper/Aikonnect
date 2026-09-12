@@ -71,9 +71,27 @@ test("lists workspace conversations with contact context and unread filtering", 
   const messageResponse = await fetch(`${baseUrl}/workspaces/${workspaceId}/contacts/${contact.data.id}/conversations/${conversation.data.id}/messages`, {
     method: "POST",
     headers: { ...authorization, "content-type": "application/json" },
-    body: JSON.stringify({ direction: "INCOMING", type: "TEXT", text: "Hello from WhatsApp" }),
+    body: JSON.stringify({ direction: "INCOMING", type: "TEXT", text: "Hello from WhatsApp", sentAt: "2026-08-27T06:00:00.000Z" }),
   });
   assert.equal(messageResponse.status, 201);
+  const newerMessageResponse = await fetch(`${baseUrl}/workspaces/${workspaceId}/contacts/${contact.data.id}/conversations/${conversation.data.id}/messages`, {
+    method: "POST",
+    headers: { ...authorization, "content-type": "application/json" },
+    body: JSON.stringify({ direction: "INCOMING", type: "TEXT", text: "A newer WhatsApp message", sentAt: "2026-08-27T06:01:00.000Z" }),
+  });
+  assert.equal(newerMessageResponse.status, 201);
+
+  const latestPage = await fetch(`${baseUrl}/workspaces/${workspaceId}/contacts/${contact.data.id}/conversations/${conversation.data.id}/messages?page=1&pageSize=1&latest=true`, { headers: authorization });
+  assert.equal(latestPage.status, 200);
+  const latestPageBody = (await latestPage.json()) as { data: { items: Array<{ text: string | null }>; pagination: { hasPrevious: boolean } } };
+  assert.deepEqual(latestPageBody.data.items.map(({ text }) => text), ["A newer WhatsApp message"]);
+  assert.equal(latestPageBody.data.pagination.hasPrevious, true);
+
+  const olderPage = await fetch(`${baseUrl}/workspaces/${workspaceId}/contacts/${contact.data.id}/conversations/${conversation.data.id}/messages?page=2&pageSize=1&latest=true`, { headers: authorization });
+  assert.equal(olderPage.status, 200);
+  const olderPageBody = (await olderPage.json()) as { data: { items: Array<{ text: string | null }>; pagination: { hasPrevious: boolean } } };
+  assert.deepEqual(olderPageBody.data.items.map(({ text }) => text), ["Hello from WhatsApp"]);
+  assert.equal(olderPageBody.data.pagination.hasPrevious, false);
 
   const inboxRoleResponse = await fetch(`${baseUrl}/workspaces/${workspaceId}/roles`, {
     method: "POST",
@@ -90,12 +108,12 @@ test("lists workspace conversations with contact context and unread filtering", 
   const messagesForInboxRole = await fetch(`${baseUrl}/workspaces/${workspaceId}/contacts/${contact.data.id}/conversations/${conversation.data.id}/messages`, { headers: authorization });
   assert.equal(messagesForInboxRole.status, 200, "Inbox members should be able to read conversation messages");
   const messagesBody = (await messagesForInboxRole.json()) as { data: { items: Array<{ text: string | null }> } };
-  assert.deepEqual(messagesBody.data.items.map(({ text }) => text), ["Hello from WhatsApp"]);
+  assert.deepEqual(messagesBody.data.items.map(({ text }) => text), ["Hello from WhatsApp", "A newer WhatsApp message"]);
 
   const list = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations?unreadOnly=true&search=Inbox`, { headers: authorization });
   assert.equal(list.status, 200);
   const listed = (await list.json()) as { data: { items: Array<{ id: string; unreadCount: number; contact: { name: string } }> } };
-  assert.deepEqual(listed.data.items.map((item) => ({ id: item.id, unreadCount: item.unreadCount, contact: item.contact.name })), [{ id: conversation.data.id, unreadCount: 1, contact: "Inbox Customer" }]);
+  assert.deepEqual(listed.data.items.map((item) => ({ id: item.id, unreadCount: item.unreadCount, contact: item.contact.name })), [{ id: conversation.data.id, unreadCount: 2, contact: "Inbox Customer" }]);
 
   const markRead = await fetch(`${baseUrl}/workspaces/${workspaceId}/contacts/${contact.data.id}/conversations/${conversation.data.id}/read`, { method: "POST", headers: authorization });
   assert.equal(markRead.status, 200);

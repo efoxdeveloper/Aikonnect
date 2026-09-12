@@ -24,6 +24,8 @@ import { automationRouter } from "../automations/automation.routes.js";
 import { workflowRouter } from "../workflows/workflow.routes.js";
 import { campaignRouter } from "../campaigns/campaign.routes.js";
 import { reportRouter } from "../reports/report.routes.js";
+import { apiKeyRouter } from "../api-keys/api-key.routes.js";
+import { webhookRouter } from "../webhooks/webhook.routes.js";
 
 export const workspaceRouter = Router();
 
@@ -60,3 +62,5 @@ workspaceRouter.use("/:workspaceId/automations", automationRouter);
 workspaceRouter.use("/:workspaceId/workflows", workflowRouter);
 workspaceRouter.use("/:workspaceId/campaigns", campaignRouter);
 workspaceRouter.use("/:workspaceId/reports", reportRouter);
+workspaceRouter.use("/:workspaceId/api-keys", apiKeyRouter);
+workspaceRouter.use("/:workspaceId/webhooks", webhookRouter);

@@ -41,6 +41,15 @@ const conversation = {
   contact: { id: "contact-1", name: "Aarav Sharma", profileName: "Aarav", profileImageUrl: "https://cdn.example.com/aarav.jpg" },
 };
 
+const olderConversation = {
+  ...conversation,
+  id: "conversation-older",
+  contactId: "contact-older",
+  lastMessagePreview: "An older conversation",
+  lastMessageAt: "2026-08-26T06:00:00.000Z",
+  contact: { id: "contact-older", name: "Older Customer", profileName: "Older", profileImageUrl: null },
+};
+
 function renderPage(value = auth) {
   return render(<AuthContext.Provider value={value}><MemoryRouter><Inbox /></MemoryRouter></AuthContext.Provider>);
 }
@@ -81,7 +90,7 @@ describe("Inbox", () => {
     expect(await screen.findByRole("button", { name: /Aarav Sharma/ })).toBeInTheDocument();
     expect(await screen.findByText("Can you share the pricing?")).toBeInTheDocument();
     expect(apiRequest).toHaveBeenCalledWith(
-      "/workspaces/workspace-1/conversations?page=1&pageSize=100&search=",
+      "/workspaces/workspace-1/conversations?page=1&pageSize=25&search=",
       { headers: { authorization: "Bearer access-token" } },
     );
   });
@@ -98,6 +107,51 @@ describe("Inbox", () => {
     expect(screen.getByTestId("inbox-message-region")).toHaveStyle({ backgroundColor: "#efeae2" });
     await waitFor(() => expect(within(screen.getByTestId("inbox-message-region")).getByText("Can you share the pricing?")).toHaveClass("break-words", "[overflow-wrap:anywhere]"));
     expect(screen.getByRole("textbox", { name: "Message" })).toHaveAttribute("placeholder", "Type a message");
+  });
+
+  it("loads older conversations as the conversation list reaches the bottom", async () => {
+    vi.mocked(apiRequest).mockImplementation(async (path, options = {}) => {
+      if (String(path).includes("/messages") && options.method === "POST") return { message: {} } as never;
+      if (String(path).includes("/messages")) return { items: [], pagination: {} } as never;
+      if (String(path).includes("page=2")) return { items: [olderConversation], pagination: { page: 2, pageSize: 25, total: 2, totalPages: 2, hasNext: false } } as never;
+      return { items: [conversation], pagination: { page: 1, pageSize: 25, total: 2, totalPages: 2, hasNext: true } } as never;
+    });
+    renderPage();
+    const list = await screen.findByTestId("inbox-conversation-list");
+    await screen.findByRole("button", { name: /Aarav Sharma/ });
+    Object.defineProperty(list, "scrollHeight", { configurable: true, value: 1000 });
+    Object.defineProperty(list, "clientHeight", { configurable: true, value: 500 });
+    Object.defineProperty(list, "scrollTop", { configurable: true, writable: true, value: 500 });
+    fireEvent.scroll(list);
+    expect(await screen.findByRole("button", { name: /Older Customer/ })).toBeInTheDocument();
+    expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/conversations?page=2&pageSize=25&search=",
+      { headers: { authorization: "Bearer access-token" } },
+    );
+  });
+
+  it("loads older messages when scrolling to the top of a thread", async () => {
+    const olderMessage = { id: "message-older", direction: "INCOMING", type: "TEXT", status: "READ", text: "An older message", sentAt: "2026-08-26T06:00:00.000Z" };
+    vi.mocked(apiRequest).mockImplementation(async (path, options = {}) => {
+      if (String(path).includes("/messages") && options.method === "POST") return { message: {} } as never;
+      if (String(path).includes("/messages")) {
+        return String(path).includes("page=2")
+          ? { items: [olderMessage], pagination: { page: 2, pageSize: 50, total: 2, totalPages: 2, hasPrevious: false } }
+          : { items: [{ id: "message-1", direction: "INCOMING", type: "TEXT", status: "READ", text: "Latest message", sentAt: "2026-08-27T06:00:00.000Z" }], pagination: { page: 1, pageSize: 50, total: 2, totalPages: 2, hasPrevious: true } };
+      }
+      return { items: [conversation], pagination: { page: 1, pageSize: 25, total: 1, totalPages: 1, hasNext: false } } as never;
+    });
+    renderPage();
+    const region = await screen.findByTestId("inbox-message-region");
+    await screen.findByText("Latest message");
+    Object.defineProperty(region, "scrollTop", { configurable: true, writable: true, value: 0 });
+    Object.defineProperty(region, "scrollHeight", { configurable: true, value: 1200 });
+    fireEvent.scroll(region);
+    expect(await screen.findByText("An older message")).toBeInTheDocument();
+    expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/contacts/contact-1/conversations/conversation-1/messages?page=2&pageSize=50&latest=true",
+      { headers: { authorization: "Bearer access-token" } },
+    );
   });
 
   it("opens a conversation at the latest message", async () => {
@@ -288,7 +342,7 @@ describe("Inbox", () => {
     await screen.findByText("Can you share the pricing?");
     fireEvent.click(screen.getByRole("button", { name: "Active chats" }));
     await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
-      "/workspaces/workspace-1/conversations?page=1&pageSize=100&search=&status=OPEN",
+      "/workspaces/workspace-1/conversations?page=1&pageSize=25&search=&status=OPEN",
       { headers: { authorization: "Bearer access-token" } },
     ));
     expect(FakeWebSocket.instances).toHaveLength(1);

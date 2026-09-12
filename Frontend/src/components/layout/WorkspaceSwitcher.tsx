@@ -12,7 +12,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useSidebar } from "@/hooks/use-sidebar";
 import { cn } from "@/lib/utils";
 import { ApiError, apiRequest } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
@@ -36,7 +35,6 @@ function WorkspaceAvatar({ name, logoData, size }: { name: string; logoData?: st
 
 export function WorkspaceSwitcher() {
   const navigate = useNavigate();
-  const { state } = useSidebar();
   const { accessToken, user } = useAuth();
   const memberships = user?.memberships ?? [];
   const workspace = getActiveMembership(user)?.workspace;
@@ -67,46 +65,43 @@ export function WorkspaceSwitcher() {
 
   return (
     <>
-      <div className={cn("px-3 py-3", state === "collapsed" && "px-2")}>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              data-sidebar-workspace
-              variant="ghost"
-              className={cn(
-                "h-auto w-full justify-start gap-3 rounded-md border border-white/10 bg-white/[.06] px-3 py-2.5 text-white shadow-none",
-                state === "collapsed" && "size-11 justify-center rounded-md p-0",
-              )}
-            >
-              <span className="relative shrink-0">
-                <WorkspaceAvatar name={workspaceName} logoData={workspace?.logoData} size="large" />
-                <span className="absolute -right-0.5 -top-0.5 size-2 rounded-full bg-[#34d399] ring-2 ring-[var(--sidebar-deep)]" />
-              </span>
-              <span className={cn("min-w-0 flex-1 text-left", state === "collapsed" && "hidden")}>
-                <span className="block truncate text-[14px] font-semibold leading-5 text-white">{workspaceName}</span>
-                <span className="mt-0.5 block truncate text-[12px] font-normal leading-[18px] text-white/60">Business workspace</span>
-              </span>
-              <ChevronDown className={cn("size-4 shrink-0 text-white/60", state === "collapsed" && "hidden")} strokeWidth={1.9} />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-[244px]">
-            <DropdownMenuLabel>Switch workspace</DropdownMenuLabel>
-            {memberships.map(({ workspace: item }) => (
-              <DropdownMenuItem key={item.id} onSelect={() => { setActiveWorkspaceId(item.id); window.location.reload(); }}>
-                <WorkspaceAvatar name={item.name} logoData={item.logoData} size="small" />
-                <span className="truncate">{item.name}</span>
-              </DropdownMenuItem>
-            ))}
-            {canCreate && (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={() => { setError(null); setCreating(true); }}><Plus className="size-4" />Create new workspace</DropdownMenuItem>
-              </>
-            )}
-            <DropdownMenuItem onSelect={() => navigate("/settings")}><Settings className="size-4" />Workspace settings</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            data-navbar-workspace
+            aria-label={`Switch workspace: ${workspaceName}`}
+            title={`Switch workspace: ${workspaceName}`}
+            variant="ghost"
+            className="h-10 w-10 shrink-0 justify-center gap-2 rounded-lg border border-[#e4e8e5] bg-[#f7f8f7] px-1.5 text-[var(--text-primary)] shadow-none hover:bg-[var(--brand-subtle)] sm:w-[min(220px,30vw)] sm:justify-start sm:px-2"
+          >
+            <span className="relative shrink-0">
+              <WorkspaceAvatar name={workspaceName} logoData={workspace?.logoData} size="small" />
+              <span className="absolute -right-0.5 -top-0.5 size-2 rounded-full bg-[#34d399] ring-2 ring-[#f7f8f7]" />
+            </span>
+            <span className="hidden min-w-0 flex-1 text-left sm:block">
+              <span className="block truncate text-[13px] font-semibold leading-4 text-[var(--text-primary)]">{workspaceName}</span>
+              <span className="mt-0.5 block truncate text-[11px] font-normal leading-4 text-[var(--text-muted)]">Business workspace</span>
+            </span>
+            <ChevronDown className="hidden size-4 shrink-0 text-[var(--text-muted)] sm:block" strokeWidth={1.9} />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-[244px]">
+          <DropdownMenuLabel>Switch workspace</DropdownMenuLabel>
+          {memberships.map(({ workspace: item }) => (
+            <DropdownMenuItem key={item.id} onSelect={() => { setActiveWorkspaceId(item.id); window.location.reload(); }}>
+              <WorkspaceAvatar name={item.name} logoData={item.logoData} size="small" />
+              <span className="truncate">{item.name}</span>
+            </DropdownMenuItem>
+          ))}
+          {canCreate && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={() => { setError(null); setCreating(true); }}><Plus className="size-4" />Create new workspace</DropdownMenuItem>
+            </>
+          )}
+          <DropdownMenuItem onSelect={() => navigate("/settings")}><Settings className="size-4" />Workspace settings</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {creating && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-[var(--overlay)] px-4 backdrop-blur-[2px]" role="presentation">

@@ -67,9 +67,12 @@ type Message = {
 };
 type PageResponse<T> = {
   items: T[];
-  pagination: { page: number; pageSize: number; total: number; totalPages: number };
+  pagination: { page: number; pageSize: number; total: number; totalPages: number; hasNext?: boolean; hasPrevious?: boolean };
 };
 type SyncResponse = { syncRequestIds: string[]; syncWarnings: string[] };
+
+const CONVERSATION_PAGE_SIZE = 25;
+const MESSAGE_PAGE_SIZE = 50;
 
 const channels: Array<{ label: string; value: ChannelFilter; icon: LucideIcon }> = [
   { label: "All Channels", value: "all", icon: InboxIcon },
@@ -132,15 +135,26 @@ function friendlyError(error: unknown, fallback: string) {
 const messageStatusRank: Record<string, number> = { SENT: 1, DELIVERED: 2, READ: 3, FAILED: 4 };
 
 function mergeMessages(persisted: Message[], current: Message[]) {
-  const persistedIds = new Set(persisted.map((message) => message.id));
-  const persistedMetaIds = new Set(persisted.map((message) => message.metaMessageId).filter(Boolean));
-  const localByKey = new Map(current.filter((message) => message.direction === "OUTGOING").map((message) => [message.metaMessageId || message.id, message]));
-  const merged = persisted.map((message) => {
-    const local = localByKey.get(message.metaMessageId || message.id);
-    return local && (messageStatusRank[local.status] ?? 0) > (messageStatusRank[message.status] ?? 0) ? { ...message, status: local.status } : message;
+  const merged = new Map(current.map((message) => [message.id, message]));
+  for (const message of persisted) {
+    const existingKey = merged.has(message.id)
+      ? message.id
+      : message.metaMessageId && [...merged.values()].find((item) => item.metaMessageId === message.metaMessageId)?.id;
+    const existing = existingKey ? merged.get(existingKey) : undefined;
+    if (existingKey && existingKey !== message.id) merged.delete(existingKey);
+    merged.set(message.id, existing && (messageStatusRank[existing.status] ?? 0) > (messageStatusRank[message.status] ?? 0) ? { ...message, status: existing.status } : message);
+  }
+  return [...merged.values()].sort((left, right) => new Date(left.sentAt).getTime() - new Date(right.sentAt).getTime());
+}
+
+function mergeConversations(incoming: Conversation[], current: Conversation[]) {
+  const merged = new Map(current.map((conversation) => [conversation.id, conversation]));
+  incoming.forEach((conversation) => merged.set(conversation.id, conversation));
+  return [...merged.values()].sort((left, right) => {
+    const leftTime = left.lastMessageAt ? new Date(left.lastMessageAt).getTime() : 0;
+    const rightTime = right.lastMessageAt ? new Date(right.lastMessageAt).getTime() : 0;
+    return rightTime - leftTime || right.id.localeCompare(left.id);
   });
-  const localOutgoing = current.filter((message) => message.direction === "OUTGOING" && !persistedIds.has(message.id) && (!message.metaMessageId || !persistedMetaIds.has(message.metaMessageId)));
-  return [...merged, ...localOutgoing].sort((left, right) => new Date(left.sentAt).getTime() - new Date(right.sentAt).getTime());
 }
 
 function MessageTicks({ status }: { status: string }) {
@@ -206,7 +220,9 @@ export function Inbox() {
   const [attachment, setAttachment] = useState<SelectedAttachment | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMoreConversations, setLoadingMoreConversations] = useState(false);
   const [messagesLoading, setMessagesLoading] = useState(false);
+  const [loadingOlderMessages, setLoadingOlderMessages] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [messageError, setMessageError] = useState("");
@@ -221,8 +237,15 @@ export function Inbox() {
   const selectedUnreadCount = selected?.unreadCount ?? 0;
   const selectedIdRef = useRef(selectedId);
   const messagesRef = useRef(messages);
+  const conversationsRef = useRef(conversations);
   const messageRegionRef = useRef<HTMLDivElement | null>(null);
   const stickToBottomRef = useRef(true);
+  const conversationPageRef = useRef(1);
+  const conversationHasNextRef = useRef(false);
+  const messagePageRef = useRef(1);
+  const messageHasPreviousRef = useRef(false);
+  const loadingOlderMessagesRef = useRef(false);
+  const messageScrollHeightRef = useRef<number | null>(null);
   useEffect(() => {
     selectedIdRef.current = selectedId;
     stickToBottomRef.current = true;
@@ -230,6 +253,20 @@ export function Inbox() {
   useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
+  useEffect(() => {
+    conversationsRef.current = conversations;
+  }, [conversations]);
+
+  useEffect(() => {
+    const previousHeight = messageScrollHeightRef.current;
+    if (previousHeight === null) return;
+    const frame = window.requestAnimationFrame(() => {
+      const region = messageRegionRef.current;
+      if (region) region.scrollTop += region.scrollHeight - previousHeight;
+      messageScrollHeightRef.current = null;
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [messages.length]);
 
   useEffect(() => {
     if (!selectedId || messagesLoading || !messages.length || !stickToBottomRef.current) return;
@@ -244,6 +281,8 @@ export function Inbox() {
     if (!workspaceId || !accessToken || !canRead) {
       setConversations([]);
       setSelectedId(null);
+      conversationPageRef.current = 1;
+      conversationHasNextRef.current = false;
       setLoading(false);
       return;
     }
@@ -251,7 +290,7 @@ export function Inbox() {
       setLoading(true);
       setError("");
     }
-    const parameters = new URLSearchParams({ page: "1", pageSize: "100", search });
+    const parameters = new URLSearchParams({ page: "1", pageSize: String(CONVERSATION_PAGE_SIZE), search });
     if (channelFilter !== "all") parameters.set("channelKey", channelFilter);
     if (folder === "UNREAD") parameters.set("unreadOnly", "true");
     else if (folder) parameters.set("status", folder);
@@ -260,16 +299,41 @@ export function Inbox() {
         `/workspaces/${workspaceId}/conversations?${parameters.toString()}`,
         { headers: { authorization: `Bearer ${accessToken}` } },
       );
-      setConversations(result.items);
-      setSelectedId((current) =>
-        result.items.some((item) => item.id === current) ? current : result.items[0]?.id ?? null,
-      );
+      conversationPageRef.current = 1;
+      conversationHasNextRef.current = result.pagination.hasNext ?? result.pagination.totalPages > 1;
+      setConversations((current) => showLoading ? result.items : mergeConversations(result.items, current));
+      setSelectedId((current) => showLoading
+        ? result.items.some((item) => item.id === current) ? current : result.items[0]?.id ?? null
+        : current ?? result.items[0]?.id ?? null);
     } catch (caughtError) {
       setError(friendlyError(caughtError, "Unable to load your inbox."));
     } finally {
       if (showLoading) setLoading(false);
     }
   }, [accessToken, canRead, channelFilter, folder, search, workspaceId]);
+
+  const loadMoreConversations = useCallback(async () => {
+    if (!workspaceId || !accessToken || !canRead || loadingMoreConversations || !conversationHasNextRef.current) return;
+    const nextPage = conversationPageRef.current + 1;
+    setLoadingMoreConversations(true);
+    const parameters = new URLSearchParams({ page: String(nextPage), pageSize: String(CONVERSATION_PAGE_SIZE), search });
+    if (channelFilter !== "all") parameters.set("channelKey", channelFilter);
+    if (folder === "UNREAD") parameters.set("unreadOnly", "true");
+    else if (folder) parameters.set("status", folder);
+    try {
+      const result = await apiRequest<PageResponse<Conversation>>(
+        `/workspaces/${workspaceId}/conversations?${parameters.toString()}`,
+        { headers: { authorization: `Bearer ${accessToken}` } },
+      );
+      conversationPageRef.current = nextPage;
+      conversationHasNextRef.current = result.pagination.hasNext ?? nextPage < result.pagination.totalPages;
+      setConversations((current) => mergeConversations(result.items, current));
+    } catch (caughtError) {
+      setError(friendlyError(caughtError, "Unable to load older conversations."));
+    } finally {
+      setLoadingMoreConversations(false);
+    }
+  }, [accessToken, canRead, channelFilter, folder, loadingMoreConversations, search, workspaceId]);
 
   const loadConversationsRef = useRef(loadConversations);
   useEffect(() => {
@@ -287,14 +351,18 @@ export function Inbox() {
     }
     let active = true;
     setMessages([]);
+    messagePageRef.current = 1;
+    messageHasPreviousRef.current = false;
+    loadingOlderMessagesRef.current = false;
     setMessagesLoading(true);
     setMessageError("");
     void apiRequest<PageResponse<Message>>(
-      `/workspaces/${workspaceId}/contacts/${selectedContactId}/conversations/${selectedId}/messages?page=1&pageSize=100`,
+      `/workspaces/${workspaceId}/contacts/${selectedContactId}/conversations/${selectedId}/messages?page=1&pageSize=${MESSAGE_PAGE_SIZE}&latest=true`,
       { headers: { authorization: `Bearer ${accessToken}` } },
     )
       .then((result) => {
         if (!active) return;
+        messageHasPreviousRef.current = result.pagination.hasPrevious ?? result.pagination.totalPages > 1;
         setMessages((current) => mergeMessages(result.items, current));
         if (selectedUnreadCount > 0) {
           void apiRequest<{ readAt: string }>(
@@ -320,13 +388,38 @@ export function Inbox() {
     };
   }, [accessToken, selectedContactId, selectedId, workspaceId]);
 
+  const loadOlderMessages = useCallback(async () => {
+    if (!selectedId || !selectedContactId || !workspaceId || !accessToken || loadingOlderMessagesRef.current || !messageHasPreviousRef.current) return;
+    const region = messageRegionRef.current;
+    messageScrollHeightRef.current = region?.scrollHeight ?? null;
+    stickToBottomRef.current = false;
+    const nextPage = messagePageRef.current + 1;
+    loadingOlderMessagesRef.current = true;
+    setLoadingOlderMessages(true);
+    try {
+      const result = await apiRequest<PageResponse<Message>>(
+        `/workspaces/${workspaceId}/contacts/${selectedContactId}/conversations/${selectedId}/messages?page=${nextPage}&pageSize=${MESSAGE_PAGE_SIZE}&latest=true`,
+        { headers: { authorization: `Bearer ${accessToken}` } },
+      );
+      messagePageRef.current = nextPage;
+      messageHasPreviousRef.current = result.pagination.hasPrevious ?? nextPage < result.pagination.totalPages;
+      setMessages((current) => mergeMessages(result.items, current));
+    } catch (caughtError) {
+      messageScrollHeightRef.current = null;
+      setMessageError(friendlyError(caughtError, "Unable to load older messages."));
+    } finally {
+      loadingOlderMessagesRef.current = false;
+      setLoadingOlderMessages(false);
+    }
+  }, [accessToken, selectedContactId, selectedId, workspaceId]);
+
   useEffect(() => {
     if (!selectedId || !selectedContactId || !workspaceId || !accessToken) return;
     const interval = window.setInterval(() => {
       const hasPendingStatus = messagesRef.current.some((message) => message.direction === "OUTGOING" && message.metaMessageId && (message.status === "SENT" || message.status === "DELIVERED"));
       if (!hasPendingStatus) return;
       void apiRequest<PageResponse<Message>>(
-        `/workspaces/${workspaceId}/contacts/${selectedContactId}/conversations/${selectedId}/messages?page=1&pageSize=100`,
+        `/workspaces/${workspaceId}/contacts/${selectedContactId}/conversations/${selectedId}/messages?page=1&pageSize=${MESSAGE_PAGE_SIZE}&latest=true`,
         { headers: { authorization: `Bearer ${accessToken}` } },
       ).then((result) => setMessages((current) => mergeMessages(result.items, current))).catch(() => undefined);
     }, 3_000);
@@ -496,9 +589,9 @@ export function Inbox() {
               {moreFiltersOpen && <div className="mt-2 grid grid-cols-2 gap-1 rounded-md border border-[var(--border-soft)] bg-[var(--surface-subtle)] p-1.5">{advancedFilters.filter(({ label }) => label !== "Less").map(({ label, status, icon: Icon }) => <button key={label} type="button" onClick={() => { if (status !== undefined) { setFolder(status); setActiveFilter(label); } }} className={cn("flex h-8 items-center gap-1.5 rounded px-2 text-left text-[10px] font-medium", activeFilter === label ? "bg-white text-[var(--brand)] shadow-sm" : "text-[var(--text-secondary)] hover:bg-white")}><Icon size={13} />{label}</button>)}</div>}
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto">
+            <div data-testid="inbox-conversation-list" className="min-h-0 flex-1 overflow-y-auto" onScroll={(event) => { const list = event.currentTarget; if (list.scrollTop + list.clientHeight >= list.scrollHeight - 120) void loadMoreConversations(); }}>
               {error && <div role="alert" className="m-3 rounded-md border border-[#f5dada] bg-[var(--danger-soft)] p-3 text-xs text-[var(--danger)]">{error}</div>}
-              {loading ? <div className="p-8 text-center text-xs text-[var(--text-secondary)]">Loading conversations...</div> : conversations.length === 0 ? <div className="p-8 text-center"><Users className="mx-auto text-[var(--text-muted)]" size={28} /><div className="mt-3 text-sm font-medium">No conversations yet</div><div className="mt-1 text-xs text-[var(--text-secondary)]">Your WhatsApp conversations will appear here.</div>{activeFilter === "All chats" && canSync && <button type="button" onClick={() => void syncNow()} disabled={syncing} className="mx-auto mt-4 inline-flex h-9 items-center gap-1.5 rounded-md bg-[var(--brand)] px-3 text-xs font-semibold text-white hover:bg-[var(--brand-hover)] disabled:cursor-wait disabled:opacity-60"><RefreshCw size={14} className={syncing ? "animate-spin" : undefined} />{syncing ? "Syncing..." : "Sync now"}</button>}</div> : conversations.map((conversation) => <button key={conversation.id} type="button" onClick={() => setSelectedId(conversation.id)} className={cn("relative flex w-full items-center gap-3 border-b border-[var(--border-soft)] px-4 py-3 text-left transition-colors hover:bg-[var(--surface-subtle)]", selectedId === conversation.id && "bg-[var(--brand-soft)]/55 before:absolute before:bottom-0 before:left-0 before:top-0 before:w-1 before:bg-[var(--brand)]")}><ContactAvatar name={conversation.contact.name} imageUrl={conversation.contact.profileImageUrl} className="size-11" showStatus={conversation.status === "OPEN"} /><div className="min-w-0 flex-1"><div className="flex items-center justify-between gap-2"><span className={cn("truncate text-[13px]", conversation.unreadCount ? "font-semibold text-[var(--text-primary)]" : "font-medium text-[var(--text-primary)]")}>{conversation.contact.name}</span><span className={cn("shrink-0 text-[10px]", conversation.unreadCount ? "font-medium text-[var(--brand)]" : "text-[var(--text-muted)]")}>{formatTime(conversation.lastMessageAt)}</span></div><div className="mt-1 flex items-center gap-1.5"><span className="min-w-0 flex-1 truncate text-[11px] text-[var(--text-secondary)]">{conversation.lastMessagePreview || "No messages yet"}</span>{conversation.unreadCount > 0 && <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[var(--brand)] text-[9px] font-semibold text-white">{conversation.unreadCount > 99 ? "99+" : conversation.unreadCount}</span>}</div></div></button>)}
+              {loading ? <div className="p-8 text-center text-xs text-[var(--text-secondary)]">Loading conversations...</div> : conversations.length === 0 ? <div className="p-8 text-center"><Users className="mx-auto text-[var(--text-muted)]" size={28} /><div className="mt-3 text-sm font-medium">No conversations yet</div><div className="mt-1 text-xs text-[var(--text-secondary)]">Your WhatsApp conversations will appear here.</div>{activeFilter === "All chats" && canSync && <button type="button" onClick={() => void syncNow()} disabled={syncing} className="mx-auto mt-4 inline-flex h-9 items-center gap-1.5 rounded-md bg-[var(--brand)] px-3 text-xs font-semibold text-white hover:bg-[var(--brand-hover)] disabled:cursor-wait disabled:opacity-60"><RefreshCw size={14} className={syncing ? "animate-spin" : undefined} />{syncing ? "Syncing..." : "Sync now"}</button>}</div> : <>{conversations.map((conversation) => <button key={conversation.id} type="button" onClick={() => setSelectedId(conversation.id)} className={cn("relative flex w-full items-center gap-3 border-b border-[var(--border-soft)] px-4 py-3 text-left transition-colors hover:bg-[var(--surface-subtle)]", selectedId === conversation.id && "bg-[var(--brand-soft)]/55 before:absolute before:bottom-0 before:left-0 before:top-0 before:w-1 before:bg-[var(--brand)]")}><ContactAvatar name={conversation.contact.name} imageUrl={conversation.contact.profileImageUrl} className="size-11" showStatus={conversation.status === "OPEN"} /><div className="min-w-0 flex-1"><div className="flex items-center justify-between gap-2"><span className={cn("truncate text-[13px]", conversation.unreadCount ? "font-semibold text-[var(--text-primary)]" : "font-medium text-[var(--text-primary)]")}>{conversation.contact.name}</span><span className={cn("shrink-0 text-[10px]", conversation.unreadCount ? "font-medium text-[var(--brand)]" : "text-[var(--text-muted)]")}>{formatTime(conversation.lastMessageAt)}</span></div><div className="mt-1 flex items-center gap-1.5"><span className="min-w-0 flex-1 truncate text-[11px] text-[var(--text-secondary)]">{conversation.lastMessagePreview || "No messages yet"}</span>{conversation.unreadCount > 0 && <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-[var(--brand)] text-[9px] font-semibold text-white">{conversation.unreadCount > 99 ? "99+" : conversation.unreadCount}</span>}</div></div></button>)}{loadingMoreConversations && <div role="status" className="p-3 text-center text-[10px] text-[var(--text-muted)]">Loading older conversations…</div>}</>}
             </div>
             <footer className="flex flex-none items-center justify-between border-t border-[var(--border-soft)] bg-[var(--surface-subtle)] px-4 py-2 text-[10px] text-[var(--text-muted)]"><span>{conversations.length} chats</span><span>{conversations.filter((item) => item.unreadCount > 0).length} unread</span></footer>
           </section>
@@ -506,7 +599,7 @@ export function Inbox() {
           <section className={cn("min-h-0 flex-col bg-[var(--page-background)]", selected ? "flex" : "hidden lg:flex")} aria-label="Conversation thread">
             {selected ? <>
               <header className="flex flex-none items-center justify-between border-b border-[var(--border)] bg-[var(--surface-subtle)] px-4 py-2.5 sm:px-5"><div className="flex min-w-0 items-center gap-3"><button type="button" aria-label="Back to conversations" onClick={() => setSelectedId(null)} className="flex size-8 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)] lg:hidden"><ArrowLeft size={18} /></button><ContactAvatar name={selected.contact.name} imageUrl={selected.contact.profileImageUrl} className="size-10" showStatus={selected.status === "OPEN"} /><div className="min-w-0"><h2 className="truncate text-[15px] font-semibold text-[var(--text-primary)]">{selected.contact.name}</h2><div className="truncate text-[11px] text-[var(--text-secondary)]">{selected.contact.profileName || "WhatsApp contact"} · {selected.status === "OPEN" ? "active now" : selected.status.toLowerCase()}</div></div></div><div className="flex items-center gap-0.5"><button type="button" aria-label="Search in conversation" className="hidden size-8 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)] sm:flex"><Search size={16} /></button><button type="button" aria-label="Start video call" className="hidden size-8 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)] sm:flex"><Video size={17} /></button><button type="button" aria-label="Start phone call" className="hidden size-8 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)] sm:flex"><Phone size={16} /></button><button type="button" aria-label="Archive conversation" className="flex size-8 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><Archive size={16} /></button><button type="button" aria-label="More conversation actions" className="flex size-8 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><MoreVertical size={17} /></button></div></header>
-              <div data-testid="inbox-message-region" ref={messageRegionRef} onScroll={(event) => { const region = event.currentTarget; stickToBottomRef.current = region.scrollHeight - region.scrollTop - region.clientHeight < 120; }} className="min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-8" style={{ backgroundColor: "#efeae2", backgroundImage: "radial-gradient(rgba(84, 74, 60, .08) .7px, transparent .7px)", backgroundSize: "18px 18px" }}>{messagesLoading ? <div className="text-center text-xs text-[var(--text-secondary)]">Loading messages...</div> : messageError ? <div role="alert" className="rounded-md border border-[#f5dada] bg-[var(--danger-soft)] p-3 text-xs text-[var(--danger)]">{messageError}</div> : messages.length === 0 ? <div className="flex h-full items-center justify-center text-center"><div className="rounded-xl border border-[var(--border-soft)] bg-white/80 px-6 py-5"><Mail className="mx-auto text-[var(--text-muted)]" size={26} /><div className="mt-3 text-sm font-medium">No messages in this conversation</div><div className="mt-1 text-xs text-[var(--text-secondary)]">Start the conversation below.</div></div></div> : <div className="mx-auto flex max-w-3xl flex-col gap-2.5"><div className="mx-auto mb-2 rounded-full border border-[var(--border-soft)] bg-white/85 px-3 py-1 text-[10px] font-medium text-[var(--text-secondary)] shadow-sm">Today</div>{messages.map((message) => <div key={message.id} className={cn("flex", message.direction === "OUTGOING" ? "justify-end" : "justify-start")}><div className={cn("relative max-w-[82%] rounded-lg px-3 py-2 text-[13px] leading-5 shadow-[0_1px_1px_rgba(4,45,29,.08)] sm:max-w-[68%]", message.direction === "OUTGOING" ? "rounded-br-sm bg-[var(--brand)] text-white" : "rounded-bl-sm border border-[var(--border-soft)] bg-white text-[var(--text-primary)]")}>{(message.mediaId || message.mediaUrl) && <MessageMedia message={message} accessToken={accessToken} workspaceId={workspaceId} contactId={selected.contactId} conversationId={selected.id} />}{message.text ? <div className="whitespace-pre-wrap break-words [overflow-wrap:anywhere] pr-14">{message.text}</div> : !message.mediaId && !message.mediaUrl && <div className="pr-14">[{message.type.toLowerCase()} message]</div>}<div className={cn("absolute bottom-1 right-2 flex items-center gap-1 text-[9px]", message.direction === "OUTGOING" ? "text-white/70" : "text-[var(--text-muted)]")}>{formatTime(message.sentAt)}{message.direction === "OUTGOING" && <MessageTicks status={message.status} />}</div></div></div>)}</div>}</div>
+              <div data-testid="inbox-message-region" ref={messageRegionRef} onScroll={(event) => { const region = event.currentTarget; stickToBottomRef.current = region.scrollHeight - region.scrollTop - region.clientHeight < 120; if (region.scrollTop <= 80) void loadOlderMessages(); }} className="relative min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-8" style={{ backgroundColor: "#efeae2", backgroundImage: "radial-gradient(rgba(84, 74, 60, .08) .7px, transparent .7px)", backgroundSize: "18px 18px" }}>{loadingOlderMessages && <div data-testid="inbox-older-messages-loading" role="status" className="pointer-events-none absolute inset-x-0 top-2 z-10 text-center text-[10px] text-[var(--text-secondary)]">Loading older messages…</div>}{messagesLoading ? <div className="text-center text-xs text-[var(--text-secondary)]">Loading messages...</div> : messageError ? <div role="alert" className="rounded-md border border-[#f5dada] bg-[var(--danger-soft)] p-3 text-xs text-[var(--danger)]">{messageError}</div> : messages.length === 0 ? <div className="flex h-full items-center justify-center text-center"><div className="rounded-xl border border-[var(--border-soft)] bg-white/80 px-6 py-5"><Mail className="mx-auto text-[var(--text-muted)]" size={26} /><div className="mt-3 text-sm font-medium">No messages in this conversation</div><div className="mt-1 text-xs text-[var(--text-secondary)]">Start the conversation below.</div></div></div> : <div className="mx-auto flex max-w-3xl flex-col gap-2.5"><div className="mx-auto mb-2 rounded-full border border-[var(--border-soft)] bg-white/85 px-3 py-1 text-[10px] font-medium text-[var(--text-secondary)] shadow-sm">Today</div>{messages.map((message) => <div key={message.id} className={cn("flex", message.direction === "OUTGOING" ? "justify-end" : "justify-start")}><div className={cn("relative max-w-[82%] rounded-lg px-3 py-2 text-[13px] leading-5 shadow-[0_1px_1px_rgba(4,45,29,.08)] sm:max-w-[68%]", message.direction === "OUTGOING" ? "rounded-br-sm bg-[var(--brand)] text-white" : "rounded-bl-sm border border-[var(--border-soft)] bg-white text-[var(--text-primary)]")}>{(message.mediaId || message.mediaUrl) && <MessageMedia message={message} accessToken={accessToken} workspaceId={workspaceId} contactId={selected.contactId} conversationId={selected.id} />}{message.text ? <div className="whitespace-pre-wrap break-words [overflow-wrap:anywhere] pr-14">{message.text}</div> : !message.mediaId && !message.mediaUrl && <div className="pr-14">[{message.type.toLowerCase()} message]</div>}<div className={cn("absolute bottom-1 right-2 flex items-center gap-1 text-[9px]", message.direction === "OUTGOING" ? "text-white/70" : "text-[var(--text-muted)]")}>{formatTime(message.sentAt)}{message.direction === "OUTGOING" && <MessageTicks status={message.status} />}</div></div></div>)}</div>}</div>
               <form onSubmit={sendMessage} className="flex flex-none items-end gap-2 border-t border-[var(--border)] bg-[var(--surface-subtle)] px-3 py-2.5 sm:px-4"><input ref={fileInputRef} type="file" aria-label="Choose media" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv" onChange={handleAttachmentChange} className="sr-only" />{attachment && <div className="flex max-w-40 shrink-0 items-center gap-1 rounded-md border border-[var(--border)] bg-white px-1.5 py-1 text-[10px] text-[var(--text-secondary)]">{attachment.messageType === "IMAGE" ? <img src={attachment.dataUrl} alt="Attachment preview" className="size-7 rounded object-cover" /> : <FileText size={16} />}<span className="truncate">{attachment.fileName}</span><button type="button" aria-label="Remove attachment" onClick={() => setAttachment(null)} className="flex size-5 shrink-0 items-center justify-center rounded text-[var(--text-muted)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><X size={13} /></button></div>}<button type="button" aria-label="Add emoji" className="mb-0.5 flex size-9 shrink-0 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><Smile size={20} /></button><button type="button" aria-label="Attach file" onClick={chooseAttachment} className="mb-0.5 flex size-9 shrink-0 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><Paperclip size={19} /></button><div className="flex min-w-0 flex-1 items-center rounded-lg border border-[var(--border)] bg-white px-3 focus-within:border-[var(--brand-accent)] focus-within:ring-2 focus-within:ring-[var(--brand-accent)]/10"><textarea aria-label="Message" value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={handleMessageKeyDown} disabled={!canReply} placeholder={canReply ? "Type a message" : "You do not have reply permission"} rows={1} className="max-h-28 min-h-9 flex-1 resize-y border-0 bg-transparent py-2 text-sm outline-none placeholder:text-[var(--text-muted)]" /><button type="button" aria-label="Add image" onClick={chooseAttachment} className="hidden size-8 shrink-0 items-center justify-center text-[var(--text-muted)] hover:text-[var(--brand)] sm:flex"><ImagePlus size={17} /></button></div><button type="submit" aria-label={draft.trim() || attachment ? "Send" : "Voice message"} disabled={!canReply || (!draft.trim() && !attachment)} className="mb-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-[var(--brand)] text-white transition-colors hover:bg-[var(--brand-hover)] disabled:cursor-not-allowed disabled:bg-[var(--border-strong)]">{draft.trim() || attachment ? <Send size={16} /> : <Mic size={18} />}<span className="sr-only">{sending ? "Sending" : draft.trim() || attachment ? "Send" : "Voice message"}</span></button></form>
             </> : <div className="flex h-full items-center justify-center p-8 text-center"><div><InboxIcon className="mx-auto text-[var(--brand)]/60" size={38} /><h2 className="mt-4 text-[15px] font-semibold text-[var(--text-primary)]">Select a conversation</h2><div className="mt-1 text-xs text-[var(--text-secondary)]">Choose a chat to view the full thread.</div></div></div>}
           </section>

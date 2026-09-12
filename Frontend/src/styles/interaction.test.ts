@@ -11,4 +11,8 @@ describe("global interaction accessibility", () => {
     expect(stylesheet).toContain("transition-duration: .01ms !important");
     expect(stylesheet).toContain("button:focus-visible");
   });
+
+  it("uses zinc-100 for the authenticated content background", () => {
+    expect(stylesheet).toMatch(/--page-background:\s*#f4f4f5;/);
+  });
 });

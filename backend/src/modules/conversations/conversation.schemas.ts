@@ -7,7 +7,7 @@ export const messageType = z.enum(["TEXT", "IMAGE", "VIDEO", "AUDIO", "DOCUMENT"
 
 export const contactConversationParamsSchema = z.object({ workspaceId: z.uuid(), contactId: z.uuid() });
 export const conversationParamsSchema = contactConversationParamsSchema.extend({ conversationId: z.uuid() });
-export const conversationListQuerySchema = z.object({ page: z.coerce.number().int().min(1).default(1), pageSize: z.coerce.number().int().min(1).max(100).default(25) });
+export const conversationListQuerySchema = z.object({ page: z.coerce.number().int().min(1).default(1), pageSize: z.coerce.number().int().min(1).max(100).default(25), latest: z.preprocess((value) => value === "true", z.boolean().default(false)) });
 export const workspaceConversationParamsSchema = z.object({ workspaceId: z.uuid() });
 export const inboxConversationListQuerySchema = conversationListQuerySchema.extend({
   status: conversationStatus.optional(),

@@ -17,8 +17,9 @@ export function SidebarSection({ group, open: controlledOpen, onToggle }: { grou
   const { state } = useSidebar();
   const pathname = useLocation().pathname;
   const active = group.items.some((item) => isItemActive(item, pathname));
+  const isCollapsible = Boolean(group.title);
   const [internalOpen, setInternalOpen] = useState(active);
-  const open = controlledOpen ?? internalOpen;
+  const open = isCollapsible ? controlledOpen ?? internalOpen : true;
 
   useEffect(() => {
     if (controlledOpen === undefined && active) setInternalOpen(true);
@@ -29,13 +30,15 @@ export function SidebarSection({ group, open: controlledOpen, onToggle }: { grou
     else setInternalOpen((value) => !value);
   };
 
+  const sectionId = `sidebar-section-${(group.title ?? "primary").replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`;
+
   return <Box component="section" sx={{ width: "100%", minWidth: 0, px: 1.5 }}>
-    {state === "collapsed" ? null : <ListItem disablePadding sx={{ display: "block", mt: 1.5, mb: 0.5 }}>
+    {isCollapsible && state !== "collapsed" && <ListItem disablePadding sx={{ display: "block", mt: 1.5, mb: 0.5 }}>
       <ListItemButton
         component="button"
         type="button"
         aria-expanded={open}
-        aria-controls={`sidebar-section-${group.title.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`}
+        aria-controls={sectionId}
         onClick={toggle}
         sx={{ minHeight: 40, width: "100%", borderRadius: 1, borderBottom: "1px solid rgba(255,255,255,.1)", px: 1.25, color: "rgba(255,255,255,.72)", fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 600, letterSpacing: "-.005em", lineHeight: "20px", textTransform: "none", justifyContent: "space-between", "&:hover": { backgroundColor: "rgba(255,255,255,.07)", color: "#fff", borderBottomColor: "rgba(255,255,255,.16)" } }}
       >
@@ -44,7 +47,7 @@ export function SidebarSection({ group, open: controlledOpen, onToggle }: { grou
       </ListItemButton>
     </ListItem>}
     <Collapse in={state === "collapsed" || open} timeout="auto" unmountOnExit>
-      <List id={`sidebar-section-${group.title.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`} disablePadding sx={{ display: "flex", width: "100%", minWidth: 0, flexDirection: "column", gap: "1px" }}>
+      <List id={sectionId} disablePadding sx={{ display: "flex", width: "100%", minWidth: 0, flexDirection: "column", gap: "1px" }}>
         {group.items.map((item) => <SidebarMenuItem key={item.title} item={item} />)}
       </List>
     </Collapse>

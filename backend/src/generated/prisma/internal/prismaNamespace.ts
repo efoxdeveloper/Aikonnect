@@ -401,6 +401,8 @@ export const ModelName = {
   OAuthAccount: 'OAuthAccount',
   Workspace: 'Workspace',
   Template: 'Template',
+  PublicApiKey: 'PublicApiKey',
+  WebhookEndpoint: 'WebhookEndpoint',
   Contact: 'Contact',
   ContactConsentEvent: 'ContactConsentEvent',
   Conversation: 'Conversation',
@@ -444,7 +446,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "oAuthAccount" | "workspace" | "template" | "contact" | "contactConsentEvent" | "conversation" | "message" | "contactCustomField" | "contactCustomFieldValue" | "contactSegment" | "contactTask" | "contactNote" | "contactTag" | "contactTagAssignment" | "workspaceSetupProgress" | "whatsAppBusinessAccount" | "whatsAppPhoneNumber" | "automation" | "automationLog" | "workflow" | "workflowRun" | "campaign" | "campaignRecipient" | "workspaceMember" | "role" | "permission" | "rolePermission" | "workspaceInvitation" | "session" | "emailVerificationToken" | "passwordResetToken"
+    modelProps: "user" | "oAuthAccount" | "workspace" | "template" | "publicApiKey" | "webhookEndpoint" | "contact" | "contactConsentEvent" | "conversation" | "message" | "contactCustomField" | "contactCustomFieldValue" | "contactSegment" | "contactTask" | "contactNote" | "contactTag" | "contactTagAssignment" | "workspaceSetupProgress" | "whatsAppBusinessAccount" | "whatsAppPhoneNumber" | "automation" | "automationLog" | "workflow" | "workflowRun" | "campaign" | "campaignRecipient" | "workspaceMember" | "role" | "permission" | "rolePermission" | "workspaceInvitation" | "session" | "emailVerificationToken" | "passwordResetToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -741,6 +743,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TemplateCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TemplateCountAggregateOutputType> | number
+        }
+      }
+    }
+    PublicApiKey: {
+      payload: Prisma.$PublicApiKeyPayload<ExtArgs>
+      fields: Prisma.PublicApiKeyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PublicApiKeyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicApiKeyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PublicApiKeyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicApiKeyPayload>
+        }
+        findFirst: {
+          args: Prisma.PublicApiKeyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicApiKeyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PublicApiKeyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicApiKeyPayload>
+        }
+        findMany: {
+          args: Prisma.PublicApiKeyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicApiKeyPayload>[]
+        }
+        create: {
+          args: Prisma.PublicApiKeyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicApiKeyPayload>
+        }
+        createMany: {
+          args: Prisma.PublicApiKeyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PublicApiKeyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicApiKeyPayload>[]
+        }
+        delete: {
+          args: Prisma.PublicApiKeyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicApiKeyPayload>
+        }
+        update: {
+          args: Prisma.PublicApiKeyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicApiKeyPayload>
+        }
+        deleteMany: {
+          args: Prisma.PublicApiKeyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PublicApiKeyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PublicApiKeyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicApiKeyPayload>[]
+        }
+        upsert: {
+          args: Prisma.PublicApiKeyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PublicApiKeyPayload>
+        }
+        aggregate: {
+          args: Prisma.PublicApiKeyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePublicApiKey>
+        }
+        groupBy: {
+          args: Prisma.PublicApiKeyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PublicApiKeyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PublicApiKeyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PublicApiKeyCountAggregateOutputType> | number
+        }
+      }
+    }
+    WebhookEndpoint: {
+      payload: Prisma.$WebhookEndpointPayload<ExtArgs>
+      fields: Prisma.WebhookEndpointFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WebhookEndpointFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookEndpointPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WebhookEndpointFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>
+        }
+        findFirst: {
+          args: Prisma.WebhookEndpointFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookEndpointPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WebhookEndpointFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>
+        }
+        findMany: {
+          args: Prisma.WebhookEndpointFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>[]
+        }
+        create: {
+          args: Prisma.WebhookEndpointCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>
+        }
+        createMany: {
+          args: Prisma.WebhookEndpointCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WebhookEndpointCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>[]
+        }
+        delete: {
+          args: Prisma.WebhookEndpointDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>
+        }
+        update: {
+          args: Prisma.WebhookEndpointUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>
+        }
+        deleteMany: {
+          args: Prisma.WebhookEndpointDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WebhookEndpointUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WebhookEndpointUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>[]
+        }
+        upsert: {
+          args: Prisma.WebhookEndpointUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WebhookEndpointPayload>
+        }
+        aggregate: {
+          args: Prisma.WebhookEndpointAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWebhookEndpoint>
+        }
+        groupBy: {
+          args: Prisma.WebhookEndpointGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebhookEndpointGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WebhookEndpointCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WebhookEndpointCountAggregateOutputType> | number
         }
       }
     }
@@ -2936,6 +3086,41 @@ export const TemplateScalarFieldEnum = {
 export type TemplateScalarFieldEnum = (typeof TemplateScalarFieldEnum)[keyof typeof TemplateScalarFieldEnum]
 
 
+export const PublicApiKeyScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  createdById: 'createdById',
+  name: 'name',
+  keyPrefix: 'keyPrefix',
+  keyHash: 'keyHash',
+  scopes: 'scopes',
+  lastUsedAt: 'lastUsedAt',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PublicApiKeyScalarFieldEnum = (typeof PublicApiKeyScalarFieldEnum)[keyof typeof PublicApiKeyScalarFieldEnum]
+
+
+export const WebhookEndpointScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  createdById: 'createdById',
+  name: 'name',
+  url: 'url',
+  secretEncrypted: 'secretEncrypted',
+  events: 'events',
+  active: 'active',
+  lastDeliveredAt: 'lastDeliveredAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WebhookEndpointScalarFieldEnum = (typeof WebhookEndpointScalarFieldEnum)[keyof typeof WebhookEndpointScalarFieldEnum]
+
+
 export const ContactScalarFieldEnum = {
   id: 'id',
   workspaceId: 'workspaceId',
@@ -3544,6 +3729,13 @@ export type ListEnumTemplateStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'Decimal'
  */
 export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
@@ -3554,13 +3746,6 @@ export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
  * Reference to a field of type 'Decimal[]'
  */
 export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -3998,6 +4183,8 @@ export type GlobalOmitConfig = {
   oAuthAccount?: Prisma.OAuthAccountOmit
   workspace?: Prisma.WorkspaceOmit
   template?: Prisma.TemplateOmit
+  publicApiKey?: Prisma.PublicApiKeyOmit
+  webhookEndpoint?: Prisma.WebhookEndpointOmit
   contact?: Prisma.ContactOmit
   contactConsentEvent?: Prisma.ContactConsentEventOmit
   conversation?: Prisma.ConversationOmit

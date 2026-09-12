@@ -1189,10 +1189,6 @@ export type NullableDecimalFieldUpdateOperationsInput = {
   divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type ContactCreateNestedOneWithoutConsentEventsInput = {
   create?: Prisma.XOR<Prisma.ContactCreateWithoutConsentEventsInput, Prisma.ContactUncheckedCreateWithoutConsentEventsInput>
   connectOrCreate?: Prisma.ContactCreateOrConnectWithoutConsentEventsInput

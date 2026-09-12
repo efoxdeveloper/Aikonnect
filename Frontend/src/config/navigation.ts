@@ -4,8 +4,7 @@ import {
   ChartSplineIcon as ChartSpline, CreditCardIcon as CreditCard,
   FileTextIcon as FileText, HouseIcon as House, LayoutDashboardIcon as PanelsTopLeft,
   ListChecksIcon as ListTodo, MegaphoneIcon as Megaphone, MessageCircleIcon as MessageCircle,
-  MessageSquareTextIcon as MessageSquareText, MousePointerClickIcon as MousePointerClick,
-  ShoppingBagIcon as ShoppingBag, ShoppingCartIcon as ShoppingCart,
+  MessageSquareTextIcon as MessageSquareText,
   UserRoundIcon as UserRound,
   UsersIcon as Users, UsersRoundIcon as UsersRound, WalletCardsIcon as WalletCards,
   WaypointsIcon as Workflow, WebhookIcon as Webhook,
@@ -34,10 +33,10 @@ export interface NavigationItem {
   children?: NavigationItem[];
 }
 
-export interface NavigationGroup { title: string; items: NavigationItem[]; }
+export interface NavigationGroup { title?: string; items: NavigationItem[]; }
 
 export const navigationGroups: NavigationGroup[] = [
-  { title: "Main", items: [
+  { items: [
     { title: "Dashboard", url: "/dashboard", icon: House },
     { title: "Inbox", url: "/inbox", icon: MessageSquareText },
   ] },
@@ -45,17 +44,11 @@ export const navigationGroups: NavigationGroup[] = [
     { title: "Campaigns", url: "/campaigns", icon: Megaphone },
     { title: "Templates", url: "/templates", icon: FileText },
     { title: "Automation", url: "/automations", icon: Workflow },
-    { title: "Click-to-WhatsApp Ads", url: "/click-to-whatsapp-ads", icon: MousePointerClick },
   ] },
   { title: "Sales & CRM", items: [
     { title: "Contacts", url: "/contacts", icon: Users },
     { title: "Pipelines", url: "/pipelines", icon: PanelsTopLeft },
     { title: "Tasks", url: "/tasks", icon: ListTodo },
-  ] },
-  { title: "Commerce", items: [
-    { title: "Catalog", url: "/catalog", icon: ShoppingBag },
-    { title: "Orders", url: "/orders", icon: ShoppingCart },
-    { title: "Payments", url: "/payments", icon: CreditCard },
   ] },
   { title: "Analytics", items: [
     { title: "Reports", url: "/reports", icon: ChartNoAxesCombined },

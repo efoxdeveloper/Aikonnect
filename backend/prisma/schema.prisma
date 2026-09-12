@@ -188,6 +188,8 @@ model User {
   automationsCreated         Automation[]             @relation("AutomationCreator")
   workflowsCreated           Workflow[]               @relation("WorkflowCreator")
   campaignsCreated           Campaign[]               @relation("CampaignCreator")
+  apiKeysCreated             PublicApiKey[]           @relation("ApiKeyCreator")
+  webhookEndpointsCreated    WebhookEndpoint[]        @relation("WebhookEndpointCreator")
 
   @@index([status])
   @@map("users")
@@ -245,42 +247,44 @@ model Workspace {
   workflowRuns             WorkflowRun[]
   campaigns                Campaign[]
   campaignRecipients       CampaignRecipient[]
+  apiKeys                  PublicApiKey[]
+  webhookEndpoints         WebhookEndpoint[]
 
   @@index([ownerId])
   @@map("workspaces")
 }
 
 model Template {
-  id            String         @id @default(uuid()) @db.Uuid
-  workspaceId   String         @map("workspace_id") @db.Uuid
-  metaTemplateId String?        @map("meta_template_id") @db.VarChar(100)
-  metaWabaId     String?        @map("meta_waba_id") @db.VarChar(100)
-  metaTemplateName String?      @map("meta_template_name") @db.VarChar(512)
-  metaLanguageCode String?      @map("meta_language_code") @db.VarChar(50)
-  metaStatus      String?       @map("meta_status") @db.VarChar(50)
-  metaRejectionReason String?   @map("meta_rejection_reason") @db.Text
-  name          String         @db.VarChar(160)
-  templateKey   String         @map("template_key") @db.VarChar(180)
-  category      String         @db.VarChar(40)
-  language      String         @db.VarChar(50)
-  templateType  String         @map("template_type") @db.VarChar(40)
-  headerType    String         @default("none") @map("header_type") @db.VarChar(20)
-  headerText    String?        @map("header_text") @db.VarChar(60)
-  headerFileName String?       @map("header_file_name") @db.VarChar(255)
-  body          String         @db.Text
-  footer        String?        @db.VarChar(60)
-  content       Json           @default("{}") @db.JsonB
-  status        TemplateStatus @default(DRAFT)
-  createdById   String?        @map("created_by_id") @db.Uuid
-  updatedById   String?        @map("updated_by_id") @db.Uuid
-  deletedById   String?        @map("deleted_by_id") @db.Uuid
-  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt     DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
-  deletedAt     DateTime?      @map("deleted_at") @db.Timestamptz(3)
-  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  createdBy     User?          @relation("TemplateCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  updatedBy     User?          @relation("TemplateUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
-  deletedBy     User?          @relation("TemplateDeleter", fields: [deletedById], references: [id], onDelete: SetNull)
+  id                  String         @id @default(uuid()) @db.Uuid
+  workspaceId         String         @map("workspace_id") @db.Uuid
+  metaTemplateId      String?        @map("meta_template_id") @db.VarChar(100)
+  metaWabaId          String?        @map("meta_waba_id") @db.VarChar(100)
+  metaTemplateName    String?        @map("meta_template_name") @db.VarChar(512)
+  metaLanguageCode    String?        @map("meta_language_code") @db.VarChar(50)
+  metaStatus          String?        @map("meta_status") @db.VarChar(50)
+  metaRejectionReason String?        @map("meta_rejection_reason") @db.Text
+  name                String         @db.VarChar(160)
+  templateKey         String         @map("template_key") @db.VarChar(180)
+  category            String         @db.VarChar(40)
+  language            String         @db.VarChar(50)
+  templateType        String         @map("template_type") @db.VarChar(40)
+  headerType          String         @default("none") @map("header_type") @db.VarChar(20)
+  headerText          String?        @map("header_text") @db.VarChar(60)
+  headerFileName      String?        @map("header_file_name") @db.VarChar(255)
+  body                String         @db.Text
+  footer              String?        @db.VarChar(60)
+  content             Json           @default("{}") @db.JsonB
+  status              TemplateStatus @default(DRAFT)
+  createdById         String?        @map("created_by_id") @db.Uuid
+  updatedById         String?        @map("updated_by_id") @db.Uuid
+  deletedById         String?        @map("deleted_by_id") @db.Uuid
+  createdAt           DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt           DateTime?      @map("deleted_at") @db.Timestamptz(3)
+  workspace           Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy           User?          @relation("TemplateCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy           User?          @relation("TemplateUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+  deletedBy           User?          @relation("TemplateDeleter", fields: [deletedById], references: [id], onDelete: SetNull)
 
   @@unique([workspaceId, templateKey])
   @@unique([workspaceId, metaTemplateId])
@@ -291,6 +295,47 @@ model Template {
   @@index([updatedById])
   @@index([deletedById])
   @@map("templates")
+}
+
+model PublicApiKey {
+  id          String    @id @default(uuid()) @db.Uuid
+  workspaceId String    @map("workspace_id") @db.Uuid
+  createdById String?   @map("created_by_id") @db.Uuid
+  name        String    @db.VarChar(100)
+  keyPrefix   String    @map("key_prefix") @db.VarChar(32)
+  keyHash     String    @unique @map("key_hash") @db.VarChar(64)
+  scopes      String[]  @default([])
+  lastUsedAt  DateTime? @map("last_used_at") @db.Timestamptz(3)
+  expiresAt   DateTime? @map("expires_at") @db.Timestamptz(3)
+  revokedAt   DateTime? @map("revoked_at") @db.Timestamptz(3)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy   User?     @relation("ApiKeyCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, revokedAt, createdAt])
+  @@index([createdById])
+  @@map("public_api_keys")
+}
+
+model WebhookEndpoint {
+  id              String    @id @default(uuid()) @db.Uuid
+  workspaceId     String    @map("workspace_id") @db.Uuid
+  createdById     String?   @map("created_by_id") @db.Uuid
+  name            String    @db.VarChar(100)
+  url             String    @db.VarChar(500)
+  secretEncrypted String    @map("secret_encrypted") @db.Text
+  events          String[]  @default([])
+  active          Boolean   @default(true)
+  lastDeliveredAt DateTime? @map("last_delivered_at") @db.Timestamptz(3)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace       Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy       User?     @relation("WebhookEndpointCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, active, createdAt])
+  @@index([createdById])
+  @@map("webhook_endpoints")
 }
 
 model Contact {
@@ -396,6 +441,8 @@ model Conversation {
 
   @@unique([workspaceId, contactId, channelKey])
   @@index([workspaceId, status, lastMessageAt, id])
+  @@index([workspaceId, channelKey, status, lastMessageAt(sort: Desc), id(sort: Desc)], map: "conversations_workspace_channel_status_recent_idx")
+  @@index([workspaceId, lastMessageAt(sort: Desc), id(sort: Desc)], map: "conversations_workspace_recent_idx")
   @@index([workspaceId, contactId, updatedAt, id])
   @@index([phoneNumberId])
   @@map("conversations")
@@ -668,20 +715,20 @@ model Automation {
 }
 
 model AutomationLog {
-  id               String             @id @default(uuid()) @db.Uuid
-  automationId     String             @map("automation_id") @db.Uuid
-  workspaceId      String             @map("workspace_id") @db.Uuid
-  contactId        String?            @map("contact_id") @db.Uuid
+  id               String              @id @default(uuid()) @db.Uuid
+  automationId     String              @map("automation_id") @db.Uuid
+  workspaceId      String              @map("workspace_id") @db.Uuid
+  contactId        String?             @map("contact_id") @db.Uuid
   status           AutomationRunStatus
-  triggerPayload   Json               @default("{}") @map("trigger_payload") @db.JsonB
-  conditionResults Json               @default("[]") @map("condition_results") @db.JsonB
-  actionResults    Json               @default("[]") @map("action_results") @db.JsonB
-  error            String?            @db.Text
-  startedAt        DateTime           @default(now()) @map("started_at") @db.Timestamptz(3)
-  completedAt      DateTime?          @map("completed_at") @db.Timestamptz(3)
-  automation       Automation         @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  workspace        Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  contact          Contact?           @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  triggerPayload   Json                @default("{}") @map("trigger_payload") @db.JsonB
+  conditionResults Json                @default("[]") @map("condition_results") @db.JsonB
+  actionResults    Json                @default("[]") @map("action_results") @db.JsonB
+  error            String?             @db.Text
+  startedAt        DateTime            @default(now()) @map("started_at") @db.Timestamptz(3)
+  completedAt      DateTime?           @map("completed_at") @db.Timestamptz(3)
+  automation       Automation          @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  workspace        Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contact          Contact?            @relation(fields: [contactId], references: [id], onDelete: SetNull)
 
   @@index([workspaceId, automationId, startedAt])
   @@index([workspaceId, contactId, startedAt])
@@ -689,24 +736,24 @@ model AutomationLog {
 }
 
 model Workflow {
-  id             String         @id @default(uuid()) @db.Uuid
-  workspaceId    String         @map("workspace_id") @db.Uuid
-  name           String         @db.VarChar(160)
-  description    String?        @db.Text
-  status         WorkflowStatus @default(DRAFT)
-  trigger        Json           @db.JsonB
-  conditions     Json           @default("[]") @db.JsonB
-  steps          Json           @db.JsonB
-  edges          Json           @default("[]") @db.JsonB
-  runCount       Int            @default(0) @map("run_count")
-  enrolledCount  Int            @default(0) @map("enrolled_count")
-  lastRunAt      DateTime?      @map("last_run_at") @db.Timestamptz(3)
-  createdById    String?        @map("created_by_id") @db.Uuid
-  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt      DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
-  workspace      Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  createdBy      User?          @relation("WorkflowCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  runs           WorkflowRun[]
+  id            String         @id @default(uuid()) @db.Uuid
+  workspaceId   String         @map("workspace_id") @db.Uuid
+  name          String         @db.VarChar(160)
+  description   String?        @db.Text
+  status        WorkflowStatus @default(DRAFT)
+  trigger       Json           @db.JsonB
+  conditions    Json           @default("[]") @db.JsonB
+  steps         Json           @db.JsonB
+  edges         Json           @default("[]") @db.JsonB
+  runCount      Int            @default(0) @map("run_count")
+  enrolledCount Int            @default(0) @map("enrolled_count")
+  lastRunAt     DateTime?      @map("last_run_at") @db.Timestamptz(3)
+  createdById   String?        @map("created_by_id") @db.Uuid
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy     User?          @relation("WorkflowCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  runs          WorkflowRun[]
 
   @@index([workspaceId, status, updatedAt])
   @@index([workspaceId, createdAt])
@@ -714,21 +761,21 @@ model Workflow {
 }
 
 model WorkflowRun {
-  id             String           @id @default(uuid()) @db.Uuid
-  workflowId     String           @map("workflow_id") @db.Uuid
-  workspaceId    String           @map("workspace_id") @db.Uuid
-  contactId      String           @map("contact_id") @db.Uuid
-  conversationId String           @map("conversation_id") @db.Uuid
+  id             String            @id @default(uuid()) @db.Uuid
+  workflowId     String            @map("workflow_id") @db.Uuid
+  workspaceId    String            @map("workspace_id") @db.Uuid
+  contactId      String            @map("contact_id") @db.Uuid
+  conversationId String            @map("conversation_id") @db.Uuid
   status         WorkflowRunStatus @default(WAITING)
-  currentStepId  String?          @map("current_step_id") @db.VarChar(80)
-  context        Json             @default("{}") @db.JsonB
-  startedAt      DateTime         @default(now()) @map("started_at") @db.Timestamptz(3)
-  updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
-  completedAt    DateTime?        @map("completed_at") @db.Timestamptz(3)
-  workflow       Workflow         @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-  workspace      Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  contact        Contact          @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  conversation   Conversation     @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  currentStepId  String?           @map("current_step_id") @db.VarChar(80)
+  context        Json              @default("{}") @db.JsonB
+  startedAt      DateTime          @default(now()) @map("started_at") @db.Timestamptz(3)
+  updatedAt      DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+  completedAt    DateTime?         @map("completed_at") @db.Timestamptz(3)
+  workflow       Workflow          @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  workspace      Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contact        Contact           @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  conversation   Conversation      @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@index([workspaceId, contactId, status, updatedAt])
   @@index([workflowId, status, updatedAt])
@@ -736,41 +783,41 @@ model WorkflowRun {
 }
 
 model Campaign {
-  id             String         @id @default(uuid()) @db.Uuid
-  workspaceId    String         @map("workspace_id") @db.Uuid
-  name           String         @db.VarChar(160)
-  channelKey     String         @default("whatsapp") @map("channel_key") @db.VarChar(50)
-  kind           CampaignKind   @default(ONE_TIME)
-  category       String         @default("Marketing") @db.VarChar(40)
-  templateKey    String?        @map("template_key") @db.VarChar(180)
-  templateName   String?        @map("template_name") @db.VarChar(160)
-  metaTemplateName String?      @map("meta_template_name") @db.VarChar(512)
-  templateLanguageCode String?  @map("template_language_code") @db.VarChar(50)
-  templateBody   String?        @map("template_body") @db.Text
-  templateVariables Json        @default("[]") @map("template_variables") @db.JsonB
-  buttonTracking Json           @default("[]") @map("button_tracking") @db.JsonB
-  audienceType   String         @map("audience_type") @db.VarChar(30)
-  audienceLabel  String         @map("audience_label") @db.VarChar(255)
-  audienceConfig Json           @default("{}") @map("audience_config") @db.JsonB
-  status         CampaignStatus @default(DRAFT)
-  recipientCount Int            @default(0) @map("recipient_count")
-  attempted      Int            @default(0)
-  sent           Int            @default(0)
-  delivered      Int            @default(0)
-  read           Int            @default(0)
-  replied        Int            @default(0)
-  failed         Int            @default(0)
-  scheduledAt    DateTime?      @map("scheduled_at") @db.Timestamptz(3)
-  setLiveAt      DateTime?      @map("set_live_at") @db.Timestamptz(3)
-  completedAt    DateTime?      @map("completed_at") @db.Timestamptz(3)
-  totalCost      Decimal?       @map("total_cost") @db.Decimal(14, 2)
-  retryFailed    Boolean        @default(false) @map("retry_failed")
-  createdById    String?        @map("created_by_id") @db.Uuid
-  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt      DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
-  workspace      Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  createdBy      User?          @relation("CampaignCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  recipients     CampaignRecipient[]
+  id                   String              @id @default(uuid()) @db.Uuid
+  workspaceId          String              @map("workspace_id") @db.Uuid
+  name                 String              @db.VarChar(160)
+  channelKey           String              @default("whatsapp") @map("channel_key") @db.VarChar(50)
+  kind                 CampaignKind        @default(ONE_TIME)
+  category             String              @default("Marketing") @db.VarChar(40)
+  templateKey          String?             @map("template_key") @db.VarChar(180)
+  templateName         String?             @map("template_name") @db.VarChar(160)
+  metaTemplateName     String?             @map("meta_template_name") @db.VarChar(512)
+  templateLanguageCode String?             @map("template_language_code") @db.VarChar(50)
+  templateBody         String?             @map("template_body") @db.Text
+  templateVariables    Json                @default("[]") @map("template_variables") @db.JsonB
+  buttonTracking       Json                @default("[]") @map("button_tracking") @db.JsonB
+  audienceType         String              @map("audience_type") @db.VarChar(30)
+  audienceLabel        String              @map("audience_label") @db.VarChar(255)
+  audienceConfig       Json                @default("{}") @map("audience_config") @db.JsonB
+  status               CampaignStatus      @default(DRAFT)
+  recipientCount       Int                 @default(0) @map("recipient_count")
+  attempted            Int                 @default(0)
+  sent                 Int                 @default(0)
+  delivered            Int                 @default(0)
+  read                 Int                 @default(0)
+  replied              Int                 @default(0)
+  failed               Int                 @default(0)
+  scheduledAt          DateTime?           @map("scheduled_at") @db.Timestamptz(3)
+  setLiveAt            DateTime?           @map("set_live_at") @db.Timestamptz(3)
+  completedAt          DateTime?           @map("completed_at") @db.Timestamptz(3)
+  totalCost            Decimal?            @map("total_cost") @db.Decimal(14, 2)
+  retryFailed          Boolean             @default(false) @map("retry_failed")
+  createdById          String?             @map("created_by_id") @db.Uuid
+  createdAt            DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace            Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy            User?               @relation("CampaignCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  recipients           CampaignRecipient[]
 
   @@index([workspaceId, kind, status, updatedAt, id])
   @@index([workspaceId, createdAt, id])
@@ -779,27 +826,27 @@ model Campaign {
 }
 
 model CampaignRecipient {
-  id             String                  @id @default(uuid()) @db.Uuid
-  campaignId     String                  @map("campaign_id") @db.Uuid
-  workspaceId    String                  @map("workspace_id") @db.Uuid
-  contactId      String?                 @map("contact_id") @db.Uuid
-  phoneE164      String                  @map("phone_e164") @db.VarChar(20)
-  status         CampaignRecipientStatus @default(PENDING)
-  metaMessageId  String?                 @map("meta_message_id") @db.VarChar(200)
-  attemptCount   Int                     @default(0) @map("attempt_count")
-  attemptedAt    DateTime?               @map("attempted_at") @db.Timestamptz(3)
-  sentAt         DateTime?               @map("sent_at") @db.Timestamptz(3)
-  deliveredAt    DateTime?               @map("delivered_at") @db.Timestamptz(3)
-  readAt         DateTime?               @map("read_at") @db.Timestamptz(3)
-  repliedAt      DateTime?               @map("replied_at") @db.Timestamptz(3)
-  failedAt       DateTime?               @map("failed_at") @db.Timestamptz(3)
-  failureReason  String?                 @map("failure_reason") @db.Text
-  clickCount     Int                     @default(0) @map("click_count")
-  createdAt      DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt      DateTime                @updatedAt @map("updated_at") @db.Timestamptz(3)
-  campaign       Campaign                @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-  workspace      Workspace               @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  contact        Contact?                @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  id            String                  @id @default(uuid()) @db.Uuid
+  campaignId    String                  @map("campaign_id") @db.Uuid
+  workspaceId   String                  @map("workspace_id") @db.Uuid
+  contactId     String?                 @map("contact_id") @db.Uuid
+  phoneE164     String                  @map("phone_e164") @db.VarChar(20)
+  status        CampaignRecipientStatus @default(PENDING)
+  metaMessageId String?                 @map("meta_message_id") @db.VarChar(200)
+  attemptCount  Int                     @default(0) @map("attempt_count")
+  attemptedAt   DateTime?               @map("attempted_at") @db.Timestamptz(3)
+  sentAt        DateTime?               @map("sent_at") @db.Timestamptz(3)
+  deliveredAt   DateTime?               @map("delivered_at") @db.Timestamptz(3)
+  readAt        DateTime?               @map("read_at") @db.Timestamptz(3)
+  repliedAt     DateTime?               @map("replied_at") @db.Timestamptz(3)
+  failedAt      DateTime?               @map("failed_at") @db.Timestamptz(3)
+  failureReason String?                 @map("failure_reason") @db.Text
+  clickCount    Int                     @default(0) @map("click_count")
+  createdAt     DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime                @updatedAt @map("updated_at") @db.Timestamptz(3)
+  campaign      Campaign                @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  workspace     Workspace               @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contact       Contact?                @relation(fields: [contactId], references: [id], onDelete: SetNull)
 
   @@unique([campaignId, phoneE164])
   @@index([workspaceId, status, updatedAt])

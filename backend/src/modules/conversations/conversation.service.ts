@@ -107,9 +107,9 @@ export async function listMessages(workspaceId: string, contactId: string, conve
   const where = { workspaceId, contactId, conversationId };
   const [total, items] = await prisma.$transaction([
     prisma.message.count({ where }),
-    prisma.message.findMany({ where, select: messageSelect, orderBy: [{ sentAt: "asc" }, { id: "asc" }], skip: (query.page - 1) * query.pageSize, take: query.pageSize }),
+    prisma.message.findMany({ where, select: messageSelect, orderBy: query.latest ? [{ sentAt: "desc" }, { id: "desc" }] : [{ sentAt: "asc" }, { id: "asc" }], skip: (query.page - 1) * query.pageSize, take: query.pageSize }),
   ]);
-  return { items, pagination: { page: query.page, pageSize: query.pageSize, total, totalPages: Math.max(1, Math.ceil(total / query.pageSize)), hasNext: query.page * query.pageSize < total, hasPrevious: query.page > 1 } };
+  return { items: query.latest ? items.reverse() : items, pagination: { page: query.page, pageSize: query.pageSize, total, totalPages: Math.max(1, Math.ceil(total / query.pageSize)), hasNext: query.latest ? query.page > 1 : query.page * query.pageSize < total, hasPrevious: query.latest ? query.page * query.pageSize < total : query.page > 1 } };
 }
 
 export async function getMessageMedia(workspaceId: string, contactId: string, conversationId: string, messageId: string) {

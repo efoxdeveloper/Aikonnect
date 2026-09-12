@@ -16,8 +16,9 @@ import { AutomationPlaceholder } from "@/pages/AutomationPlaceholder";
 import { Workflows } from "@/pages/Workflows";
 import { WorkflowBuilder } from "@/pages/WorkflowBuilder";
 import { Tasks } from "@/pages/Tasks";
+import { ApiWebhooks } from "@/pages/ApiWebhooks";
 
-const paths = ["dashboard/analytics", "dashboard/activity", "contacts", "campaigns", "templates", "createtemplate", "pipelines", "catalog", "orders", "reports", "integrations", "settings", "account-settings", "payments", "click-to-whatsapp-ads", "conversation-analytics", "campaign-analytics", "api-webhooks", "webhook-events", "whatsapp-account", "team-members", "team-members/roles", "billing"];
+const paths = ["dashboard/analytics", "dashboard/activity", "contacts", "campaigns", "templates", "createtemplate", "pipelines", "catalog", "orders", "reports", "integrations", "settings", "account-settings", "payments", "click-to-whatsapp-ads", "conversation-analytics", "campaign-analytics", "webhook-events", "whatsapp-account", "team-members", "team-members/roles", "billing"];
 export function AppRoutes() {
   return (
     <Routes>
@@ -42,6 +43,7 @@ export function AppRoutes() {
           <Route path="/workflows/create" element={<WorkflowBuilder />} />
           <Route path="/workflows/:workflowId" element={<WorkflowBuilder />} />
           <Route path="/tasks" element={<Tasks />} />
+          <Route path="/api-webhooks" element={<ApiWebhooks />} />
           <Route path="/sequences" element={<AutomationPlaceholder kind="sequences" />} />
           <Route path="/automation-settings" element={<AutomationPlaceholder kind="settings" />} />
           {paths.map((path) => <Route key={path} path={`/${path}`} element={<Dashboard />} />)}

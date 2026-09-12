@@ -22,6 +22,14 @@ describe("SidebarSection", () => {
     expect(trigger.querySelector("svg")).toBeInTheDocument();
   });
 
+  it("renders the primary Dashboard and Inbox items without a parent heading", () => {
+    render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><SidebarSection group={navigationGroups[0]} /></SidebarProvider></MemoryRouter>);
+
+    expect(screen.getByRole("link", { name: "Dashboard" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Inbox" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Main/ })).not.toBeInTheDocument();
+  });
+
   it("allows an inactive section to reveal its submenu", () => {
     render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><SidebarSection group={navigationGroups[1]} /></SidebarProvider></MemoryRouter>);
 
