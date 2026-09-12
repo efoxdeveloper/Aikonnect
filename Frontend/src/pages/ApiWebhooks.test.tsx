@@ -58,9 +58,13 @@ describe("ApiWebhooks", () => {
     renderPage();
     expect(screen.getByTestId("api-webhooks-page")).toHaveClass("overflow-hidden");
     expect(await screen.findByText("Shopify integration")).toBeInTheDocument();
-    expect(screen.getByTestId("api-docs-section")).toHaveTextContent("Authorization: Bearer sk_live_...");
-    expect(screen.getByTestId("webhooks-section")).toHaveTextContent("verify the HMAC signature");
+    expect(screen.getByRole("tab", { name: "API Keys" })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByRole("button", { name: /generate api key/i })).toBeDisabled();
+    expect(screen.queryByTestId("api-docs-section")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("tab", { name: "API Docs" }));
+    expect(screen.getByTestId("api-docs-section")).toHaveTextContent("Authorization: Bearer sk_live_...");
+    fireEvent.click(screen.getByRole("tab", { name: "Webhooks" }));
+    expect(screen.getByTestId("webhooks-section")).toHaveTextContent("verify the HMAC signature");
   });
 
   it("creates a key and displays its secret only in the creation result", async () => {
@@ -99,6 +103,7 @@ describe("ApiWebhooks", () => {
       return { items: [] } as never;
     });
     renderPage();
+    fireEvent.click(screen.getByRole("tab", { name: "Webhooks" }));
     fireEvent.change(screen.getByLabelText("Endpoint name"), { target: { value: "Production app" } });
     fireEvent.change(screen.getByLabelText("HTTPS endpoint URL"), { target: { value: "https://example.com/webhooks" } });
     fireEvent.click(screen.getByRole("button", { name: "Add endpoint" }));
