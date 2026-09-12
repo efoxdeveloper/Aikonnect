@@ -7,7 +7,7 @@ import {
 } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ContactHub } from "@/pages/ContactHub";
-import { apiRequest } from "@/lib/api";
+import { ApiError, apiRequest } from "@/lib/api";
 import { toast } from "react-toastify";
 
 const routerMocks = vi.hoisted(() => ({ navigate: vi.fn() }));
@@ -39,7 +39,18 @@ vi.mock("@/contexts/AuthContext", () => ({
   }),
 }));
 vi.mock("@/lib/api", () => ({
-  ApiError: class ApiError extends Error {},
+  ApiError: class ApiError extends Error {
+    status: number;
+    code: string;
+    details?: unknown;
+
+    constructor(status: number, message: string, code = "API_ERROR", details?: unknown) {
+      super(message);
+      this.status = status;
+      this.code = code;
+      this.details = details;
+    }
+  },
   apiRequest: vi.fn(),
 }));
 vi.mock("react-toastify", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
@@ -87,11 +98,13 @@ const contactColumnLabels = ["Contact Name", "Phone Number", "Email ID", "Create
 let apiContacts: ApiContact[] = [];
 let apiSegments: Array<{ id: string; name: string; conditions: Array<{ type: string; field: string; operator: string; value?: unknown }>; createdAt: string; updatedAt: string }> = [];
 let apiCustomFields: Array<Record<string, unknown>> = [];
+let createApiError: unknown = null;
 
 beforeEach(() => {
   window.localStorage.clear();
   apiContacts = structuredClone(seedContacts);
   apiSegments = [];
+  createApiError = null;
   apiCustomFields = [{
     id: "field-1",
     key: "company",
@@ -212,6 +225,7 @@ beforeEach(() => {
       return { deletedCount: body.contactIds.length } as never;
     }
       if (url.pathname.endsWith("/contacts") && options.method === "POST") {
+        if (createApiError) throw createApiError;
         const contact = JSON.parse(String(options.body)) as {
           name: string;
           phone: string;
@@ -711,7 +725,7 @@ describe("ContactHub", () => {
     fireEvent.click(screen.getByRole("button", { name: "Create Contacts" }));
     const drawer = screen.getByRole("dialog", { name: "Create contact" });
 
-    fireEvent.change(within(drawer).getByLabelText("Contact name"), {
+    fireEvent.change(within(drawer).getByLabelText(/Contact name/), {
       target: { value: "New Customer" },
     });
     const countrySelector = within(drawer).getByRole("combobox", {
@@ -725,7 +739,7 @@ describe("ContactHub", () => {
       "in",
     );
     fireEvent.click(indiaOption);
-    fireEvent.change(within(drawer).getByLabelText("Phone number"), {
+    fireEvent.change(within(drawer).getByLabelText(/Phone number/), {
       target: { value: "+91 9000000000" },
     });
     fireEvent.change(within(drawer).getByLabelText(/Tags/), {
@@ -748,7 +762,9 @@ describe("ContactHub", () => {
     expect(apiContacts[0]?.profileName).toBeNull();
     expect(apiContacts[0]?.customAttributes).toEqual({ company: "Acme India" });
     const createCall = vi.mocked(apiRequest).mock.calls.find(([path, options]) => new URL(String(path), "http://test.local").pathname.endsWith("/contacts") && options?.method === "POST");
-    expect(JSON.parse(String(createCall?.[1]?.body))).toMatchObject({ whatsappOpted: true, whatsappConsentSource: "Manual" });
+    const createPayload = JSON.parse(String(createCall?.[1]?.body));
+    expect(createPayload).toMatchObject({ whatsappOpted: true, whatsappConsentSource: "Manual" });
+    expect(createPayload).not.toHaveProperty("userId");
   });
 
   it("blocks contact creation until required custom fields are completed", async () => {
@@ -757,12 +773,32 @@ describe("ContactHub", () => {
     fireEvent.click(screen.getByRole("button", { name: "Create Contacts" }));
     const drawer = screen.getByRole("dialog", { name: "Create contact" });
     const requiredCompany = await within(drawer).findByRole("textbox", { name: "Company" });
-    fireEvent.change(within(drawer).getByLabelText("Contact name"), { target: { value: "Missing Company" } });
-    fireEvent.change(within(drawer).getByLabelText("Phone number"), { target: { value: "+91 9000000001" } });
+    fireEvent.change(within(drawer).getByLabelText(/Contact name/), { target: { value: "Missing Company" } });
+    fireEvent.change(within(drawer).getByLabelText(/Phone number/), { target: { value: "+91 9000000001" } });
     fireEvent.click(within(drawer).getByRole("button", { name: "Create contact" }));
 
     expect(requiredCompany).toBeRequired();
+    expect(requiredCompany).toHaveAttribute("aria-invalid", "true");
+    expect(requiredCompany).toHaveClass("border-[var(--danger)]");
+    expect(screen.getByText("Please fix the highlighted fields before creating the contact.")).toBeInTheDocument();
     expect(apiContacts.some(({ name }) => name === "Missing Company")).toBe(false);
+  });
+
+  it("highlights the phone field when the API rejects a duplicate contact", async () => {
+    createApiError = new ApiError(409, "A contact with this phone number already exists.", "CONTACT_PHONE_EXISTS");
+    render(<ContactHub />);
+    fireEvent.click(screen.getByRole("button", { name: "Create Contacts" }));
+    const drawer = screen.getByRole("dialog", { name: "Create contact" });
+    fireEvent.change(within(drawer).getByLabelText(/Contact name/), { target: { value: "Duplicate Contact" } });
+    fireEvent.change(within(drawer).getByLabelText(/Phone number/), { target: { value: "+91 9000000000" } });
+    fireEvent.click(within(drawer).getByRole("button", { name: "Create contact" }));
+
+    const phone = within(drawer).getByLabelText(/Phone number/);
+    expect(await screen.findByText("Please fix the highlighted fields before creating the contact.")).toBeInTheDocument();
+    expect(phone).toHaveAttribute("aria-invalid", "true");
+    expect(phone).toHaveClass("border-[var(--danger)]");
+    expect(screen.getByText("A contact with this phone number already exists.")).toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "Create contact" })).toBeInTheDocument();
   });
 
   it("imports a CSV through mapping, validation, and duplicate review", async () => {
@@ -862,6 +898,7 @@ describe("ContactHub", () => {
     expect(
       screen.getByRole("heading", { name: "Create Segment" }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "Create Segment" }).parentElement).toHaveClass("z-[1400]");
     fireEvent.click(screen.getByRole("button", { name: "Select a tag" }));
     fireEvent.change(screen.getByRole("textbox", { name: "Search segment tags" }), {
       target: { value: "ctw" },

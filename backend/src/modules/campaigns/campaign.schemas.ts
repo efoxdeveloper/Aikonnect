@@ -5,6 +5,11 @@ export const campaignStatus = z.enum(["DRAFT", "SCHEDULED", "RUNNING", "COMPLETE
 export const campaignAudienceType = z.enum(["csv", "manual", "segment", "contacts", "all"]);
 export const campaignLaunchMode = z.enum(["draft", "send", "schedule"]);
 const e164Phone = z.string().trim().regex(/^\+[1-9]\d{6,14}$/, "Phone numbers must be complete E.164 numbers");
+const templateVariable = z.object({
+  source: z.enum(["contact", "custom", "constant"]),
+  field: z.string().trim().max(160).default(""),
+  fallback: z.string().max(500).default(""),
+});
 
 export const campaignWorkspaceParamsSchema = z.object({ workspaceId: z.uuid() });
 export const campaignIdParamsSchema = campaignWorkspaceParamsSchema.extend({ campaignId: z.uuid() });
@@ -22,13 +27,19 @@ export const createCampaignSchema = z.object({
   launchMode: campaignLaunchMode.default("draft"),
   scheduledAt: z.iso.datetime({ offset: true }).nullable().optional(),
   retryFailed: z.boolean().default(false),
+  templateVariables: z.array(templateVariable).max(50).default([]),
   audienceConfig: z.record(z.string(), z.json()).default({}),
 }).superRefine((value, context) => {
   if (value.launchMode === "schedule" && !value.scheduledAt) context.addIssue({ code: "custom", path: ["scheduledAt"], message: "A schedule time is required" });
+  if (value.launchMode !== "schedule" && value.scheduledAt) context.addIssue({ code: "custom", path: ["scheduledAt"], message: "A schedule time can only be used with scheduled campaigns" });
   if (value.scheduledAt && new Date(value.scheduledAt).getTime() <= Date.now() && value.launchMode === "schedule") context.addIssue({ code: "custom", path: ["scheduledAt"], message: "The schedule time must be in the future" });
   if (value.audienceType === "contacts" && !value.contactIds.length) context.addIssue({ code: "custom", path: ["contactIds"], message: "Select at least one contact" });
-  if (value.audienceType === "manual" && !value.phoneNumbers.length) context.addIssue({ code: "custom", path: ["phoneNumbers"], message: "Add at least one phone number" });
-  if (value.audienceType === "segment" && value.launchMode !== "draft" && !value.segmentId) context.addIssue({ code: "custom", path: ["segmentId"], message: "Choose a saved segment" });
+  if ((value.audienceType === "manual" || value.audienceType === "csv") && !value.phoneNumbers.length) context.addIssue({ code: "custom", path: ["phoneNumbers"], message: "Add at least one phone number" });
+  if (value.audienceType === "segment" && !value.segmentId) context.addIssue({ code: "custom", path: ["segmentId"], message: "Choose a saved segment" });
+  if (value.launchMode !== "draft") value.templateVariables.forEach((variable, index) => {
+    if ((variable.source === "contact" || variable.source === "custom") && !variable.field) context.addIssue({ code: "custom", path: ["templateVariables", index, "field"], message: "Choose a field for this variable" });
+    if (variable.source === "constant" && !variable.field && !variable.fallback) context.addIssue({ code: "custom", path: ["templateVariables", index], message: "Enter a constant value" });
+  });
 });
 
 export const campaignListQuerySchema = z.object({

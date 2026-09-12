@@ -11,13 +11,11 @@ import {
   LoaderCircle,
   MessageCircle,
   MessageSquareReply,
-  PhoneCall,
   Plus,
   Save,
   Timer,
   Upload,
   Trash2,
-  Workflow,
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -51,10 +49,7 @@ const buttonOptions: Array<{
   icon: typeof ExternalLink;
 }> = [
   { id: "website", label: "Visit Website", icon: ExternalLink },
-  { id: "offer", label: "Copy offer code", icon: CopyIcon },
-  { id: "call", label: "WA Voice Call", icon: PhoneCall },
   { id: "quick-reply", label: "Quick replies", icon: MessageSquareReply },
-  { id: "flow", label: "Complete Flow", icon: Workflow },
 ];
 
 const headerOptions: Array<{ id: HeaderType; label: string }> = [
@@ -222,7 +217,7 @@ type LimitedOfferData = {
   destination: string;
 };
 
-const defaultCarouselCard = (): CarouselCard => ({ id: 1, mediaType: "image", mediaFile: null, content: "", buttonType: "website", buttonText: "", destination: "https://www.wati.io" });
+const defaultCarouselCard = (): CarouselCard => ({ id: 1, mediaType: "image", mediaFile: null, content: "", buttonType: "website", buttonText: "", destination: "" });
 
 function CarouselEditor({
   cards,
@@ -243,8 +238,8 @@ function CarouselEditor({
 
   const showSampleCards = () => {
     setCards([
-      { id: 1, mediaType: "image", mediaFile: null, content: "Explore our latest collection", buttonType: "website", buttonText: "Shop now", destination: "https://www.wati.io" },
-      { id: 2, mediaType: "image", mediaFile: null, content: "Limited-time offers inside", buttonType: "website", buttonText: "View offer", destination: "https://www.wati.io" },
+      { id: 1, mediaType: "image", mediaFile: null, content: "Explore our latest collection", buttonType: "website", buttonText: "Shop now", destination: "https://example.com" },
+      { id: 2, mediaType: "image", mediaFile: null, content: "Limited-time offers inside", buttonType: "website", buttonText: "View offer", destination: "https://example.com" },
     ]);
   };
 
@@ -276,7 +271,7 @@ function CarouselEditor({
           </article>
         ))}
       </div>
-      <button type="button" disabled={cards.length >= 5} onClick={() => setCards((current) => [...current, { id: Math.max(...current.map((card) => card.id), 0) + 1, mediaType: "image", mediaFile: null, content: "", buttonType: current[0]?.buttonType ?? "website", buttonText: "", destination: "https://www.wati.io" }])} className="mt-4 flex items-center gap-1.5 text-[11px] font-medium text-[var(--brand)] disabled:text-[var(--text-muted)]"><Plus size={14} /> Add another card</button>
+      <button type="button" disabled={cards.length >= 5} onClick={() => setCards((current) => [...current, { id: Math.max(...current.map((card) => card.id), 0) + 1, mediaType: "image", mediaFile: null, content: "", buttonType: current[0]?.buttonType ?? "website", buttonText: "", destination: "" }])} className="mt-4 flex items-center gap-1.5 text-[11px] font-medium text-[var(--brand)] disabled:text-[var(--text-muted)]"><Plus size={14} /> Add another card</button>
     </div>
   );
 }
@@ -330,12 +325,13 @@ export function TemplateBuilder() {
     couponCode: "",
     copyButtonText: "Copy offer code",
     visitButtonText: "Visit shop",
-    destination: "https://www.wati.io",
+    destination: "",
   });
   const [campaignTitle, setCampaignTitle] = useState("");
   const [body, setBody] = useState("");
-  const [footer, setFooter] = useState("Powered by wati.io");
+  const [footer, setFooter] = useState("");
   const [buttons, setButtons] = useState<ButtonType[]>([]);
+  const [websiteUrl, setWebsiteUrl] = useState("");
   const [error, setError] = useState("");
   const [validationErrors, setValidationErrors] = useState<Partial<Record<ValidationField, string>>>({});
   const [savingAction, setSavingAction] = useState<SaveAction | null>(null);
@@ -351,13 +347,14 @@ export function TemplateBuilder() {
         const template = await apiRequest<{
           name: string; category: string; language: string; templateType: TemplateType; headerType: HeaderType;
           headerText: string | null; body: string; footer: string | null; content: {
+            websiteUrl?: string;
             buttons?: ButtonType[]; carouselCards?: Array<Omit<CarouselCard, "id" | "mediaFile"> & { mediaFileName?: string | null }>;
             limitedOffer?: LimitedOfferData;
           };
-        }>(`/workspaces/${workspaceId}/templates/${editTemplateId}`, { headers: { authorization: `Bearer ${accessToken}` } });
-        setTemplateName(template.name); setCategory(template.category); setLanguage(template.language); setTemplateType(template.templateType); setHeaderType(template.headerType); setCampaignTitle(template.headerText ?? ""); setBody(template.body); setFooter(template.footer ?? ""); setButtons(template.content.buttons ?? []);
+          }>(`/workspaces/${workspaceId}/templates/${editTemplateId}`, { headers: { authorization: `Bearer ${accessToken}` } });
+        setTemplateName(template.name); setCategory(template.category); setLanguage(template.language); setTemplateType(template.templateType); setHeaderType(template.headerType); setCampaignTitle(template.headerText ?? ""); setBody(template.body); setFooter(template.footer ?? ""); setButtons(template.content.buttons ?? []); setWebsiteUrl(typeof template.content.websiteUrl === "string" ? template.content.websiteUrl : "");
         setCarouselCards(template.content.carouselCards?.map((card, index) => ({ ...card, id: index + 1, mediaFile: null })) ?? [defaultCarouselCard()]);
-        setLimitedOffer(template.content.limitedOffer ?? { offerText: "", expiry: "", couponCode: "", copyButtonText: "Copy offer code", visitButtonText: "Visit shop", destination: "https://www.wati.io" });
+        setLimitedOffer(template.content.limitedOffer ?? { offerText: "", expiry: "", couponCode: "", copyButtonText: "Copy offer code", visitButtonText: "Visit shop", destination: "" });
       } catch (caughtError) { setError(caughtError instanceof ApiError ? caughtError.message : "Unable to load the template."); }
       finally { setLoadingTemplate(false); }
     })();
@@ -407,12 +404,30 @@ export function TemplateBuilder() {
     });
   };
 
+  const metaSubmitIssue = templateType !== "standard"
+    ? "Only standard templates can be submitted to Meta from this editor. Save this design as a draft."
+    : category === "Authentication"
+      ? "Authentication templates require Meta's OTP-specific format and cannot be submitted from this editor yet."
+      : headerType === "text" && !campaignTitle.trim()
+        ? "Add text to the header or choose None before submitting this template."
+      : headerType !== "none" && headerType !== "text"
+        ? "Media headers require a Meta media handle and cannot be submitted from this editor yet."
+        : buttons.some((button) => button !== "website" && button !== "quick-reply")
+          ? "Only website and quick-reply buttons can be submitted to Meta from this editor."
+          : buttons.includes("website") && !/^https?:\/\/[^\s]+$/i.test(websiteUrl.trim())
+            ? "Enter a valid http(s) website URL before submitting this template."
+            : null;
+
   const saveTemplate = async (action: SaveAction) => {
     setError("");
     setSavedAction(null);
     if (!validateRequiredFields()) return;
     if (!workspaceId || !accessToken) {
       setError("Select an active workspace before saving the template.");
+      return;
+    }
+    if (action === "template" && metaSubmitIssue) {
+      setError(metaSubmitIssue);
       return;
     }
     setSavingAction(action);
@@ -433,6 +448,7 @@ export function TemplateBuilder() {
           footer: templateType === "standard" ? footer : null,
           content: {
             buttons,
+            websiteUrl,
             carouselCards: carouselCards.map(({ mediaFile, ...card }) => ({ ...card, mediaFileName: mediaFile?.name ?? null })),
             limitedOffer,
           },
@@ -474,6 +490,7 @@ export function TemplateBuilder() {
               {savingAction === "template" ? "Saving..." : savedAction === "template" ? "Saved" : "Save template"}
             </Button>
           </div>
+          {metaSubmitIssue && <div className="basis-full text-right text-[11px] text-[var(--text-secondary)]">{metaSubmitIssue}</div>}
         </div>
       </header>
 
@@ -487,7 +504,7 @@ export function TemplateBuilder() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div><FieldLabel htmlFor="template-name">Template Name</FieldLabel><Input ref={templateNameRef} id="template-name" value={templateName} aria-invalid={Boolean(validationErrors.name)} aria-describedby={validationErrors.name ? "template-name-error" : undefined} onChange={(event) => { setTemplateName(event.target.value); setSavedAction(null); clearValidationError("name"); }} placeholder="Template Name" className={cn(validationErrors.name && "border-[var(--danger)] focus:border-[var(--danger)] focus-visible:ring-red-100")} />{validationErrors.name && <div id="template-name-error" role="alert" className="mt-1.5 text-[12px] text-[var(--danger)]">{validationErrors.name}</div>}</div>
                 <div><FieldLabel htmlFor="template-category">Category</FieldLabel><div className="relative"><select id="template-category" value={category} onChange={(event) => setCategory(event.target.value)} className="h-10 w-full appearance-none rounded-md border border-[var(--border)] bg-white px-3 pr-9 text-sm outline-none focus:border-[var(--brand)]"><option>Marketing</option><option>Utility</option><option>Authentication</option></select><ChevronDown className="pointer-events-none absolute right-3 top-3 size-4 text-[var(--text-muted)]" /></div></div>
-                <div><FieldLabel htmlFor="template-language">Language</FieldLabel><div className="relative"><select ref={languageRef} id="template-language" value={language} aria-invalid={Boolean(validationErrors.language)} aria-describedby={validationErrors.language ? "template-language-error" : undefined} onChange={(event) => { setLanguage(event.target.value); setSavedAction(null); clearValidationError("language"); }} className={cn("h-10 w-full appearance-none rounded-md border border-[var(--border)] bg-white px-3 pr-9 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--brand)]", validationErrors.language && "border-[var(--danger)] focus:border-[var(--danger)] focus-visible:ring-red-100")}><option value="">Language...</option><option value="English">English</option><option value="Hindi">Hindi</option><option value="English (US)">English (US)</option></select><ChevronDown className="pointer-events-none absolute right-3 top-3 size-4 text-[var(--text-muted)]" /></div>{validationErrors.language && <div id="template-language-error" role="alert" className="mt-1.5 text-[12px] text-[var(--danger)]">{validationErrors.language}</div>}</div>
+                <div><FieldLabel htmlFor="template-language">Language</FieldLabel><div className="relative"><select ref={languageRef} id="template-language" value={language} aria-invalid={Boolean(validationErrors.language)} aria-describedby={validationErrors.language ? "template-language-error" : undefined} onChange={(event) => { setLanguage(event.target.value); setSavedAction(null); clearValidationError("language"); }} className={cn("h-10 w-full appearance-none rounded-md border border-[var(--border)] bg-white px-3 pr-9 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--brand)]", validationErrors.language && "border-[var(--danger)] focus:border-[var(--brand)] focus-visible:ring-red-100")}><option value="">Language...</option><option value="en_US">English (US)</option><option value="en_GB">English (UK)</option><option value="hi">Hindi</option><option value="English">English (legacy)</option></select><ChevronDown className="pointer-events-none absolute right-3 top-3 size-4 text-[var(--text-muted)]" /></div>{validationErrors.language && <div id="template-language-error" role="alert" className="mt-1.5 text-[12px] text-[var(--danger)]">{validationErrors.language}</div>}</div>
               </div>
             </section>
 
@@ -513,7 +530,7 @@ export function TemplateBuilder() {
               <div className="space-y-5">
                 {templateType === "standard" && <div><FieldLabel htmlFor="campaign-title" optional>Campaign title</FieldLabel><div role="radiogroup" aria-label="Campaign title type" className="grid grid-cols-2 gap-2 sm:grid-cols-5">{headerOptions.map((option) => { const selectedHeader = headerType === option.id; return <button key={option.id} type="button" role="radio" aria-checked={selectedHeader} onClick={() => { setHeaderType(option.id); setHeaderFile(null); }} className={cn("flex items-center gap-2 rounded-md border px-3 py-2 text-left text-[11px] transition-colors", selectedHeader ? "border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--brand)]" : "border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--brand)]/50")}><span className={cn("flex size-3.5 items-center justify-center rounded-full border", selectedHeader ? "border-[var(--brand)]" : "border-[var(--border)]")}>{selectedHeader && <span className="size-1.5 rounded-full bg-[var(--brand)]" />}</span>{option.label}</button>; })}</div>{headerType === "text" && <textarea id="campaign-title" value={campaignTitle} onChange={(event) => setCampaignTitle(event.target.value)} maxLength={60} rows={2} placeholder="Highlight your brand here, use images or videos, to stand out" className="mt-3 w-full resize-none rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10" />}{headerType !== "none" && headerType !== "text" && <div className="mt-3 flex items-center gap-3 rounded-md border border-dashed border-[var(--border)] bg-[#fbfcfc] px-3.5 py-3 text-[11px] text-[var(--text-secondary)]"><span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-[var(--accent-blue-soft)] text-[var(--accent-blue)]"><Upload size={15} /></span><div className="min-w-0 flex-1"><div className="font-medium text-[var(--text-primary)]">{headerFile ? headerFile.name : `Upload ${headerType === "doc" ? "document" : headerType}`}</div><div className="mt-0.5">{headerFile ? "File selected" : `Add a ${headerType === "doc" ? "document" : headerType} for your campaign header.`}</div></div>{headerFile ? <button type="button" onClick={() => setHeaderFile(null)} className="shrink-0 font-medium text-[var(--danger)] hover:underline">Remove</button> : <label htmlFor="header-media-file" className="flex h-8 shrink-0 cursor-pointer items-center rounded-md bg-[var(--accent-blue)] px-3 text-[11px] font-medium text-white hover:brightness-95">Choose file<input id="header-media-file" aria-label={`Upload ${headerType === "doc" ? "document" : headerType}`} type="file" accept={headerType === "image" ? "image/*" : headerType === "video" ? "video/*" : ".pdf,.doc,.docx,application/pdf"} onChange={(event) => setHeaderFile(event.target.files?.[0] ?? null)} className="sr-only" /></label>}</div>}</div>}
                  {templateType === "limited" && <div><FieldLabel htmlFor="campaign-title" optional>Media header</FieldLabel><textarea id="campaign-title" value={campaignTitle} onChange={(event) => setCampaignTitle(event.target.value)} maxLength={60} rows={2} placeholder="Highlight your brand here, use images or videos, to stand out" className="w-full resize-none rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10" /></div>}
-                 <div><div className="flex items-start justify-between gap-3"><div><FieldLabel htmlFor="template-body">Body</FieldLabel><div className="-mt-1 mb-2 text-[12px] text-[var(--text-secondary)]">{templateType === "limited" ? "Let users know how and what they will be able to redeem below" : "Make your messages personal using variables like {{name}} and get more replies!"}</div></div><button type="button" onClick={addVariable} className="mt-0.5 flex shrink-0 items-center gap-1 text-[12px] font-medium text-[var(--brand)] hover:underline"><Plus size={14} /> Add Variable</button></div><textarea ref={bodyRef} id="template-body" value={body} aria-invalid={Boolean(validationErrors.body)} aria-describedby={validationErrors.body ? "template-body-error" : undefined} onChange={(event) => { setBody(event.target.value); setSavedAction(null); clearValidationError("body"); }} maxLength={1024} rows={6} placeholder="Template Message..." className={cn("w-full resize-y rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm leading-6 outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10", validationErrors.body && "border-[var(--danger)] focus:border-[var(--danger)] focus:ring-red-100")} />{validationErrors.body && <div id="template-body-error" role="alert" className="mt-1.5 text-[12px] text-[var(--danger)]">{validationErrors.body}</div>}<div className="mt-1 text-right text-[12px] text-[var(--text-muted)]">{bodyCount}/1024</div></div>
+              <div><div className="flex items-start justify-between gap-3"><div><FieldLabel htmlFor="template-body">Body</FieldLabel><div className="-mt-1 mb-2 text-[12px] text-[var(--text-secondary)]">{templateType === "limited" ? "Let users know how and what they will be able to redeem below" : "Make your messages personal using numbered variables like {{1}} and get more replies!"}</div></div><button type="button" onClick={addVariable} className="mt-0.5 flex shrink-0 items-center gap-1 text-[12px] font-medium text-[var(--brand)] hover:underline"><Plus size={14} /> Add Variable</button></div><textarea ref={bodyRef} id="template-body" value={body} aria-invalid={Boolean(validationErrors.body)} aria-describedby={validationErrors.body ? "template-body-error" : undefined} onChange={(event) => { setBody(event.target.value); setSavedAction(null); clearValidationError("body"); }} maxLength={1024} rows={6} placeholder="Template Message..." className={cn("w-full resize-y rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm leading-6 outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10", validationErrors.body && "border-[var(--danger)] focus:border-[var(--danger)] focus:ring-red-100")} />{validationErrors.body && <div id="template-body-error" role="alert" className="mt-1.5 text-[12px] text-[var(--danger)]">{validationErrors.body}</div>}<div className="mt-1 text-right text-[12px] text-[var(--text-muted)]">{bodyCount}/1024</div></div>
                  {templateType === "carousel" ? <CarouselEditor cards={carouselCards} setCards={setCarouselCards} /> : templateType === "limited" ? <LimitedOfferEditor data={limitedOffer} onChange={(changes) => setLimitedOffer((current) => ({ ...current, ...changes }))} /> : <div><FieldLabel htmlFor="template-footer" optional>Footer</FieldLabel><textarea id="template-footer" value={footer} onChange={(event) => setFooter(event.target.value)} maxLength={60} rows={2} placeholder="Footers are great to add any disclaimers or to add a thoughtful PS" className="w-full resize-none rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10" /><div className="mt-1 text-right text-[11px] text-[var(--text-muted)]">{footerCount}/60</div></div>}
               </div>
             </section>
@@ -523,6 +540,7 @@ export function TemplateBuilder() {
               <div className="divide-y divide-[var(--border-soft)] rounded-md border border-[var(--border)]">
                 {buttonOptions.map(({ id, label, icon: Icon }) => { const added = buttons.includes(id); return <div key={id} className="flex items-center gap-3 px-3.5 py-3"><div className="flex size-7 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><Icon size={14} /></div><span className="flex-1 text-[12px] text-[var(--text-primary)]">{label}</span>{added ? <button type="button" onClick={() => setButtons((current) => current.filter((item) => item !== id))} className="flex items-center gap-1 text-[11px] text-[var(--text-secondary)] hover:text-[var(--danger)]"><Check size={13} /> Added <Trash2 size={12} /></button> : <button type="button" disabled={buttons.length >= 7} onClick={() => addButton(id)} className="flex items-center gap-1 text-[11px] font-medium text-[var(--brand)] disabled:text-[var(--text-muted)]"><Plus size={13} /> Add button</button>}</div>; })}
               </div>
+              {buttons.includes("website") && <div className="mt-3"><FieldLabel htmlFor="template-website-url">Website URL</FieldLabel><Input id="template-website-url" type="url" value={websiteUrl} onChange={(event) => setWebsiteUrl(event.target.value)} placeholder="https://example.com" /><div className="mt-1 text-[11px] text-[var(--text-secondary)]">Meta requires a valid URL for a website button.</div></div>}
             </section>}
           </section>
 

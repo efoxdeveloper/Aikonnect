@@ -116,7 +116,7 @@ function readStoredColumnPreferences(): ColumnPreferences {
 export type CreateContactPayload = Pick<
   ContactImportRecord,
   "name" | "phone" | "whatsappId" | "profileName" | "email" | "source" | "tags" | "customAttributes"
-> & { status: string; userId: string; accountOwnerId: string | null; dealValue: number | null; whatsappOpted: boolean; whatsappConsentSource: string; whatsappConsentAt: string };
+> & { status: string; userId?: string; accountOwnerId: string | null; dealValue: number | null; whatsappOpted: boolean; whatsappConsentSource: string; whatsappConsentAt: string };
 type TagOption = { id: string; name: string; contactCount: number };
 type SavedContactSegment = { id: string; name: string; conditions: ContactSegmentCondition[]; createdAt: string; updatedAt: string };
 type ContactSegmentList = { items: SavedContactSegment[]; pagination: { total: number } };
@@ -126,15 +126,17 @@ function AccountOwnerCombobox({
   value,
   onChange,
   onOpen,
+  error,
 }: {
   owners: Array<{ id: string; firstName: string; lastName: string; email: string }>;
   value: string;
   onChange: (value: string) => void;
   onOpen: () => void;
+  error?: string;
 }) {
   const [open, setOpen] = useState(false);
   const selectedOwner = owners.find((owner) => owner.id === value);
-  return <Popover open={open} onOpenChange={(next) => { setOpen(next); if (next) onOpen(); }}><PopoverTrigger asChild><button type="button" role="combobox" aria-label="Account Owner" aria-expanded={open} className="flex h-11 w-full items-center justify-between rounded-md border border-[var(--border-strong)] bg-white px-3 text-left text-sm outline-none transition-colors hover:bg-[var(--brand-soft)] focus-visible:border-[var(--brand-accent)] focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]/10"><span className={selectedOwner ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]"}>{selectedOwner ? `${selectedOwner.firstName} ${selectedOwner.lastName}` : "Select Option"}</span><ChevronDown className="size-4 text-[var(--text-muted)]" /></button></PopoverTrigger><PopoverContent align="start" className="w-[min(360px,calc(100vw-48px))] p-0"><Command><CommandInput placeholder="Search account owner..." /><CommandList><CommandEmpty>No account owners found.</CommandEmpty>{owners.map((owner) => <CommandItem key={owner.id} value={`${owner.firstName} ${owner.lastName} ${owner.email}`} onSelect={() => { onChange(owner.id); setOpen(false); }}><span className="min-w-0 flex-1 truncate">{owner.firstName} {owner.lastName}</span>{owner.id === value && <Check className="size-4" />}</CommandItem>)}</CommandList></Command></PopoverContent></Popover>;
+  return <Popover open={open} onOpenChange={(next) => { setOpen(next); if (next) onOpen(); }}><PopoverTrigger asChild><button type="button" role="combobox" aria-label="Account Owner" aria-expanded={open} aria-invalid={Boolean(error)} aria-describedby={error ? "contact-account-owner-error" : undefined} className={cn("flex h-11 w-full items-center justify-between rounded-md border border-[var(--border-strong)] bg-white px-3 text-left text-sm outline-none transition-colors hover:bg-[var(--brand-soft)] focus-visible:border-[var(--brand-accent)] focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]/10", contactFieldErrorClass(Boolean(error)))}><span className={selectedOwner ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]"}>{selectedOwner ? `${selectedOwner.firstName} ${selectedOwner.lastName}` : "Select Option"}</span><ChevronDown className="size-4 text-[var(--text-muted)]" /></button></PopoverTrigger><PopoverContent align="start" className="w-[min(360px,calc(100vw-48px))] p-0"><Command><CommandInput placeholder="Search account owner..." /><CommandList><CommandEmpty>No account owners found.</CommandEmpty>{owners.map((owner) => <CommandItem key={owner.id} value={`${owner.firstName} ${owner.lastName} ${owner.email}`} onSelect={() => { onChange(owner.id); setOpen(false); }}><span className="min-w-0 flex-1 truncate">{owner.firstName} {owner.lastName}</span>{owner.id === value && <Check className="size-4" />}</CommandItem>)}</CommandList></Command></PopoverContent></Popover>;
 }
 
 function SavedSegmentOption({
@@ -231,6 +233,47 @@ function formatPhoneForTable(phone: string) {
   if (!country || !fullDialCodeMatch || !digits.startsWith(country.dialCode)) return phone;
   const localNumber = digits.slice(country.dialCode.length);
   return localNumber ? `+${country.dialCode} ${localNumber}` : `+${country.dialCode}`;
+}
+
+type ContactFieldErrors = Record<string, string>;
+
+function normalizeContactPhone(value: string) {
+  const trimmed = value.trim();
+  return trimmed.startsWith("+") ? `+${trimmed.slice(1).replace(/\D/g, "")}` : trimmed;
+}
+
+function contactFieldErrorClass(hasError: boolean) {
+  return hasError ? "border-[var(--danger)] focus-visible:border-[var(--danger)] focus-visible:ring-red-500/20" : "";
+}
+
+const contactFieldLabels: Record<string, string> = {
+  name: "Contact name",
+  phone: "Phone number",
+  userId: "User ID",
+  status: "Status",
+  accountOwnerId: "Account Owner",
+  dealValue: "Contact Deal Value",
+  email: "Email ID",
+  source: "Source",
+  tags: "Tags",
+  whatsappId: "WhatsApp ID",
+  whatsappConsentSource: "WhatsApp consent source",
+  whatsappConsentAt: "WhatsApp consent date",
+};
+
+function contactFieldErrors(caught: unknown): ContactFieldErrors {
+  if (!(caught instanceof ApiError)) return {};
+  const errors: ContactFieldErrors = {};
+  const details = caught.details && typeof caught.details === "object" ? caught.details as Record<string, unknown> : {};
+  const fieldErrors = details.fieldErrors && typeof details.fieldErrors === "object" ? details.fieldErrors as Record<string, unknown> : {};
+  Object.entries(fieldErrors).forEach(([field, messages]) => {
+    if (Array.isArray(messages) && typeof messages[0] === "string") errors[field] = messages[0];
+  });
+  const detailField = typeof details.field === "string" ? details.field : "";
+  if (detailField) errors[caught.code.startsWith("CONTACT_CUSTOM_FIELD") ? `custom:${detailField}` : detailField] = caught.message;
+  if (caught.code === "CONTACT_PHONE_EXISTS") errors.phone = caught.message;
+  if (caught.code === "CONTACT_WHATSAPP_ID_EXISTS") errors.whatsappId = caught.message;
+  return errors;
 }
 
 function toContact(contact: ContactApiRecord): Contact {
@@ -397,11 +440,37 @@ export function ContactDrawer({
   const [customAttributes, setCustomAttributes] = useState<Record<string, unknown>>({});
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({});
+  const formRef = useRef<HTMLFormElement>(null);
   const { accessToken, user } = useAuth();
   const workspaceId = getActiveMembership(user)?.workspace.id;
   const [accountOwners, setAccountOwners] = useState<Array<{ id: string; firstName: string; lastName: string; email: string }>>([]);
   const [ownersLoaded, setOwnersLoaded] = useState(false);
   const otherCustomFields = customFields.filter((field) => !["lead_status", "account_owner", "user_id", "contact_deal_value"].includes(field.key));
+  const clearFieldError = (field: string) => {
+    setFieldErrors((current) => {
+      if (!current[field]) return current;
+      const next = { ...current };
+      delete next[field];
+      return next;
+    });
+    setError(null);
+  };
+  useEffect(() => {
+    if (open) {
+      setError(null);
+      setFieldErrors({});
+    }
+  }, [open]);
+  useEffect(() => {
+    if (!open || !Object.keys(fieldErrors).length) return;
+    const frame = window.requestAnimationFrame(() => {
+      const firstInvalid = formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]');
+      firstInvalid?.scrollIntoView?.({ block: "center", behavior: "smooth" });
+      firstInvalid?.focus({ preventScroll: true });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [fieldErrors, open]);
   useEffect(() => {
     if (!open) return;
     const currentUser = user ? { id: user.id, firstName: user.firstName, lastName: user.lastName, email: user.email } : null;
@@ -409,7 +478,7 @@ export function ContactDrawer({
       setAccountOwners([currentUser]);
       setAccountOwnerId((current) => current || currentUser.id);
     }
-  }, [open, user]);
+  }, [open, user?.email, user?.firstName, user?.id, user?.lastName]);
   const loadAccountOwners = () => {
     if (ownersLoaded || !workspaceId || !accessToken) return;
     setOwnersLoaded(true);
@@ -419,19 +488,32 @@ export function ContactDrawer({
   };
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const missingRequired = otherCustomFields.find((field) => {
+    const nextFieldErrors: ContactFieldErrors = {};
+    if (!name.trim()) nextFieldErrors.name = "Contact name is required.";
+    const normalizedPhone = normalizeContactPhone(phone);
+    if (!normalizedPhone) nextFieldErrors.phone = "Phone number is required.";
+    else if (!/^\+[1-9]\d{6,14}$/.test(normalizedPhone)) nextFieldErrors.phone = "Enter a complete international phone number.";
+    if (!status.trim()) nextFieldErrors.status = "Status is required.";
+    if (dealValue !== "" && (!Number.isFinite(Number(dealValue)) || Number(dealValue) < 0)) nextFieldErrors.dealValue = "Enter a valid non-negative deal value.";
+    if (email.trim() && !/^\S+@\S+\.\S+$/.test(email.trim())) nextFieldErrors.email = "Enter a valid email address.";
+    otherCustomFields.forEach((field) => {
       const value = customAttributes[field.key];
-      return field.required && (value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0));
+      if (field.required && (value === undefined || value === null || value === "" || (Array.isArray(value) && value.length === 0))) nextFieldErrors[`custom:${field.key}`] = `${field.label} is required.`;
     });
-    if (missingRequired) { setError(`${missingRequired.label} is required.`); return; }
+    if (Object.keys(nextFieldErrors).length) {
+      setFieldErrors(nextFieldErrors);
+      setError("Please fix the highlighted fields before creating the contact.");
+      return;
+    }
     setSaving(true);
     setError(null);
+    setFieldErrors({});
     try {
       await onCreate({
         name,
-        phone,
+        phone: normalizedPhone,
         status,
-        userId,
+        userId: userId.trim() || undefined,
         accountOwnerId: accountOwnerId || null,
         dealValue: dealValue === "" ? null : Number(dealValue),
         email,
@@ -459,11 +541,9 @@ export function ContactDrawer({
       setWhatsappConsentAt(new Date(Date.now() - new Date().getTimezoneOffset() * 60_000).toISOString().slice(0, 16));
       setCustomAttributes({});
     } catch (caught) {
-      setError(
-        caught instanceof Error
-          ? caught.message
-          : "The contact could not be created.",
-      );
+      const nextErrors = contactFieldErrors(caught);
+      setFieldErrors(nextErrors);
+      setError(caught instanceof Error ? (Object.keys(nextErrors).length ? "Please fix the highlighted fields before creating the contact." : caught.message) : "The contact could not be created.");
     } finally {
       setSaving(false);
     }
@@ -482,6 +562,8 @@ export function ContactDrawer({
           <DrawerCloseButton />
         </DrawerHeader>
         <form
+          ref={formRef}
+          noValidate
           onSubmit={(event) => void submit(event)}
           className="flex min-h-0 flex-1 flex-col"
         >
@@ -489,21 +571,25 @@ export function ContactDrawer({
             <div>
               <label
                 htmlFor="contact-name"
-                className="mb-2 block text-sm font-medium"
+                className={cn("mb-2 block text-sm font-medium", fieldErrors.name && "text-[var(--danger)]")}
               >
                 Contact name<span aria-hidden="true" className="ml-1 text-[var(--danger)]">*</span>
               </label>
               <Input
                 id="contact-name"
                 required
+                aria-invalid={Boolean(fieldErrors.name)}
+                aria-describedby={fieldErrors.name ? "contact-name-error" : undefined}
                 value={name}
-                onChange={(event) => setName(event.target.value)}
+                onChange={(event) => { setName(event.target.value); clearFieldError("name"); }}
+                className={contactFieldErrorClass(Boolean(fieldErrors.name))}
               />
+              {fieldErrors.name && <p id="contact-name-error" role="alert" className="mt-1 text-xs text-[var(--danger)]">{fieldErrors.name}</p>}
             </div>
             <div>
               <label
                 htmlFor="contact-phone"
-                className="mb-2 block text-sm font-medium"
+                className={cn("mb-2 block text-sm font-medium", fieldErrors.phone && "text-[var(--danger)]")}
               >
                 Phone number<span aria-hidden="true" className="ml-1 text-[var(--danger)]">*</span>
               </label>
@@ -511,29 +597,37 @@ export function ContactDrawer({
                 id="contact-phone"
                 required
                 value={phone}
-                onChange={setPhone}
+                onChange={(value) => { setPhone(value); clearFieldError("phone"); }}
+                ariaInvalid={Boolean(fieldErrors.phone)}
+                ariaDescribedBy={fieldErrors.phone ? "contact-phone-error" : undefined}
+                className={fieldErrors.phone ? "rounded-md border border-[var(--danger)]" : undefined}
               />
+              {fieldErrors.phone && <p id="contact-phone-error" role="alert" className="mt-1 text-xs text-[var(--danger)]">{fieldErrors.phone}</p>}
             </div>
             <div>
-              <label htmlFor="contact-user-id" className="mb-2 block text-sm font-medium">User Id</label>
-              <Input id="contact-user-id" value={userId} onChange={(event) => setUserId(event.target.value)} placeholder="Enter input here" />
+              <label htmlFor="contact-user-id" className={cn("mb-2 block text-sm font-medium", fieldErrors.userId && "text-[var(--danger)]")}>User Id</label>
+              <Input id="contact-user-id" aria-invalid={Boolean(fieldErrors.userId)} aria-describedby={fieldErrors.userId ? "contact-user-id-error" : undefined} value={userId} onChange={(event) => { setUserId(event.target.value); clearFieldError("userId"); }} placeholder="Enter input here" className={contactFieldErrorClass(Boolean(fieldErrors.userId))} />
+              {fieldErrors.userId && <p id="contact-user-id-error" role="alert" className="mt-1 text-xs text-[var(--danger)]">{fieldErrors.userId}</p>}
             </div>
             <div>
-              <label htmlFor="contact-status" className="mb-2 block text-sm font-medium">Status<span aria-hidden="true" className="ml-1 text-[var(--danger)]">*</span></label>
-              <select id="contact-status" required value={status} onChange={(event) => setStatus(event.target.value)} className="h-11 w-full rounded-md border border-[var(--border-strong)] bg-white px-3 text-sm outline-none focus:border-[var(--brand-accent)] focus:ring-2 focus:ring-[var(--brand-accent)]/10"><option>New Lead</option><option>Qualification</option><option>Needs Analysis</option><option>Proposal</option><option>Negotiation</option><option>Closed Won</option><option>Closed Lost</option></select>
+              <label htmlFor="contact-status" className={cn("mb-2 block text-sm font-medium", fieldErrors.status && "text-[var(--danger)]")}>Status<span aria-hidden="true" className="ml-1 text-[var(--danger)]">*</span></label>
+              <select id="contact-status" required aria-invalid={Boolean(fieldErrors.status)} aria-describedby={fieldErrors.status ? "contact-status-error" : undefined} value={status} onChange={(event) => { setStatus(event.target.value); clearFieldError("status"); }} className={cn("h-11 w-full rounded-md border border-[var(--border-strong)] bg-white px-3 text-sm outline-none focus:border-[var(--brand-accent)] focus:ring-2 focus:ring-[var(--brand-accent)]/10", contactFieldErrorClass(Boolean(fieldErrors.status)))}><option>New Lead</option><option>Qualification</option><option>Needs Analysis</option><option>Proposal</option><option>Negotiation</option><option>Closed Won</option><option>Closed Lost</option></select>
+              {fieldErrors.status && <p id="contact-status-error" role="alert" className="mt-1 text-xs text-[var(--danger)]">{fieldErrors.status}</p>}
             </div>
             <div>
-              <label htmlFor="contact-account-owner" className="mb-2 block text-sm font-medium">Account Owner<span aria-hidden="true" className="ml-1 text-[var(--danger)]">*</span></label>
-              <AccountOwnerCombobox owners={accountOwners} value={accountOwnerId} onChange={setAccountOwnerId} onOpen={loadAccountOwners} />
+              <label htmlFor="contact-account-owner" className={cn("mb-2 block text-sm font-medium", fieldErrors.accountOwnerId && "text-[var(--danger)]")}>Account Owner</label>
+              <AccountOwnerCombobox owners={accountOwners} value={accountOwnerId} onChange={(value) => { setAccountOwnerId(value); clearFieldError("accountOwnerId"); }} onOpen={loadAccountOwners} error={fieldErrors.accountOwnerId} />
+              {fieldErrors.accountOwnerId && <p id="contact-account-owner-error" role="alert" className="mt-1 text-xs text-[var(--danger)]">{fieldErrors.accountOwnerId}</p>}
             </div>
             <div>
               <label htmlFor="contact-deal-value" className="mb-2 block text-sm font-medium">Contact Deal Value</label>
-              <Input id="contact-deal-value" type="number" min="0" step="0.01" value={dealValue} onChange={(event) => setDealValue(event.target.value)} placeholder="Enter input here" />
+              <Input id="contact-deal-value" type="number" min="0" step="0.01" aria-invalid={Boolean(fieldErrors.dealValue)} aria-describedby={fieldErrors.dealValue ? "contact-deal-value-error" : undefined} value={dealValue} onChange={(event) => { setDealValue(event.target.value); clearFieldError("dealValue"); }} placeholder="Enter input here" className={contactFieldErrorClass(Boolean(fieldErrors.dealValue))} />
+              {fieldErrors.dealValue && <p id="contact-deal-value-error" role="alert" className="mt-1 text-xs text-[var(--danger)]">{fieldErrors.dealValue}</p>}
             </div>
             <div>
               <label
                 htmlFor="contact-email"
-                className="mb-2 block text-sm font-medium"
+                className={cn("mb-2 block text-sm font-medium", fieldErrors.email && "text-[var(--danger)]")}
               >
                 Email ID{" "}
                 <span className="font-normal text-[var(--text-muted)]">
@@ -543,9 +637,13 @@ export function ContactDrawer({
               <Input
                 id="contact-email"
                 type="email"
+                aria-invalid={Boolean(fieldErrors.email)}
+                aria-describedby={fieldErrors.email ? "contact-email-error" : undefined}
                 value={email}
-                onChange={(event) => setEmail(event.target.value)}
+                onChange={(event) => { setEmail(event.target.value); clearFieldError("email"); }}
+                className={contactFieldErrorClass(Boolean(fieldErrors.email))}
               />
+              {fieldErrors.email && <p id="contact-email-error" role="alert" className="mt-1 text-xs text-[var(--danger)]">{fieldErrors.email}</p>}
             </div>
             <div>
               <label
@@ -554,11 +652,13 @@ export function ContactDrawer({
               >
                 Source
               </label>
-              <Select value={source} onValueChange={setSource}>
+              <Select value={source} onValueChange={(value) => { setSource(value); clearFieldError("source"); }}>
                 <SelectTrigger
                   id="contact-source"
                   aria-label="Source"
-                  className="h-10"
+                  aria-invalid={Boolean(fieldErrors.source)}
+                  aria-describedby={fieldErrors.source ? "contact-source-error" : undefined}
+                  className={cn("h-10", contactFieldErrorClass(Boolean(fieldErrors.source)))}
                 >
                   <SelectValue />
                 </SelectTrigger>
@@ -569,6 +669,7 @@ export function ContactDrawer({
                   <SelectItem value="Website">Website</SelectItem>
                 </SelectContent>
               </Select>
+              {fieldErrors.source && <p id="contact-source-error" role="alert" className="mt-1 text-xs text-[var(--danger)]">{fieldErrors.source}</p>}
             </div>
             <div>
               <label
@@ -583,22 +684,33 @@ export function ContactDrawer({
               <Input
                 id="contact-tags"
                 value={tags}
-                onChange={(event) => setTags(event.target.value)}
+                aria-invalid={Boolean(fieldErrors.tags)}
+                aria-describedby={fieldErrors.tags ? "contact-tags-error" : undefined}
+                onChange={(event) => { setTags(event.target.value); clearFieldError("tags"); }}
                 placeholder="e.g. ctwa, vip"
+                className={contactFieldErrorClass(Boolean(fieldErrors.tags))}
               />
               <p className="mt-1.5">
                 Separate multiple tags with commas.
               </p>
+              {fieldErrors.tags && <p id="contact-tags-error" role="alert" className="mt-1 text-xs text-[var(--danger)]">{fieldErrors.tags}</p>}
             </div>
             <fieldset className="border-t border-[var(--border-soft)] pt-5"><legend className="text-sm font-medium text-[var(--text-primary)]">WhatsApp Opted</legend><div className="mt-3 flex gap-5"><label className="flex cursor-pointer items-center gap-2 text-sm"><input type="radio" name="contact-whatsapp-opted" value="yes" checked={whatsappOpted} onChange={() => setWhatsappOpted(true)} className="size-4 accent-[var(--brand)]" />Yes</label><label className="flex cursor-pointer items-center gap-2 text-sm"><input type="radio" name="contact-whatsapp-opted" value="no" checked={!whatsappOpted} onChange={() => setWhatsappOpted(false)} className="size-4 accent-[var(--brand)]" />No</label></div>{!whatsappOpted && <div className="mt-3 rounded-md bg-[var(--warning-soft)] px-3 py-2 text-[#a66a00]">Opted-out contacts are automatically blocked from marketing campaigns.</div>}</fieldset>
-            {otherCustomFields.length > 0 && <div className="border-t border-[var(--border-soft)] pt-5"><h3>Custom fields</h3><div className="mt-4 space-y-5">{otherCustomFields.map((field) => <ContactCustomFieldInput key={field.id} field={field} value={customAttributes[field.key]} onChange={(value) => setCustomAttributes((current) => { const next = { ...current }; if (value === undefined || value === "" || (Array.isArray(value) && value.length === 0)) delete next[field.key]; else next[field.key] = value; return next; })} />)}</div></div>}
+            {otherCustomFields.length > 0 && <div className="border-t border-[var(--border-soft)] pt-5"><h3>Custom fields</h3><div className="mt-4 space-y-5">{otherCustomFields.map((field) => <ContactCustomFieldInput key={field.id} field={field} value={customAttributes[field.key]} error={fieldErrors[`custom:${field.key}`]} onChange={(value) => { clearFieldError(`custom:${field.key}`); setCustomAttributes((current) => { const next = { ...current }; if (value === undefined || value === "" || (Array.isArray(value) && value.length === 0)) delete next[field.key]; else next[field.key] = value; return next; }); }} />)}</div></div>}
             {error && (
-              <p
+              <div
                 role="alert"
                 className="rounded-md bg-[var(--danger-soft)] px-3 py-2"
               >
-                {error}
-              </p>
+                <span className="font-medium">{error}</span>
+                {Object.entries(fieldErrors).length > 0 && (
+                  <ul className="mt-1 list-disc space-y-0.5 pl-4 text-xs">
+                    {Object.entries(fieldErrors).map(([field, message]) => (
+                      <li key={field}>{contactFieldLabels[field] ?? field}: {message}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             )}
           </div>
           <div className="flex flex-none items-center justify-between border-y border-[var(--border)] bg-white px-6 py-4">

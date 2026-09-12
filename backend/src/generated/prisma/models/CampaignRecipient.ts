@@ -27,10 +27,12 @@ export type AggregateCampaignRecipient = {
 }
 
 export type CampaignRecipientAvgAggregateOutputType = {
+  attemptCount: number | null
   clickCount: number | null
 }
 
 export type CampaignRecipientSumAggregateOutputType = {
+  attemptCount: number | null
   clickCount: number | null
 }
 
@@ -42,6 +44,7 @@ export type CampaignRecipientMinAggregateOutputType = {
   phoneE164: string | null
   status: $Enums.CampaignRecipientStatus | null
   metaMessageId: string | null
+  attemptCount: number | null
   attemptedAt: Date | null
   sentAt: Date | null
   deliveredAt: Date | null
@@ -62,6 +65,7 @@ export type CampaignRecipientMaxAggregateOutputType = {
   phoneE164: string | null
   status: $Enums.CampaignRecipientStatus | null
   metaMessageId: string | null
+  attemptCount: number | null
   attemptedAt: Date | null
   sentAt: Date | null
   deliveredAt: Date | null
@@ -82,6 +86,7 @@ export type CampaignRecipientCountAggregateOutputType = {
   phoneE164: number
   status: number
   metaMessageId: number
+  attemptCount: number
   attemptedAt: number
   sentAt: number
   deliveredAt: number
@@ -97,10 +102,12 @@ export type CampaignRecipientCountAggregateOutputType = {
 
 
 export type CampaignRecipientAvgAggregateInputType = {
+  attemptCount?: true
   clickCount?: true
 }
 
 export type CampaignRecipientSumAggregateInputType = {
+  attemptCount?: true
   clickCount?: true
 }
 
@@ -112,6 +119,7 @@ export type CampaignRecipientMinAggregateInputType = {
   phoneE164?: true
   status?: true
   metaMessageId?: true
+  attemptCount?: true
   attemptedAt?: true
   sentAt?: true
   deliveredAt?: true
@@ -132,6 +140,7 @@ export type CampaignRecipientMaxAggregateInputType = {
   phoneE164?: true
   status?: true
   metaMessageId?: true
+  attemptCount?: true
   attemptedAt?: true
   sentAt?: true
   deliveredAt?: true
@@ -152,6 +161,7 @@ export type CampaignRecipientCountAggregateInputType = {
   phoneE164?: true
   status?: true
   metaMessageId?: true
+  attemptCount?: true
   attemptedAt?: true
   sentAt?: true
   deliveredAt?: true
@@ -259,6 +269,7 @@ export type CampaignRecipientGroupByOutputType = {
   phoneE164: string
   status: $Enums.CampaignRecipientStatus
   metaMessageId: string | null
+  attemptCount: number
   attemptedAt: Date | null
   sentAt: Date | null
   deliveredAt: Date | null
@@ -302,6 +313,7 @@ export type CampaignRecipientWhereInput = {
   phoneE164?: Prisma.StringFilter<"CampaignRecipient"> | string
   status?: Prisma.EnumCampaignRecipientStatusFilter<"CampaignRecipient"> | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  attemptCount?: Prisma.IntFilter<"CampaignRecipient"> | number
   attemptedAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   sentAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
@@ -325,6 +337,7 @@ export type CampaignRecipientOrderByWithRelationInput = {
   phoneE164?: Prisma.SortOrder
   status?: Prisma.SortOrder
   metaMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
   attemptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -352,6 +365,7 @@ export type CampaignRecipientWhereUniqueInput = Prisma.AtLeast<{
   phoneE164?: Prisma.StringFilter<"CampaignRecipient"> | string
   status?: Prisma.EnumCampaignRecipientStatusFilter<"CampaignRecipient"> | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  attemptCount?: Prisma.IntFilter<"CampaignRecipient"> | number
   attemptedAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   sentAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
@@ -375,6 +389,7 @@ export type CampaignRecipientOrderByWithAggregationInput = {
   phoneE164?: Prisma.SortOrder
   status?: Prisma.SortOrder
   metaMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
   attemptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -403,6 +418,7 @@ export type CampaignRecipientScalarWhereWithAggregatesInput = {
   phoneE164?: Prisma.StringWithAggregatesFilter<"CampaignRecipient"> | string
   status?: Prisma.EnumCampaignRecipientStatusWithAggregatesFilter<"CampaignRecipient"> | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.StringNullableWithAggregatesFilter<"CampaignRecipient"> | string | null
+  attemptCount?: Prisma.IntWithAggregatesFilter<"CampaignRecipient"> | number
   attemptedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
   sentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
@@ -420,6 +436,7 @@ export type CampaignRecipientCreateInput = {
   phoneE164: string
   status?: $Enums.CampaignRecipientStatus
   metaMessageId?: string | null
+  attemptCount?: number
   attemptedAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
@@ -443,6 +460,7 @@ export type CampaignRecipientUncheckedCreateInput = {
   phoneE164: string
   status?: $Enums.CampaignRecipientStatus
   metaMessageId?: string | null
+  attemptCount?: number
   attemptedAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
@@ -460,6 +478,7 @@ export type CampaignRecipientUpdateInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignRecipientStatusFieldUpdateOperationsInput | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -483,6 +502,7 @@ export type CampaignRecipientUncheckedUpdateInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignRecipientStatusFieldUpdateOperationsInput | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -503,6 +523,7 @@ export type CampaignRecipientCreateManyInput = {
   phoneE164: string
   status?: $Enums.CampaignRecipientStatus
   metaMessageId?: string | null
+  attemptCount?: number
   attemptedAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
@@ -520,6 +541,7 @@ export type CampaignRecipientUpdateManyMutationInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignRecipientStatusFieldUpdateOperationsInput | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -540,6 +562,7 @@ export type CampaignRecipientUncheckedUpdateManyInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignRecipientStatusFieldUpdateOperationsInput | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -575,6 +598,7 @@ export type CampaignRecipientCountOrderByAggregateInput = {
   phoneE164?: Prisma.SortOrder
   status?: Prisma.SortOrder
   metaMessageId?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
   attemptedAt?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
   deliveredAt?: Prisma.SortOrder
@@ -588,6 +612,7 @@ export type CampaignRecipientCountOrderByAggregateInput = {
 }
 
 export type CampaignRecipientAvgOrderByAggregateInput = {
+  attemptCount?: Prisma.SortOrder
   clickCount?: Prisma.SortOrder
 }
 
@@ -599,6 +624,7 @@ export type CampaignRecipientMaxOrderByAggregateInput = {
   phoneE164?: Prisma.SortOrder
   status?: Prisma.SortOrder
   metaMessageId?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
   attemptedAt?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
   deliveredAt?: Prisma.SortOrder
@@ -619,6 +645,7 @@ export type CampaignRecipientMinOrderByAggregateInput = {
   phoneE164?: Prisma.SortOrder
   status?: Prisma.SortOrder
   metaMessageId?: Prisma.SortOrder
+  attemptCount?: Prisma.SortOrder
   attemptedAt?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
   deliveredAt?: Prisma.SortOrder
@@ -632,6 +659,7 @@ export type CampaignRecipientMinOrderByAggregateInput = {
 }
 
 export type CampaignRecipientSumOrderByAggregateInput = {
+  attemptCount?: Prisma.SortOrder
   clickCount?: Prisma.SortOrder
 }
 
@@ -770,6 +798,7 @@ export type CampaignRecipientCreateWithoutWorkspaceInput = {
   phoneE164: string
   status?: $Enums.CampaignRecipientStatus
   metaMessageId?: string | null
+  attemptCount?: number
   attemptedAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
@@ -791,6 +820,7 @@ export type CampaignRecipientUncheckedCreateWithoutWorkspaceInput = {
   phoneE164: string
   status?: $Enums.CampaignRecipientStatus
   metaMessageId?: string | null
+  attemptCount?: number
   attemptedAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
@@ -840,6 +870,7 @@ export type CampaignRecipientScalarWhereInput = {
   phoneE164?: Prisma.StringFilter<"CampaignRecipient"> | string
   status?: Prisma.EnumCampaignRecipientStatusFilter<"CampaignRecipient"> | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
+  attemptCount?: Prisma.IntFilter<"CampaignRecipient"> | number
   attemptedAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   sentAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
@@ -857,6 +888,7 @@ export type CampaignRecipientCreateWithoutContactInput = {
   phoneE164: string
   status?: $Enums.CampaignRecipientStatus
   metaMessageId?: string | null
+  attemptCount?: number
   attemptedAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
@@ -878,6 +910,7 @@ export type CampaignRecipientUncheckedCreateWithoutContactInput = {
   phoneE164: string
   status?: $Enums.CampaignRecipientStatus
   metaMessageId?: string | null
+  attemptCount?: number
   attemptedAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
@@ -921,6 +954,7 @@ export type CampaignRecipientCreateWithoutCampaignInput = {
   phoneE164: string
   status?: $Enums.CampaignRecipientStatus
   metaMessageId?: string | null
+  attemptCount?: number
   attemptedAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
@@ -942,6 +976,7 @@ export type CampaignRecipientUncheckedCreateWithoutCampaignInput = {
   phoneE164: string
   status?: $Enums.CampaignRecipientStatus
   metaMessageId?: string | null
+  attemptCount?: number
   attemptedAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
@@ -987,6 +1022,7 @@ export type CampaignRecipientCreateManyWorkspaceInput = {
   phoneE164: string
   status?: $Enums.CampaignRecipientStatus
   metaMessageId?: string | null
+  attemptCount?: number
   attemptedAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
@@ -1004,6 +1040,7 @@ export type CampaignRecipientUpdateWithoutWorkspaceInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignRecipientStatusFieldUpdateOperationsInput | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1025,6 +1062,7 @@ export type CampaignRecipientUncheckedUpdateWithoutWorkspaceInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignRecipientStatusFieldUpdateOperationsInput | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1044,6 +1082,7 @@ export type CampaignRecipientUncheckedUpdateManyWithoutWorkspaceInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignRecipientStatusFieldUpdateOperationsInput | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1063,6 +1102,7 @@ export type CampaignRecipientCreateManyContactInput = {
   phoneE164: string
   status?: $Enums.CampaignRecipientStatus
   metaMessageId?: string | null
+  attemptCount?: number
   attemptedAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
@@ -1080,6 +1120,7 @@ export type CampaignRecipientUpdateWithoutContactInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignRecipientStatusFieldUpdateOperationsInput | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1101,6 +1142,7 @@ export type CampaignRecipientUncheckedUpdateWithoutContactInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignRecipientStatusFieldUpdateOperationsInput | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1120,6 +1162,7 @@ export type CampaignRecipientUncheckedUpdateManyWithoutContactInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignRecipientStatusFieldUpdateOperationsInput | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1139,6 +1182,7 @@ export type CampaignRecipientCreateManyCampaignInput = {
   phoneE164: string
   status?: $Enums.CampaignRecipientStatus
   metaMessageId?: string | null
+  attemptCount?: number
   attemptedAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
@@ -1156,6 +1200,7 @@ export type CampaignRecipientUpdateWithoutCampaignInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignRecipientStatusFieldUpdateOperationsInput | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1177,6 +1222,7 @@ export type CampaignRecipientUncheckedUpdateWithoutCampaignInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignRecipientStatusFieldUpdateOperationsInput | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1196,6 +1242,7 @@ export type CampaignRecipientUncheckedUpdateManyWithoutCampaignInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumCampaignRecipientStatusFieldUpdateOperationsInput | $Enums.CampaignRecipientStatus
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1218,6 +1265,7 @@ export type CampaignRecipientSelect<ExtArgs extends runtime.Types.Extensions.Int
   phoneE164?: boolean
   status?: boolean
   metaMessageId?: boolean
+  attemptCount?: boolean
   attemptedAt?: boolean
   sentAt?: boolean
   deliveredAt?: boolean
@@ -1241,6 +1289,7 @@ export type CampaignRecipientSelectCreateManyAndReturn<ExtArgs extends runtime.T
   phoneE164?: boolean
   status?: boolean
   metaMessageId?: boolean
+  attemptCount?: boolean
   attemptedAt?: boolean
   sentAt?: boolean
   deliveredAt?: boolean
@@ -1264,6 +1313,7 @@ export type CampaignRecipientSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   phoneE164?: boolean
   status?: boolean
   metaMessageId?: boolean
+  attemptCount?: boolean
   attemptedAt?: boolean
   sentAt?: boolean
   deliveredAt?: boolean
@@ -1287,6 +1337,7 @@ export type CampaignRecipientSelectScalar = {
   phoneE164?: boolean
   status?: boolean
   metaMessageId?: boolean
+  attemptCount?: boolean
   attemptedAt?: boolean
   sentAt?: boolean
   deliveredAt?: boolean
@@ -1299,7 +1350,7 @@ export type CampaignRecipientSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CampaignRecipientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "campaignId" | "workspaceId" | "contactId" | "phoneE164" | "status" | "metaMessageId" | "attemptedAt" | "sentAt" | "deliveredAt" | "readAt" | "repliedAt" | "failedAt" | "failureReason" | "clickCount" | "createdAt" | "updatedAt", ExtArgs["result"]["campaignRecipient"]>
+export type CampaignRecipientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "campaignId" | "workspaceId" | "contactId" | "phoneE164" | "status" | "metaMessageId" | "attemptCount" | "attemptedAt" | "sentAt" | "deliveredAt" | "readAt" | "repliedAt" | "failedAt" | "failureReason" | "clickCount" | "createdAt" | "updatedAt", ExtArgs["result"]["campaignRecipient"]>
 export type CampaignRecipientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
@@ -1331,6 +1382,7 @@ export type $CampaignRecipientPayload<ExtArgs extends runtime.Types.Extensions.I
     phoneE164: string
     status: $Enums.CampaignRecipientStatus
     metaMessageId: string | null
+    attemptCount: number
     attemptedAt: Date | null
     sentAt: Date | null
     deliveredAt: Date | null
@@ -1774,6 +1826,7 @@ export interface CampaignRecipientFieldRefs {
   readonly phoneE164: Prisma.FieldRef<"CampaignRecipient", 'String'>
   readonly status: Prisma.FieldRef<"CampaignRecipient", 'CampaignRecipientStatus'>
   readonly metaMessageId: Prisma.FieldRef<"CampaignRecipient", 'String'>
+  readonly attemptCount: Prisma.FieldRef<"CampaignRecipient", 'Int'>
   readonly attemptedAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>
   readonly sentAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>
   readonly deliveredAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>

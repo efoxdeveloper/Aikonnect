@@ -40,7 +40,7 @@ describe("Templates", () => {
       "aria-selected",
       "true",
     );
-    await waitFor(() => expect(screen.getByRole("heading", { name: "boost_conversion" })).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId("templates-table-panel")).toBeInTheDocument());
     expect(screen.getAllByText("boost_conversion")).toHaveLength(2);
   });
 
@@ -67,6 +67,27 @@ describe("Templates", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "New Template" }));
     expect(screen.getByRole("heading", { name: "Create template" })).toBeInTheDocument();
+  });
+
+  it("syncs the workspace library from Meta", async () => {
+    renderPage();
+    fireEvent.click(screen.getByRole("button", { name: "Sync from Meta" }));
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/templates/sync",
+      { method: "POST", headers: { authorization: "Bearer test-token" } },
+    ));
+  });
+
+  it("shows the Meta sync diagnostic when no templates are returned", async () => {
+    renderPage();
+    await waitFor(() => expect(screen.getByTestId("templates-table-panel")).toBeInTheDocument());
+    vi.mocked(apiRequest).mockResolvedValueOnce({ imported: 0, wabaId: "waba-1", debug: { tokenSource: "system_user", pages: 1, remoteCount: 0, importedCount: 0, categories: {} } });
+
+    fireEvent.click(screen.getByRole("button", { name: "Sync from Meta" }));
+
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent(
+      "Meta returned 0 templates. WABA waba-1; token: system_user; pages: 1.",
+    ));
   });
 
   it("shows an empty state for deleted templates", async () => {

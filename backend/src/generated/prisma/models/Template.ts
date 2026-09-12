@@ -27,6 +27,12 @@ export type AggregateTemplate = {
 export type TemplateMinAggregateOutputType = {
   id: string | null
   workspaceId: string | null
+  metaTemplateId: string | null
+  metaWabaId: string | null
+  metaTemplateName: string | null
+  metaLanguageCode: string | null
+  metaStatus: string | null
+  metaRejectionReason: string | null
   name: string | null
   templateKey: string | null
   category: string | null
@@ -49,6 +55,12 @@ export type TemplateMinAggregateOutputType = {
 export type TemplateMaxAggregateOutputType = {
   id: string | null
   workspaceId: string | null
+  metaTemplateId: string | null
+  metaWabaId: string | null
+  metaTemplateName: string | null
+  metaLanguageCode: string | null
+  metaStatus: string | null
+  metaRejectionReason: string | null
   name: string | null
   templateKey: string | null
   category: string | null
@@ -71,6 +83,12 @@ export type TemplateMaxAggregateOutputType = {
 export type TemplateCountAggregateOutputType = {
   id: number
   workspaceId: number
+  metaTemplateId: number
+  metaWabaId: number
+  metaTemplateName: number
+  metaLanguageCode: number
+  metaStatus: number
+  metaRejectionReason: number
   name: number
   templateKey: number
   category: number
@@ -96,6 +114,12 @@ export type TemplateCountAggregateOutputType = {
 export type TemplateMinAggregateInputType = {
   id?: true
   workspaceId?: true
+  metaTemplateId?: true
+  metaWabaId?: true
+  metaTemplateName?: true
+  metaLanguageCode?: true
+  metaStatus?: true
+  metaRejectionReason?: true
   name?: true
   templateKey?: true
   category?: true
@@ -118,6 +142,12 @@ export type TemplateMinAggregateInputType = {
 export type TemplateMaxAggregateInputType = {
   id?: true
   workspaceId?: true
+  metaTemplateId?: true
+  metaWabaId?: true
+  metaTemplateName?: true
+  metaLanguageCode?: true
+  metaStatus?: true
+  metaRejectionReason?: true
   name?: true
   templateKey?: true
   category?: true
@@ -140,6 +170,12 @@ export type TemplateMaxAggregateInputType = {
 export type TemplateCountAggregateInputType = {
   id?: true
   workspaceId?: true
+  metaTemplateId?: true
+  metaWabaId?: true
+  metaTemplateName?: true
+  metaLanguageCode?: true
+  metaStatus?: true
+  metaRejectionReason?: true
   name?: true
   templateKey?: true
   category?: true
@@ -236,6 +272,12 @@ export type TemplateGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type TemplateGroupByOutputType = {
   id: string
   workspaceId: string
+  metaTemplateId: string | null
+  metaWabaId: string | null
+  metaTemplateName: string | null
+  metaLanguageCode: string | null
+  metaStatus: string | null
+  metaRejectionReason: string | null
   name: string
   templateKey: string
   category: string
@@ -280,6 +322,12 @@ export type TemplateWhereInput = {
   NOT?: Prisma.TemplateWhereInput | Prisma.TemplateWhereInput[]
   id?: Prisma.UuidFilter<"Template"> | string
   workspaceId?: Prisma.UuidFilter<"Template"> | string
+  metaTemplateId?: Prisma.StringNullableFilter<"Template"> | string | null
+  metaWabaId?: Prisma.StringNullableFilter<"Template"> | string | null
+  metaTemplateName?: Prisma.StringNullableFilter<"Template"> | string | null
+  metaLanguageCode?: Prisma.StringNullableFilter<"Template"> | string | null
+  metaStatus?: Prisma.StringNullableFilter<"Template"> | string | null
+  metaRejectionReason?: Prisma.StringNullableFilter<"Template"> | string | null
   name?: Prisma.StringFilter<"Template"> | string
   templateKey?: Prisma.StringFilter<"Template"> | string
   category?: Prisma.StringFilter<"Template"> | string
@@ -307,6 +355,12 @@ export type TemplateWhereInput = {
 export type TemplateOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
+  metaTemplateId?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaWabaId?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaTemplateName?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaLanguageCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaRejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   templateKey?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -334,10 +388,17 @@ export type TemplateOrderByWithRelationInput = {
 export type TemplateWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   workspaceId_templateKey?: Prisma.TemplateWorkspaceIdTemplateKeyCompoundUniqueInput
+  workspaceId_metaTemplateId?: Prisma.TemplateWorkspaceIdMetaTemplateIdCompoundUniqueInput
   AND?: Prisma.TemplateWhereInput | Prisma.TemplateWhereInput[]
   OR?: Prisma.TemplateWhereInput[]
   NOT?: Prisma.TemplateWhereInput | Prisma.TemplateWhereInput[]
   workspaceId?: Prisma.UuidFilter<"Template"> | string
+  metaTemplateId?: Prisma.StringNullableFilter<"Template"> | string | null
+  metaWabaId?: Prisma.StringNullableFilter<"Template"> | string | null
+  metaTemplateName?: Prisma.StringNullableFilter<"Template"> | string | null
+  metaLanguageCode?: Prisma.StringNullableFilter<"Template"> | string | null
+  metaStatus?: Prisma.StringNullableFilter<"Template"> | string | null
+  metaRejectionReason?: Prisma.StringNullableFilter<"Template"> | string | null
   name?: Prisma.StringFilter<"Template"> | string
   templateKey?: Prisma.StringFilter<"Template"> | string
   category?: Prisma.StringFilter<"Template"> | string
@@ -360,11 +421,17 @@ export type TemplateWhereUniqueInput = Prisma.AtLeast<{
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   updatedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   deletedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-}, "id" | "workspaceId_templateKey">
+}, "id" | "workspaceId_templateKey" | "workspaceId_metaTemplateId">
 
 export type TemplateOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
+  metaTemplateId?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaWabaId?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaTemplateName?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaLanguageCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaRejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
   templateKey?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -394,6 +461,12 @@ export type TemplateScalarWhereWithAggregatesInput = {
   NOT?: Prisma.TemplateScalarWhereWithAggregatesInput | Prisma.TemplateScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Template"> | string
   workspaceId?: Prisma.UuidWithAggregatesFilter<"Template"> | string
+  metaTemplateId?: Prisma.StringNullableWithAggregatesFilter<"Template"> | string | null
+  metaWabaId?: Prisma.StringNullableWithAggregatesFilter<"Template"> | string | null
+  metaTemplateName?: Prisma.StringNullableWithAggregatesFilter<"Template"> | string | null
+  metaLanguageCode?: Prisma.StringNullableWithAggregatesFilter<"Template"> | string | null
+  metaStatus?: Prisma.StringNullableWithAggregatesFilter<"Template"> | string | null
+  metaRejectionReason?: Prisma.StringNullableWithAggregatesFilter<"Template"> | string | null
   name?: Prisma.StringWithAggregatesFilter<"Template"> | string
   templateKey?: Prisma.StringWithAggregatesFilter<"Template"> | string
   category?: Prisma.StringWithAggregatesFilter<"Template"> | string
@@ -416,6 +489,12 @@ export type TemplateScalarWhereWithAggregatesInput = {
 
 export type TemplateCreateInput = {
   id?: string
+  metaTemplateId?: string | null
+  metaWabaId?: string | null
+  metaTemplateName?: string | null
+  metaLanguageCode?: string | null
+  metaStatus?: string | null
+  metaRejectionReason?: string | null
   name: string
   templateKey: string
   category: string
@@ -440,6 +519,12 @@ export type TemplateCreateInput = {
 export type TemplateUncheckedCreateInput = {
   id?: string
   workspaceId: string
+  metaTemplateId?: string | null
+  metaWabaId?: string | null
+  metaTemplateName?: string | null
+  metaLanguageCode?: string | null
+  metaStatus?: string | null
+  metaRejectionReason?: string | null
   name: string
   templateKey: string
   category: string
@@ -462,6 +547,12 @@ export type TemplateUncheckedCreateInput = {
 
 export type TemplateUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -486,6 +577,12 @@ export type TemplateUpdateInput = {
 export type TemplateUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -509,6 +606,12 @@ export type TemplateUncheckedUpdateInput = {
 export type TemplateCreateManyInput = {
   id?: string
   workspaceId: string
+  metaTemplateId?: string | null
+  metaWabaId?: string | null
+  metaTemplateName?: string | null
+  metaLanguageCode?: string | null
+  metaStatus?: string | null
+  metaRejectionReason?: string | null
   name: string
   templateKey: string
   category: string
@@ -531,6 +634,12 @@ export type TemplateCreateManyInput = {
 
 export type TemplateUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -551,6 +660,12 @@ export type TemplateUpdateManyMutationInput = {
 export type TemplateUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -586,9 +701,20 @@ export type TemplateWorkspaceIdTemplateKeyCompoundUniqueInput = {
   templateKey: string
 }
 
+export type TemplateWorkspaceIdMetaTemplateIdCompoundUniqueInput = {
+  workspaceId: string
+  metaTemplateId: string
+}
+
 export type TemplateCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
+  metaTemplateId?: Prisma.SortOrder
+  metaWabaId?: Prisma.SortOrder
+  metaTemplateName?: Prisma.SortOrder
+  metaLanguageCode?: Prisma.SortOrder
+  metaStatus?: Prisma.SortOrder
+  metaRejectionReason?: Prisma.SortOrder
   name?: Prisma.SortOrder
   templateKey?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -612,6 +738,12 @@ export type TemplateCountOrderByAggregateInput = {
 export type TemplateMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
+  metaTemplateId?: Prisma.SortOrder
+  metaWabaId?: Prisma.SortOrder
+  metaTemplateName?: Prisma.SortOrder
+  metaLanguageCode?: Prisma.SortOrder
+  metaStatus?: Prisma.SortOrder
+  metaRejectionReason?: Prisma.SortOrder
   name?: Prisma.SortOrder
   templateKey?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -634,6 +766,12 @@ export type TemplateMaxOrderByAggregateInput = {
 export type TemplateMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
+  metaTemplateId?: Prisma.SortOrder
+  metaWabaId?: Prisma.SortOrder
+  metaTemplateName?: Prisma.SortOrder
+  metaLanguageCode?: Prisma.SortOrder
+  metaStatus?: Prisma.SortOrder
+  metaRejectionReason?: Prisma.SortOrder
   name?: Prisma.SortOrder
   templateKey?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -827,6 +965,12 @@ export type EnumTemplateStatusFieldUpdateOperationsInput = {
 
 export type TemplateCreateWithoutCreatedByInput = {
   id?: string
+  metaTemplateId?: string | null
+  metaWabaId?: string | null
+  metaTemplateName?: string | null
+  metaLanguageCode?: string | null
+  metaStatus?: string | null
+  metaRejectionReason?: string | null
   name: string
   templateKey: string
   category: string
@@ -850,6 +994,12 @@ export type TemplateCreateWithoutCreatedByInput = {
 export type TemplateUncheckedCreateWithoutCreatedByInput = {
   id?: string
   workspaceId: string
+  metaTemplateId?: string | null
+  metaWabaId?: string | null
+  metaTemplateName?: string | null
+  metaLanguageCode?: string | null
+  metaStatus?: string | null
+  metaRejectionReason?: string | null
   name: string
   templateKey: string
   category: string
@@ -881,6 +1031,12 @@ export type TemplateCreateManyCreatedByInputEnvelope = {
 
 export type TemplateCreateWithoutUpdatedByInput = {
   id?: string
+  metaTemplateId?: string | null
+  metaWabaId?: string | null
+  metaTemplateName?: string | null
+  metaLanguageCode?: string | null
+  metaStatus?: string | null
+  metaRejectionReason?: string | null
   name: string
   templateKey: string
   category: string
@@ -904,6 +1060,12 @@ export type TemplateCreateWithoutUpdatedByInput = {
 export type TemplateUncheckedCreateWithoutUpdatedByInput = {
   id?: string
   workspaceId: string
+  metaTemplateId?: string | null
+  metaWabaId?: string | null
+  metaTemplateName?: string | null
+  metaLanguageCode?: string | null
+  metaStatus?: string | null
+  metaRejectionReason?: string | null
   name: string
   templateKey: string
   category: string
@@ -935,6 +1097,12 @@ export type TemplateCreateManyUpdatedByInputEnvelope = {
 
 export type TemplateCreateWithoutDeletedByInput = {
   id?: string
+  metaTemplateId?: string | null
+  metaWabaId?: string | null
+  metaTemplateName?: string | null
+  metaLanguageCode?: string | null
+  metaStatus?: string | null
+  metaRejectionReason?: string | null
   name: string
   templateKey: string
   category: string
@@ -958,6 +1126,12 @@ export type TemplateCreateWithoutDeletedByInput = {
 export type TemplateUncheckedCreateWithoutDeletedByInput = {
   id?: string
   workspaceId: string
+  metaTemplateId?: string | null
+  metaWabaId?: string | null
+  metaTemplateName?: string | null
+  metaLanguageCode?: string | null
+  metaStatus?: string | null
+  metaRejectionReason?: string | null
   name: string
   templateKey: string
   category: string
@@ -1009,6 +1183,12 @@ export type TemplateScalarWhereInput = {
   NOT?: Prisma.TemplateScalarWhereInput | Prisma.TemplateScalarWhereInput[]
   id?: Prisma.UuidFilter<"Template"> | string
   workspaceId?: Prisma.UuidFilter<"Template"> | string
+  metaTemplateId?: Prisma.StringNullableFilter<"Template"> | string | null
+  metaWabaId?: Prisma.StringNullableFilter<"Template"> | string | null
+  metaTemplateName?: Prisma.StringNullableFilter<"Template"> | string | null
+  metaLanguageCode?: Prisma.StringNullableFilter<"Template"> | string | null
+  metaStatus?: Prisma.StringNullableFilter<"Template"> | string | null
+  metaRejectionReason?: Prisma.StringNullableFilter<"Template"> | string | null
   name?: Prisma.StringFilter<"Template"> | string
   templateKey?: Prisma.StringFilter<"Template"> | string
   category?: Prisma.StringFilter<"Template"> | string
@@ -1063,6 +1243,12 @@ export type TemplateUpdateManyWithWhereWithoutDeletedByInput = {
 
 export type TemplateCreateWithoutWorkspaceInput = {
   id?: string
+  metaTemplateId?: string | null
+  metaWabaId?: string | null
+  metaTemplateName?: string | null
+  metaLanguageCode?: string | null
+  metaStatus?: string | null
+  metaRejectionReason?: string | null
   name: string
   templateKey: string
   category: string
@@ -1085,6 +1271,12 @@ export type TemplateCreateWithoutWorkspaceInput = {
 
 export type TemplateUncheckedCreateWithoutWorkspaceInput = {
   id?: string
+  metaTemplateId?: string | null
+  metaWabaId?: string | null
+  metaTemplateName?: string | null
+  metaLanguageCode?: string | null
+  metaStatus?: string | null
+  metaRejectionReason?: string | null
   name: string
   templateKey: string
   category: string
@@ -1134,6 +1326,12 @@ export type TemplateUpdateManyWithWhereWithoutWorkspaceInput = {
 export type TemplateCreateManyCreatedByInput = {
   id?: string
   workspaceId: string
+  metaTemplateId?: string | null
+  metaWabaId?: string | null
+  metaTemplateName?: string | null
+  metaLanguageCode?: string | null
+  metaStatus?: string | null
+  metaRejectionReason?: string | null
   name: string
   templateKey: string
   category: string
@@ -1156,6 +1354,12 @@ export type TemplateCreateManyCreatedByInput = {
 export type TemplateCreateManyUpdatedByInput = {
   id?: string
   workspaceId: string
+  metaTemplateId?: string | null
+  metaWabaId?: string | null
+  metaTemplateName?: string | null
+  metaLanguageCode?: string | null
+  metaStatus?: string | null
+  metaRejectionReason?: string | null
   name: string
   templateKey: string
   category: string
@@ -1178,6 +1382,12 @@ export type TemplateCreateManyUpdatedByInput = {
 export type TemplateCreateManyDeletedByInput = {
   id?: string
   workspaceId: string
+  metaTemplateId?: string | null
+  metaWabaId?: string | null
+  metaTemplateName?: string | null
+  metaLanguageCode?: string | null
+  metaStatus?: string | null
+  metaRejectionReason?: string | null
   name: string
   templateKey: string
   category: string
@@ -1199,6 +1409,12 @@ export type TemplateCreateManyDeletedByInput = {
 
 export type TemplateUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1222,6 +1438,12 @@ export type TemplateUpdateWithoutCreatedByInput = {
 export type TemplateUncheckedUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1244,6 +1466,12 @@ export type TemplateUncheckedUpdateWithoutCreatedByInput = {
 export type TemplateUncheckedUpdateManyWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1265,6 +1493,12 @@ export type TemplateUncheckedUpdateManyWithoutCreatedByInput = {
 
 export type TemplateUpdateWithoutUpdatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1288,6 +1522,12 @@ export type TemplateUpdateWithoutUpdatedByInput = {
 export type TemplateUncheckedUpdateWithoutUpdatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1310,6 +1550,12 @@ export type TemplateUncheckedUpdateWithoutUpdatedByInput = {
 export type TemplateUncheckedUpdateManyWithoutUpdatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1331,6 +1577,12 @@ export type TemplateUncheckedUpdateManyWithoutUpdatedByInput = {
 
 export type TemplateUpdateWithoutDeletedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1354,6 +1606,12 @@ export type TemplateUpdateWithoutDeletedByInput = {
 export type TemplateUncheckedUpdateWithoutDeletedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1376,6 +1634,12 @@ export type TemplateUncheckedUpdateWithoutDeletedByInput = {
 export type TemplateUncheckedUpdateManyWithoutDeletedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1397,6 +1661,12 @@ export type TemplateUncheckedUpdateManyWithoutDeletedByInput = {
 
 export type TemplateCreateManyWorkspaceInput = {
   id?: string
+  metaTemplateId?: string | null
+  metaWabaId?: string | null
+  metaTemplateName?: string | null
+  metaLanguageCode?: string | null
+  metaStatus?: string | null
+  metaRejectionReason?: string | null
   name: string
   templateKey: string
   category: string
@@ -1419,6 +1689,12 @@ export type TemplateCreateManyWorkspaceInput = {
 
 export type TemplateUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1441,6 +1717,12 @@ export type TemplateUpdateWithoutWorkspaceInput = {
 
 export type TemplateUncheckedUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1463,6 +1745,12 @@ export type TemplateUncheckedUpdateWithoutWorkspaceInput = {
 
 export type TemplateUncheckedUpdateManyWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  metaTemplateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaRejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1488,6 +1776,12 @@ export type TemplateUncheckedUpdateManyWithoutWorkspaceInput = {
 export type TemplateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   workspaceId?: boolean
+  metaTemplateId?: boolean
+  metaWabaId?: boolean
+  metaTemplateName?: boolean
+  metaLanguageCode?: boolean
+  metaStatus?: boolean
+  metaRejectionReason?: boolean
   name?: boolean
   templateKey?: boolean
   category?: boolean
@@ -1515,6 +1809,12 @@ export type TemplateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type TemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   workspaceId?: boolean
+  metaTemplateId?: boolean
+  metaWabaId?: boolean
+  metaTemplateName?: boolean
+  metaLanguageCode?: boolean
+  metaStatus?: boolean
+  metaRejectionReason?: boolean
   name?: boolean
   templateKey?: boolean
   category?: boolean
@@ -1542,6 +1842,12 @@ export type TemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type TemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   workspaceId?: boolean
+  metaTemplateId?: boolean
+  metaWabaId?: boolean
+  metaTemplateName?: boolean
+  metaLanguageCode?: boolean
+  metaStatus?: boolean
+  metaRejectionReason?: boolean
   name?: boolean
   templateKey?: boolean
   category?: boolean
@@ -1569,6 +1875,12 @@ export type TemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type TemplateSelectScalar = {
   id?: boolean
   workspaceId?: boolean
+  metaTemplateId?: boolean
+  metaWabaId?: boolean
+  metaTemplateName?: boolean
+  metaLanguageCode?: boolean
+  metaStatus?: boolean
+  metaRejectionReason?: boolean
   name?: boolean
   templateKey?: boolean
   category?: boolean
@@ -1589,7 +1901,7 @@ export type TemplateSelectScalar = {
   deletedAt?: boolean
 }
 
-export type TemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "name" | "templateKey" | "category" | "language" | "templateType" | "headerType" | "headerText" | "headerFileName" | "body" | "footer" | "content" | "status" | "createdById" | "updatedById" | "deletedById" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["template"]>
+export type TemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "metaTemplateId" | "metaWabaId" | "metaTemplateName" | "metaLanguageCode" | "metaStatus" | "metaRejectionReason" | "name" | "templateKey" | "category" | "language" | "templateType" | "headerType" | "headerText" | "headerFileName" | "body" | "footer" | "content" | "status" | "createdById" | "updatedById" | "deletedById" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["template"]>
 export type TemplateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Template$createdByArgs<ExtArgs>
@@ -1620,6 +1932,12 @@ export type $TemplatePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     workspaceId: string
+    metaTemplateId: string | null
+    metaWabaId: string | null
+    metaTemplateName: string | null
+    metaLanguageCode: string | null
+    metaStatus: string | null
+    metaRejectionReason: string | null
     name: string
     templateKey: string
     category: string
@@ -2067,6 +2385,12 @@ export interface Prisma__TemplateClient<T, Null = never, ExtArgs extends runtime
 export interface TemplateFieldRefs {
   readonly id: Prisma.FieldRef<"Template", 'String'>
   readonly workspaceId: Prisma.FieldRef<"Template", 'String'>
+  readonly metaTemplateId: Prisma.FieldRef<"Template", 'String'>
+  readonly metaWabaId: Prisma.FieldRef<"Template", 'String'>
+  readonly metaTemplateName: Prisma.FieldRef<"Template", 'String'>
+  readonly metaLanguageCode: Prisma.FieldRef<"Template", 'String'>
+  readonly metaStatus: Prisma.FieldRef<"Template", 'String'>
+  readonly metaRejectionReason: Prisma.FieldRef<"Template", 'String'>
   readonly name: Prisma.FieldRef<"Template", 'String'>
   readonly templateKey: Prisma.FieldRef<"Template", 'String'>
   readonly category: Prisma.FieldRef<"Template", 'String'>

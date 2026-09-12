@@ -4,6 +4,7 @@ export type Contact = {
   phone: string;
   whatsappId: string;
   profileName: string;
+  profileImageUrl?: string | null;
   email: string;
   createdOn: string;
   source: string;
@@ -50,6 +51,7 @@ export type ContactApiRecord = {
   whatsappId: string | null;
   hasWhatsappId: boolean;
   profileName: string | null;
+  profileImageUrl?: string | null;
   email: string | null;
   source: string;
   status: string;

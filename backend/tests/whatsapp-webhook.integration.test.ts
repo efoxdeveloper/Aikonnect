@@ -71,7 +71,7 @@ test("ingests incoming WhatsApp messages into the mapped workspace and deduplica
   const phoneNumber = await prisma.whatsAppPhoneNumber.create({ data: { businessAccountId: account.id, metaPhoneNumberId: `phone-${suffix}`, displayPhoneNumber: "+919876543210", status: "ACTIVE" } });
   const payload = {
     object: "whatsapp_business_account",
-    entry: [{ id: account.metaWabaId, changes: [{ field: "messages", value: { metadata: { phone_number_id: phoneNumber.metaPhoneNumberId }, contacts: [{ wa_id: "919812345678", profile: { name: "Webhook Customer" } }], messages: [{ from: "919812345678", id: `wamid-${suffix}`, timestamp: "1750000000", type: "text", text: { body: "Hello from Meta" } }] } }] }],
+    entry: [{ id: account.metaWabaId, changes: [{ field: "messages", value: { metadata: { phone_number_id: phoneNumber.metaPhoneNumberId }, contacts: [{ wa_id: "919812345678", profile: { name: "Webhook Customer", profile_picture_url: "https://cdn.example.com/webhook-customer.jpg" } }], messages: [{ from: "919812345678", id: `wamid-${suffix}`, timestamp: "1750000000", type: "text", text: { body: "Hello from Meta" } }] } }] }],
   };
   const body = JSON.stringify(payload);
   assert.ok(configuredWebhookSecret);
@@ -82,9 +82,42 @@ test("ingests incoming WhatsApp messages into the mapped workspace and deduplica
   assert.equal(first.status, 200);
   assert.equal(retry.status, 200);
   assert.equal(await prisma.contact.count({ where: { workspaceId, whatsappId: "919812345678" } }), 1);
+  assert.equal((await prisma.contact.findFirstOrThrow({ where: { workspaceId, whatsappId: "919812345678" } })).profileImageUrl, "https://cdn.example.com/webhook-customer.jpg");
   assert.equal(await prisma.conversation.count({ where: { workspaceId, phoneNumberId: phoneNumber.id } }), 1);
   assert.equal(await prisma.message.count({ where: { workspaceId, metaMessageId: `wamid-${suffix}` } }), 1);
   assert.equal((await prisma.message.findFirstOrThrow({ where: { workspaceId, metaMessageId: `wamid-${suffix}` } })).text, "Hello from Meta");
+
+  for (const status of ["delivered", "read"] as const) {
+    const statusPayload = {
+      object: "whatsapp_business_account",
+      entry: [{ id: account.metaWabaId, changes: [{ field: "messages", value: { metadata: { phone_number_id: phoneNumber.metaPhoneNumberId }, statuses: [{ id: `wamid-${suffix}`, status, timestamp: "1750000001" }] } }] }],
+    };
+    const statusBody = JSON.stringify(statusPayload);
+    const statusSignature = createHmac("sha256", configuredWebhookSecret).update(statusBody).digest("hex");
+    const statusResponse = await fetch(baseUrl, { method: "POST", headers: { "content-type": "application/json", "x-hub-signature-256": `sha256=${statusSignature}` }, body: statusBody });
+    assert.equal(statusResponse.status, 200);
+  }
+  const statusUpdatedMessage = await prisma.message.findFirstOrThrow({ where: { workspaceId, metaMessageId: `wamid-${suffix}` } });
+  assert.equal(statusUpdatedMessage.status, "READ");
+  assert.ok(statusUpdatedMessage.deliveredAt);
+  assert.ok(statusUpdatedMessage.readAt);
+
+  const campaign = await prisma.campaign.create({ data: {
+    workspaceId, name: "Webhook campaign", kind: "ONE_TIME", category: "Marketing", templateName: "welcome_customer", metaTemplateName: "welcome_customer", templateLanguageCode: "en_US", templateBody: "Hello", audienceType: "all", audienceLabel: "All opted-in contacts", status: "RUNNING", recipientCount: 1, setLiveAt: new Date(),
+  } });
+  await prisma.campaignRecipient.create({ data: { campaignId: campaign.id, workspaceId, contactId: (await prisma.contact.findFirstOrThrow({ where: { workspaceId, whatsappId: "919812345678" }, select: { id: true } })).id, phoneE164: "+919812345678", status: "SENT", metaMessageId: `campaign-wamid-${suffix}`, sentAt: new Date("2026-09-10T00:00:00.000Z") } });
+  const campaignMessage = await prisma.message.create({ data: { workspaceId, conversationId: (await prisma.conversation.findFirstOrThrow({ where: { workspaceId, phoneNumberId: phoneNumber.id }, select: { id: true } })).id, contactId: (await prisma.contact.findFirstOrThrow({ where: { workspaceId, whatsappId: "919812345678" }, select: { id: true } })).id, metaMessageId: `campaign-wamid-${suffix}`, direction: "OUTGOING", type: "TEXT", status: "SENT", text: "Hello", sentAt: new Date("2026-09-10T00:00:00.000Z") } });
+  assert.equal(campaignMessage.metaMessageId, `campaign-wamid-${suffix}`);
+  for (const status of ["delivered", "read"] as const) {
+    const campaignStatusPayload = { object: "whatsapp_business_account", entry: [{ id: account.metaWabaId, changes: [{ field: "messages", value: { metadata: { phone_number_id: phoneNumber.metaPhoneNumberId }, statuses: [{ id: `campaign-wamid-${suffix}`, status, timestamp: "1750000001" }] } }] }] };
+    const campaignStatusBody = JSON.stringify(campaignStatusPayload);
+    const campaignStatusSignature = createHmac("sha256", configuredWebhookSecret).update(campaignStatusBody).digest("hex");
+    const campaignStatusResponse = await fetch(baseUrl, { method: "POST", headers: { "content-type": "application/json", "x-hub-signature-256": `sha256=${campaignStatusSignature}` }, body: campaignStatusBody });
+    assert.equal(campaignStatusResponse.status, 200);
+  }
+  const campaignRecipient = await prisma.campaignRecipient.findFirstOrThrow({ where: { campaignId: campaign.id } });
+  assert.equal(campaignRecipient.status, "READ");
+  assert.equal((await prisma.campaign.findUniqueOrThrow({ where: { id: campaign.id } })).read, 1);
 });
 
 test("ingests coexistence contact state and outbound message echoes", async () => {

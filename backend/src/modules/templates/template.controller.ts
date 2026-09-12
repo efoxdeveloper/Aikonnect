@@ -7,6 +7,10 @@ export async function list(request: Request, response: Response) {
   response.status(200).json({ success: true, data: await service.listTemplates(request.params.workspaceId as string, request.validatedQuery as ListTemplatesQuery) });
 }
 
+export async function sync(request: Request, response: Response) {
+  response.status(200).json({ success: true, data: await service.syncTemplatesFromMeta(request.params.workspaceId as string, requireAuth(request).userId) });
+}
+
 export async function get(request: Request, response: Response) {
   response.status(200).json({ success: true, data: await service.getTemplate(request.params.workspaceId as string, request.params.templateId as string) });
 }

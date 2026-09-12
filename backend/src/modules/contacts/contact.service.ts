@@ -44,6 +44,7 @@ function serializeContact(contact: ContactRecord, visibility: Visibility) {
     whatsappId: visibility.canViewPhone ? contact.whatsappId : null,
     hasWhatsappId: contact.whatsappId !== null,
     profileName: contact.profileName,
+    profileImageUrl: contact.profileImageUrl,
     email: contact.email,
     source: contact.source,
     status: contact.status,
@@ -189,6 +190,16 @@ function applySegmentCondition(filters: Prisma.ContactWhereInput[], workspaceId:
   filters.push(condition.operator === "is_not" ? { NOT: { [field]: stringFilter } } : { [field]: stringFilter });
 }
 
+/** Builds the same server-side filter used by Contact Hub for a saved segment. */
+export async function contactWhereForSegment(workspaceId: string, conditions: SegmentCondition[]): Promise<Prisma.ContactWhereInput> {
+  const customConditions = conditions.filter((condition): condition is Extract<SegmentCondition, { type: "custom_field" }> => condition.type === "custom_field");
+  const customFields = customConditions.length ? await activeCustomFieldDefinitions(workspaceId) : [];
+  const customFieldsByKey = new Map(customFields.map((field) => [field.key, field]));
+  const filters: Prisma.ContactWhereInput[] = [];
+  conditions.forEach((condition) => applySegmentCondition(filters, workspaceId, condition, { canViewPhone: true, canViewFields: true }, customFieldsByKey));
+  return { AND: filters };
+}
+
 async function resolveTags(
   transaction: Prisma.TransactionClient,
   workspaceId: string,
@@ -218,6 +229,7 @@ function contactData(input: Partial<CreateContactInput> | UpdateContactInput, ac
     ...(input.dealValue !== undefined ? { dealValue: input.dealValue } : {}),
     ...(input.whatsappId !== undefined ? { whatsappId: input.whatsappId } : {}),
     ...(input.profileName !== undefined ? { profileName: input.profileName } : {}),
+    ...(input.profileImageUrl !== undefined ? { profileImageUrl: input.profileImageUrl } : {}),
     ...(input.email !== undefined ? { email: input.email } : {}),
     ...(input.source !== undefined ? { source: input.source } : {}),
     ...(input.customAttributes !== undefined
@@ -408,6 +420,7 @@ export async function createContact(
           phoneE164: input.phone,
           whatsappId: input.whatsappId,
           profileName: input.profileName,
+          profileImageUrl: input.profileImageUrl,
           email: input.email ?? null,
           source: input.source,
           status: input.status,
@@ -804,6 +817,7 @@ export async function importContacts(
             phoneE164: contactInput.phone,
             whatsappId: contactInput.whatsappId,
             profileName: contactInput.profileName,
+            profileImageUrl: contactInput.profileImageUrl,
             email: contactInput.email ?? null,
             source: contactInput.source,
             whatsappOpted,

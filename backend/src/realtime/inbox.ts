@@ -13,9 +13,11 @@ type InboxClient = {
 };
 
 type InboxEvent = {
-  type: "inbox.refresh";
+  type: "inbox.refresh" | "inbox.message_status";
   workspaceId: string;
   conversationId?: string;
+  messageId?: string;
+  status?: "SENT" | "DELIVERED" | "READ" | "FAILED";
 };
 
 const clients = new Set<InboxClient>();
@@ -99,9 +101,17 @@ export function attachInboxRealtime(server: Server) {
 
 export function publishInboxRefresh(workspaceId: string, conversationId?: string) {
   const event: InboxEvent = { type: "inbox.refresh", workspaceId, ...(conversationId ? { conversationId } : {}) };
+  publish(event);
+}
+
+export function publishInboxMessageStatus(workspaceId: string, conversationId: string, messageId: string, status: InboxEvent["status"]) {
+  publish({ type: "inbox.message_status", workspaceId, conversationId, messageId, status });
+}
+
+function publish(event: InboxEvent) {
   const payload = JSON.stringify(event);
   for (const client of clients) {
-    if (client.workspaceId !== workspaceId || client.socket.readyState !== WebSocket.OPEN) continue;
+    if (client.workspaceId !== event.workspaceId || client.socket.readyState !== WebSocket.OPEN) continue;
     client.socket.send(payload);
   }
 }

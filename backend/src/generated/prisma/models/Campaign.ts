@@ -57,6 +57,8 @@ export type CampaignMinAggregateOutputType = {
   category: string | null
   templateKey: string | null
   templateName: string | null
+  metaTemplateName: string | null
+  templateLanguageCode: string | null
   templateBody: string | null
   audienceType: string | null
   audienceLabel: string | null
@@ -72,6 +74,7 @@ export type CampaignMinAggregateOutputType = {
   setLiveAt: Date | null
   completedAt: Date | null
   totalCost: runtime.Decimal | null
+  retryFailed: boolean | null
   createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -86,6 +89,8 @@ export type CampaignMaxAggregateOutputType = {
   category: string | null
   templateKey: string | null
   templateName: string | null
+  metaTemplateName: string | null
+  templateLanguageCode: string | null
   templateBody: string | null
   audienceType: string | null
   audienceLabel: string | null
@@ -101,6 +106,7 @@ export type CampaignMaxAggregateOutputType = {
   setLiveAt: Date | null
   completedAt: Date | null
   totalCost: runtime.Decimal | null
+  retryFailed: boolean | null
   createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -115,7 +121,10 @@ export type CampaignCountAggregateOutputType = {
   category: number
   templateKey: number
   templateName: number
+  metaTemplateName: number
+  templateLanguageCode: number
   templateBody: number
+  templateVariables: number
   buttonTracking: number
   audienceType: number
   audienceLabel: number
@@ -132,6 +141,7 @@ export type CampaignCountAggregateOutputType = {
   setLiveAt: number
   completedAt: number
   totalCost: number
+  retryFailed: number
   createdById: number
   createdAt: number
   updatedAt: number
@@ -170,6 +180,8 @@ export type CampaignMinAggregateInputType = {
   category?: true
   templateKey?: true
   templateName?: true
+  metaTemplateName?: true
+  templateLanguageCode?: true
   templateBody?: true
   audienceType?: true
   audienceLabel?: true
@@ -185,6 +197,7 @@ export type CampaignMinAggregateInputType = {
   setLiveAt?: true
   completedAt?: true
   totalCost?: true
+  retryFailed?: true
   createdById?: true
   createdAt?: true
   updatedAt?: true
@@ -199,6 +212,8 @@ export type CampaignMaxAggregateInputType = {
   category?: true
   templateKey?: true
   templateName?: true
+  metaTemplateName?: true
+  templateLanguageCode?: true
   templateBody?: true
   audienceType?: true
   audienceLabel?: true
@@ -214,6 +229,7 @@ export type CampaignMaxAggregateInputType = {
   setLiveAt?: true
   completedAt?: true
   totalCost?: true
+  retryFailed?: true
   createdById?: true
   createdAt?: true
   updatedAt?: true
@@ -228,7 +244,10 @@ export type CampaignCountAggregateInputType = {
   category?: true
   templateKey?: true
   templateName?: true
+  metaTemplateName?: true
+  templateLanguageCode?: true
   templateBody?: true
+  templateVariables?: true
   buttonTracking?: true
   audienceType?: true
   audienceLabel?: true
@@ -245,6 +264,7 @@ export type CampaignCountAggregateInputType = {
   setLiveAt?: true
   completedAt?: true
   totalCost?: true
+  retryFailed?: true
   createdById?: true
   createdAt?: true
   updatedAt?: true
@@ -346,7 +366,10 @@ export type CampaignGroupByOutputType = {
   category: string
   templateKey: string | null
   templateName: string | null
+  metaTemplateName: string | null
+  templateLanguageCode: string | null
   templateBody: string | null
+  templateVariables: runtime.JsonValue
   buttonTracking: runtime.JsonValue
   audienceType: string
   audienceLabel: string
@@ -363,6 +386,7 @@ export type CampaignGroupByOutputType = {
   setLiveAt: Date | null
   completedAt: Date | null
   totalCost: runtime.Decimal | null
+  retryFailed: boolean
   createdById: string | null
   createdAt: Date
   updatedAt: Date
@@ -400,7 +424,10 @@ export type CampaignWhereInput = {
   category?: Prisma.StringFilter<"Campaign"> | string
   templateKey?: Prisma.StringNullableFilter<"Campaign"> | string | null
   templateName?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  metaTemplateName?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  templateLanguageCode?: Prisma.StringNullableFilter<"Campaign"> | string | null
   templateBody?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  templateVariables?: Prisma.JsonFilter<"Campaign">
   buttonTracking?: Prisma.JsonFilter<"Campaign">
   audienceType?: Prisma.StringFilter<"Campaign"> | string
   audienceLabel?: Prisma.StringFilter<"Campaign"> | string
@@ -417,6 +444,7 @@ export type CampaignWhereInput = {
   setLiveAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
   totalCost?: Prisma.DecimalNullableFilter<"Campaign"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolFilter<"Campaign"> | boolean
   createdById?: Prisma.UuidNullableFilter<"Campaign"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
@@ -434,7 +462,10 @@ export type CampaignOrderByWithRelationInput = {
   category?: Prisma.SortOrder
   templateKey?: Prisma.SortOrderInput | Prisma.SortOrder
   templateName?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaTemplateName?: Prisma.SortOrderInput | Prisma.SortOrder
+  templateLanguageCode?: Prisma.SortOrderInput | Prisma.SortOrder
   templateBody?: Prisma.SortOrderInput | Prisma.SortOrder
+  templateVariables?: Prisma.SortOrder
   buttonTracking?: Prisma.SortOrder
   audienceType?: Prisma.SortOrder
   audienceLabel?: Prisma.SortOrder
@@ -451,6 +482,7 @@ export type CampaignOrderByWithRelationInput = {
   setLiveAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   totalCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  retryFailed?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -471,7 +503,10 @@ export type CampaignWhereUniqueInput = Prisma.AtLeast<{
   category?: Prisma.StringFilter<"Campaign"> | string
   templateKey?: Prisma.StringNullableFilter<"Campaign"> | string | null
   templateName?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  metaTemplateName?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  templateLanguageCode?: Prisma.StringNullableFilter<"Campaign"> | string | null
   templateBody?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  templateVariables?: Prisma.JsonFilter<"Campaign">
   buttonTracking?: Prisma.JsonFilter<"Campaign">
   audienceType?: Prisma.StringFilter<"Campaign"> | string
   audienceLabel?: Prisma.StringFilter<"Campaign"> | string
@@ -488,6 +523,7 @@ export type CampaignWhereUniqueInput = Prisma.AtLeast<{
   setLiveAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
   totalCost?: Prisma.DecimalNullableFilter<"Campaign"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolFilter<"Campaign"> | boolean
   createdById?: Prisma.UuidNullableFilter<"Campaign"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
@@ -505,7 +541,10 @@ export type CampaignOrderByWithAggregationInput = {
   category?: Prisma.SortOrder
   templateKey?: Prisma.SortOrderInput | Prisma.SortOrder
   templateName?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaTemplateName?: Prisma.SortOrderInput | Prisma.SortOrder
+  templateLanguageCode?: Prisma.SortOrderInput | Prisma.SortOrder
   templateBody?: Prisma.SortOrderInput | Prisma.SortOrder
+  templateVariables?: Prisma.SortOrder
   buttonTracking?: Prisma.SortOrder
   audienceType?: Prisma.SortOrder
   audienceLabel?: Prisma.SortOrder
@@ -522,6 +561,7 @@ export type CampaignOrderByWithAggregationInput = {
   setLiveAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   totalCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  retryFailed?: Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -544,7 +584,10 @@ export type CampaignScalarWhereWithAggregatesInput = {
   category?: Prisma.StringWithAggregatesFilter<"Campaign"> | string
   templateKey?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
   templateName?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
+  metaTemplateName?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
+  templateLanguageCode?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
   templateBody?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
+  templateVariables?: Prisma.JsonWithAggregatesFilter<"Campaign">
   buttonTracking?: Prisma.JsonWithAggregatesFilter<"Campaign">
   audienceType?: Prisma.StringWithAggregatesFilter<"Campaign"> | string
   audienceLabel?: Prisma.StringWithAggregatesFilter<"Campaign"> | string
@@ -561,6 +604,7 @@ export type CampaignScalarWhereWithAggregatesInput = {
   setLiveAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Campaign"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Campaign"> | Date | string | null
   totalCost?: Prisma.DecimalNullableWithAggregatesFilter<"Campaign"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolWithAggregatesFilter<"Campaign"> | boolean
   createdById?: Prisma.UuidNullableWithAggregatesFilter<"Campaign"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Campaign"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Campaign"> | Date | string
@@ -574,7 +618,10 @@ export type CampaignCreateInput = {
   category?: string
   templateKey?: string | null
   templateName?: string | null
+  metaTemplateName?: string | null
+  templateLanguageCode?: string | null
   templateBody?: string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType: string
   audienceLabel: string
@@ -591,6 +638,7 @@ export type CampaignCreateInput = {
   setLiveAt?: Date | string | null
   completedAt?: Date | string | null
   totalCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutCampaignsInput
@@ -607,7 +655,10 @@ export type CampaignUncheckedCreateInput = {
   category?: string
   templateKey?: string | null
   templateName?: string | null
+  metaTemplateName?: string | null
+  templateLanguageCode?: string | null
   templateBody?: string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType: string
   audienceLabel: string
@@ -624,6 +675,7 @@ export type CampaignUncheckedCreateInput = {
   setLiveAt?: Date | string | null
   completedAt?: Date | string | null
   totalCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: boolean
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -638,7 +690,10 @@ export type CampaignUpdateInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -655,6 +710,7 @@ export type CampaignUpdateInput = {
   setLiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutCampaignsNestedInput
@@ -671,7 +727,10 @@ export type CampaignUncheckedUpdateInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -688,6 +747,7 @@ export type CampaignUncheckedUpdateInput = {
   setLiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -703,7 +763,10 @@ export type CampaignCreateManyInput = {
   category?: string
   templateKey?: string | null
   templateName?: string | null
+  metaTemplateName?: string | null
+  templateLanguageCode?: string | null
   templateBody?: string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType: string
   audienceLabel: string
@@ -720,6 +783,7 @@ export type CampaignCreateManyInput = {
   setLiveAt?: Date | string | null
   completedAt?: Date | string | null
   totalCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: boolean
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -733,7 +797,10 @@ export type CampaignUpdateManyMutationInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -750,6 +817,7 @@ export type CampaignUpdateManyMutationInput = {
   setLiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -763,7 +831,10 @@ export type CampaignUncheckedUpdateManyInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -780,6 +851,7 @@ export type CampaignUncheckedUpdateManyInput = {
   setLiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -804,7 +876,10 @@ export type CampaignCountOrderByAggregateInput = {
   category?: Prisma.SortOrder
   templateKey?: Prisma.SortOrder
   templateName?: Prisma.SortOrder
+  metaTemplateName?: Prisma.SortOrder
+  templateLanguageCode?: Prisma.SortOrder
   templateBody?: Prisma.SortOrder
+  templateVariables?: Prisma.SortOrder
   buttonTracking?: Prisma.SortOrder
   audienceType?: Prisma.SortOrder
   audienceLabel?: Prisma.SortOrder
@@ -821,6 +896,7 @@ export type CampaignCountOrderByAggregateInput = {
   setLiveAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   totalCost?: Prisma.SortOrder
+  retryFailed?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -846,6 +922,8 @@ export type CampaignMaxOrderByAggregateInput = {
   category?: Prisma.SortOrder
   templateKey?: Prisma.SortOrder
   templateName?: Prisma.SortOrder
+  metaTemplateName?: Prisma.SortOrder
+  templateLanguageCode?: Prisma.SortOrder
   templateBody?: Prisma.SortOrder
   audienceType?: Prisma.SortOrder
   audienceLabel?: Prisma.SortOrder
@@ -861,6 +939,7 @@ export type CampaignMaxOrderByAggregateInput = {
   setLiveAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   totalCost?: Prisma.SortOrder
+  retryFailed?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -875,6 +954,8 @@ export type CampaignMinOrderByAggregateInput = {
   category?: Prisma.SortOrder
   templateKey?: Prisma.SortOrder
   templateName?: Prisma.SortOrder
+  metaTemplateName?: Prisma.SortOrder
+  templateLanguageCode?: Prisma.SortOrder
   templateBody?: Prisma.SortOrder
   audienceType?: Prisma.SortOrder
   audienceLabel?: Prisma.SortOrder
@@ -890,6 +971,7 @@ export type CampaignMinOrderByAggregateInput = {
   setLiveAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   totalCost?: Prisma.SortOrder
+  retryFailed?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1025,7 +1107,10 @@ export type CampaignCreateWithoutCreatedByInput = {
   category?: string
   templateKey?: string | null
   templateName?: string | null
+  metaTemplateName?: string | null
+  templateLanguageCode?: string | null
   templateBody?: string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType: string
   audienceLabel: string
@@ -1042,6 +1127,7 @@ export type CampaignCreateWithoutCreatedByInput = {
   setLiveAt?: Date | string | null
   completedAt?: Date | string | null
   totalCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutCampaignsInput
@@ -1057,7 +1143,10 @@ export type CampaignUncheckedCreateWithoutCreatedByInput = {
   category?: string
   templateKey?: string | null
   templateName?: string | null
+  metaTemplateName?: string | null
+  templateLanguageCode?: string | null
   templateBody?: string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType: string
   audienceLabel: string
@@ -1074,6 +1163,7 @@ export type CampaignUncheckedCreateWithoutCreatedByInput = {
   setLiveAt?: Date | string | null
   completedAt?: Date | string | null
   totalCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   recipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutCampaignInput
@@ -1117,7 +1207,10 @@ export type CampaignScalarWhereInput = {
   category?: Prisma.StringFilter<"Campaign"> | string
   templateKey?: Prisma.StringNullableFilter<"Campaign"> | string | null
   templateName?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  metaTemplateName?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  templateLanguageCode?: Prisma.StringNullableFilter<"Campaign"> | string | null
   templateBody?: Prisma.StringNullableFilter<"Campaign"> | string | null
+  templateVariables?: Prisma.JsonFilter<"Campaign">
   buttonTracking?: Prisma.JsonFilter<"Campaign">
   audienceType?: Prisma.StringFilter<"Campaign"> | string
   audienceLabel?: Prisma.StringFilter<"Campaign"> | string
@@ -1134,6 +1227,7 @@ export type CampaignScalarWhereInput = {
   setLiveAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
   totalCost?: Prisma.DecimalNullableFilter<"Campaign"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolFilter<"Campaign"> | boolean
   createdById?: Prisma.UuidNullableFilter<"Campaign"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
@@ -1147,7 +1241,10 @@ export type CampaignCreateWithoutWorkspaceInput = {
   category?: string
   templateKey?: string | null
   templateName?: string | null
+  metaTemplateName?: string | null
+  templateLanguageCode?: string | null
   templateBody?: string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType: string
   audienceLabel: string
@@ -1164,6 +1261,7 @@ export type CampaignCreateWithoutWorkspaceInput = {
   setLiveAt?: Date | string | null
   completedAt?: Date | string | null
   totalCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   createdBy?: Prisma.UserCreateNestedOneWithoutCampaignsCreatedInput
@@ -1178,7 +1276,10 @@ export type CampaignUncheckedCreateWithoutWorkspaceInput = {
   category?: string
   templateKey?: string | null
   templateName?: string | null
+  metaTemplateName?: string | null
+  templateLanguageCode?: string | null
   templateBody?: string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType: string
   audienceLabel: string
@@ -1195,6 +1296,7 @@ export type CampaignUncheckedCreateWithoutWorkspaceInput = {
   setLiveAt?: Date | string | null
   completedAt?: Date | string | null
   totalCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: boolean
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1235,7 +1337,10 @@ export type CampaignCreateWithoutRecipientsInput = {
   category?: string
   templateKey?: string | null
   templateName?: string | null
+  metaTemplateName?: string | null
+  templateLanguageCode?: string | null
   templateBody?: string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType: string
   audienceLabel: string
@@ -1252,6 +1357,7 @@ export type CampaignCreateWithoutRecipientsInput = {
   setLiveAt?: Date | string | null
   completedAt?: Date | string | null
   totalCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutCampaignsInput
@@ -1267,7 +1373,10 @@ export type CampaignUncheckedCreateWithoutRecipientsInput = {
   category?: string
   templateKey?: string | null
   templateName?: string | null
+  metaTemplateName?: string | null
+  templateLanguageCode?: string | null
   templateBody?: string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType: string
   audienceLabel: string
@@ -1284,6 +1393,7 @@ export type CampaignUncheckedCreateWithoutRecipientsInput = {
   setLiveAt?: Date | string | null
   completedAt?: Date | string | null
   totalCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: boolean
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1313,7 +1423,10 @@ export type CampaignUpdateWithoutRecipientsInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1330,6 +1443,7 @@ export type CampaignUpdateWithoutRecipientsInput = {
   setLiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutCampaignsNestedInput
@@ -1345,7 +1459,10 @@ export type CampaignUncheckedUpdateWithoutRecipientsInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1362,6 +1479,7 @@ export type CampaignUncheckedUpdateWithoutRecipientsInput = {
   setLiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1376,7 +1494,10 @@ export type CampaignCreateManyCreatedByInput = {
   category?: string
   templateKey?: string | null
   templateName?: string | null
+  metaTemplateName?: string | null
+  templateLanguageCode?: string | null
   templateBody?: string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType: string
   audienceLabel: string
@@ -1393,6 +1514,7 @@ export type CampaignCreateManyCreatedByInput = {
   setLiveAt?: Date | string | null
   completedAt?: Date | string | null
   totalCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1405,7 +1527,10 @@ export type CampaignUpdateWithoutCreatedByInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1422,6 +1547,7 @@ export type CampaignUpdateWithoutCreatedByInput = {
   setLiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutCampaignsNestedInput
@@ -1437,7 +1563,10 @@ export type CampaignUncheckedUpdateWithoutCreatedByInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1454,6 +1583,7 @@ export type CampaignUncheckedUpdateWithoutCreatedByInput = {
   setLiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   recipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutCampaignNestedInput
@@ -1468,7 +1598,10 @@ export type CampaignUncheckedUpdateManyWithoutCreatedByInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1485,6 +1618,7 @@ export type CampaignUncheckedUpdateManyWithoutCreatedByInput = {
   setLiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1497,7 +1631,10 @@ export type CampaignCreateManyWorkspaceInput = {
   category?: string
   templateKey?: string | null
   templateName?: string | null
+  metaTemplateName?: string | null
+  templateLanguageCode?: string | null
   templateBody?: string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType: string
   audienceLabel: string
@@ -1514,6 +1651,7 @@ export type CampaignCreateManyWorkspaceInput = {
   setLiveAt?: Date | string | null
   completedAt?: Date | string | null
   totalCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: boolean
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1527,7 +1665,10 @@ export type CampaignUpdateWithoutWorkspaceInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1544,6 +1685,7 @@ export type CampaignUpdateWithoutWorkspaceInput = {
   setLiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneWithoutCampaignsCreatedNestedInput
@@ -1558,7 +1700,10 @@ export type CampaignUncheckedUpdateWithoutWorkspaceInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1575,6 +1720,7 @@ export type CampaignUncheckedUpdateWithoutWorkspaceInput = {
   setLiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1589,7 +1735,10 @@ export type CampaignUncheckedUpdateManyWithoutWorkspaceInput = {
   category?: Prisma.StringFieldUpdateOperationsInput | string
   templateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaTemplateName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateLanguageCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   templateBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  templateVariables?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   buttonTracking?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1606,6 +1755,7 @@ export type CampaignUncheckedUpdateManyWithoutWorkspaceInput = {
   setLiveAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  retryFailed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1651,7 +1801,10 @@ export type CampaignSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   category?: boolean
   templateKey?: boolean
   templateName?: boolean
+  metaTemplateName?: boolean
+  templateLanguageCode?: boolean
   templateBody?: boolean
+  templateVariables?: boolean
   buttonTracking?: boolean
   audienceType?: boolean
   audienceLabel?: boolean
@@ -1668,6 +1821,7 @@ export type CampaignSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   setLiveAt?: boolean
   completedAt?: boolean
   totalCost?: boolean
+  retryFailed?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1686,7 +1840,10 @@ export type CampaignSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   category?: boolean
   templateKey?: boolean
   templateName?: boolean
+  metaTemplateName?: boolean
+  templateLanguageCode?: boolean
   templateBody?: boolean
+  templateVariables?: boolean
   buttonTracking?: boolean
   audienceType?: boolean
   audienceLabel?: boolean
@@ -1703,6 +1860,7 @@ export type CampaignSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   setLiveAt?: boolean
   completedAt?: boolean
   totalCost?: boolean
+  retryFailed?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1719,7 +1877,10 @@ export type CampaignSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   category?: boolean
   templateKey?: boolean
   templateName?: boolean
+  metaTemplateName?: boolean
+  templateLanguageCode?: boolean
   templateBody?: boolean
+  templateVariables?: boolean
   buttonTracking?: boolean
   audienceType?: boolean
   audienceLabel?: boolean
@@ -1736,6 +1897,7 @@ export type CampaignSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   setLiveAt?: boolean
   completedAt?: boolean
   totalCost?: boolean
+  retryFailed?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1752,7 +1914,10 @@ export type CampaignSelectScalar = {
   category?: boolean
   templateKey?: boolean
   templateName?: boolean
+  metaTemplateName?: boolean
+  templateLanguageCode?: boolean
   templateBody?: boolean
+  templateVariables?: boolean
   buttonTracking?: boolean
   audienceType?: boolean
   audienceLabel?: boolean
@@ -1769,12 +1934,13 @@ export type CampaignSelectScalar = {
   setLiveAt?: boolean
   completedAt?: boolean
   totalCost?: boolean
+  retryFailed?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CampaignOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "name" | "channelKey" | "kind" | "category" | "templateKey" | "templateName" | "templateBody" | "buttonTracking" | "audienceType" | "audienceLabel" | "audienceConfig" | "status" | "recipientCount" | "attempted" | "sent" | "delivered" | "read" | "replied" | "failed" | "scheduledAt" | "setLiveAt" | "completedAt" | "totalCost" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["campaign"]>
+export type CampaignOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "name" | "channelKey" | "kind" | "category" | "templateKey" | "templateName" | "metaTemplateName" | "templateLanguageCode" | "templateBody" | "templateVariables" | "buttonTracking" | "audienceType" | "audienceLabel" | "audienceConfig" | "status" | "recipientCount" | "attempted" | "sent" | "delivered" | "read" | "replied" | "failed" | "scheduledAt" | "setLiveAt" | "completedAt" | "totalCost" | "retryFailed" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["campaign"]>
 export type CampaignInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Campaign$createdByArgs<ExtArgs>
@@ -1806,7 +1972,10 @@ export type $CampaignPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     category: string
     templateKey: string | null
     templateName: string | null
+    metaTemplateName: string | null
+    templateLanguageCode: string | null
     templateBody: string | null
+    templateVariables: runtime.JsonValue
     buttonTracking: runtime.JsonValue
     audienceType: string
     audienceLabel: string
@@ -1823,6 +1992,7 @@ export type $CampaignPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     setLiveAt: Date | null
     completedAt: Date | null
     totalCost: runtime.Decimal | null
+    retryFailed: boolean
     createdById: string | null
     createdAt: Date
     updatedAt: Date
@@ -2260,7 +2430,10 @@ export interface CampaignFieldRefs {
   readonly category: Prisma.FieldRef<"Campaign", 'String'>
   readonly templateKey: Prisma.FieldRef<"Campaign", 'String'>
   readonly templateName: Prisma.FieldRef<"Campaign", 'String'>
+  readonly metaTemplateName: Prisma.FieldRef<"Campaign", 'String'>
+  readonly templateLanguageCode: Prisma.FieldRef<"Campaign", 'String'>
   readonly templateBody: Prisma.FieldRef<"Campaign", 'String'>
+  readonly templateVariables: Prisma.FieldRef<"Campaign", 'Json'>
   readonly buttonTracking: Prisma.FieldRef<"Campaign", 'Json'>
   readonly audienceType: Prisma.FieldRef<"Campaign", 'String'>
   readonly audienceLabel: Prisma.FieldRef<"Campaign", 'String'>
@@ -2277,6 +2450,7 @@ export interface CampaignFieldRefs {
   readonly setLiveAt: Prisma.FieldRef<"Campaign", 'DateTime'>
   readonly completedAt: Prisma.FieldRef<"Campaign", 'DateTime'>
   readonly totalCost: Prisma.FieldRef<"Campaign", 'Decimal'>
+  readonly retryFailed: Prisma.FieldRef<"Campaign", 'Boolean'>
   readonly createdById: Prisma.FieldRef<"Campaign", 'String'>
   readonly createdAt: Prisma.FieldRef<"Campaign", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Campaign", 'DateTime'>

@@ -62,12 +62,12 @@ test("templates are created, listed, updated and deleted within their workspace"
   const create = await fetch(`${baseUrl}/workspaces/${workspaceId}/templates`, {
     method: "POST",
     headers: { ...authorization, "content-type": "application/json" },
-    body: JSON.stringify({ saveAs: "submit", name: "Summer Sale", category: "Marketing", language: "English", templateType: "standard", headerType: "text", headerText: "A special offer", body: "Hi {{1}}, save today.", footer: "Reply STOP to opt out", content: { buttons: ["website"] } }),
+    body: JSON.stringify({ saveAs: "draft", name: "Summer Sale", category: "Marketing", language: "English", templateType: "standard", headerType: "text", headerText: "A special offer", body: "Hi {{1}}, save today.", footer: "Reply STOP to opt out", content: { buttons: ["website"] } }),
   });
   assert.equal(create.status, 201);
   const created = (await create.json()) as { data: { id: string; key: string; status: string; createdBy: string } };
   assert.equal(created.data.key, "summer-sale");
-  assert.equal(created.data.status, "PENDING");
+  assert.equal(created.data.status, "DRAFT");
   assert.equal(created.data.createdBy, "Template Tester");
 
   const list = await fetch(`${baseUrl}/workspaces/${workspaceId}/templates?status=active`, { headers: authorization });

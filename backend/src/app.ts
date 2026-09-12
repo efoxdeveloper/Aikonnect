@@ -38,6 +38,7 @@ app.use(
         "frame-src": ["'self'", "https://www.facebook.com", "https://web.facebook.com"],
         "child-src": ["'self'", "https://www.facebook.com", "https://web.facebook.com"],
         "img-src": ["'self'", "data:", "blob:", "https://*.facebook.com", "https://*.fbcdn.net"],
+        "media-src": ["'self'", "data:", "blob:", "https://*.facebook.com", "https://*.fbcdn.net"],
       },
     },
   }),
@@ -59,7 +60,7 @@ app.use(compression());
 app.use(cookieParser());
 app.use(
   express.json({
-    limit: "4mb",
+    limit: "10mb",
     verify(request, _response, buffer) {
       (request as Request).rawBody = Buffer.from(buffer);
     },

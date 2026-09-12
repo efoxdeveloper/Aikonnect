@@ -213,6 +213,14 @@ textarea:not(.border-0):focus {
 }
 input::placeholder,
 textarea::placeholder { color: #a3a3a3; }
+[aria-invalid="true"] {
+  border-color: var(--danger) !important;
+}
+[aria-invalid="true"]:focus,
+[aria-invalid="true"]:focus-visible {
+  border-color: var(--danger) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 18%, transparent);
+}
 table thead { background-color: var(--table-header) !important; color: #525252; }
 table tbody tr { background-color: #ffffff; }
 table tbody tr[aria-selected="true"] { background-color: var(--table-selected) !important; }

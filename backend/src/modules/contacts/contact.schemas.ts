@@ -25,6 +25,11 @@ const optionalProfileName = z
   .optional()
   .transform((value) => (value === undefined ? undefined : value || null));
 
+const optionalProfileImageUrl = z
+  .union([z.url().max(2_000), z.literal(""), z.null()])
+  .optional()
+  .transform((value) => (value === undefined ? undefined : value || null));
+
 const optionalEmail = z
   .union([z.email().max(320), z.literal(""), z.null()])
   .optional()
@@ -123,6 +128,7 @@ export const createContactSchema = z.object({
   dealValue: z.number().finite().nonnegative().nullable().optional(),
   whatsappId: optionalWhatsappId,
   profileName: optionalProfileName,
+  profileImageUrl: optionalProfileImageUrl,
   email: optionalEmail,
   source: source.default("Manual"),
   tags: tags.default([]),
@@ -145,6 +151,7 @@ export const updateContactSchema = z
   dealValue: z.number().finite().nonnegative().nullable().optional(),
     whatsappId: optionalWhatsappId,
     profileName: optionalProfileName,
+    profileImageUrl: optionalProfileImageUrl,
     email: optionalEmail,
     source: source.optional(),
     tags: tags.optional(),

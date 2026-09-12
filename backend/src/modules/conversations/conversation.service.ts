@@ -1,7 +1,7 @@
 import type { Prisma } from "../../generated/prisma/client.js";
 import { prisma } from "../../database/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
-import { sendWhatsAppConversationText } from "../whatsapp/whatsapp.service.js";
+import { downloadWhatsAppMedia, sendWhatsAppConversationMedia, sendWhatsAppConversationText } from "../whatsapp/whatsapp.service.js";
 import { publishInboxRefresh } from "../../realtime/inbox.js";
 import type { ConversationListQuery, CreateConversationInput, CreateMessageInput, InboxConversationListQuery } from "./conversation.schemas.js";
 
@@ -18,7 +18,7 @@ const messageSelect = {
 
 const inboxConversationSelect = {
   ...conversationSelect,
-  contact: { select: { id: true, name: true, profileName: true, phoneE164: true } },
+  contact: { select: { id: true, name: true, profileName: true, profileImageUrl: true, phoneE164: true } },
 } satisfies Prisma.ConversationSelect;
 
 async function requireContact(workspaceId: string, contactId: string) {
@@ -112,14 +112,47 @@ export async function listMessages(workspaceId: string, contactId: string, conve
   return { items, pagination: { page: query.page, pageSize: query.pageSize, total, totalPages: Math.max(1, Math.ceil(total / query.pageSize)), hasNext: query.page * query.pageSize < total, hasPrevious: query.page > 1 } };
 }
 
+export async function getMessageMedia(workspaceId: string, contactId: string, conversationId: string, messageId: string) {
+  await requireConversation(workspaceId, contactId, conversationId);
+  return downloadWhatsAppMedia(workspaceId, conversationId, messageId);
+}
+
+export async function markConversationRead(workspaceId: string, contactId: string, conversationId: string) {
+  const readAt = new Date();
+  await prisma.$transaction(async (transaction) => {
+    const conversation = await transaction.conversation.findFirst({
+      where: { id: conversationId, workspaceId, contactId },
+      select: { id: true },
+    });
+    if (!conversation) throw new AppError(404, "Conversation was not found", "CONVERSATION_NOT_FOUND");
+    await transaction.message.updateMany({
+      where: { workspaceId, contactId, conversationId, direction: "INCOMING", status: { not: "READ" } },
+      data: { status: "READ", readAt },
+    });
+    await transaction.conversation.update({ where: { id: conversationId, workspaceId }, data: { unreadCount: 0 } });
+  });
+  return { readAt };
+}
+
 export async function createMessage(workspaceId: string, contactId: string, conversationId: string, actorUserId: string, input: CreateMessageInput) {
   const conversation = await requireConversation(workspaceId, contactId, conversationId);
   let sentAt = input.sentAt ? new Date(input.sentAt) : new Date();
   let metaMessageId = input.metaMessageId;
+  let mediaId = input.mediaId;
+  let mediaUrl = input.mediaUrl;
   if (input.direction === "OUTGOING" && input.type === "TEXT" && conversation.channelKey === "whatsapp") {
     if (typeof input.text !== "string" || !input.text.trim()) throw new AppError(422, "Message text cannot be empty", "MESSAGE_TEXT_REQUIRED");
     const sent = await sendWhatsAppConversationText(workspaceId, conversationId, input.text);
     metaMessageId = sent.metaMessageId;
+    sentAt = sent.sentAt;
+  }
+  if (input.direction === "OUTGOING" && ["IMAGE", "VIDEO", "AUDIO", "DOCUMENT"].includes(input.type) && conversation.channelKey === "whatsapp") {
+    const sent = await sendWhatsAppConversationMedia(workspaceId, conversationId, input.type as "IMAGE" | "VIDEO" | "AUDIO" | "DOCUMENT", input.mediaData, input.mediaId ?? undefined, input.text?.trim() || undefined, input.mediaFileName);
+    metaMessageId = sent.metaMessageId;
+    mediaId = sent.mediaId;
+    // Keep the provider media ID as the durable reference. The upload data URL is
+    // only used for the immediate browser preview and must not bloat message rows.
+    mediaUrl = input.mediaUrl;
     sentAt = sent.sentAt;
   }
   const result = await prisma.$transaction(async (transaction) => {
@@ -130,7 +163,7 @@ export async function createMessage(workspaceId: string, contactId: string, conv
     const message = await transaction.message.create({
       data: {
         workspaceId, contactId, conversationId, metaMessageId, direction: input.direction, type: input.type,
-        status: input.status, text: input.text, mediaId: input.mediaId, mediaUrl: input.mediaUrl, payload: input.payload as Prisma.InputJsonValue,
+        status: input.status, text: input.text, mediaId, mediaUrl, payload: input.payload as Prisma.InputJsonValue,
         sentAt, createdById: actorUserId,
         ...(input.status === "DELIVERED" ? { deliveredAt: sentAt } : {}),
         ...(input.status === "READ" ? { deliveredAt: sentAt, readAt: sentAt } : {}),

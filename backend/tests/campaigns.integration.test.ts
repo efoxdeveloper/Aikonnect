@@ -64,6 +64,25 @@ test("campaign APIs enforce authentication and input validation", async () => {
   assert.equal(invalid.status, 422);
   const body = (await invalid.json()) as { error: { code: string } };
   assert.equal(body.error.code, "VALIDATION_ERROR");
+
+  const ineligible = await fetch(`${baseUrl}/workspaces/${owner.workspace.id}/campaigns`, {
+    method: "POST",
+    headers: headers(owner.accessToken),
+    body: JSON.stringify({ name: "Unconsented audience", audienceType: "manual", audienceLabel: "Manual numbers", phoneNumbers: ["+919999999999"], launchMode: "draft" }),
+  });
+  assert.equal(ineligible.status, 422);
+  assert.equal(((await ineligible.json()) as { error: { code: string } }).error.code, "CAMPAIGN_PHONE_NOT_ELIGIBLE");
+
+  const membership = await prisma.workspaceMember.findFirstOrThrow({ where: { workspaceId: owner.workspace.id }, select: { roleId: true } });
+  const sendPermission = await prisma.permission.findUniqueOrThrow({ where: { key: "campaigns.send" }, select: { id: true } });
+  await prisma.rolePermission.delete({ where: { roleId_permissionId: { roleId: membership.roleId, permissionId: sendPermission.id } } });
+  const unauthorizedLive = await fetch(`${baseUrl}/workspaces/${owner.workspace.id}/campaigns`, {
+    method: "POST",
+    headers: headers(owner.accessToken),
+    body: JSON.stringify({ name: "Unauthorized live campaign", templateKey: "approved-template", audienceLabel: "Everyone", launchMode: "send" }),
+  });
+  assert.equal(unauthorizedLive.status, 403);
+  assert.equal(((await unauthorizedLive.json()) as { error: { code: string } }).error.code, "PERMISSION_DENIED");
 });
 
 test("campaigns persist audience snapshots, support filters and duplicate safely", async () => {

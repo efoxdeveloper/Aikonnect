@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AuthContext, type AuthContextValue } from "@/contexts/AuthContext";
@@ -38,7 +38,7 @@ const conversation = {
   unreadCount: 1,
   lastMessagePreview: "Can you share the pricing?",
   lastMessageAt: "2026-08-27T06:00:00.000Z",
-  contact: { id: "contact-1", name: "Aarav Sharma", profileName: "Aarav" },
+  contact: { id: "contact-1", name: "Aarav Sharma", profileName: "Aarav", profileImageUrl: "https://cdn.example.com/aarav.jpg" },
 };
 
 function renderPage(value = auth) {
@@ -54,8 +54,12 @@ describe("Inbox", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(apiRequest).mockImplementation(async (path, options = {}) => {
-      if (String(path).includes("/messages") && options.method === "POST") return { message: { id: "message-2", direction: "OUTGOING", type: "TEXT", status: "SENT", text: "Here is the pricing.", sentAt: "2026-08-27T06:01:00.000Z" } } as never;
+      if (String(path).includes("/messages") && options.method === "POST") {
+        const body = typeof options.body === "string" ? JSON.parse(options.body) as { type?: string; text?: string | null; mediaData?: string } : {};
+        return { message: { id: "message-2", metaMessageId: "wamid-message-2", direction: "OUTGOING", type: body.type ?? "TEXT", status: "SENT", text: body.text ?? "Here is the pricing.", mediaId: body.mediaData ? "media-1" : null, mediaUrl: body.mediaData ?? null, sentAt: "2026-08-27T06:01:00.000Z" } } as never;
+      }
       if (String(path).includes("/messages")) return { items: [{ id: "message-1", direction: "INCOMING", type: "TEXT", status: "READ", text: "Can you share the pricing?", sentAt: "2026-08-27T06:00:00.000Z" }], pagination: {} } as never;
+      if (String(path).endsWith("/read")) return { readAt: "2026-08-27T06:02:00.000Z" } as never;
       return { items: [conversation], pagination: { page: 1, pageSize: 100, total: 1, totalPages: 1 } } as never;
     });
   });
@@ -82,6 +86,29 @@ describe("Inbox", () => {
     );
   });
 
+  it("renders the WhatsApp-style chat shell and conversation controls", async () => {
+    renderPage();
+    await screen.findByText("Can you share the pricing?");
+    expect(screen.getByTestId("inbox-shell")).toHaveClass("grid", "min-h-0", "overflow-hidden");
+    expect(screen.getByPlaceholderText("Search or start new chat")).toBeInTheDocument();
+    expect(screen.getAllByRole("img", { name: "Aarav Sharma profile" })).toHaveLength(2);
+    expect(screen.getByRole("button", { name: "Start video call" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Start phone call" })).toBeInTheDocument();
+    expect(screen.getByTestId("inbox-message-region")).toHaveClass("overflow-y-auto");
+    expect(screen.getByTestId("inbox-message-region")).toHaveStyle({ backgroundColor: "#efeae2" });
+    await waitFor(() => expect(within(screen.getByTestId("inbox-message-region")).getByText("Can you share the pricing?")).toHaveClass("break-words", "[overflow-wrap:anywhere]"));
+    expect(screen.getByRole("textbox", { name: "Message" })).toHaveAttribute("placeholder", "Type a message");
+  });
+
+  it("opens a conversation at the latest message", async () => {
+    renderPage();
+    const region = await screen.findByTestId("inbox-message-region");
+    Object.defineProperty(region, "scrollHeight", { configurable: true, value: 1600 });
+    Object.defineProperty(region, "clientHeight", { configurable: true, value: 600 });
+    await screen.findByText("Can you share the pricing?");
+    await waitFor(() => expect(region.scrollTop).toBe(1600));
+  });
+
   it("sends a reply through the selected workspace conversation", async () => {
     renderPage();
     await screen.findByText("Can you share the pricing?");
@@ -92,6 +119,81 @@ describe("Inbox", () => {
       "/workspaces/workspace-1/contacts/contact-1/conversations/conversation-1/messages",
       expect.objectContaining({ method: "POST", body: expect.stringContaining("Here is the pricing.") }),
     );
+  });
+
+  it("sends with Enter and keeps a newline with Shift+Enter", async () => {
+    renderPage();
+    await screen.findByText("Can you share the pricing?");
+    const composer = screen.getByRole("textbox", { name: "Message" });
+    fireEvent.change(composer, { target: { value: "First line" } });
+    fireEvent.keyDown(composer, { key: "Enter", code: "Enter", shiftKey: true });
+    expect(composer).toHaveValue("First line");
+    fireEvent.change(composer, { target: { value: "First line\nSecond line" } });
+    fireEvent.keyDown(composer, { key: "Enter", code: "Enter" });
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/contacts/contact-1/conversations/conversation-1/messages",
+      expect.objectContaining({ method: "POST", body: expect.stringContaining("First line\\nSecond line") }),
+    ));
+  });
+
+  it("previews and sends an image attachment with an optional caption", async () => {
+    renderPage();
+    await screen.findByText("Can you share the pricing?");
+    const image = new File(["fake-image"], "pricing.jpg", { type: "image/jpeg" });
+    fireEvent.change(screen.getByLabelText("Choose media"), { target: { files: [image] } });
+    expect(await screen.findByAltText("Attachment preview")).toBeInTheDocument();
+    fireEvent.change(screen.getByRole("textbox", { name: "Message" }), { target: { value: "Pricing image" } });
+    fireEvent.click(screen.getByRole("button", { name: "Send" }));
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/contacts/contact-1/conversations/conversation-1/messages",
+      expect.objectContaining({ method: "POST", body: expect.stringContaining('"type":"IMAGE"') }),
+    ));
+    expect(await screen.findByAltText("Attached image")).toBeInTheDocument();
+    expect(screen.getByText("Pricing image")).toBeInTheDocument();
+  });
+
+  it("rejects unsupported media and files larger than the attachment limit", async () => {
+    renderPage();
+    await screen.findByText("Can you share the pricing?");
+    const input = screen.getByLabelText("Choose media");
+    fireEvent.change(input, { target: { files: [new File(["archive"], "archive.zip", { type: "application/zip" })] } });
+    expect(await screen.findByRole("alert")).toHaveTextContent("Choose an image, video, audio");
+    const oversized = new File([new Uint8Array(6_000_001)], "large.jpg", { type: "image/jpeg" });
+    fireEvent.change(input, { target: { files: [oversized] } });
+    expect(await screen.findByRole("alert")).toHaveTextContent("Media files must be 6 MB or smaller");
+  });
+
+  it("renders an incoming image media URL in the message thread", async () => {
+    vi.mocked(apiRequest).mockImplementation(async (path, options = {}) => {
+      if (String(path).includes("/messages") && options.method === "POST") return { message: {} } as never;
+      if (String(path).includes("/messages")) return { items: [{ id: "message-image", direction: "INCOMING", type: "IMAGE", status: "READ", text: null, mediaId: "media-1", mediaUrl: "data:image/png;base64,ZmFrZQ==", sentAt: "2026-08-27T06:00:00.000Z" }], pagination: {} } as never;
+      return { items: [conversation], pagination: { page: 1, pageSize: 100, total: 1, totalPages: 1 } } as never;
+    });
+    renderPage();
+    expect(await screen.findByAltText("Attached image")).toHaveAttribute("src", "data:image/png;base64,ZmFrZQ==");
+  });
+
+  it("shows WhatsApp message ticks as delivery status changes", async () => {
+    class FakeWebSocket {
+      static instances: FakeWebSocket[] = [];
+      onopen: (() => void) | null = null;
+      onmessage: ((event: { data: string }) => void) | null = null;
+      onclose: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      constructor(public readonly url: string) { FakeWebSocket.instances.push(this); }
+      close() { this.onclose?.(); }
+    }
+    vi.stubGlobal("WebSocket", FakeWebSocket);
+    renderPage();
+    await screen.findByText("Can you share the pricing?");
+    fireEvent.change(screen.getByRole("textbox", { name: "Message" }), { target: { value: "Here is the pricing." } });
+    fireEvent.click(screen.getByRole("button", { name: "Send" }));
+    await waitFor(() => expect(screen.getByLabelText("Message sent")).toBeInTheDocument());
+    const socket = FakeWebSocket.instances[0];
+    act(() => socket.onmessage?.({ data: JSON.stringify({ type: "inbox.message_status", workspaceId: "workspace-1", conversationId: "conversation-1", messageId: "wamid-message-2", status: "DELIVERED" }) }));
+    expect(await screen.findByLabelText("Message delivered")).toBeInTheDocument();
+    act(() => socket.onmessage?.({ data: JSON.stringify({ type: "inbox.message_status", workspaceId: "workspace-1", conversationId: "conversation-1", messageId: "wamid-message-2", status: "READ" }) }));
+    expect(await screen.findByLabelText("Message read")).toBeInTheDocument();
   });
 
   it("requests a WhatsApp sync from the empty All chats state", async () => {
@@ -139,6 +241,57 @@ describe("Inbox", () => {
     const callsBeforeEvent = vi.mocked(apiRequest).mock.calls.length;
     act(() => socket.onmessage?.({ data: JSON.stringify({ type: "inbox.refresh", workspaceId: "workspace-1" }) }));
     await waitFor(() => expect(vi.mocked(apiRequest).mock.calls.length).toBeGreaterThan(callsBeforeEvent));
+  });
+
+  it("marks an opened unread conversation as read", async () => {
+    renderPage();
+    await screen.findByText("Can you share the pricing?");
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/contacts/contact-1/conversations/conversation-1/read",
+      { method: "POST", headers: { authorization: "Bearer access-token" } },
+    ));
+    expect(screen.getByRole("button", { name: /Aarav Sharma/ })).not.toHaveTextContent("1 unread");
+  });
+
+  it("does not reload the selected thread when the inbox list refreshes", async () => {
+    class FakeWebSocket {
+      static instances: FakeWebSocket[] = [];
+      onopen: (() => void) | null = null;
+      onmessage: ((event: { data: string }) => void) | null = null;
+      onclose: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      constructor(public readonly url: string) { FakeWebSocket.instances.push(this); }
+      close() { this.onclose?.(); }
+    }
+    vi.stubGlobal("WebSocket", FakeWebSocket);
+    renderPage();
+    await screen.findByText("Can you share the pricing?");
+    const messageCallsBeforeRefresh = vi.mocked(apiRequest).mock.calls.filter(([path, options]) => String(path).includes("/messages") && options?.method !== "POST").length;
+    const socket = FakeWebSocket.instances[0];
+    act(() => socket.onmessage?.({ data: JSON.stringify({ type: "inbox.refresh", workspaceId: "workspace-1" }) }));
+    await waitFor(() => expect(vi.mocked(apiRequest).mock.calls.filter(([path, options]) => String(path).includes("/messages") && options?.method !== "POST").length).toBe(messageCallsBeforeRefresh));
+    expect(screen.getAllByText("Can you share the pricing?").length).toBeGreaterThan(0);
+  });
+
+  it("keeps the realtime connection when switching to Active chats", async () => {
+    class FakeWebSocket {
+      static instances: FakeWebSocket[] = [];
+      onopen: (() => void) | null = null;
+      onmessage: ((event: { data: string }) => void) | null = null;
+      onclose: (() => void) | null = null;
+      onerror: (() => void) | null = null;
+      constructor(public readonly url: string) { FakeWebSocket.instances.push(this); }
+      close() { this.onclose?.(); }
+    }
+    vi.stubGlobal("WebSocket", FakeWebSocket);
+    renderPage();
+    await screen.findByText("Can you share the pricing?");
+    fireEvent.click(screen.getByRole("button", { name: "Active chats" }));
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/conversations?page=1&pageSize=100&search=&status=OPEN",
+      { headers: { authorization: "Bearer access-token" } },
+    ));
+    expect(FakeWebSocket.instances).toHaveLength(1);
   });
 
   it("polls the inbox when realtime is unavailable", async () => {

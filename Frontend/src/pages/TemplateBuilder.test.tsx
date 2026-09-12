@@ -100,7 +100,7 @@ describe("TemplateBuilder", () => {
     expect(screen.getByLabelText("Offer text")).toBeInTheDocument();
     expect(screen.getByLabelText(/Offer expiry/)).toBeInTheDocument();
     expect(screen.getByLabelText("Enter coupon code to copy")).toBeInTheDocument();
-    expect(screen.getByLabelText("Static")).toHaveValue("https://www.wati.io");
+    expect(screen.getByLabelText("Static")).toHaveValue("");
     expect(screen.getByText("Let users know how and what they will be able to redeem below")).toBeInTheDocument();
     expect(screen.getByTestId("template-phone-preview")).toHaveClass(
       "max-w-[240px]",
@@ -147,7 +147,7 @@ describe("TemplateBuilder", () => {
     const preview = screen.getByTestId("template-live-preview");
     expect(preview).toHaveTextContent("A special offer for you");
     expect(preview).toHaveTextContent("Hi {{name}}, your offer is ready.");
-    expect(preview).toHaveTextContent("Powered by wati.io");
+    expect(preview).not.toHaveTextContent("Powered by wati.io");
 
     fireEvent.click(screen.getByRole("button", { name: "Add Variable" }));
     expect(screen.getByPlaceholderText("Template Message...")).toHaveValue(
@@ -168,5 +168,19 @@ describe("TemplateBuilder", () => {
       "/workspaces/workspace-1/templates",
       expect.objectContaining({ body: expect.stringContaining('"saveAs":"submit"') }),
     );
+  });
+
+  it("does not send unsupported editor formats to Meta", () => {
+    renderPage();
+    fireEvent.change(screen.getByLabelText("Template Name"), { target: { value: "Media template" } });
+    fireEvent.change(screen.getByLabelText("Language"), { target: { value: "en_US" } });
+    fireEvent.change(screen.getByPlaceholderText("Template Message..."), { target: { value: "Hello" } });
+    fireEvent.click(screen.getByRole("radio", { name: "Image" }));
+    vi.mocked(apiRequest).mockClear();
+
+    fireEvent.click(screen.getByRole("button", { name: "Save template" }));
+
+    expect(screen.getByRole("alert")).toHaveTextContent("Media headers require a Meta media handle");
+    expect(apiRequest).not.toHaveBeenCalled();
   });
 });

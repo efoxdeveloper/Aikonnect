@@ -41,6 +41,7 @@ export type ContactMinAggregateOutputType = {
   phoneE164: string | null
   whatsappId: string | null
   profileName: string | null
+  profileImageUrl: string | null
   email: string | null
   source: string | null
   status: string | null
@@ -71,6 +72,7 @@ export type ContactMaxAggregateOutputType = {
   phoneE164: string | null
   whatsappId: string | null
   profileName: string | null
+  profileImageUrl: string | null
   email: string | null
   source: string | null
   status: string | null
@@ -101,6 +103,7 @@ export type ContactCountAggregateOutputType = {
   phoneE164: number
   whatsappId: number
   profileName: number
+  profileImageUrl: number
   email: number
   source: number
   status: number
@@ -142,6 +145,7 @@ export type ContactMinAggregateInputType = {
   phoneE164?: true
   whatsappId?: true
   profileName?: true
+  profileImageUrl?: true
   email?: true
   source?: true
   status?: true
@@ -172,6 +176,7 @@ export type ContactMaxAggregateInputType = {
   phoneE164?: true
   whatsappId?: true
   profileName?: true
+  profileImageUrl?: true
   email?: true
   source?: true
   status?: true
@@ -202,6 +207,7 @@ export type ContactCountAggregateInputType = {
   phoneE164?: true
   whatsappId?: true
   profileName?: true
+  profileImageUrl?: true
   email?: true
   source?: true
   status?: true
@@ -320,6 +326,7 @@ export type ContactGroupByOutputType = {
   phoneE164: string
   whatsappId: string | null
   profileName: string | null
+  profileImageUrl: string | null
   email: string | null
   source: string
   status: string
@@ -374,6 +381,7 @@ export type ContactWhereInput = {
   phoneE164?: Prisma.StringFilter<"Contact"> | string
   whatsappId?: Prisma.StringNullableFilter<"Contact"> | string | null
   profileName?: Prisma.StringNullableFilter<"Contact"> | string | null
+  profileImageUrl?: Prisma.StringNullableFilter<"Contact"> | string | null
   email?: Prisma.StringNullableFilter<"Contact"> | string | null
   source?: Prisma.StringFilter<"Contact"> | string
   status?: Prisma.StringFilter<"Contact"> | string
@@ -420,6 +428,7 @@ export type ContactOrderByWithRelationInput = {
   phoneE164?: Prisma.SortOrder
   whatsappId?: Prisma.SortOrderInput | Prisma.SortOrder
   profileName?: Prisma.SortOrderInput | Prisma.SortOrder
+  profileImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   source?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -469,6 +478,7 @@ export type ContactWhereUniqueInput = Prisma.AtLeast<{
   phoneE164?: Prisma.StringFilter<"Contact"> | string
   whatsappId?: Prisma.StringNullableFilter<"Contact"> | string | null
   profileName?: Prisma.StringNullableFilter<"Contact"> | string | null
+  profileImageUrl?: Prisma.StringNullableFilter<"Contact"> | string | null
   email?: Prisma.StringNullableFilter<"Contact"> | string | null
   source?: Prisma.StringFilter<"Contact"> | string
   status?: Prisma.StringFilter<"Contact"> | string
@@ -515,6 +525,7 @@ export type ContactOrderByWithAggregationInput = {
   phoneE164?: Prisma.SortOrder
   whatsappId?: Prisma.SortOrderInput | Prisma.SortOrder
   profileName?: Prisma.SortOrderInput | Prisma.SortOrder
+  profileImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   source?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -554,6 +565,7 @@ export type ContactScalarWhereWithAggregatesInput = {
   phoneE164?: Prisma.StringWithAggregatesFilter<"Contact"> | string
   whatsappId?: Prisma.StringNullableWithAggregatesFilter<"Contact"> | string | null
   profileName?: Prisma.StringNullableWithAggregatesFilter<"Contact"> | string | null
+  profileImageUrl?: Prisma.StringNullableWithAggregatesFilter<"Contact"> | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"Contact"> | string | null
   source?: Prisma.StringWithAggregatesFilter<"Contact"> | string
   status?: Prisma.StringWithAggregatesFilter<"Contact"> | string
@@ -584,6 +596,7 @@ export type ContactCreateInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -626,6 +639,7 @@ export type ContactUncheckedCreateInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -666,6 +680,7 @@ export type ContactUpdateInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -708,6 +723,7 @@ export type ContactUncheckedUpdateInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -749,6 +765,7 @@ export type ContactCreateManyInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -779,6 +796,7 @@ export type ContactUpdateManyMutationInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -806,6 +824,7 @@ export type ContactUncheckedUpdateManyInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -847,6 +866,7 @@ export type ContactCountOrderByAggregateInput = {
   phoneE164?: Prisma.SortOrder
   whatsappId?: Prisma.SortOrder
   profileName?: Prisma.SortOrder
+  profileImageUrl?: Prisma.SortOrder
   email?: Prisma.SortOrder
   source?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -882,6 +902,7 @@ export type ContactMaxOrderByAggregateInput = {
   phoneE164?: Prisma.SortOrder
   whatsappId?: Prisma.SortOrder
   profileName?: Prisma.SortOrder
+  profileImageUrl?: Prisma.SortOrder
   email?: Prisma.SortOrder
   source?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -912,6 +933,7 @@ export type ContactMinOrderByAggregateInput = {
   phoneE164?: Prisma.SortOrder
   whatsappId?: Prisma.SortOrder
   profileName?: Prisma.SortOrder
+  profileImageUrl?: Prisma.SortOrder
   email?: Prisma.SortOrder
   source?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -1321,6 +1343,7 @@ export type ContactCreateWithoutCreatedByInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -1362,6 +1385,7 @@ export type ContactUncheckedCreateWithoutCreatedByInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -1411,6 +1435,7 @@ export type ContactCreateWithoutAccountOwnerInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -1452,6 +1477,7 @@ export type ContactUncheckedCreateWithoutAccountOwnerInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -1501,6 +1527,7 @@ export type ContactCreateWithoutUpdatedByInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -1542,6 +1569,7 @@ export type ContactUncheckedCreateWithoutUpdatedByInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -1591,6 +1619,7 @@ export type ContactCreateWithoutDeletedByInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -1632,6 +1661,7 @@ export type ContactUncheckedCreateWithoutDeletedByInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -1701,6 +1731,7 @@ export type ContactScalarWhereInput = {
   phoneE164?: Prisma.StringFilter<"Contact"> | string
   whatsappId?: Prisma.StringNullableFilter<"Contact"> | string | null
   profileName?: Prisma.StringNullableFilter<"Contact"> | string | null
+  profileImageUrl?: Prisma.StringNullableFilter<"Contact"> | string | null
   email?: Prisma.StringNullableFilter<"Contact"> | string | null
   source?: Prisma.StringFilter<"Contact"> | string
   status?: Prisma.StringFilter<"Contact"> | string
@@ -1779,6 +1810,7 @@ export type ContactCreateWithoutWorkspaceInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -1819,6 +1851,7 @@ export type ContactUncheckedCreateWithoutWorkspaceInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -1885,6 +1918,7 @@ export type ContactCreateWithoutConsentEventsInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -1926,6 +1960,7 @@ export type ContactUncheckedCreateWithoutConsentEventsInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -1981,6 +2016,7 @@ export type ContactUpdateWithoutConsentEventsInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2022,6 +2058,7 @@ export type ContactUncheckedUpdateWithoutConsentEventsInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2061,6 +2098,7 @@ export type ContactCreateWithoutConversationsInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -2102,6 +2140,7 @@ export type ContactUncheckedCreateWithoutConversationsInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -2157,6 +2196,7 @@ export type ContactUpdateWithoutConversationsInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2198,6 +2238,7 @@ export type ContactUncheckedUpdateWithoutConversationsInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2237,6 +2278,7 @@ export type ContactCreateWithoutMessagesInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -2278,6 +2320,7 @@ export type ContactUncheckedCreateWithoutMessagesInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -2333,6 +2376,7 @@ export type ContactUpdateWithoutMessagesInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2374,6 +2418,7 @@ export type ContactUncheckedUpdateWithoutMessagesInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2413,6 +2458,7 @@ export type ContactCreateWithoutCustomFieldValuesInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -2454,6 +2500,7 @@ export type ContactUncheckedCreateWithoutCustomFieldValuesInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -2509,6 +2556,7 @@ export type ContactUpdateWithoutCustomFieldValuesInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2550,6 +2598,7 @@ export type ContactUncheckedUpdateWithoutCustomFieldValuesInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2589,6 +2638,7 @@ export type ContactCreateWithoutTasksInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -2630,6 +2680,7 @@ export type ContactUncheckedCreateWithoutTasksInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -2685,6 +2736,7 @@ export type ContactUpdateWithoutTasksInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2726,6 +2778,7 @@ export type ContactUncheckedUpdateWithoutTasksInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2765,6 +2818,7 @@ export type ContactCreateWithoutNotesInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -2806,6 +2860,7 @@ export type ContactUncheckedCreateWithoutNotesInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -2861,6 +2916,7 @@ export type ContactUpdateWithoutNotesInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2902,6 +2958,7 @@ export type ContactUncheckedUpdateWithoutNotesInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2941,6 +2998,7 @@ export type ContactCreateWithoutTagAssignmentsInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -2982,6 +3040,7 @@ export type ContactUncheckedCreateWithoutTagAssignmentsInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -3037,6 +3096,7 @@ export type ContactUpdateWithoutTagAssignmentsInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3078,6 +3138,7 @@ export type ContactUncheckedUpdateWithoutTagAssignmentsInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3117,6 +3178,7 @@ export type ContactCreateWithoutAutomationLogsInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -3158,6 +3220,7 @@ export type ContactUncheckedCreateWithoutAutomationLogsInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -3213,6 +3276,7 @@ export type ContactUpdateWithoutAutomationLogsInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3254,6 +3318,7 @@ export type ContactUncheckedUpdateWithoutAutomationLogsInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3293,6 +3358,7 @@ export type ContactCreateWithoutWorkflowRunsInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -3334,6 +3400,7 @@ export type ContactUncheckedCreateWithoutWorkflowRunsInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -3389,6 +3456,7 @@ export type ContactUpdateWithoutWorkflowRunsInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3430,6 +3498,7 @@ export type ContactUncheckedUpdateWithoutWorkflowRunsInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3469,6 +3538,7 @@ export type ContactCreateWithoutCampaignRecipientsInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -3510,6 +3580,7 @@ export type ContactUncheckedCreateWithoutCampaignRecipientsInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -3565,6 +3636,7 @@ export type ContactUpdateWithoutCampaignRecipientsInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3606,6 +3678,7 @@ export type ContactUncheckedUpdateWithoutCampaignRecipientsInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3646,6 +3719,7 @@ export type ContactCreateManyCreatedByInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -3676,6 +3750,7 @@ export type ContactCreateManyAccountOwnerInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -3706,6 +3781,7 @@ export type ContactCreateManyUpdatedByInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -3736,6 +3812,7 @@ export type ContactCreateManyDeletedByInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -3765,6 +3842,7 @@ export type ContactUpdateWithoutCreatedByInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3806,6 +3884,7 @@ export type ContactUncheckedUpdateWithoutCreatedByInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3846,6 +3925,7 @@ export type ContactUncheckedUpdateManyWithoutCreatedByInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3875,6 +3955,7 @@ export type ContactUpdateWithoutAccountOwnerInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3916,6 +3997,7 @@ export type ContactUncheckedUpdateWithoutAccountOwnerInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3956,6 +4038,7 @@ export type ContactUncheckedUpdateManyWithoutAccountOwnerInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3985,6 +4068,7 @@ export type ContactUpdateWithoutUpdatedByInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4026,6 +4110,7 @@ export type ContactUncheckedUpdateWithoutUpdatedByInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4066,6 +4151,7 @@ export type ContactUncheckedUpdateManyWithoutUpdatedByInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4095,6 +4181,7 @@ export type ContactUpdateWithoutDeletedByInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4136,6 +4223,7 @@ export type ContactUncheckedUpdateWithoutDeletedByInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4176,6 +4264,7 @@ export type ContactUncheckedUpdateManyWithoutDeletedByInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4205,6 +4294,7 @@ export type ContactCreateManyWorkspaceInput = {
   phoneE164: string
   whatsappId?: string | null
   profileName?: string | null
+  profileImageUrl?: string | null
   email?: string | null
   source?: string
   status?: string
@@ -4235,6 +4325,7 @@ export type ContactUpdateWithoutWorkspaceInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4275,6 +4366,7 @@ export type ContactUncheckedUpdateWithoutWorkspaceInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4315,6 +4407,7 @@ export type ContactUncheckedUpdateManyWithoutWorkspaceInput = {
   phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
   whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4458,6 +4551,7 @@ export type ContactSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   phoneE164?: boolean
   whatsappId?: boolean
   profileName?: boolean
+  profileImageUrl?: boolean
   email?: boolean
   source?: boolean
   status?: boolean
@@ -4505,6 +4599,7 @@ export type ContactSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   phoneE164?: boolean
   whatsappId?: boolean
   profileName?: boolean
+  profileImageUrl?: boolean
   email?: boolean
   source?: boolean
   status?: boolean
@@ -4541,6 +4636,7 @@ export type ContactSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   phoneE164?: boolean
   whatsappId?: boolean
   profileName?: boolean
+  profileImageUrl?: boolean
   email?: boolean
   source?: boolean
   status?: boolean
@@ -4577,6 +4673,7 @@ export type ContactSelectScalar = {
   phoneE164?: boolean
   whatsappId?: boolean
   profileName?: boolean
+  profileImageUrl?: boolean
   email?: boolean
   source?: boolean
   status?: boolean
@@ -4601,7 +4698,7 @@ export type ContactSelectScalar = {
   deletedAt?: boolean
 }
 
-export type ContactOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "name" | "phoneE164" | "whatsappId" | "profileName" | "email" | "source" | "status" | "userId" | "accountOwnerId" | "dealValue" | "whatsappOpted" | "whatsappOptInSource" | "whatsappOptedInAt" | "whatsappOptOutSource" | "whatsappOptedOutAt" | "marketingBlocked" | "marketingBlockedAt" | "marketingBlockSource" | "marketingBlockReason" | "customAttributes" | "createdById" | "updatedById" | "deletedById" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["contact"]>
+export type ContactOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "name" | "phoneE164" | "whatsappId" | "profileName" | "profileImageUrl" | "email" | "source" | "status" | "userId" | "accountOwnerId" | "dealValue" | "whatsappOpted" | "whatsappOptInSource" | "whatsappOptedInAt" | "whatsappOptOutSource" | "whatsappOptedOutAt" | "marketingBlocked" | "marketingBlockedAt" | "marketingBlockSource" | "marketingBlockReason" | "customAttributes" | "createdById" | "updatedById" | "deletedById" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["contact"]>
 export type ContactInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Contact$createdByArgs<ExtArgs>
@@ -4661,6 +4758,7 @@ export type $ContactPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     phoneE164: string
     whatsappId: string | null
     profileName: string | null
+    profileImageUrl: string | null
     email: string | null
     source: string
     status: string
@@ -5127,6 +5225,7 @@ export interface ContactFieldRefs {
   readonly phoneE164: Prisma.FieldRef<"Contact", 'String'>
   readonly whatsappId: Prisma.FieldRef<"Contact", 'String'>
   readonly profileName: Prisma.FieldRef<"Contact", 'String'>
+  readonly profileImageUrl: Prisma.FieldRef<"Contact", 'String'>
   readonly email: Prisma.FieldRef<"Contact", 'String'>
   readonly source: Prisma.FieldRef<"Contact", 'String'>
   readonly status: Prisma.FieldRef<"Contact", 'String'>

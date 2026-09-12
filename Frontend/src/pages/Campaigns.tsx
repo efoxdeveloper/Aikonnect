@@ -69,6 +69,7 @@ type Campaign = {
   delivered: number;
   read: number;
   failed: number;
+  repliedCount: number;
   deliveredRate: number | null;
   readRate: number | null;
   replied: number | null;
@@ -83,21 +84,24 @@ type CampaignTemplate = {
   status: "DRAFT" | "PENDING" | "APPROVED" | "REJECTED" | "DELETED";
   category: string;
   language: string;
+  body: string;
 };
 type CampaignTemplateListResponse = {
   items: CampaignTemplate[];
 };
+type CampaignSegment = { id: string; name: string };
 type CampaignListResponse = {
   items: unknown[];
   pagination: { page: number; pageSize: number; total: number; totalPages: number; hasNext: boolean; hasPrevious: boolean };
 };
-const templateOptions = [
-  { value: "promotional_offer", label: "Promotional offer" },
-  { value: "product_update", label: "Product update" },
-  { value: "appointment_reminder", label: "Appointment reminder" },
-  { value: "order_update", label: "Order update" },
-];
 const categoryOptions = ["Marketing", "Utility", "Authentication"];
+const contactVariableFields = [
+  { value: "name", label: "Name" },
+  { value: "phone", label: "Phone number" },
+  { value: "email", label: "Email" },
+  { value: "source", label: "Contact source" },
+  { value: "status", label: "Contact status" },
+];
 const statusLabels: Record<CampaignStatus, string> = {
   DRAFT: "Draft",
   SCHEDULED: "Scheduled",
@@ -130,11 +134,16 @@ function normalizeCampaign(value: unknown): Campaign | null {
     !("name" in value)
   )
     return null;
-  const item = value as Partial<Campaign> & { scheduledAt?: string | null; templateKey?: string | null };
+  const item = value as Partial<Campaign> & {
+    scheduledAt?: string | null;
+    templateKey?: string | null;
+    templateName?: string | null;
+  };
   const sent = typeof item.sent === "number" ? item.sent : 0;
   const delivered = typeof item.delivered === "number" ? item.delivered : 0;
   const read = typeof item.read === "number" ? item.read : 0;
   const failed = typeof item.failed === "number" ? item.failed : 0;
+  const repliedCount = typeof item.replied === "number" ? item.replied : 0;
   return {
     id: String(item.id),
     name: String(item.name),
@@ -143,7 +152,7 @@ function normalizeCampaign(value: unknown): Campaign | null {
     createdBy: item.createdBy || "You",
     createdById: typeof item.createdById === "string" ? item.createdById : null,
     category: item.category || "Marketing",
-    template: item.template || item.templateKey || templateOptions[0].value,
+    template: item.templateName || item.template || item.templateKey || "",
     audience: item.audience || "All opted-in contacts",
     recipientCount:
       typeof item.recipientCount === "number" ? item.recipientCount : null,
@@ -158,6 +167,7 @@ function normalizeCampaign(value: unknown): Campaign | null {
     delivered,
     read,
     failed,
+    repliedCount,
     deliveredRate: sent ? Number(((delivered / sent) * 100).toFixed(0)) : null,
     readRate: sent ? Number(((read / sent) * 100).toFixed(0)) : null,
     replied: sent ? Number((((item.replied ?? 0) / sent) * 100).toFixed(0)) : null,
@@ -175,10 +185,9 @@ function formatDate(value: string | null) {
       }).format(new Date(value))
     : "--";
 }
-function templateLabel(value: string) {
-  return (
-    templateOptions.find((template) => template.value === value)?.label ?? value
-  );
+function templateLabel(value: string) { return value || "--"; }
+function templateVariableCount(body: string | undefined) {
+  return Math.max(0, ...[...(body ?? "").matchAll(/\{\{\s*(\d+)\s*\}\}/g)].map((match) => Number(match[1])));
 }
 function CampaignStatusBadge({ status }: { status: CampaignStatus }) {
   return (
@@ -309,6 +318,9 @@ function CreateCampaignDrawer({
     launchMode: LaunchMode;
     scheduledAt: string | null;
     retryFailed: boolean;
+    segmentId?: string;
+    templateVariables: Array<{ source: "contact" | "custom" | "constant"; field: string; fallback: string }>;
+    audienceConfig: Record<string, unknown>;
   }) => Promise<void>;
 }) {
   const [name, setName] = useState("");
@@ -316,11 +328,13 @@ function CreateCampaignDrawer({
   const [template, setTemplate] = useState("");
   const [templates, setTemplates] = useState<CampaignTemplate[]>([]);
   const [templatesLoading, setTemplatesLoading] = useState(false);
+  const [segments, setSegments] = useState<CampaignSegment[]>([]);
+  const [segmentsLoading, setSegmentsLoading] = useState(false);
   const [templateLoadError, setTemplateLoadError] = useState<string | null>(
     null,
   );
   const [category, setCategory] = useState(categoryOptions[0]);
-  const [variables, setVariables] = useState([
+  const [variables, setVariables] = useState<Array<{ source: "" | "contact" | "custom" | "constant"; field: string; fallback: string }>>([
     { source: "", field: "", fallback: "" },
   ]);
   const [audience, setAudience] = useState<Audience>(
@@ -328,6 +342,8 @@ function CreateCampaignDrawer({
   );
   const [manualNumbers, setManualNumbers] = useState("");
   const [csvFileName, setCsvFileName] = useState("");
+  const [csvNumbers, setCsvNumbers] = useState<string[]>([]);
+  const [segmentId, setSegmentId] = useState("");
   const [launchMode, setLaunchMode] =
     useState<Exclude<LaunchMode, "draft">>("send");
   const [scheduledAt, setScheduledAt] = useState("");
@@ -344,6 +360,8 @@ function CreateCampaignDrawer({
     setAudience(selectedContactCount ? "contacts" : "all");
     setManualNumbers("");
     setCsvFileName("");
+    setCsvNumbers([]);
+    setSegmentId("");
     setLaunchMode("send");
     setScheduledAt("");
     setRetryFailed(false);
@@ -392,9 +410,37 @@ function CreateCampaignDrawer({
     };
   }, [accessToken, open, workspaceId]);
 
+  useEffect(() => {
+    if (!open || !workspaceId || !accessToken) return;
+    let active = true;
+    setSegmentsLoading(true);
+    void apiRequest<{ items: CampaignSegment[] }>(
+      `/workspaces/${workspaceId}/contacts/segments?page=1&pageSize=50`,
+      { headers: { authorization: `Bearer ${accessToken}` } },
+    ).then((result) => {
+      if (active) setSegments(Array.isArray(result.items) ? result.items : []);
+    }).catch(() => {
+      if (active) setSegments([]);
+    }).finally(() => {
+      if (active) setSegmentsLoading(false);
+    });
+    return () => { active = false; };
+  }, [accessToken, open, workspaceId]);
+
   const approvedTemplates = templates.filter(
     (item) => item.status === "APPROVED",
   );
+  const selectedTemplate = templates.find((item) => item.key === template);
+  const requiredVariableCount = templateVariableCount(selectedTemplate?.body);
+
+  useEffect(() => {
+    if (!template) {
+      setVariables([]);
+      return;
+    }
+    const count = templateVariableCount(templates.find((item) => item.key === template)?.body);
+    setVariables((current) => Array.from({ length: count }, (_, index) => current[index] ?? { source: "", field: "", fallback: "" }));
+  }, [template, templates]);
 
   const submit = async (action: "draft" | "live") => {
     if (!name.trim()) {
@@ -413,12 +459,24 @@ function CreateCampaignDrawer({
       setError("Choose a date and time for this campaign.");
       return;
     }
-    if (action === "live" && audience === "csv" && !csvFileName) {
-      setError("Choose a CSV file for this audience.");
+    if (action === "live" && audience === "csv" && !csvNumbers.length) {
+      setError("Choose a CSV file containing eligible phone numbers.");
       return;
     }
     if (action === "live" && audience === "manual" && !manualNumbers.trim()) {
       setError("Enter at least one phone number.");
+      return;
+    }
+    if (audience === "segment" && !segmentId) {
+      setError("Choose a saved segment.");
+      return;
+    }
+    if (action === "live" && audience === "contacts" && !selectedContactIds.length) {
+      setError("Select at least one contact.");
+      return;
+    }
+    if (action === "live" && requiredVariableCount && (variables.length !== requiredVariableCount || variables.some((variable) => !variable.source || (!variable.field.trim() && !variable.fallback.trim())))) {
+      setError("Map every template variable before setting the campaign live.");
       return;
     }
     const audienceLabel =
@@ -431,15 +489,6 @@ function CreateCampaignDrawer({
             : audience === "segment"
               ? "Saved audience segment"
               : "All opted-in contacts";
-    const attempted =
-      audience === "contacts"
-        ? selectedContactCount
-        : audience === "manual"
-          ? manualNumbers
-              .split(/[\\n,]+/)
-              .map((number) => number.trim())
-              .filter(Boolean).length
-          : 0;
     await onCreate({
       name: name.trim(),
       kind: campaignKind,
@@ -448,11 +497,38 @@ function CreateCampaignDrawer({
       audienceType: audience,
       audienceLabel,
       contactIds: audience === "contacts" ? selectedContactIds : [],
-      phoneNumbers: audience === "manual" ? manualNumbers.split(/[\n,]+/).map((number) => number.trim()).filter(Boolean) : [],
+      phoneNumbers: audience === "manual" ? manualNumbers.split(/[\n,]+/).map((number) => number.trim()).filter(Boolean) : audience === "csv" ? csvNumbers : [],
       launchMode: action === "draft" ? "draft" : launchMode,
       scheduledAt: action === "live" && launchMode === "schedule" ? new Date(scheduledAt).toISOString() : null,
       retryFailed,
+      segmentId: audience === "segment" ? segmentId : undefined,
+      templateVariables: variables.filter((variable) => variable.source && (variable.field.trim() || variable.fallback.trim())).map((variable) => ({ source: variable.source as "contact" | "custom" | "constant", field: variable.field.trim(), fallback: variable.fallback.trim() })),
+      audienceConfig: audience === "csv" ? { csvFileName } : {},
     });
+  };
+
+  const handleCsvChange = async (file: File | undefined) => {
+    setCsvFileName(file?.name ?? "");
+    setCsvNumbers([]);
+    if (!file) return;
+    const rows = (await file.text()).split(/\r?\n/);
+    const numbers = new Set<string>();
+    for (const [index, row] of rows.entries()) {
+      const cells = row.split(",").map((cell) => cell.trim().replace(/^"|"$/g, ""));
+      if (index === 0 && cells.some((cell) => /phone|mobile|whatsapp/i.test(cell))) continue;
+      const phone = cells.find((cell) => /^\+[1-9]\d{6,14}$/.test(cell));
+      if (phone) numbers.add(phone);
+      else if (cells.some(Boolean)) {
+        setError(`CSV row ${index + 1} does not contain a complete E.164 phone number.`);
+        return;
+      }
+    }
+    if (!numbers.size) {
+      setError("The CSV must contain at least one complete E.164 phone number.");
+      return;
+    }
+    setError(null);
+    setCsvNumbers([...numbers]);
   };
 
   return (
@@ -553,95 +629,92 @@ function CreateCampaignDrawer({
             <div className="border-t border-[var(--border-soft)] pt-5">
               <h3 className="mb-3 text-sm font-medium">
                 Map Template Variables
+                {requiredVariableCount > 0 && (
+                  <span className="ml-2 text-xs font-normal text-[var(--text-secondary)]">
+                    {" "}
+                    ({requiredVariableCount} required)
+                  </span>
+                )}
               </h3>
-              <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2 text-[11px] font-medium text-[var(--text-secondary)]">
-                <span>Source</span>
-                <span>Field</span>
-                <span>Fallback Value</span>
-                <span className="sr-only">Remove</span>
-                {variables.map((variable, index) => (
-                  <div
-                    key={index}
-                    className="col-span-4 grid grid-cols-[1fr_1fr_1fr_auto] gap-2"
-                  >
-                    <select
-                      aria-label={`Template variable source ${index + 1}`}
-                      value={variable.source}
-                      onChange={(event) =>
-                        setVariables((current) =>
-                          current.map((item, itemIndex) =>
-                            itemIndex === index
-                              ? { ...item, source: event.target.value }
-                              : item,
-                          ),
-                        )
-                      }
-                      className="h-9 min-w-0 rounded-md border border-[var(--border)] bg-white px-2 text-xs outline-none focus:border-[var(--brand)]"
-                    >
-                      <option value="">Choose source</option>
-                      <option value="contact">Contact</option>
-                      <option value="custom">Custom field</option>
-                      <option value="constant">Constant</option>
-                    </select>
-                    <Input
-                      aria-label={`Template variable field ${index + 1}`}
-                      value={variable.field}
-                      onChange={(event) =>
-                        setVariables((current) =>
-                          current.map((item, itemIndex) =>
-                            itemIndex === index
-                              ? { ...item, field: event.target.value }
-                              : item,
-                          ),
-                        )
-                      }
-                      placeholder="Field name"
-                      className="h-9 min-w-0 px-2 text-xs"
-                    />
-                    <Input
-                      aria-label={`Fallback value ${index + 1}`}
-                      value={variable.fallback}
-                      onChange={(event) =>
-                        setVariables((current) =>
-                          current.map((item, itemIndex) =>
-                            itemIndex === index
-                              ? { ...item, fallback: event.target.value }
-                              : item,
-                          ),
-                        )
-                      }
-                      placeholder="Optional"
-                      className="h-9 min-w-0 px-2 text-xs"
-                    />
-                    <button
-                      type="button"
-                      aria-label={`Remove template variable ${index + 1}`}
-                      disabled={variables.length === 1}
-                      onClick={() =>
-                        setVariables((current) =>
-                          current.filter((_, itemIndex) => itemIndex !== index),
-                        )
-                      }
-                      className="size-9 rounded-md border border-[var(--border)] text-xs text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] disabled:opacity-40"
-                    >
-                      ×
-                    </button>
+              {requiredVariableCount === 0 ? (
+                <p className="text-xs text-[var(--text-secondary)]">This template has no body variables.</p>
+              ) : (
+                <>
+                  <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2 text-[11px] font-medium text-[var(--text-secondary)]">
+                    <span>Source</span>
+                    <span>Field or value</span>
+                    <span>Fallback value</span>
+                    <span className="sr-only">Remove</span>
+                    {variables.map((variable, index) => (
+                      <div
+                        key={index}
+                        className="col-span-4 grid grid-cols-[1fr_1fr_1fr_auto] gap-2"
+                      >
+                        <select
+                          aria-label={`Template variable source ${index + 1}`}
+                          value={variable.source}
+                          onChange={(event) =>
+                            setVariables((current) =>
+                              current.map((item, itemIndex) =>
+                                itemIndex === index
+                                  ? { ...item, source: event.target.value as "" | "contact" | "custom" | "constant", field: "" }
+                                  : item,
+                              ),
+                            )
+                          }
+                          className="h-9 min-w-0 rounded-md border border-[var(--border)] bg-white px-2 text-xs outline-none focus:border-[var(--brand)]"
+                        >
+                          <option value="">Choose source</option>
+                          <option value="contact">Contact</option>
+                          <option value="custom">Custom field</option>
+                          <option value="constant">Constant</option>
+                        </select>
+                        {variable.source === "contact" ? (
+                          <select
+                            aria-label={`Template variable field ${index + 1}`}
+                            value={variable.field}
+                            onChange={(event) =>
+                              setVariables((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, field: event.target.value } : item))
+                            }
+                            className="h-9 min-w-0 rounded-md border border-[var(--border)] bg-white px-2 text-xs outline-none focus:border-[var(--brand)]"
+                          >
+                            <option value="">Choose contact field</option>
+                            {contactVariableFields.map((field) => <option key={field.value} value={field.value}>{field.label}</option>)}
+                          </select>
+                        ) : (
+                          <Input
+                            aria-label={`Template variable field ${index + 1}`}
+                            value={variable.field}
+                            onChange={(event) =>
+                              setVariables((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, field: event.target.value } : item))
+                            }
+                            placeholder={variable.source === "constant" ? "Constant value" : "Custom field name"}
+                            className="h-9 min-w-0 px-2 text-xs"
+                          />
+                        )}
+                        <Input
+                          aria-label={`Fallback value ${index + 1}`}
+                          value={variable.fallback}
+                          onChange={(event) =>
+                            setVariables((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, fallback: event.target.value } : item))
+                          }
+                          placeholder="Optional"
+                          className="h-9 min-w-0 px-2 text-xs"
+                        />
+                        <button
+                          type="button"
+                          aria-label={`Remove template variable ${index + 1}`}
+                          disabled={variables.length <= requiredVariableCount}
+                          onClick={() => setVariables((current) => current.filter((_, itemIndex) => itemIndex !== index))}
+                          className="size-9 rounded-md border border-[var(--border)] text-xs text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] disabled:opacity-40"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              <button
-                type="button"
-                onClick={() =>
-                  setVariables((current) => [
-                    ...current,
-                    { source: "", field: "", fallback: "" },
-                  ])
-                }
-                className="mt-3 inline-flex items-center text-xs font-medium text-[var(--brand)] hover:underline"
-              >
-                <Plus size={14} className="mr-1" />
-                Add variable
-              </button>
+                </>
+              )}
             </div>
             <div className="border-t border-[var(--border-soft)] pt-5">
               <h3 className="mb-2 text-sm font-medium">Audience</h3>
@@ -676,9 +749,7 @@ function CreateCampaignDrawer({
                     id="campaign-csv"
                     type="file"
                     accept=".csv,text/csv"
-                    onChange={(event) =>
-                      setCsvFileName(event.target.files?.[0]?.name ?? "")
-                    }
+                    onChange={(event) => void handleCsvChange(event.target.files?.[0])}
                     className="h-10 pt-2 text-xs"
                   />
                 </div>
@@ -710,11 +781,13 @@ function CreateCampaignDrawer({
                   </label>
                   <select
                     id="campaign-segment"
+                    value={segmentId}
+                    onChange={(event) => setSegmentId(event.target.value)}
+                    disabled={segmentsLoading}
                     className="h-10 w-full rounded-md border border-[var(--border)] bg-white px-3 text-sm outline-none focus:border-[var(--brand)]"
                   >
-                    <option>Choose a segment</option>
-                    <option>VIP customers</option>
-                    <option>Recent contacts</option>
+                    <option value="">{segmentsLoading ? "Loading segments..." : "Choose a segment"}</option>
+                    {segments.map((segment) => <option key={segment.id} value={segment.id}>{segment.name}</option>)}
                   </select>
                 </div>
               )}
@@ -904,7 +977,7 @@ export function Campaigns() {
     );
   const createCampaign = async (campaign: {
     name: string; kind: CampaignKind; category: string; templateKey: string | null; audienceType: Audience;
-    audienceLabel: string; contactIds: string[]; phoneNumbers: string[]; launchMode: LaunchMode; scheduledAt: string | null; retryFailed: boolean;
+    audienceLabel: string; contactIds: string[]; phoneNumbers: string[]; launchMode: LaunchMode; scheduledAt: string | null; retryFailed: boolean; segmentId?: string; templateVariables: Array<{ source: "contact" | "custom" | "constant"; field: string; fallback: string }>; audienceConfig: Record<string, unknown>;
   }) => {
     if (!workspaceId || !accessToken) return;
     try {
@@ -942,9 +1015,9 @@ export function Campaigns() {
         statusLabels[campaign.status],
         campaign.attempted,
         campaign.sent,
-        campaign.deliveredRate === null ? "--" : `${campaign.deliveredRate}%`,
-        campaign.readRate === null ? "--" : `${campaign.readRate}%`,
-        campaign.replied === null ? "--" : `${campaign.replied}%`,
+        campaign.delivered,
+        campaign.read,
+        campaign.repliedCount,
         formatDate(campaign.setLiveAt),
       ],
     ]
@@ -1148,9 +1221,9 @@ export function Campaigns() {
                     "Status",
                     "Attempted",
                     "Sent",
-                    "Delivered",
-                    "Read",
-                    "Replied",
+                    "Delivered %",
+                    "Read %",
+                    "Replied %",
                     "Set Live",
                   ].map((heading) => (
                     <th key={heading} className="px-3 py-4 first:pl-4">

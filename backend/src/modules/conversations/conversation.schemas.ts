@@ -24,6 +24,8 @@ export const createMessageSchema = z.object({
   text: z.string().max(100_000).nullable().optional(),
   mediaId: z.string().max(255).nullable().optional(),
   mediaUrl: z.string().max(10_000).nullable().optional(),
+  mediaData: z.string().regex(/^data:[^;]+;base64,[A-Za-z0-9+/=]+$/).max(8_000_000).optional(),
+  mediaFileName: z.string().trim().max(255).optional(),
   payload: z.record(z.string(), z.unknown()).default({}),
   sentAt: z.iso.datetime({ offset: true }).optional(),
 });

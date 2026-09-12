@@ -97,6 +97,15 @@ test("lists workspace conversations with contact context and unread filtering", 
   const listed = (await list.json()) as { data: { items: Array<{ id: string; unreadCount: number; contact: { name: string } }> } };
   assert.deepEqual(listed.data.items.map((item) => ({ id: item.id, unreadCount: item.unreadCount, contact: item.contact.name })), [{ id: conversation.data.id, unreadCount: 1, contact: "Inbox Customer" }]);
 
+  const markRead = await fetch(`${baseUrl}/workspaces/${workspaceId}/contacts/${contact.data.id}/conversations/${conversation.data.id}/read`, { method: "POST", headers: authorization });
+  assert.equal(markRead.status, 200);
+  const readMessage = await prisma.message.findFirstOrThrow({ where: { workspaceId, conversationId: conversation.data.id, direction: "INCOMING" } });
+  assert.equal(readMessage.status, "READ");
+  assert.ok(readMessage.readAt);
+  const afterRead = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations?unreadOnly=true`, { headers: authorization });
+  assert.equal(afterRead.status, 200);
+  assert.deepEqual(((await afterRead.json()) as { data: { items: unknown[] } }).data.items, []);
+
   const crossWorkspace = await fetch(`${baseUrl}/workspaces/00000000-0000-0000-0000-000000000000/conversations`, { headers: authorization });
   assert.equal(crossWorkspace.status, 403);
 });

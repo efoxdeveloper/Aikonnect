@@ -199,6 +199,7 @@ test("contacts support workspace isolation, indexed filters, pagination, imports
       source: "WhatsApp",
       whatsappId: "919100000001",
       profileName: "Aarav on WhatsApp",
+      profileImageUrl: "https://cdn.example.com/aarav.jpg",
       tags: ["VIP", "North"],
       customAttributes: { tier: 3, lead_status: "Won", renewal_date: "2026-09-15", interests: ["Sales", "Marketing"] },
     },
@@ -209,11 +210,12 @@ test("contacts support workspace isolation, indexed filters, pagination, imports
   for (const input of inputs) {
     const response = await fetch(endpoint, { method: "POST", headers, body: JSON.stringify(input) });
     assert.equal(response.status, 201);
-    const body = (await response.json()) as { data: { id: string; phone: string; whatsappId: string | null; profileName: string | null; email: string | null } };
+    const body = (await response.json()) as { data: { id: string; phone: string; whatsappId: string | null; profileName: string | null; profileImageUrl: string | null; email: string | null } };
     contactIds.push(body.data.id);
     assert.equal(body.data.phone, input.phone);
     assert.equal(body.data.whatsappId, input.whatsappId ?? null);
     assert.equal(body.data.profileName, input.profileName ?? null);
+    assert.equal(body.data.profileImageUrl, input.profileImageUrl ?? null);
   }
 
   const initialConsent = await fetch(`${endpoint}/${contactIds[0]}`, { headers });

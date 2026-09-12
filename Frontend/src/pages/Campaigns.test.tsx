@@ -20,6 +20,7 @@ const templateResponse = {
         status: "APPROVED",
         category: "Marketing",
         language: "English (en)",
+        body: "Hi {{1}}, your offer code is {{2}}.",
       },
       {
         id: "template-pending",
@@ -36,6 +37,7 @@ let mockCampaigns: Array<Record<string, unknown>> = [];
 
 function mockApi() {
   vi.mocked(apiRequest).mockImplementation(async (path, options = {}) => {
+    if (path.includes("/contacts/segments")) return { items: [{ id: "segment-1", name: "VIP customers" }] };
     if (path.includes("/templates")) return templateResponse;
     if (path.includes("/duplicate")) {
       const sourceId = path.split("/campaigns/")[1]?.split("/")[0];
@@ -46,7 +48,8 @@ function mockApi() {
     }
     if (path.includes("/campaigns/") && !path.endsWith("/campaigns")) {
       const id = path.split("/campaigns/")[1]?.split("?")[0];
-      return { ...mockCampaigns.find((item) => item.id === id), recipients: [] };
+      const campaign = mockCampaigns.find((item) => item.id === id);
+      return { ...campaign, recipients: Array.isArray(campaign?.recipients) ? campaign.recipients : [] };
     }
     if (path.endsWith("/campaigns") || path.includes("/campaigns?")) {
       if (options.method === "POST") {
@@ -182,6 +185,14 @@ describe("Campaigns", () => {
           templateBody: "Backend campaign body",
           buttonTracking: [{ name: "Learn more", type: "URL", clicks: 2, clickPercentage: 50, users: 2 }],
           totalCost: null,
+          recipients: [
+            { id: "recipient-attempted", contactId: "contact-attempted", phoneE164: "+919000000001", status: "ATTEMPTED", attemptCount: 1, contact: { id: "contact-attempted", name: "Attempted User" } },
+            { id: "recipient-sent", contactId: "contact-sent", phoneE164: "+919000000002", status: "SENT", attemptCount: 1, sentAt: "2025-11-21T16:00:00+05:30", contact: { id: "contact-sent", name: "Sent User" } },
+            { id: "recipient-delivered", contactId: "contact-delivered", phoneE164: "+919000000003", status: "DELIVERED", attemptCount: 1, contact: { id: "contact-delivered", name: "Delivered User" } },
+            { id: "recipient-read", contactId: "contact-read", phoneE164: "+919000000004", status: "READ", attemptCount: 1, contact: { id: "contact-read", name: "Read User" } },
+            { id: "recipient-replied", contactId: "contact-replied", phoneE164: "+919000000005", status: "REPLIED", attemptCount: 1, contact: { id: "contact-replied", name: "Replied User" } },
+            { id: "recipient-failed", contactId: "contact-failed", phoneE164: "+919000000006", status: "FAILED", attemptCount: 3, failureReason: "Meta rejected the message", contact: { id: "contact-failed", name: "Failed User" } },
+          ],
         },
       ];
     renderCampaignRoutes();
@@ -208,6 +219,23 @@ describe("Campaigns", () => {
     expect(
       screen.queryByRole("button", { name: "Upgrade Plan" }),
     ).not.toBeInTheDocument();
+
+    const recipientCards = [
+      ["Attempted", "Attempted User"],
+      ["Sent", "Sent User"],
+      ["Delivered", "Delivered User"],
+      ["Read", "Read User"],
+      ["Replied", "Replied User"],
+      ["Other Failures", "Failed User"],
+    ] as const;
+    for (const [label, userName] of recipientCards) {
+      fireEvent.click(screen.getByRole("button", { name: `View user list for ${label}` }));
+      const recipientDrawer = await screen.findByRole("dialog", { name: `${label} recipients` });
+      expect(recipientDrawer).toHaveAttribute("data-vaul-drawer-direction", "right");
+      expect(screen.getByTestId("campaign-recipient-list")).toHaveTextContent(userName);
+      fireEvent.click(screen.getByRole("button", { name: "Close recipient list" }));
+      await waitFor(() => expect(screen.queryByRole("heading", { name: `${label} recipients` })).not.toBeInTheDocument());
+    }
   });
 
   it("opens the create flow with selected contacts from Contact Hub", async () => {
@@ -246,6 +274,10 @@ describe("Campaigns", () => {
       "/workspaces/workspace-1/templates?status=all&page=1&pageSize=100",
       { headers: { authorization: "Bearer access-token" } },
     );
+    expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/contacts/segments?page=1&pageSize=50",
+      { headers: { authorization: "Bearer access-token" } },
+    );
     expect(
       screen.getByRole("option", {
         name: /August product launch.*approved/i,
@@ -257,8 +289,21 @@ describe("Campaigns", () => {
       }),
     ).toBeDisabled();
     expect(
-      screen.getByRole("heading", { name: "Map Template Variables" }),
+      screen.getByRole("heading", { name: /Map Template Variables/ }),
     ).toBeInTheDocument();
+    expect(screen.getByText("(2 required)")).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Template variable source 1"), {
+      target: { value: "contact" },
+    });
+    fireEvent.change(screen.getByLabelText("Template variable field 1"), {
+      target: { value: "name" },
+    });
+    fireEvent.change(screen.getByLabelText("Template variable source 2"), {
+      target: { value: "constant" },
+    });
+    fireEvent.change(screen.getByLabelText("Template variable field 2"), {
+      target: { value: "SAVE20" },
+    });
     expect(
       screen.getByRole("heading", { name: "Schedule" }),
     ).toBeInTheDocument();
@@ -274,6 +319,9 @@ describe("Campaigns", () => {
     fireEvent.change(screen.getByLabelText("Audience"), {
       target: { value: "segment" },
     });
+    fireEvent.change(screen.getByLabelText("Choose segment"), {
+      target: { value: "segment-1" },
+    });
     fireEvent.click(screen.getByRole("button", { name: "Save Draft" }));
 
     expect(
@@ -284,7 +332,10 @@ describe("Campaigns", () => {
     ).toBeInTheDocument();
     expect(apiRequest).toHaveBeenCalledWith(
       "/workspaces/workspace-1/campaigns",
-      expect.objectContaining({ method: "POST" }),
+      expect.objectContaining({
+        method: "POST",
+        body: expect.stringContaining('"templateVariables":[{"source":"contact","field":"name","fallback":""},{"source":"constant","field":"SAVE20","fallback":""}]'),
+      }),
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Status filter" }));

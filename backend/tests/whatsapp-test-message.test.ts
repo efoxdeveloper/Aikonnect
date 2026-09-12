@@ -9,8 +9,9 @@ Object.assign(process.env, {
   META_TOKEN_ENCRYPTION_KEY: "test-token-encryption-key-for-tests-32chars",
   META_GRAPH_API_VERSION: "v25.0", LOG_LEVEL: "silent",
 });
-const { sendTestMessage, disconnectWhatsApp } = await import("../src/modules/whatsapp/whatsapp.service.js");
+const { sendTestMessage, sendWhatsAppTemplateMessage, disconnectWhatsApp, downloadWhatsAppMedia } = await import("../src/modules/whatsapp/whatsapp.service.js");
 const { createMessage } = await import("../src/modules/conversations/conversation.service.js");
+const { createMessageSchema } = await import("../src/modules/conversations/conversation.schemas.js");
 const { prisma } = await import("../src/database/prisma.js");
 const { AppError } = await import("../src/middleware/error-handler.js");
 const { testMessageSchema } = await import("../src/modules/whatsapp/whatsapp.schemas.js");
@@ -98,6 +99,90 @@ test("conversation replies are sent through Meta before being saved", async (t) 
   assert.equal(created, 1);
 });
 
+test("campaign template messages use the approved Meta template payload", async (t) => {
+  const { encryptSecret } = await import("../src/utils/crypto.js");
+  stub(t, prisma.whatsAppBusinessAccount, "findFirst", async () => ({
+    encryptedAccessToken: encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars"),
+    phoneNumbers: [{ id: "phone", metaPhoneNumberId: "meta-phone" }],
+  }));
+  stub(t, globalThis, "fetch", async (input: string | URL, init?: RequestInit) => {
+    assert.match(String(input), /\/v25\.0\/meta-phone\/messages$/);
+    assert.deepEqual(JSON.parse(String(init?.body)), {
+      messaging_product: "whatsapp", recipient_type: "individual", to: "919876543210", type: "template",
+      template: { name: "welcome_customer", language: { code: "en_US" }, components: [{ type: "body", parameters: [{ type: "text", text: "Pawan" }] }] },
+    });
+    return new Response(JSON.stringify({ messages: [{ id: "wamid.campaign" }] }), { status: 200 });
+  });
+  const result = await sendWhatsAppTemplateMessage("workspace", "+919876543210", "welcome_customer", "en_US", [{ type: "text", text: "Pawan" }]);
+  assert.equal(result.metaMessageId, "wamid.campaign");
+  assert.equal(result.phoneNumberId, "phone");
+});
+
+test("media replies upload the file and send the returned media ID through Meta", async (t) => {
+  const { encryptSecret } = await import("../src/utils/crypto.js");
+  const conversation = {
+    id: "conversation",
+    workspaceId: "workspace",
+    contactId: "contact",
+    phoneNumberId: "phone",
+    channelKey: "whatsapp",
+    contact: { phoneE164: "+919876543210" },
+    phoneNumber: { metaPhoneNumberId: "meta-phone", status: "ACTIVE", businessAccount: { status: "CONNECTED", encryptedAccessToken: encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars") } },
+  };
+  stub(t, prisma.conversation, "findFirst", async () => conversation);
+  stub(t, prisma.message, "findUnique", async () => null);
+  stub(t, prisma.message, "create", async (args: any) => ({ id: "message-media", ...args.data, createdAt: new Date(), updatedAt: new Date(), deliveredAt: null, readAt: null, failedAt: null, failureReason: null }));
+  stub(t, prisma.conversation, "update", async () => ({}));
+  stub(t, prisma, "$transaction", async (callback: (client: any) => Promise<unknown>) => callback(prisma));
+  stub(t, globalThis, "fetch", async (input: string | URL, init?: RequestInit) => {
+    const url = String(input);
+    assert.equal((init?.headers as Record<string, string>).authorization, "Bearer business-token");
+    if (url.endsWith("/media")) {
+      const form = init?.body as FormData;
+      assert.equal(form.get("messaging_product"), "whatsapp");
+      assert.equal(form.get("type"), "image/jpeg");
+      assert.ok(form.get("file") instanceof Blob);
+      return new Response(JSON.stringify({ id: "meta-media-1" }), { status: 200 });
+    }
+    assert.match(url, /\/v25\.0\/meta-phone\/messages$/);
+    assert.deepEqual(JSON.parse(String(init?.body)), {
+      messaging_product: "whatsapp",
+      recipient_type: "individual",
+      to: "919876543210",
+      type: "image",
+      image: { id: "meta-media-1", caption: "Pricing image" },
+    });
+    return new Response(JSON.stringify({ messages: [{ id: "wamid.media" }] }), { status: 200 });
+  });
+
+  const result = await createMessage("workspace", "contact", "conversation", "user", {
+    direction: "OUTGOING", type: "IMAGE", status: "SENT", text: "Pricing image", mediaData: "data:image/jpeg;base64,ZmFrZQ==", mediaFileName: "pricing.jpg", payload: {},
+  });
+  assert.equal(result.message.metaMessageId, "wamid.media");
+  assert.equal(result.message.mediaId, "meta-media-1");
+  assert.equal(result.message.mediaUrl ?? null, null);
+});
+
+test("media downloads use the stored Meta media ID and preserve the provider content type", async (t) => {
+  const { encryptSecret } = await import("../src/utils/crypto.js");
+  stub(t, prisma.message, "findFirst", async () => ({
+    mediaId: "meta-media-1",
+    conversation: { phoneNumber: { metaPhoneNumberId: "meta-phone", businessAccount: { status: "CONNECTED", encryptedAccessToken: encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars") } } },
+  }));
+  let calls = 0;
+  stub(t, globalThis, "fetch", async (input: string | URL, init?: RequestInit) => {
+    calls += 1;
+    assert.equal((init?.headers as Record<string, string>).authorization, "Bearer business-token");
+    if (String(input).endsWith("/meta-media-1")) return new Response(JSON.stringify({ url: "https://media.example/download", mime_type: "image/jpeg" }), { status: 200 });
+    assert.equal(String(input), "https://media.example/download");
+    return new Response(new Uint8Array([1, 2, 3]), { status: 200, headers: { "content-type": "image/jpeg" } });
+  });
+  const file = await downloadWhatsAppMedia("workspace", "conversation", "message-media");
+  assert.equal(calls, 2);
+  assert.equal(file.contentType, "image/jpeg");
+  assert.deepEqual([...file.body], [1, 2, 3]);
+});
+
 test("a rejected Meta reply is not saved locally", async (t) => {
   const { encryptSecret } = await import("../src/utils/crypto.js");
   stub(t, prisma.conversation, "findFirst", async () => ({
@@ -118,4 +203,11 @@ test("a rejected Meta reply is not saved locally", async (t) => {
 test("test recipient validation requires an E.164 number", () => {
   assert.equal(testMessageSchema.safeParse({ to: "+919876543210" }).success, true);
   for (const to of ["919876543210", "+1", "+abc", "+12345678901234567"]) assert.equal(testMessageSchema.safeParse({ to }).success, false);
+});
+
+test("media input validation rejects malformed data URLs and oversized payloads", () => {
+  const valid = { direction: "OUTGOING", type: "IMAGE", status: "SENT", mediaData: "data:image/jpeg;base64,ZmFrZQ==", payload: {} };
+  assert.equal(createMessageSchema.safeParse(valid).success, true);
+  assert.equal(createMessageSchema.safeParse({ ...valid, mediaData: "not-a-data-url" }).success, false);
+  assert.equal(createMessageSchema.safeParse({ ...valid, mediaData: `data:image/jpeg;base64,${"A".repeat(8_000_000)}` }).success, false);
 });

@@ -3,10 +3,11 @@ import { Router, type Request, type Response } from "express";
 import type { Prisma } from "../../generated/prisma/client.js";
 import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
-import { publishInboxRefresh } from "../../realtime/inbox.js";
+import { publishInboxMessageStatus, publishInboxRefresh } from "../../realtime/inbox.js";
 import { prisma } from "../../database/prisma.js";
 import { runAutomationsForEvent } from "../automations/automation.executor.js";
 import { runWorkflowsForEvent } from "../workflows/workflow.executor.js";
+import { markCampaignReply, refreshCampaignMetrics } from "../campaigns/campaign.metrics.js";
 
 type JsonRecord = Record<string, unknown>;
 
@@ -58,8 +59,33 @@ function asString(value: unknown): string | undefined {
   return typeof value === "string" && value.length > 0 ? value : undefined;
 }
 
+function localTemplateStatus(value: string | undefined) {
+  return value === "APPROVED" ? "APPROVED" : value === "REJECTED" ? "REJECTED" : "PENDING";
+}
+
 function asArray(value: unknown): JsonRecord[] {
   return Array.isArray(value) ? value.map(asRecord).filter((item): item is JsonRecord => item !== null) : [];
+}
+
+function httpUrl(value: unknown) {
+  const candidate = asString(value);
+  if (!candidate) return undefined;
+  try {
+    const parsed = new URL(candidate);
+    return parsed.protocol === "https:" || parsed.protocol === "http:" ? candidate : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function contactProfileImageUrl(contact: JsonRecord) {
+  const profile = asRecord(contact.profile);
+  return httpUrl(profile?.profile_picture_url)
+    ?? httpUrl(profile?.profileImageUrl)
+    ?? httpUrl(profile?.picture)
+    ?? httpUrl(contact.profile_image_url)
+    ?? httpUrl(contact.profileImageUrl)
+    ?? httpUrl(contact.picture);
 }
 
 function webhookSignatureIsValid(rawBody: Buffer, signature: string, secret: string) {
@@ -108,6 +134,7 @@ async function ingestIncomingMessage(
   phoneNumberId: string,
   message: WhatsAppMessage,
   profileName: string | undefined,
+  profileImageUrl: string | undefined,
 ) {
   const metaMessageId = asString(message.id);
   const from = asString(message.from);
@@ -137,7 +164,7 @@ async function ingestIncomingMessage(
     const contact = existingContact
       ? await transaction.contact.update({
           where: { id: existingContact.id },
-          data: { ...(profileName ? { profileName, name: profileName } : {}), whatsappId: from, phoneE164: normalizedPhone, source: "WhatsApp" },
+          data: { ...(profileName ? { profileName, name: profileName } : {}), ...(profileImageUrl ? { profileImageUrl } : {}), whatsappId: from, phoneE164: normalizedPhone, source: "WhatsApp" },
           select: { id: true },
         })
       : await transaction.contact.create({
@@ -147,6 +174,7 @@ async function ingestIncomingMessage(
             phoneE164: normalizedPhone,
             whatsappId: from,
             profileName,
+            profileImageUrl,
             source: "WhatsApp",
             whatsappOpted: true,
           },
@@ -177,7 +205,7 @@ async function ingestIncomingMessage(
       where: { id: conversation.id },
       data: { lastMessagePreview: text ?? type, lastMessageAt: sentAt, unreadCount: { increment: 1 } },
     });
-    return { contactId: contact.id, conversationId: conversation.id, messageId: metaMessageId, text, type, phoneNumber: normalizedPhone };
+    return { contactId: contact.id, conversationId: conversation.id, messageId: metaMessageId, text, type, phoneNumber: normalizedPhone, sentAt };
   });
 }
 
@@ -242,6 +270,7 @@ async function syncBusinessAppContacts(workspaceId: string, stateSync: JsonRecor
     if (!phone) continue;
     const normalizedPhone = phone.startsWith("+") ? phone : `+${phone}`;
     const fullName = asString(contactData?.full_name) ?? asString(contactData?.first_name) ?? normalizedPhone;
+    const imageUrl = contactData ? contactProfileImageUrl(contactData) : undefined;
     const action = asString(item.action);
     const existing = await prisma.contact.findFirst({
       where: { workspaceId, deletedAt: null, OR: [{ whatsappId: phone }, { phoneE164: normalizedPhone }] },
@@ -251,9 +280,9 @@ async function syncBusinessAppContacts(workspaceId: string, stateSync: JsonRecor
       continue;
     }
     if (existing) {
-      await prisma.contact.update({ where: { id: existing.id }, data: { name: fullName, profileName: fullName, whatsappId: phone, phoneE164: normalizedPhone, source: "WhatsApp", whatsappOpted: true } });
+      await prisma.contact.update({ where: { id: existing.id }, data: { name: fullName, profileName: fullName, ...(imageUrl ? { profileImageUrl: imageUrl } : {}), whatsappId: phone, phoneE164: normalizedPhone, source: "WhatsApp", whatsappOpted: true } });
     } else {
-      await prisma.contact.create({ data: { workspaceId, name: fullName, profileName: fullName, phoneE164: normalizedPhone, whatsappId: phone, source: "WhatsApp", whatsappOpted: true } });
+      await prisma.contact.create({ data: { workspaceId, name: fullName, profileName: fullName, profileImageUrl: imageUrl, phoneE164: normalizedPhone, whatsappId: phone, source: "WhatsApp", whatsappOpted: true } });
     }
   }
 }
@@ -275,7 +304,7 @@ async function ingestHistory(workspaceId: string, phoneNumberId: string, busines
         if (isBusinessMessage || (!from && to)) {
           await ingestMessageEcho(workspaceId, phoneNumberId, { ...historyMessage, to: to ?? customer });
         } else {
-          await ingestIncomingMessage(workspaceId, phoneNumberId, { ...historyMessage, from: from ?? customer }, undefined);
+          await ingestIncomingMessage(workspaceId, phoneNumberId, { ...historyMessage, from: from ?? customer }, undefined, undefined);
         }
       }
     }
@@ -292,15 +321,44 @@ async function ingestMessageStatuses(workspaceId: string, statuses: WhatsAppStat
     const occurredAt = Number.isFinite(timestamp) && timestamp > 0 ? new Date(timestamp * 1000) : new Date();
     const errors = asArray(status.errors);
     const failureReason = errors[0] ? asString(errors[0].title) ?? asString(errors[0].message) : undefined;
-    await prisma.message.updateMany({
+    const existing = await prisma.message.findFirst({
       where: { workspaceId, metaMessageId },
-      data: {
-        status: messageStatus,
-        ...(state === "DELIVERED" ? { deliveredAt: occurredAt } : {}),
-        ...(state === "READ" ? { deliveredAt: occurredAt, readAt: occurredAt } : {}),
-        ...(state === "FAILED" ? { failedAt: occurredAt, failureReason } : {}),
-      },
+      select: { id: true, conversationId: true, status: true },
     });
+    let updated = { count: 0 };
+    if (existing && existing.status !== "FAILED") {
+      const statusRank = { SENT: 1, DELIVERED: 2, READ: 3, FAILED: 4 } as const;
+      if (messageStatus === "FAILED" || statusRank[messageStatus] > statusRank[existing.status as keyof typeof statusRank]) {
+        updated = await prisma.message.updateMany({
+          where: { id: existing.id, status: existing.status },
+          data: {
+            status: messageStatus,
+            ...(state === "DELIVERED" ? { deliveredAt: occurredAt } : {}),
+            ...(state === "READ" ? { deliveredAt: occurredAt, readAt: occurredAt } : {}),
+            ...(state === "FAILED" ? { failedAt: occurredAt, failureReason } : {}),
+          },
+        });
+      }
+    }
+    const campaignRecipient = await prisma.campaignRecipient.findFirst({ where: { workspaceId, metaMessageId }, select: { id: true, campaignId: true, status: true } });
+    if (campaignRecipient) {
+      const recipientRanks = { SENT: 1, DELIVERED: 2, READ: 3, REPLIED: 4, FAILED: 5 } as const;
+      const currentRank = recipientRanks[campaignRecipient.status as keyof typeof recipientRanks] ?? 0;
+      const nextRank = messageStatus === "FAILED" ? 5 : recipientRanks[messageStatus];
+      if (messageStatus === "FAILED" || nextRank > currentRank) {
+        const recipientUpdated = await prisma.campaignRecipient.updateMany({
+          where: { id: campaignRecipient.id, status: campaignRecipient.status },
+          data: {
+            status: messageStatus,
+            ...(state === "DELIVERED" ? { deliveredAt: occurredAt } : {}),
+            ...(state === "READ" ? { deliveredAt: occurredAt, readAt: occurredAt } : {}),
+            ...(state === "FAILED" ? { failedAt: occurredAt, failureReason } : {}),
+          },
+        });
+        if (recipientUpdated.count) await refreshCampaignMetrics(workspaceId, campaignRecipient.campaignId);
+      }
+    }
+    if (updated.count && existing) publishInboxMessageStatus(workspaceId, existing.conversationId, metaMessageId, messageStatus);
   }
 }
 
@@ -337,6 +395,24 @@ async function processPayload(payload: WhatsAppWebhookPayload) {
         logger.info({ wabaId, phoneNumberId, historyItems: asArray(value.history).length }, "Processed WhatsApp coexistence history sync");
         continue;
       }
+      if (field === "message_template_status_update") {
+        if (account) {
+          const metaTemplateId = asString(value.message_template_id);
+          const event = asString(value.event)?.toUpperCase();
+          if (metaTemplateId && event) {
+            await prisma.template.updateMany({
+              where: { workspaceId: account.workspaceId, metaTemplateId },
+              data: {
+                status: localTemplateStatus(event) as never,
+                metaStatus: event,
+                metaRejectionReason: asString(value.reason) ?? null,
+                metaWabaId: wabaId ?? undefined,
+              },
+            });
+          }
+        }
+        continue;
+      }
       if (!phoneNumberId) continue;
       const phoneNumber = await workspacePhoneNumber(wabaId, phoneNumberId);
       if (!phoneNumber) {
@@ -352,11 +428,13 @@ async function processPayload(payload: WhatsAppWebhookPayload) {
       }
       if (field !== "messages") continue;
       const contacts = asArray(value.contacts);
-      const contactNames = new Map(contacts.map((contact) => [asString(contact.wa_id), asString(asRecord(contact.profile)?.name)]));
+      const contactProfiles = new Map(contacts.map((contact) => [asString(contact.wa_id), { name: asString(asRecord(contact.profile)?.name), profileImageUrl: contactProfileImageUrl(contact) }]));
       for (const message of asArray(value.messages) as WhatsAppMessage[]) {
-        const result = await ingestIncomingMessage(phoneNumber.businessAccount.workspaceId, phoneNumber.id, message, contactNames.get(asString(message.from)));
+        const contactProfile = contactProfiles.get(asString(message.from));
+        const result = await ingestIncomingMessage(phoneNumber.businessAccount.workspaceId, phoneNumber.id, message, contactProfile?.name, contactProfile?.profileImageUrl);
         if (result) {
           publishInboxRefresh(phoneNumber.businessAccount.workspaceId, result.conversationId);
+          await markCampaignReply(phoneNumber.businessAccount.workspaceId, result.phoneNumber, result.sentAt);
           try {
             await runAutomationsForEvent(phoneNumber.businessAccount.workspaceId, "MESSAGE_RECEIVED", {
               contactId: result.contactId,

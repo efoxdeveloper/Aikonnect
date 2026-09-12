@@ -16,6 +16,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ApiError, apiRequest } from "@/lib/api";
 import { getActiveMembership } from "@/lib/workspace";
 import { cn } from "@/lib/utils";
+import { Drawer, DrawerCloseButton, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
 
 type CampaignStatus =
   "DRAFT" | "SCHEDULED" | "RUNNING" | "COMPLETED" | "PAUSED";
@@ -26,6 +27,22 @@ type ButtonTrackingRecord = {
   clicks: number;
   clickPercentage: number;
   users: number;
+};
+type CampaignRecipientStatus = "PENDING" | "ATTEMPTED" | "SENT" | "DELIVERED" | "READ" | "REPLIED" | "FAILED";
+type CampaignRecipient = {
+  id: string;
+  contactId: string | null;
+  phoneE164: string;
+  status: CampaignRecipientStatus;
+  attemptCount: number;
+  attemptedAt: string | null;
+  sentAt: string | null;
+  deliveredAt: string | null;
+  readAt: string | null;
+  repliedAt: string | null;
+  failedAt: string | null;
+  failureReason: string | null;
+  contact: { id: string; name: string } | null;
 };
 type Campaign = {
   id: string;
@@ -44,6 +61,7 @@ type Campaign = {
   delivered: number;
   read: number;
   failed: number;
+  repliedCount: number;
   totalCost: number | null;
   deliveredRate: number | null;
   readRate: number | null;
@@ -51,6 +69,7 @@ type Campaign = {
   setLiveAt: string | null;
   updatedAt: string;
   buttonTracking: ButtonTrackingRecord[];
+  recipients: CampaignRecipient[];
 };
 const statusLabels: Record<CampaignStatus, string> = {
   DRAFT: "Draft",
@@ -66,14 +85,59 @@ const statusClasses: Record<CampaignStatus, string> = {
   COMPLETED: "bg-[var(--brand-soft)] text-[var(--brand)]",
   PAUSED: "bg-red-50 text-red-700",
 };
-const templateLabels: Record<string, string> = {
-  promotional_offer: "Promotional offer",
-  product_update: "Product update",
-  appointment_reminder: "Appointment reminder",
-  order_update: "Order update",
-  dps_carousel: "DPS Carousel",
+const recipientStatusLabels: Record<CampaignRecipientStatus, string> = {
+  PENDING: "Pending",
+  ATTEMPTED: "Attempted",
+  SENT: "Sent",
+  DELIVERED: "Delivered",
+  READ: "Read",
+  REPLIED: "Replied",
+  FAILED: "Failed",
+};
+type RecipientListFilter = "attempted" | "sent" | "delivered" | "read" | "replied" | "failed";
+const recipientListLabels: Record<RecipientListFilter, string> = {
+  attempted: "Attempted",
+  sent: "Sent",
+  delivered: "Delivered",
+  read: "Read",
+  replied: "Replied",
+  failed: "Other Failures",
 };
 
+function normalizeRecipient(value: unknown): CampaignRecipient | null {
+  if (!value || typeof value !== "object" || !("id" in value) || !("phoneE164" in value)) return null;
+  const item = value as Partial<CampaignRecipient>;
+  const status = item.status && item.status in recipientStatusLabels ? item.status as CampaignRecipientStatus : "PENDING";
+  return {
+    id: String(item.id),
+    contactId: item.contactId ? String(item.contactId) : null,
+    phoneE164: String(item.phoneE164),
+    status,
+    attemptCount: typeof item.attemptCount === "number" ? item.attemptCount : 0,
+    attemptedAt: item.attemptedAt ?? null,
+    sentAt: item.sentAt ?? null,
+    deliveredAt: item.deliveredAt ?? null,
+    readAt: item.readAt ?? null,
+    repliedAt: item.repliedAt ?? null,
+    failedAt: item.failedAt ?? null,
+    failureReason: item.failureReason ?? null,
+    contact: item.contact && typeof item.contact === "object" && "name" in item.contact
+      ? { id: String(item.contact.id ?? item.contactId ?? ""), name: String(item.contact.name) }
+      : null,
+  };
+}
+
+function recipientsForFilter(recipients: CampaignRecipient[], filter: RecipientListFilter) {
+  const statuses: Record<RecipientListFilter, CampaignRecipientStatus[]> = {
+    attempted: ["ATTEMPTED", "SENT", "DELIVERED", "READ", "REPLIED", "FAILED"],
+    sent: ["SENT", "DELIVERED", "READ", "REPLIED"],
+    delivered: ["DELIVERED", "READ", "REPLIED"],
+    read: ["READ", "REPLIED"],
+    replied: ["REPLIED"],
+    failed: ["FAILED"],
+  };
+  return recipients.filter((recipient) => statuses[filter].includes(recipient.status));
+}
 function normalizeCampaign(value: unknown): Campaign | null {
   if (
     !value ||
@@ -82,11 +146,19 @@ function normalizeCampaign(value: unknown): Campaign | null {
     !("name" in value)
   )
     return null;
-  const item = value as Partial<Campaign> & { scheduledAt?: string | null; templateKey?: string | null; templateBody?: string | null; audienceLabel?: string | null };
+  const item = value as Partial<Campaign> & {
+    scheduledAt?: string | null;
+    templateKey?: string | null;
+    templateName?: string | null;
+    templateBody?: string | null;
+    audienceLabel?: string | null;
+    recipients?: unknown[];
+  };
   const sent = typeof item.sent === "number" ? item.sent : 0;
   const delivered = typeof item.delivered === "number" ? item.delivered : 0;
   const read = typeof item.read === "number" ? item.read : 0;
   const failed = typeof item.failed === "number" ? item.failed : 0;
+  const repliedCount = typeof item.replied === "number" ? item.replied : 0;
   const status =
     typeof item.status === "string" && item.status in statusLabels
       ? (item.status as CampaignStatus)
@@ -113,7 +185,7 @@ function normalizeCampaign(value: unknown): Campaign | null {
       item.kind === "ongoing" || item.kind === "api" ? item.kind : "one_time",
     createdBy: item.createdBy || "You",
     category: item.category || "Marketing",
-    template: item.template || item.templateKey || "product_update",
+    template: item.templateName || item.template || item.templateKey || "",
     templateBody: item.templateBody ?? null,
     audience: item.audience || item.audienceLabel || "All opted-in contacts",
     recipientCount:
@@ -129,6 +201,7 @@ function normalizeCampaign(value: unknown): Campaign | null {
     delivered,
     read,
     failed,
+    repliedCount,
     deliveredRate: sent ? Math.round((delivered / sent) * 100) : null,
     readRate: sent ? Math.round((read / sent) * 100) : null,
     replied: sent && typeof item.replied === "number" ? Math.round((item.replied / sent) * 100) : null,
@@ -136,6 +209,9 @@ function normalizeCampaign(value: unknown): Campaign | null {
     updatedAt: item.updatedAt || new Date(0).toISOString(),
     totalCost: typeof item.totalCost === "number" ? item.totalCost : null,
     buttonTracking,
+    recipients: Array.isArray(item.recipients)
+      ? item.recipients.map(normalizeRecipient).filter((recipient): recipient is CampaignRecipient => Boolean(recipient))
+      : [],
   };
 }
 
@@ -156,9 +232,7 @@ function formatDate(value: string | null, withTime = false) {
   ).format(new Date(value));
 }
 
-function templateLabel(value: string) {
-  return templateLabels[value] ?? value;
-}
+function templateLabel(value: string) { return value || "--"; }
 
 function downloadReport(campaign: Campaign) {
   const escapeCsvValue = (value: string | number) =>
@@ -181,9 +255,9 @@ function downloadReport(campaign: Campaign) {
       statusLabels[campaign.status],
       campaign.attempted,
       campaign.sent,
-      campaign.deliveredRate === null ? "--" : `${campaign.deliveredRate}%`,
-      campaign.readRate === null ? "--" : `${campaign.readRate}%`,
-      campaign.replied === null ? "--" : `${campaign.replied}%`,
+       campaign.delivered,
+       campaign.read,
+       campaign.repliedCount,
       formatDate(campaign.setLiveAt),
     ],
   ];
@@ -213,12 +287,14 @@ function MetricCard({
   detail,
   tone = "default",
   footer,
+  onView,
 }: {
   label: string;
   value: string;
   detail: string;
   tone?: "default" | "warning";
   footer?: ReactNode;
+  onView?: () => void;
 }) {
   return (
     <div
@@ -244,6 +320,9 @@ function MetricCard({
       <div className="mt-2 flex items-center gap-1 text-xs">
         <button
           type="button"
+          onClick={onView}
+          disabled={!onView}
+          aria-label={`${detail} for ${label}`}
           className="font-medium text-[var(--brand)] hover:underline"
         >
           {detail}
@@ -257,6 +336,67 @@ function MetricCard({
   );
 }
 
+function RecipientListDrawer({
+  open,
+  onOpenChange,
+  campaignName,
+  filter,
+  recipients,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  campaignName: string;
+  filter: RecipientListFilter;
+  recipients: CampaignRecipient[];
+}) {
+  const filteredRecipients = recipientsForFilter(recipients, filter);
+  const label = recipientListLabels[filter];
+  return (
+    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
+      <DrawerContent className="h-full max-h-screen border-l border-[var(--border)] data-[vaul-drawer-direction=right]:!max-w-[860px]">
+          <DrawerHeader className="relative flex flex-row flex-none items-center justify-between gap-4 border-b border-[var(--border)] bg-[var(--brand-soft)]/45 pr-16">
+            <div className="min-w-0">
+              <DrawerTitle className="truncate text-sm font-semibold text-[var(--text-primary)]">{label} recipients</DrawerTitle>
+              <div className="mt-1 truncate text-xs text-[var(--text-secondary)]">{campaignName} · {filteredRecipients.length} user{filteredRecipients.length === 1 ? "" : "s"}</div>
+            </div>
+            <DrawerCloseButton aria-label="Close recipient list" />
+          </DrawerHeader>
+          <div className="min-h-0 flex-1 overflow-auto p-4 sm:p-6">
+            {filteredRecipients.length ? (
+              <table className="w-full min-w-[760px] table-fixed text-left text-sm" data-testid="campaign-recipient-list">
+                <thead className="sticky top-0 z-10 border-b border-[var(--border)] bg-[var(--table-header)] text-xs text-[var(--text-secondary)]">
+                  <tr>
+                    <th className="w-[24%] px-3 py-3 font-medium">User</th>
+                    <th className="w-[20%] px-3 py-3 font-medium">Phone number</th>
+                    <th className="w-[14%] px-3 py-3 font-medium">Status</th>
+                    <th className="w-[12%] px-3 py-3 font-medium">Attempts</th>
+                    <th className="w-[30%] px-3 py-3 font-medium">Failure reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredRecipients.map((recipient) => (
+                    <tr key={recipient.id} className="border-b border-[var(--border-soft)] last:border-0">
+                      <td className="px-3 py-3 font-medium text-[var(--text-primary)]">{recipient.contact?.name ?? "Unknown contact"}</td>
+                      <td className="px-3 py-3 text-[var(--text-secondary)]">{recipient.phoneE164}</td>
+                      <td className="px-3 py-3"><span className={cn("inline-flex rounded-full px-2 py-1 text-[11px] font-medium", recipient.status === "FAILED" ? "bg-red-50 text-[var(--danger)]" : "bg-[var(--brand-soft)] text-[var(--brand)]")}>{recipientStatusLabels[recipient.status]}</span></td>
+                      <td className="px-3 py-3 text-[var(--text-secondary)]">{recipient.attemptCount}</td>
+                      <td className="max-w-[260px] px-3 py-3 text-[var(--danger)]">{recipient.failureReason ?? "--"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="rounded-md border border-dashed border-[var(--border-strong)] px-6 py-12 text-center text-sm text-[var(--text-secondary)]">No {label.toLowerCase()} recipients yet.</div>
+            )}
+          </div>
+          <footer className="flex flex-none justify-end border-t border-[var(--border)] bg-[var(--surface-subtle)] px-5 py-3 sm:px-6">
+            <button type="button" onClick={() => onOpenChange(false)} className="h-9 rounded-md border border-[var(--border-strong)] bg-white px-4 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--brand-subtle)]">Close</button>
+          </footer>
+      </DrawerContent>
+    </Drawer>
+  );
+}
+
 export function CampaignDetails() {
   const { campaignId } = useParams<{ campaignId: string }>();
   const navigate = useNavigate();
@@ -267,6 +407,13 @@ export function CampaignDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [refreshVersion, setRefreshVersion] = useState(0);
+  const [recipientListFilter, setRecipientListFilter] = useState<RecipientListFilter>("sent");
+  const [recipientListOpen, setRecipientListOpen] = useState(false);
+
+  const openRecipientList = (filter: RecipientListFilter) => {
+    setRecipientListFilter(filter);
+    setRecipientListOpen(true);
+  };
 
   useEffect(() => {
     if (!workspaceId || !accessToken || !campaignId) { setLoading(false); return; }
@@ -407,40 +554,42 @@ export function CampaignDetails() {
             <div className="mt-4 grid gap-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
               <MetricCard
                 label="Attempted"
-                value={`${campaign.attempted} / ${campaign.attempted}`}
+                  value={`${campaign.attempted} / ${campaign.recipientCount ?? campaign.attempted}`}
                 detail="View user list"
+                onView={() => openRecipientList("attempted")}
               />
               <MetricCard
                 label="Sent"
                 value={String(campaign.sent)}
                 detail="View user list"
+                onView={() => openRecipientList("sent")}
               />
               <MetricCard
                 label="Delivered"
                 value={delivered === null ? "--" : String(delivered)}
                 detail="View user list"
+                onView={() => openRecipientList("delivered")}
               />
               <MetricCard
                 label="Read"
                 value={read === null ? "--" : String(read)}
                 detail="View user list"
+                onView={() => openRecipientList("read")}
               />
               <MetricCard
                 label="Replied"
                 value={
-                  campaign.replied === null
-                    ? "--"
-                    : String(
-                        Math.round((campaign.sent * campaign.replied) / 100),
-                      )
+                  String(campaign.repliedCount)
                 }
                 detail="View user list"
+                onView={() => openRecipientList("replied")}
               />
               <MetricCard
                 label="Other Failures"
                 value={String(otherFailures)}
-                detail="View Details"
+                detail="View user list"
                 tone="warning"
+                onView={() => openRecipientList("failed")}
               />
             </div>
           </section>
@@ -570,6 +719,13 @@ export function CampaignDetails() {
           </section>
         </div>
       </main>
+      <RecipientListDrawer
+        open={recipientListOpen}
+        onOpenChange={setRecipientListOpen}
+        campaignName={campaign.name}
+        filter={recipientListFilter}
+        recipients={campaign.recipients}
+      />
     </div>
   );
 }

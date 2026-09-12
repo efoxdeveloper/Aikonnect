@@ -9,6 +9,7 @@ import { createTemplateSchema, listTemplatesQuerySchema, templateParamsSchema, t
 export const templateRouter = Router({ mergeParams: true });
 templateRouter.use(validateParams(templateWorkspaceParamsSchema));
 templateRouter.get("/", requireWorkspacePermission(PERMISSIONS.TEMPLATES_READ), validateQuery(listTemplatesQuerySchema), asyncHandler(controller.list));
+templateRouter.post("/sync", requireWorkspacePermission(PERMISSIONS.TEMPLATES_MANAGE), asyncHandler(controller.sync));
 templateRouter.post("/", requireWorkspacePermission(PERMISSIONS.TEMPLATES_MANAGE), validateBody(createTemplateSchema), asyncHandler(controller.create));
 templateRouter.get("/:templateId", requireWorkspacePermission(PERMISSIONS.TEMPLATES_READ), validateParams(templateParamsSchema), asyncHandler(controller.get));
 templateRouter.patch("/:templateId", requireWorkspacePermission(PERMISSIONS.TEMPLATES_MANAGE), validateParams(templateParamsSchema), validateBody(updateTemplateSchema), asyncHandler(controller.update));

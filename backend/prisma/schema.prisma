@@ -253,6 +253,12 @@ model Workspace {
 model Template {
   id            String         @id @default(uuid()) @db.Uuid
   workspaceId   String         @map("workspace_id") @db.Uuid
+  metaTemplateId String?        @map("meta_template_id") @db.VarChar(100)
+  metaWabaId     String?        @map("meta_waba_id") @db.VarChar(100)
+  metaTemplateName String?      @map("meta_template_name") @db.VarChar(512)
+  metaLanguageCode String?      @map("meta_language_code") @db.VarChar(50)
+  metaStatus      String?       @map("meta_status") @db.VarChar(50)
+  metaRejectionReason String?   @map("meta_rejection_reason") @db.Text
   name          String         @db.VarChar(160)
   templateKey   String         @map("template_key") @db.VarChar(180)
   category      String         @db.VarChar(40)
@@ -277,7 +283,9 @@ model Template {
   deletedBy     User?          @relation("TemplateDeleter", fields: [deletedById], references: [id], onDelete: SetNull)
 
   @@unique([workspaceId, templateKey])
+  @@unique([workspaceId, metaTemplateId])
   @@index([workspaceId, status, updatedAt, id])
+  @@index([workspaceId, metaWabaId, status])
   @@index([workspaceId, deletedAt, updatedAt, id])
   @@index([createdById])
   @@index([updatedById])
@@ -292,6 +300,7 @@ model Contact {
   phoneE164            String                    @map("phone_e164") @db.VarChar(20)
   whatsappId           String?                   @map("whatsapp_id") @db.VarChar(64)
   profileName          String?                   @map("profile_name") @db.VarChar(160)
+  profileImageUrl      String?                   @map("profile_image_url") @db.Text
   email                String?                   @db.VarChar(320)
   source               String                    @default("Manual") @db.VarChar(50)
   status               String                    @default("New Lead") @db.VarChar(50)
@@ -735,7 +744,10 @@ model Campaign {
   category       String         @default("Marketing") @db.VarChar(40)
   templateKey    String?        @map("template_key") @db.VarChar(180)
   templateName   String?        @map("template_name") @db.VarChar(160)
+  metaTemplateName String?      @map("meta_template_name") @db.VarChar(512)
+  templateLanguageCode String?  @map("template_language_code") @db.VarChar(50)
   templateBody   String?        @map("template_body") @db.Text
+  templateVariables Json        @default("[]") @map("template_variables") @db.JsonB
   buttonTracking Json           @default("[]") @map("button_tracking") @db.JsonB
   audienceType   String         @map("audience_type") @db.VarChar(30)
   audienceLabel  String         @map("audience_label") @db.VarChar(255)
@@ -752,6 +764,7 @@ model Campaign {
   setLiveAt      DateTime?      @map("set_live_at") @db.Timestamptz(3)
   completedAt    DateTime?      @map("completed_at") @db.Timestamptz(3)
   totalCost      Decimal?       @map("total_cost") @db.Decimal(14, 2)
+  retryFailed    Boolean        @default(false) @map("retry_failed")
   createdById    String?        @map("created_by_id") @db.Uuid
   createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt      DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -773,6 +786,7 @@ model CampaignRecipient {
   phoneE164      String                  @map("phone_e164") @db.VarChar(20)
   status         CampaignRecipientStatus @default(PENDING)
   metaMessageId  String?                 @map("meta_message_id") @db.VarChar(200)
+  attemptCount   Int                     @default(0) @map("attempt_count")
   attemptedAt    DateTime?               @map("attempted_at") @db.Timestamptz(3)
   sentAt         DateTime?               @map("sent_at") @db.Timestamptz(3)
   deliveredAt    DateTime?               @map("delivered_at") @db.Timestamptz(3)
