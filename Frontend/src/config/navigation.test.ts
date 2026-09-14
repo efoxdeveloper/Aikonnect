@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { navigationGroups } from "@/config/navigation";
 
 describe("navigation structure", () => {
-  it("does not show badges on Dashboard or Inbox", () => {
+  it("does not define static badges on Dashboard or Inbox", () => {
     const primary = navigationGroups[0];
     const dashboard = primary.items.find((item) => item.title === "Dashboard");
     const inbox = primary.items.find((item) => item.title === "Inbox");

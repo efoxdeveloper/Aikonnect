@@ -183,7 +183,7 @@ async function ingestIncomingMessage(
     const conversation = await transaction.conversation.upsert({
       where: { workspaceId_contactId_channelKey: { workspaceId, contactId: contact.id, channelKey: "whatsapp" } },
       create: { workspaceId, contactId: contact.id, phoneNumberId, channelKey: "whatsapp", status: "OPEN" },
-      update: { phoneNumberId },
+      update: { phoneNumberId, deletedAt: null },
       select: { id: true },
     });
     await transaction.message.create({
@@ -248,7 +248,7 @@ async function ingestMessageEcho(workspaceId: string, phoneNumberId: string, mes
     const conversation = await transaction.conversation.upsert({
       where: { workspaceId_contactId_channelKey: { workspaceId, contactId: contact.id, channelKey: "whatsapp" } },
       create: { workspaceId, contactId: contact.id, phoneNumberId, channelKey: "whatsapp", status: "OPEN" },
-      update: { phoneNumberId },
+      update: { phoneNumberId, deletedAt: null },
       select: { id: true },
     });
     await transaction.message.create({
@@ -256,7 +256,7 @@ async function ingestMessageEcho(workspaceId: string, phoneNumberId: string, mes
     });
     await transaction.conversation.update({
       where: { id: conversation.id },
-      data: { lastMessagePreview: text ?? type, lastMessageAt: sentAt },
+      data: { lastMessagePreview: `You: ${text ?? type}`, lastMessageAt: sentAt },
     });
     return { contactId: contact.id, conversationId: conversation.id, messageId: metaMessageId };
   });

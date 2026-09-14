@@ -54,6 +54,14 @@ test("reports protect access, validate date ranges, filter persisted contacts an
   const workspaceUrl = `${baseUrl}/workspaces/${owner.workspace.id}`;
   const contact = await fetch(`${workspaceUrl}/contacts`, { method: "POST", headers, body: JSON.stringify({ name: "Report Customer", phone: "+919876543211", source: "Import" }) });
   assert.equal(contact.status, 201);
+  const contactBody = (await contact.json()) as { data: { id: string } };
+  const conversation = await fetch(`${workspaceUrl}/contacts/${contactBody.data.id}/conversations`, { method: "POST", headers, body: JSON.stringify({ channelKey: "email" }) });
+  assert.equal(conversation.status, 201);
+  const conversationBody = (await conversation.json()) as { data: { id: string } };
+  const incoming = await fetch(`${workspaceUrl}/contacts/${contactBody.data.id}/conversations/${conversationBody.data.id}/messages`, { method: "POST", headers, body: JSON.stringify({ direction: "INCOMING", type: "TEXT", status: "SENT", text: "Incoming usage test" }) });
+  assert.equal(incoming.status, 201);
+  const outgoing = await fetch(`${workspaceUrl}/contacts/${contactBody.data.id}/conversations/${conversationBody.data.id}/messages`, { method: "POST", headers, body: JSON.stringify({ direction: "OUTGOING", type: "TEXT", status: "DELIVERED", text: "Campaign usage test", payload: { source: "campaign" } }) });
+  assert.equal(outgoing.status, 201);
 
   const invalid = await fetch(`${workspaceUrl}/reports/contacts?from=2026-09-02T12:00:00.000Z&to=2026-09-01T12:00:00.000Z`, { headers });
   assert.equal(invalid.status, 422);
@@ -85,4 +93,23 @@ test("reports protect access, validate date ranges, filter persisted contacts an
 
   const crossWorkspace = await fetch(`${baseUrl}/workspaces/00000000-0000-0000-0000-000000000000/reports/overview`, { headers });
   assert.equal(crossWorkspace.status, 403);
+
+  const usage = await fetch(`${workspaceUrl}/usage?from=${encodeURIComponent(new Date(Date.now() - 60_000).toISOString())}&to=${encodeURIComponent(new Date(Date.now() + 60_000).toISOString())}`, { headers });
+  assert.equal(usage.status, 200);
+  const usageBody = (await usage.json()) as { data: { summary: { totalMessages: number; incomingMessages: number; outgoingMessages: number; deliveredMessages: number; engagedContacts: number; activeConversations: number }; breakdown: Array<{ key: string; messages: number }> } };
+  assert.equal(usageBody.data.summary.totalMessages, 2);
+  assert.equal(usageBody.data.summary.incomingMessages, 1);
+  assert.equal(usageBody.data.summary.outgoingMessages, 1);
+  assert.equal(usageBody.data.summary.deliveredMessages, 1);
+  assert.equal(usageBody.data.summary.engagedContacts, 1);
+  assert.equal(usageBody.data.summary.activeConversations, 1);
+  assert.deepEqual(usageBody.data.breakdown.map(({ key, messages }) => ({ key, messages })), [
+    { key: "incoming", messages: 1 },
+    { key: "inbox", messages: 0 },
+    { key: "campaign", messages: 1 },
+    { key: "automation", messages: 0 },
+  ]);
+
+  const invalidUsage = await fetch(`${workspaceUrl}/usage?from=2025-01-01T00:00:00.000Z&to=2026-09-30T23:59:59.999Z`, { headers });
+  assert.equal(invalidUsage.status, 422);
 });

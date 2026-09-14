@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Box, Drawer } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { navigationGroups, type NavigationItem } from "@/config/navigation";
 import { SidebarSection } from "./SidebarSection";
+import { AuthContext } from "@/contexts/AuthContext";
+import { getActiveMembership } from "@/lib/workspace";
+import { useInboxUnreadCount } from "@/hooks/use-inbox-unread-count";
 
 const sidebarBackground = "linear-gradient(180deg,#064e3b 0%,#043f32 50%,#052e27 100%)";
 
@@ -27,6 +30,20 @@ export function SidebarVersion() {
 export function AppSidebar() {
   const { state, isMobile, openMobile, setOpenMobile } = useSidebar();
   const pathname = useLocation().pathname;
+  const auth = useContext(AuthContext);
+  const membership = getActiveMembership(auth?.user ?? null);
+  const canReadInbox = membership?.role.permissions.includes("inbox.read") ?? false;
+  const { unreadCount } = useInboxUnreadCount({
+    workspaceId: membership?.workspace.id,
+    accessToken: auth?.accessToken,
+    enabled: canReadInbox,
+  });
+  const sidebarGroups = useMemo(() => navigationGroups.map((group) => ({
+    ...group,
+    items: group.items.map((item) => item.title === "Inbox"
+      ? { ...item, badge: unreadCount > 0 ? { text: unreadCount > 99 ? "99+" : String(unreadCount), variant: "danger" as const } : undefined }
+      : item),
+  })), [unreadCount]);
   const activeSection = navigationGroups.find((group) => group.title && group.items.some((item) => isItemActive(item, pathname)))?.title;
   const [openSection, setOpenSection] = useState<string | null>(activeSection ?? navigationGroups.find((group) => group.title)?.title ?? null);
   const width = isMobile ? "var(--sidebar-width)" : state === "collapsed" ? "var(--sidebar-collapsed-width)" : "var(--sidebar-width)";
@@ -58,7 +75,7 @@ export function AppSidebar() {
   >
     <Box sx={{ display: "flex", height: "100%", minHeight: 0, flexDirection: "column", fontFamily: "var(--font-sans)" }}>
       <Box data-testid="sidebar-navigation" sx={{ minHeight: 0, flex: 1, overflowY: "auto", scrollbarWidth: "thin", scrollbarColor: "rgba(255,255,255,.2) transparent", pt: 2, pb: 2 }}>
-        {navigationGroups.map((group, index) => <SidebarSection key={group.title ?? `primary-${index}`} group={group} open={group.title ? openSection === group.title : true} onToggle={() => { if (group.title) setOpenSection((current) => current === group.title ? null : group.title ?? null); }} />)}
+        {sidebarGroups.map((group, index) => <SidebarSection key={group.title ?? `primary-${index}`} group={group} open={group.title ? openSection === group.title : true} onToggle={() => { if (group.title) setOpenSection((current) => current === group.title ? null : group.title ?? null); }} />)}
       </Box>
       <Box sx={{ flexShrink: 0 }}><SidebarVersion /></Box>
     </Box>

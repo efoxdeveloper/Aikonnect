@@ -41,6 +41,7 @@ export type MessageMinAggregateOutputType = {
   readAt: Date | null
   failedAt: Date | null
   failureReason: string | null
+  deletedAt: Date | null
   createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -63,6 +64,7 @@ export type MessageMaxAggregateOutputType = {
   readAt: Date | null
   failedAt: Date | null
   failureReason: string | null
+  deletedAt: Date | null
   createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -86,6 +88,7 @@ export type MessageCountAggregateOutputType = {
   readAt: number
   failedAt: number
   failureReason: number
+  deletedAt: number
   createdById: number
   createdAt: number
   updatedAt: number
@@ -110,6 +113,7 @@ export type MessageMinAggregateInputType = {
   readAt?: true
   failedAt?: true
   failureReason?: true
+  deletedAt?: true
   createdById?: true
   createdAt?: true
   updatedAt?: true
@@ -132,6 +136,7 @@ export type MessageMaxAggregateInputType = {
   readAt?: true
   failedAt?: true
   failureReason?: true
+  deletedAt?: true
   createdById?: true
   createdAt?: true
   updatedAt?: true
@@ -155,6 +160,7 @@ export type MessageCountAggregateInputType = {
   readAt?: true
   failedAt?: true
   failureReason?: true
+  deletedAt?: true
   createdById?: true
   createdAt?: true
   updatedAt?: true
@@ -251,6 +257,7 @@ export type MessageGroupByOutputType = {
   readAt: Date | null
   failedAt: Date | null
   failureReason: string | null
+  deletedAt: Date | null
   createdById: string | null
   createdAt: Date
   updatedAt: Date
@@ -295,6 +302,7 @@ export type MessageWhereInput = {
   readAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   failedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   failureReason?: Prisma.StringNullableFilter<"Message"> | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   createdById?: Prisma.UuidNullableFilter<"Message"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Message"> | Date | string
@@ -322,6 +330,7 @@ export type MessageOrderByWithRelationInput = {
   readAt?: Prisma.SortOrderInput | Prisma.SortOrder
   failedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   failureReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -353,6 +362,7 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   readAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   failedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   failureReason?: Prisma.StringNullableFilter<"Message"> | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   createdById?: Prisma.UuidNullableFilter<"Message"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Message"> | Date | string
@@ -380,6 +390,7 @@ export type MessageOrderByWithAggregationInput = {
   readAt?: Prisma.SortOrderInput | Prisma.SortOrder
   failedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   failureReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -409,6 +420,7 @@ export type MessageScalarWhereWithAggregatesInput = {
   readAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
   failedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
   failureReason?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
   createdById?: Prisma.UuidNullableWithAggregatesFilter<"Message"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Message"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Message"> | Date | string
@@ -429,6 +441,7 @@ export type MessageCreateInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutMessagesInput
@@ -455,6 +468,7 @@ export type MessageUncheckedCreateInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -475,6 +489,7 @@ export type MessageUpdateInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMessagesNestedInput
@@ -501,6 +516,7 @@ export type MessageUncheckedUpdateInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -524,6 +540,7 @@ export type MessageCreateManyInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -544,6 +561,7 @@ export type MessageUpdateManyMutationInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -566,6 +584,7 @@ export type MessageUncheckedUpdateManyInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -604,6 +623,7 @@ export type MessageCountOrderByAggregateInput = {
   readAt?: Prisma.SortOrder
   failedAt?: Prisma.SortOrder
   failureReason?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -626,6 +646,7 @@ export type MessageMaxOrderByAggregateInput = {
   readAt?: Prisma.SortOrder
   failedAt?: Prisma.SortOrder
   failureReason?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -648,6 +669,7 @@ export type MessageMinOrderByAggregateInput = {
   readAt?: Prisma.SortOrder
   failedAt?: Prisma.SortOrder
   failureReason?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -848,6 +870,7 @@ export type MessageCreateWithoutCreatedByInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutMessagesInput
@@ -873,6 +896,7 @@ export type MessageUncheckedCreateWithoutCreatedByInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -924,6 +948,7 @@ export type MessageScalarWhereInput = {
   readAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   failedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   failureReason?: Prisma.StringNullableFilter<"Message"> | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   createdById?: Prisma.UuidNullableFilter<"Message"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Message"> | Date | string
@@ -944,6 +969,7 @@ export type MessageCreateWithoutWorkspaceInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   conversation: Prisma.ConversationCreateNestedOneWithoutMessagesInput
@@ -968,6 +994,7 @@ export type MessageUncheckedCreateWithoutWorkspaceInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1014,6 +1041,7 @@ export type MessageCreateWithoutContactInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutMessagesInput
@@ -1038,6 +1066,7 @@ export type MessageUncheckedCreateWithoutContactInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1084,6 +1113,7 @@ export type MessageCreateWithoutConversationInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutMessagesInput
@@ -1108,6 +1138,7 @@ export type MessageUncheckedCreateWithoutConversationInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1157,6 +1188,7 @@ export type MessageCreateManyCreatedByInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1176,6 +1208,7 @@ export type MessageUpdateWithoutCreatedByInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMessagesNestedInput
@@ -1201,6 +1234,7 @@ export type MessageUncheckedUpdateWithoutCreatedByInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1223,6 +1257,7 @@ export type MessageUncheckedUpdateManyWithoutCreatedByInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1244,6 +1279,7 @@ export type MessageCreateManyWorkspaceInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1264,6 +1300,7 @@ export type MessageUpdateWithoutWorkspaceInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   conversation?: Prisma.ConversationUpdateOneRequiredWithoutMessagesNestedInput
@@ -1288,6 +1325,7 @@ export type MessageUncheckedUpdateWithoutWorkspaceInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1310,6 +1348,7 @@ export type MessageUncheckedUpdateManyWithoutWorkspaceInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1332,6 +1371,7 @@ export type MessageCreateManyContactInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1352,6 +1392,7 @@ export type MessageUpdateWithoutContactInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMessagesNestedInput
@@ -1376,6 +1417,7 @@ export type MessageUncheckedUpdateWithoutContactInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1398,6 +1440,7 @@ export type MessageUncheckedUpdateManyWithoutContactInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1420,6 +1463,7 @@ export type MessageCreateManyConversationInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1440,6 +1484,7 @@ export type MessageUpdateWithoutConversationInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMessagesNestedInput
@@ -1464,6 +1509,7 @@ export type MessageUncheckedUpdateWithoutConversationInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1486,6 +1532,7 @@ export type MessageUncheckedUpdateManyWithoutConversationInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1511,6 +1558,7 @@ export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   readAt?: boolean
   failedAt?: boolean
   failureReason?: boolean
+  deletedAt?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1538,6 +1586,7 @@ export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   readAt?: boolean
   failedAt?: boolean
   failureReason?: boolean
+  deletedAt?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1565,6 +1614,7 @@ export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   readAt?: boolean
   failedAt?: boolean
   failureReason?: boolean
+  deletedAt?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1592,12 +1642,13 @@ export type MessageSelectScalar = {
   readAt?: boolean
   failedAt?: boolean
   failureReason?: boolean
+  deletedAt?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "conversationId" | "contactId" | "metaMessageId" | "direction" | "type" | "status" | "text" | "mediaId" | "mediaUrl" | "payload" | "sentAt" | "deliveredAt" | "readAt" | "failedAt" | "failureReason" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["message"]>
+export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "conversationId" | "contactId" | "metaMessageId" | "direction" | "type" | "status" | "text" | "mediaId" | "mediaUrl" | "payload" | "sentAt" | "deliveredAt" | "readAt" | "failedAt" | "failureReason" | "deletedAt" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["message"]>
 export type MessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
@@ -1643,6 +1694,7 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     readAt: Date | null
     failedAt: Date | null
     failureReason: string | null
+    deletedAt: Date | null
     createdById: string | null
     createdAt: Date
     updatedAt: Date
@@ -2090,6 +2142,7 @@ export interface MessageFieldRefs {
   readonly readAt: Prisma.FieldRef<"Message", 'DateTime'>
   readonly failedAt: Prisma.FieldRef<"Message", 'DateTime'>
   readonly failureReason: Prisma.FieldRef<"Message", 'String'>
+  readonly deletedAt: Prisma.FieldRef<"Message", 'DateTime'>
   readonly createdById: Prisma.FieldRef<"Message", 'String'>
   readonly createdAt: Prisma.FieldRef<"Message", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Message", 'DateTime'>

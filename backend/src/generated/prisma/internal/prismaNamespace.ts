@@ -3179,9 +3179,12 @@ export const ConversationScalarFieldEnum = {
   phoneNumberId: 'phoneNumberId',
   channelKey: 'channelKey',
   status: 'status',
+  isPinned: 'isPinned',
   unreadCount: 'unreadCount',
   lastMessagePreview: 'lastMessagePreview',
   lastMessageAt: 'lastMessageAt',
+  clearedAt: 'clearedAt',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -3207,6 +3210,7 @@ export const MessageScalarFieldEnum = {
   readAt: 'readAt',
   failedAt: 'failedAt',
   failureReason: 'failureReason',
+  deletedAt: 'deletedAt',
   createdById: 'createdById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

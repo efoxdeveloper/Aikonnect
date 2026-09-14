@@ -3,21 +3,22 @@ import { prisma } from "../../database/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { downloadWhatsAppMedia, sendWhatsAppConversationMedia, sendWhatsAppConversationText } from "../whatsapp/whatsapp.service.js";
 import { publishInboxRefresh } from "../../realtime/inbox.js";
-import type { ConversationListQuery, CreateConversationInput, CreateMessageInput, InboxConversationListQuery } from "./conversation.schemas.js";
+import type { ConversationListQuery, CreateConversationInput, CreateMessageInput, ForwardTargetListQuery, InboxConversationListQuery } from "./conversation.schemas.js";
 
 const conversationSelect = {
   id: true, workspaceId: true, contactId: true, phoneNumberId: true, channelKey: true, status: true,
-  unreadCount: true, lastMessagePreview: true, lastMessageAt: true, createdAt: true, updatedAt: true,
+  isPinned: true, unreadCount: true, lastMessagePreview: true, lastMessageAt: true, clearedAt: true, createdAt: true, updatedAt: true,
 } satisfies Prisma.ConversationSelect;
 
 const messageSelect = {
   id: true, workspaceId: true, conversationId: true, contactId: true, metaMessageId: true, direction: true,
   type: true, status: true, text: true, mediaId: true, mediaUrl: true, payload: true, sentAt: true,
-  deliveredAt: true, readAt: true, failedAt: true, failureReason: true, createdById: true, createdAt: true, updatedAt: true,
+  deliveredAt: true, readAt: true, failedAt: true, failureReason: true, deletedAt: true, createdById: true, createdAt: true, updatedAt: true,
 } satisfies Prisma.MessageSelect;
 
 const inboxConversationSelect = {
   ...conversationSelect,
+  phoneNumber: { select: { displayPhoneNumber: true } },
   contact: { select: { id: true, name: true, profileName: true, profileImageUrl: true, phoneE164: true } },
 } satisfies Prisma.ConversationSelect;
 
@@ -27,17 +28,17 @@ async function requireContact(workspaceId: string, contactId: string) {
 }
 
 async function requireConversation(workspaceId: string, contactId: string, conversationId: string) {
-  const conversation = await prisma.conversation.findFirst({ where: { id: conversationId, workspaceId, contactId }, select: conversationSelect });
+  const conversation = await prisma.conversation.findFirst({ where: { id: conversationId, workspaceId, contactId, deletedAt: null }, select: conversationSelect });
   if (!conversation) throw new AppError(404, "Conversation was not found", "CONVERSATION_NOT_FOUND");
   return conversation;
 }
 
 export async function listConversations(workspaceId: string, contactId: string, query: ConversationListQuery) {
   await requireContact(workspaceId, contactId);
-  const where = { workspaceId, contactId };
+  const where = { workspaceId, contactId, deletedAt: null };
   const [total, items] = await prisma.$transaction([
     prisma.conversation.count({ where }),
-    prisma.conversation.findMany({ where, select: conversationSelect, orderBy: [{ lastMessageAt: "desc" }, { id: "desc" }], skip: (query.page - 1) * query.pageSize, take: query.pageSize }),
+    prisma.conversation.findMany({ where, select: conversationSelect, orderBy: [{ isPinned: "desc" }, { lastMessageAt: "desc" }, { id: "desc" }], skip: (query.page - 1) * query.pageSize, take: query.pageSize }),
   ]);
   return { items, pagination: { page: query.page, pageSize: query.pageSize, total, totalPages: Math.max(1, Math.ceil(total / query.pageSize)), hasNext: query.page * query.pageSize < total, hasPrevious: query.page > 1 } };
 }
@@ -46,6 +47,7 @@ export async function listInboxConversations(workspaceId: string, query: InboxCo
   const search = query.search.trim();
   const where: Prisma.ConversationWhereInput = {
     workspaceId,
+    deletedAt: null,
     contact: { deletedAt: null },
     ...(query.status ? { status: query.status } : {}),
     ...(query.channelKey ? { channelKey: query.channelKey } : {}),
@@ -65,7 +67,7 @@ export async function listInboxConversations(workspaceId: string, query: InboxCo
     prisma.conversation.findMany({
       where,
       select: inboxConversationSelect,
-      orderBy: [{ lastMessageAt: "desc" }, { id: "desc" }],
+      orderBy: [{ isPinned: "desc" }, { lastMessageAt: "desc" }, { id: "desc" }],
       skip: (query.page - 1) * query.pageSize,
       take: query.pageSize,
     }),
@@ -83,6 +85,39 @@ export async function listInboxConversations(workspaceId: string, query: InboxCo
   };
 }
 
+export async function listForwardTargets(workspaceId: string, query: ForwardTargetListQuery) {
+  const search = query.search.trim();
+  const where: Prisma.ConversationWhereInput = {
+    workspaceId,
+    deletedAt: null,
+    contact: { deletedAt: null, ...(search ? { OR: [
+      { name: { contains: search, mode: "insensitive" } },
+      { profileName: { contains: search, mode: "insensitive" } },
+      { email: { contains: search, mode: "insensitive" } },
+    ] } : {}) },
+  };
+  const [total, items] = await prisma.$transaction([
+    prisma.conversation.count({ where }),
+    prisma.conversation.findMany({
+      where,
+      select: inboxConversationSelect,
+      orderBy: [{ isPinned: "desc" }, { lastMessageAt: "desc" }, { id: "desc" }],
+      skip: (query.page - 1) * query.pageSize,
+      take: query.pageSize,
+    }),
+  ]);
+  const totalPages = Math.max(1, Math.ceil(total / query.pageSize));
+  return { items, pagination: { page: query.page, pageSize: query.pageSize, total, totalPages, hasNext: query.page < totalPages, hasPrevious: query.page > 1 } };
+}
+
+export async function getInboxUnreadCount(workspaceId: string) {
+  const result = await prisma.conversation.aggregate({
+    where: { workspaceId, deletedAt: null, contact: { deletedAt: null } },
+    _sum: { unreadCount: true },
+  });
+  return { unreadCount: result._sum.unreadCount ?? 0 };
+}
+
 export async function createConversation(workspaceId: string, contactId: string, input: CreateConversationInput) {
   await requireContact(workspaceId, contactId);
   if (input.phoneNumberId) {
@@ -93,7 +128,7 @@ export async function createConversation(workspaceId: string, contactId: string,
     return await prisma.conversation.upsert({
       where: { workspaceId_contactId_channelKey: { workspaceId, contactId, channelKey: input.channelKey } },
       create: { workspaceId, contactId, phoneNumberId: input.phoneNumberId, channelKey: input.channelKey, status: input.status },
-      update: { ...(input.phoneNumberId !== undefined ? { phoneNumberId: input.phoneNumberId } : {}), status: input.status },
+      update: { ...(input.phoneNumberId !== undefined ? { phoneNumberId: input.phoneNumberId } : {}), status: input.status, deletedAt: null },
       select: conversationSelect,
     });
   } catch (error) {
@@ -103,8 +138,9 @@ export async function createConversation(workspaceId: string, contactId: string,
 }
 
 export async function listMessages(workspaceId: string, contactId: string, conversationId: string, query: ConversationListQuery) {
-  await requireConversation(workspaceId, contactId, conversationId);
-  const where = { workspaceId, contactId, conversationId };
+  const conversation = await requireConversation(workspaceId, contactId, conversationId);
+  const search = query.search.trim();
+  const where: Prisma.MessageWhereInput = { workspaceId, contactId, conversationId, ...(conversation.clearedAt ? { sentAt: { gt: conversation.clearedAt } } : {}), ...(search ? { text: { contains: search, mode: "insensitive" } } : {}) };
   const [total, items] = await prisma.$transaction([
     prisma.message.count({ where }),
     prisma.message.findMany({ where, select: messageSelect, orderBy: query.latest ? [{ sentAt: "desc" }, { id: "desc" }] : [{ sentAt: "asc" }, { id: "asc" }], skip: (query.page - 1) * query.pageSize, take: query.pageSize }),
@@ -114,6 +150,8 @@ export async function listMessages(workspaceId: string, contactId: string, conve
 
 export async function getMessageMedia(workspaceId: string, contactId: string, conversationId: string, messageId: string) {
   await requireConversation(workspaceId, contactId, conversationId);
+  const message = await prisma.message.findFirst({ where: { id: messageId, workspaceId, contactId, conversationId }, select: { deletedAt: true } });
+  if (!message || message.deletedAt) throw new AppError(404, "Message media was not found", "MESSAGE_MEDIA_NOT_FOUND");
   return downloadWhatsAppMedia(workspaceId, conversationId, messageId);
 }
 
@@ -132,6 +170,66 @@ export async function markConversationRead(workspaceId: string, contactId: strin
     await transaction.conversation.update({ where: { id: conversationId, workspaceId }, data: { unreadCount: 0 } });
   });
   return { readAt };
+}
+
+export async function setConversationPinned(workspaceId: string, contactId: string, conversationId: string, pinned: boolean) {
+  await requireConversation(workspaceId, contactId, conversationId);
+  await prisma.conversation.update({ where: { id: conversationId, workspaceId, contactId }, data: { isPinned: pinned } });
+  publishInboxRefresh(workspaceId, conversationId);
+  return { isPinned: pinned };
+}
+
+export async function clearConversation(workspaceId: string, contactId: string, conversationId: string) {
+  await requireConversation(workspaceId, contactId, conversationId);
+  const clearedAt = new Date();
+  await prisma.conversation.update({
+    where: { id: conversationId, workspaceId, contactId },
+    data: { clearedAt, lastMessagePreview: null, lastMessageAt: null, unreadCount: 0 },
+  });
+  publishInboxRefresh(workspaceId, conversationId);
+  return { clearedAt };
+}
+
+export async function deleteConversation(workspaceId: string, contactId: string, conversationId: string) {
+  await requireConversation(workspaceId, contactId, conversationId);
+  await prisma.conversation.update({
+    where: { id: conversationId, workspaceId, contactId },
+    data: { deletedAt: new Date(), isPinned: false, unreadCount: 0 },
+  });
+  publishInboxRefresh(workspaceId, conversationId);
+}
+
+export async function deleteMessage(workspaceId: string, contactId: string, conversationId: string, messageId: string) {
+  const conversation = await requireConversation(workspaceId, contactId, conversationId);
+  await prisma.$transaction(async (transaction) => {
+    const message = await transaction.message.findFirst({
+      where: { id: messageId, workspaceId, contactId, conversationId },
+      select: { id: true },
+    });
+    if (!message) throw new AppError(404, "Message was not found", "MESSAGE_NOT_FOUND");
+
+    const deletedAt = new Date();
+    await transaction.message.update({
+      where: { id: message.id },
+      data: { deletedAt, text: null, mediaId: null, mediaUrl: null, payload: {} },
+    });
+    const [latest, unreadCount] = await Promise.all([
+      transaction.message.findFirst({
+        where: { workspaceId, contactId, conversationId, ...(conversation.clearedAt ? { sentAt: { gt: conversation.clearedAt } } : {}) },
+        select: { text: true, type: true, direction: true, sentAt: true, deletedAt: true },
+        orderBy: [{ sentAt: "desc" }, { id: "desc" }],
+      }),
+      transaction.message.count({
+        where: { workspaceId, contactId, conversationId, ...(conversation.clearedAt ? { sentAt: { gt: conversation.clearedAt } } : {}), direction: "INCOMING", status: { not: "READ" } },
+      }),
+    ]);
+    await transaction.conversation.update({
+      where: { id: conversationId, workspaceId, contactId },
+      data: { lastMessagePreview: latest ? latest.deletedAt ? "This message was deleted" : latest.direction === "OUTGOING" ? `You: ${latest.text ?? latest.type}` : latest.text ?? latest.type : null, lastMessageAt: latest?.sentAt ?? null, unreadCount },
+    });
+  });
+  publishInboxRefresh(workspaceId, conversationId);
+  return { deleted: true };
 }
 
 export async function createMessage(workspaceId: string, contactId: string, conversationId: string, actorUserId: string, input: CreateMessageInput) {
@@ -171,7 +269,7 @@ export async function createMessage(workspaceId: string, contactId: string, conv
       },
       select: messageSelect,
     });
-    await transaction.conversation.update({ where: { id: conversationId, workspaceId, contactId }, data: { lastMessagePreview: input.text ?? input.type, lastMessageAt: sentAt, ...(input.direction === "INCOMING" ? { unreadCount: { increment: 1 } } : {}) } });
+    await transaction.conversation.update({ where: { id: conversationId, workspaceId, contactId }, data: { lastMessagePreview: input.direction === "OUTGOING" ? `You: ${input.text ?? input.type}` : input.text ?? input.type, lastMessageAt: sentAt, ...(input.direction === "INCOMING" ? { unreadCount: { increment: 1 } } : {}) } });
     return { message, deduplicated: false };
   });
   if (!result.deduplicated) publishInboxRefresh(workspaceId, conversationId);

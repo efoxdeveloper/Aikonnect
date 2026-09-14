@@ -429,9 +429,12 @@ model Conversation {
   phoneNumberId      String?              @map("phone_number_id") @db.Uuid
   channelKey         String               @default("whatsapp") @map("channel_key") @db.VarChar(50)
   status             ConversationStatus   @default(OPEN)
+  isPinned           Boolean              @default(false) @map("is_pinned")
   unreadCount        Int                  @default(0) @map("unread_count")
   lastMessagePreview String?              @map("last_message_preview") @db.Text
   lastMessageAt      DateTime?            @map("last_message_at") @db.Timestamptz(3)
+  clearedAt          DateTime?            @map("cleared_at") @db.Timestamptz(3)
+  deletedAt          DateTime?            @map("deleted_at") @db.Timestamptz(3)
   createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt          DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
   workspace          Workspace            @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
@@ -445,6 +448,7 @@ model Conversation {
   @@index([workspaceId, channelKey, status, lastMessageAt(sort: Desc), id(sort: Desc)], map: "conversations_workspace_channel_status_recent_idx")
   @@index([workspaceId, lastMessageAt(sort: Desc), id(sort: Desc)], map: "conversations_workspace_recent_idx")
   @@index([workspaceId, contactId, updatedAt, id])
+  @@index([workspaceId, deletedAt, isPinned, lastMessageAt, id])
   @@index([phoneNumberId])
   @@map("conversations")
 }
@@ -467,6 +471,7 @@ model Message {
   readAt         DateTime?        @map("read_at") @db.Timestamptz(3)
   failedAt       DateTime?        @map("failed_at") @db.Timestamptz(3)
   failureReason  String?          @map("failure_reason") @db.Text
+  deletedAt      DateTime?        @map("deleted_at") @db.Timestamptz(3)
   createdById    String?          @map("created_by_id") @db.Uuid
   createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -478,6 +483,7 @@ model Message {
   @@unique([workspaceId, metaMessageId])
   @@index([workspaceId, conversationId, sentAt, id])
   @@index([workspaceId, contactId, sentAt, id])
+  @@index([workspaceId, conversationId, deletedAt])
   @@index([createdById])
   @@map("messages")
 }

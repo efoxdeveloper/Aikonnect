@@ -93,14 +93,14 @@ async function sendRecipient(campaignId: string, recipientId: string) {
     const conversation = await transaction.conversation.upsert({
       where: { workspaceId_contactId_channelKey: { workspaceId: campaign.workspaceId, contactId: recipient.contact!.id, channelKey: "whatsapp" } },
       create: { workspaceId: campaign.workspaceId, contactId: recipient.contact!.id, phoneNumberId: sent.phoneNumberId, channelKey: "whatsapp", status: "OPEN" },
-      update: { phoneNumberId: sent.phoneNumberId },
+      update: { phoneNumberId: sent.phoneNumberId, deletedAt: null },
       select: { id: true },
     });
     await transaction.message.create({
       data: { workspaceId: campaign.workspaceId, conversationId: conversation.id, contactId: recipient.contact!.id, metaMessageId: sent.metaMessageId, direction: "OUTGOING", type: "TEXT", status: "SENT", text: campaign.templateBody, payload: { source: "campaign", campaignId: campaign.id }, sentAt },
     });
     await transaction.campaignRecipient.updateMany({ where: { id: recipient.id, status: "ATTEMPTED" }, data: { status: "SENT", metaMessageId: sent.metaMessageId, sentAt, failedAt: null, failureReason: null } });
-    await transaction.conversation.update({ where: { id: conversation.id }, data: { lastMessagePreview: campaign.templateBody, lastMessageAt: sentAt } });
+    await transaction.conversation.update({ where: { id: conversation.id }, data: { lastMessagePreview: `You: ${campaign.templateBody}`, lastMessageAt: sentAt } });
   });
   await refreshCampaignMetrics(campaign.workspaceId, campaignId);
 }

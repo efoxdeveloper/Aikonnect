@@ -13,6 +13,7 @@ const permissionCatalog = [
   { key: "contacts.read", label: "Access Contact Hub", description: "View contacts.", group: "contacts" },
   { key: "contacts.export", label: "Export contacts", description: "Export contact lists.", group: "contacts" },
   { key: "contacts.phone.view", label: "View contact phone numbers", description: "Show phone numbers.", group: "contact-data" },
+  { key: "inbox.read", label: "View shared inbox", description: "View shared conversations.", group: "inbox" },
   { key: "workspace.read", label: "View workspace settings", description: "View workspace details.", group: "workspace" },
 ];
 
@@ -96,6 +97,23 @@ describe("RoleManagement", () => {
       }),
     ));
     expect(await screen.findByText("Permissions saved successfully.")).toBeInTheDocument();
+  });
+
+  it("opens contact access and shared inbox permissions from dropdown headers", async () => {
+    renderPage();
+
+    const contactAccess = await screen.findByRole("button", { name: "Contact access" });
+    const sharedInbox = screen.getByRole("button", { name: "Shared inbox" });
+    expect(contactAccess).toHaveAttribute("aria-expanded", "false");
+    expect(sharedInbox).toHaveAttribute("aria-expanded", "false");
+
+    fireEvent.click(contactAccess);
+    fireEvent.click(sharedInbox);
+
+    expect(contactAccess).toHaveAttribute("aria-expanded", "true");
+    expect(sharedInbox).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("switch", { name: "View contact phone numbers for Owner" })).toBeChecked();
+    expect(screen.getByRole("switch", { name: "View shared inbox for Owner" })).toBeChecked();
   });
 
   it("creates a custom role from the Teammate permission template", async () => {

@@ -65,6 +65,15 @@ describe("SidebarMenuItem", () => {
     expect(screen.getByText("Dashboard")).toHaveStyle({ fontFamily: "var(--font-sans)" });
   });
 
+  it("shows an unread badge for Inbox", () => {
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 1280, writable: true });
+    const inbox: NavigationItem = { ...item, title: "Inbox", url: "/inbox", badge: { text: "7", variant: "danger" } };
+    render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><SidebarMenuItem item={inbox} /></SidebarProvider></MemoryRouter>);
+
+    expect(screen.getByTestId("inbox-badge")).toHaveTextContent("7");
+    expect(screen.getByTestId("inbox-badge")).toHaveAttribute("aria-label", "7 unread messages");
+  });
+
   it("keeps submenu rows compact without a vertical rail", () => {
     Object.defineProperty(window, "innerWidth", { configurable: true, value: 1280, writable: true });
     render(<MemoryRouter initialEntries={["/reports"]}><SidebarProvider><SidebarMenuItem item={nestedItem} /></SidebarProvider></MemoryRouter>);

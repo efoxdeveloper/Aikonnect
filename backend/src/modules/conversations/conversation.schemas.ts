@@ -7,7 +7,7 @@ export const messageType = z.enum(["TEXT", "IMAGE", "VIDEO", "AUDIO", "DOCUMENT"
 
 export const contactConversationParamsSchema = z.object({ workspaceId: z.uuid(), contactId: z.uuid() });
 export const conversationParamsSchema = contactConversationParamsSchema.extend({ conversationId: z.uuid() });
-export const conversationListQuerySchema = z.object({ page: z.coerce.number().int().min(1).default(1), pageSize: z.coerce.number().int().min(1).max(100).default(25), latest: z.preprocess((value) => value === "true", z.boolean().default(false)) });
+export const conversationListQuerySchema = z.object({ page: z.coerce.number().int().min(1).default(1), pageSize: z.coerce.number().int().min(1).max(100).default(25), latest: z.preprocess((value) => value === "true", z.boolean().default(false)), search: z.string().trim().max(200).default("") });
 export const workspaceConversationParamsSchema = z.object({ workspaceId: z.uuid() });
 export const inboxConversationListQuerySchema = conversationListQuerySchema.extend({
   status: conversationStatus.optional(),
@@ -15,7 +15,9 @@ export const inboxConversationListQuerySchema = conversationListQuerySchema.exte
   search: z.string().trim().max(200).default(""),
   unreadOnly: z.preprocess((value) => value === "true", z.boolean().default(false)),
 });
+export const forwardTargetListQuerySchema = conversationListQuerySchema.pick({ page: true, pageSize: true }).extend({ search: z.string().trim().max(200).default("") });
 export const createConversationSchema = z.object({ channelKey: z.string().trim().min(1).max(50).default("whatsapp"), phoneNumberId: z.uuid().optional(), status: conversationStatus.default("OPEN") });
+export const pinConversationSchema = z.object({ pinned: z.boolean() });
 export const createMessageSchema = z.object({
   metaMessageId: z.string().trim().min(1).max(200).optional(),
   direction: messageDirection,
@@ -32,5 +34,7 @@ export const createMessageSchema = z.object({
 
 export type ConversationListQuery = z.infer<typeof conversationListQuerySchema>;
 export type InboxConversationListQuery = z.infer<typeof inboxConversationListQuerySchema>;
+export type ForwardTargetListQuery = z.infer<typeof forwardTargetListQuerySchema>;
 export type CreateConversationInput = z.infer<typeof createConversationSchema>;
+export type PinConversationInput = z.infer<typeof pinConversationSchema>;
 export type CreateMessageInput = z.infer<typeof createMessageSchema>;

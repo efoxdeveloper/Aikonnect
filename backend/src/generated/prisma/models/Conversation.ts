@@ -41,9 +41,12 @@ export type ConversationMinAggregateOutputType = {
   phoneNumberId: string | null
   channelKey: string | null
   status: $Enums.ConversationStatus | null
+  isPinned: boolean | null
   unreadCount: number | null
   lastMessagePreview: string | null
   lastMessageAt: Date | null
+  clearedAt: Date | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -55,9 +58,12 @@ export type ConversationMaxAggregateOutputType = {
   phoneNumberId: string | null
   channelKey: string | null
   status: $Enums.ConversationStatus | null
+  isPinned: boolean | null
   unreadCount: number | null
   lastMessagePreview: string | null
   lastMessageAt: Date | null
+  clearedAt: Date | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -69,9 +75,12 @@ export type ConversationCountAggregateOutputType = {
   phoneNumberId: number
   channelKey: number
   status: number
+  isPinned: number
   unreadCount: number
   lastMessagePreview: number
   lastMessageAt: number
+  clearedAt: number
+  deletedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -93,9 +102,12 @@ export type ConversationMinAggregateInputType = {
   phoneNumberId?: true
   channelKey?: true
   status?: true
+  isPinned?: true
   unreadCount?: true
   lastMessagePreview?: true
   lastMessageAt?: true
+  clearedAt?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -107,9 +119,12 @@ export type ConversationMaxAggregateInputType = {
   phoneNumberId?: true
   channelKey?: true
   status?: true
+  isPinned?: true
   unreadCount?: true
   lastMessagePreview?: true
   lastMessageAt?: true
+  clearedAt?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -121,9 +136,12 @@ export type ConversationCountAggregateInputType = {
   phoneNumberId?: true
   channelKey?: true
   status?: true
+  isPinned?: true
   unreadCount?: true
   lastMessagePreview?: true
   lastMessageAt?: true
+  clearedAt?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -222,9 +240,12 @@ export type ConversationGroupByOutputType = {
   phoneNumberId: string | null
   channelKey: string
   status: $Enums.ConversationStatus
+  isPinned: boolean
   unreadCount: number
   lastMessagePreview: string | null
   lastMessageAt: Date | null
+  clearedAt: Date | null
+  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: ConversationCountAggregateOutputType | null
@@ -259,9 +280,12 @@ export type ConversationWhereInput = {
   phoneNumberId?: Prisma.UuidNullableFilter<"Conversation"> | string | null
   channelKey?: Prisma.StringFilter<"Conversation"> | string
   status?: Prisma.EnumConversationStatusFilter<"Conversation"> | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFilter<"Conversation"> | boolean
   unreadCount?: Prisma.IntFilter<"Conversation"> | number
   lastMessagePreview?: Prisma.StringNullableFilter<"Conversation"> | string | null
   lastMessageAt?: Prisma.DateTimeNullableFilter<"Conversation"> | Date | string | null
+  clearedAt?: Prisma.DateTimeNullableFilter<"Conversation"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"Conversation"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Conversation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Conversation"> | Date | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
@@ -278,9 +302,12 @@ export type ConversationOrderByWithRelationInput = {
   phoneNumberId?: Prisma.SortOrderInput | Prisma.SortOrder
   channelKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isPinned?: Prisma.SortOrder
   unreadCount?: Prisma.SortOrder
   lastMessagePreview?: Prisma.SortOrderInput | Prisma.SortOrder
   lastMessageAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  clearedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
@@ -301,9 +328,12 @@ export type ConversationWhereUniqueInput = Prisma.AtLeast<{
   phoneNumberId?: Prisma.UuidNullableFilter<"Conversation"> | string | null
   channelKey?: Prisma.StringFilter<"Conversation"> | string
   status?: Prisma.EnumConversationStatusFilter<"Conversation"> | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFilter<"Conversation"> | boolean
   unreadCount?: Prisma.IntFilter<"Conversation"> | number
   lastMessagePreview?: Prisma.StringNullableFilter<"Conversation"> | string | null
   lastMessageAt?: Prisma.DateTimeNullableFilter<"Conversation"> | Date | string | null
+  clearedAt?: Prisma.DateTimeNullableFilter<"Conversation"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"Conversation"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Conversation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Conversation"> | Date | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
@@ -320,9 +350,12 @@ export type ConversationOrderByWithAggregationInput = {
   phoneNumberId?: Prisma.SortOrderInput | Prisma.SortOrder
   channelKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isPinned?: Prisma.SortOrder
   unreadCount?: Prisma.SortOrder
   lastMessagePreview?: Prisma.SortOrderInput | Prisma.SortOrder
   lastMessageAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  clearedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ConversationCountOrderByAggregateInput
@@ -342,9 +375,12 @@ export type ConversationScalarWhereWithAggregatesInput = {
   phoneNumberId?: Prisma.UuidNullableWithAggregatesFilter<"Conversation"> | string | null
   channelKey?: Prisma.StringWithAggregatesFilter<"Conversation"> | string
   status?: Prisma.EnumConversationStatusWithAggregatesFilter<"Conversation"> | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolWithAggregatesFilter<"Conversation"> | boolean
   unreadCount?: Prisma.IntWithAggregatesFilter<"Conversation"> | number
   lastMessagePreview?: Prisma.StringNullableWithAggregatesFilter<"Conversation"> | string | null
   lastMessageAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Conversation"> | Date | string | null
+  clearedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Conversation"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Conversation"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Conversation"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Conversation"> | Date | string
 }
@@ -353,9 +389,12 @@ export type ConversationCreateInput = {
   id?: string
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutConversationsInput
@@ -372,9 +411,12 @@ export type ConversationUncheckedCreateInput = {
   phoneNumberId?: string | null
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
@@ -385,9 +427,12 @@ export type ConversationUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutConversationsNestedInput
@@ -404,9 +449,12 @@ export type ConversationUncheckedUpdateInput = {
   phoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
@@ -420,9 +468,12 @@ export type ConversationCreateManyInput = {
   phoneNumberId?: string | null
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -431,9 +482,12 @@ export type ConversationUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -445,9 +499,12 @@ export type ConversationUncheckedUpdateManyInput = {
   phoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -475,9 +532,12 @@ export type ConversationCountOrderByAggregateInput = {
   phoneNumberId?: Prisma.SortOrder
   channelKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isPinned?: Prisma.SortOrder
   unreadCount?: Prisma.SortOrder
   lastMessagePreview?: Prisma.SortOrder
   lastMessageAt?: Prisma.SortOrder
+  clearedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -493,9 +553,12 @@ export type ConversationMaxOrderByAggregateInput = {
   phoneNumberId?: Prisma.SortOrder
   channelKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isPinned?: Prisma.SortOrder
   unreadCount?: Prisma.SortOrder
   lastMessagePreview?: Prisma.SortOrder
   lastMessageAt?: Prisma.SortOrder
+  clearedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -507,9 +570,12 @@ export type ConversationMinOrderByAggregateInput = {
   phoneNumberId?: Prisma.SortOrder
   channelKey?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  isPinned?: Prisma.SortOrder
   unreadCount?: Prisma.SortOrder
   lastMessagePreview?: Prisma.SortOrder
   lastMessageAt?: Prisma.SortOrder
+  clearedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -693,9 +759,12 @@ export type ConversationCreateWithoutWorkspaceInput = {
   id?: string
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   contact: Prisma.ContactCreateNestedOneWithoutConversationsInput
@@ -710,9 +779,12 @@ export type ConversationUncheckedCreateWithoutWorkspaceInput = {
   phoneNumberId?: string | null
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
@@ -755,9 +827,12 @@ export type ConversationScalarWhereInput = {
   phoneNumberId?: Prisma.UuidNullableFilter<"Conversation"> | string | null
   channelKey?: Prisma.StringFilter<"Conversation"> | string
   status?: Prisma.EnumConversationStatusFilter<"Conversation"> | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFilter<"Conversation"> | boolean
   unreadCount?: Prisma.IntFilter<"Conversation"> | number
   lastMessagePreview?: Prisma.StringNullableFilter<"Conversation"> | string | null
   lastMessageAt?: Prisma.DateTimeNullableFilter<"Conversation"> | Date | string | null
+  clearedAt?: Prisma.DateTimeNullableFilter<"Conversation"> | Date | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"Conversation"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Conversation"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Conversation"> | Date | string
 }
@@ -766,9 +841,12 @@ export type ConversationCreateWithoutContactInput = {
   id?: string
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutConversationsInput
@@ -783,9 +861,12 @@ export type ConversationUncheckedCreateWithoutContactInput = {
   phoneNumberId?: string | null
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
@@ -822,9 +903,12 @@ export type ConversationCreateWithoutMessagesInput = {
   id?: string
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutConversationsInput
@@ -840,9 +924,12 @@ export type ConversationUncheckedCreateWithoutMessagesInput = {
   phoneNumberId?: string | null
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutConversationInput
@@ -868,9 +955,12 @@ export type ConversationUpdateWithoutMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutConversationsNestedInput
@@ -886,9 +976,12 @@ export type ConversationUncheckedUpdateWithoutMessagesInput = {
   phoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutConversationNestedInput
@@ -898,9 +991,12 @@ export type ConversationCreateWithoutPhoneNumberInput = {
   id?: string
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutConversationsInput
@@ -915,9 +1011,12 @@ export type ConversationUncheckedCreateWithoutPhoneNumberInput = {
   contactId: string
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
@@ -954,9 +1053,12 @@ export type ConversationCreateWithoutWorkflowRunsInput = {
   id?: string
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutConversationsInput
@@ -972,9 +1074,12 @@ export type ConversationUncheckedCreateWithoutWorkflowRunsInput = {
   phoneNumberId?: string | null
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutConversationInput
@@ -1000,9 +1105,12 @@ export type ConversationUpdateWithoutWorkflowRunsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutConversationsNestedInput
@@ -1018,9 +1126,12 @@ export type ConversationUncheckedUpdateWithoutWorkflowRunsInput = {
   phoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
@@ -1032,9 +1143,12 @@ export type ConversationCreateManyWorkspaceInput = {
   phoneNumberId?: string | null
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1043,9 +1157,12 @@ export type ConversationUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contact?: Prisma.ContactUpdateOneRequiredWithoutConversationsNestedInput
@@ -1060,9 +1177,12 @@ export type ConversationUncheckedUpdateWithoutWorkspaceInput = {
   phoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
@@ -1075,9 +1195,12 @@ export type ConversationUncheckedUpdateManyWithoutWorkspaceInput = {
   phoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1088,9 +1211,12 @@ export type ConversationCreateManyContactInput = {
   phoneNumberId?: string | null
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1099,9 +1225,12 @@ export type ConversationUpdateWithoutContactInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutConversationsNestedInput
@@ -1116,9 +1245,12 @@ export type ConversationUncheckedUpdateWithoutContactInput = {
   phoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
@@ -1131,9 +1263,12 @@ export type ConversationUncheckedUpdateManyWithoutContactInput = {
   phoneNumberId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1144,9 +1279,12 @@ export type ConversationCreateManyPhoneNumberInput = {
   contactId: string
   channelKey?: string
   status?: $Enums.ConversationStatus
+  isPinned?: boolean
   unreadCount?: number
   lastMessagePreview?: string | null
   lastMessageAt?: Date | string | null
+  clearedAt?: Date | string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1155,9 +1293,12 @@ export type ConversationUpdateWithoutPhoneNumberInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutConversationsNestedInput
@@ -1172,9 +1313,12 @@ export type ConversationUncheckedUpdateWithoutPhoneNumberInput = {
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutConversationNestedInput
@@ -1187,9 +1331,12 @@ export type ConversationUncheckedUpdateManyWithoutPhoneNumberInput = {
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   channelKey?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumConversationStatusFieldUpdateOperationsInput | $Enums.ConversationStatus
+  isPinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
   lastMessagePreview?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clearedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1241,9 +1388,12 @@ export type ConversationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   phoneNumberId?: boolean
   channelKey?: boolean
   status?: boolean
+  isPinned?: boolean
   unreadCount?: boolean
   lastMessagePreview?: boolean
   lastMessageAt?: boolean
+  clearedAt?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
@@ -1261,9 +1411,12 @@ export type ConversationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   phoneNumberId?: boolean
   channelKey?: boolean
   status?: boolean
+  isPinned?: boolean
   unreadCount?: boolean
   lastMessagePreview?: boolean
   lastMessageAt?: boolean
+  clearedAt?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
@@ -1278,9 +1431,12 @@ export type ConversationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   phoneNumberId?: boolean
   channelKey?: boolean
   status?: boolean
+  isPinned?: boolean
   unreadCount?: boolean
   lastMessagePreview?: boolean
   lastMessageAt?: boolean
+  clearedAt?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
@@ -1295,14 +1451,17 @@ export type ConversationSelectScalar = {
   phoneNumberId?: boolean
   channelKey?: boolean
   status?: boolean
+  isPinned?: boolean
   unreadCount?: boolean
   lastMessagePreview?: boolean
   lastMessageAt?: boolean
+  clearedAt?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ConversationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "contactId" | "phoneNumberId" | "channelKey" | "status" | "unreadCount" | "lastMessagePreview" | "lastMessageAt" | "createdAt" | "updatedAt", ExtArgs["result"]["conversation"]>
+export type ConversationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "contactId" | "phoneNumberId" | "channelKey" | "status" | "isPinned" | "unreadCount" | "lastMessagePreview" | "lastMessageAt" | "clearedAt" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["conversation"]>
 export type ConversationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
@@ -1338,9 +1497,12 @@ export type $ConversationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     phoneNumberId: string | null
     channelKey: string
     status: $Enums.ConversationStatus
+    isPinned: boolean
     unreadCount: number
     lastMessagePreview: string | null
     lastMessageAt: Date | null
+    clearedAt: Date | null
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["conversation"]>
@@ -1777,9 +1939,12 @@ export interface ConversationFieldRefs {
   readonly phoneNumberId: Prisma.FieldRef<"Conversation", 'String'>
   readonly channelKey: Prisma.FieldRef<"Conversation", 'String'>
   readonly status: Prisma.FieldRef<"Conversation", 'ConversationStatus'>
+  readonly isPinned: Prisma.FieldRef<"Conversation", 'Boolean'>
   readonly unreadCount: Prisma.FieldRef<"Conversation", 'Int'>
   readonly lastMessagePreview: Prisma.FieldRef<"Conversation", 'String'>
   readonly lastMessageAt: Prisma.FieldRef<"Conversation", 'DateTime'>
+  readonly clearedAt: Prisma.FieldRef<"Conversation", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"Conversation", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Conversation", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Conversation", 'DateTime'>
 }

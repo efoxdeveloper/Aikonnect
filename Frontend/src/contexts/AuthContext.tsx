@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { apiRequest } from "@/lib/api";
+import { apiRequest, configureAuthSession, getApiAccessToken, refreshAccessToken, setApiAccessToken } from "@/lib/api";
 
 export type AuthStatus = "loading" | "authenticated" | "unauthenticated";
 
@@ -63,12 +63,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const bootstrapStarted = useRef(false);
   const bootstrapPromise = useRef<Promise<void> | null>(null);
 
+  const handleAccessTokenRefreshed = useCallback((refreshedToken: string) => {
+    accessTokenRef.current = refreshedToken;
+    setAccessToken(refreshedToken);
+  }, []);
+
+  const handleAuthenticationLost = useCallback(() => {
+    accessTokenRef.current = null;
+    setApiAccessToken(null);
+    setAccessToken(null);
+    setUser(null);
+    setStatus("unauthenticated");
+  }, []);
+
+  useEffect(() => configureAuthSession({
+    onAccessTokenRefreshed: handleAccessTokenRefreshed,
+    onAuthenticationLost: handleAuthenticationLost,
+  }), [handleAccessTokenRefreshed, handleAuthenticationLost]);
+
   const loadUser = useCallback(async (token: string) => {
+    setApiAccessToken(token);
     const currentUser = await apiRequest<AuthUser>("/auth/me", {
       headers: { authorization: `Bearer ${token}` },
     });
-    accessTokenRef.current = token;
-    setAccessToken(token);
+    const effectiveToken = getApiAccessToken() ?? token;
+    accessTokenRef.current = effectiveToken;
+    setAccessToken(effectiveToken);
     setUser(currentUser);
     setStatus("authenticated");
   }, []);
@@ -81,12 +101,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .then(({ accessToken: refreshedToken }) => loadUser(refreshedToken))
       .catch(() => {
         accessTokenRef.current = null;
+        setApiAccessToken(null);
         setAccessToken(null);
         setUser(null);
         setStatus("unauthenticated");
-      });
+    });
     void bootstrapPromise.current;
   }, [loadUser]);
+
+  useEffect(() => {
+    if (!accessToken) return;
+
+    let expiryTimer: number | undefined;
+    try {
+      const encodedPayload = accessToken.split(".")[1];
+      const normalizedPayload = encodedPayload
+        ?.replace(/-/g, "+")
+        .replace(/_/g, "/");
+      const payload = encodedPayload
+        ? JSON.parse(atob((normalizedPayload ?? "") + "=".repeat((4 - (normalizedPayload?.length ?? 0) % 4) % 4))) as { exp?: unknown }
+        : null;
+      if (typeof payload?.exp === "number") {
+        const refreshInMs = Math.max(1_000, payload.exp * 1_000 - Date.now() - 60_000);
+        expiryTimer = window.setTimeout(() => {
+          void refreshAccessToken().catch(() => undefined);
+        }, refreshInMs);
+      }
+    } catch {
+      // The API retry path still refreshes tokens if a token cannot be decoded here.
+    }
+
+    return () => {
+      if (expiryTimer !== undefined) window.clearTimeout(expiryTimer);
+    };
+  }, [accessToken]);
 
   const login = useCallback(
     async (email: string, password: string) => {
@@ -155,6 +203,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await apiRequest<void>("/auth/logout", { method: "POST" });
     } finally {
       accessTokenRef.current = null;
+      setApiAccessToken(null);
       setAccessToken(null);
       setUser(null);
       setStatus("unauthenticated");

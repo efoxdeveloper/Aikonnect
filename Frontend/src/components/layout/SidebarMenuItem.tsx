@@ -53,9 +53,10 @@ export function SidebarMenuItem({ item }: { item: NavigationItem }) {
   const handleNavigation = () => { if (isMobile) setOpenMobile(false); };
   const destination = item.url ?? item.children?.[0]?.url ?? "#";
   const icon = <item.icon ref={iconRef} size={20} duration={0.7} />;
+  const badgeTestId = item.title.toLowerCase().replace(/\s+/g, "-") + "-badge";
   const trailing = state !== "collapsed" && (
     <span className="ml-auto flex shrink-0 items-center gap-1.5">
-      {item.badge && <Badge badgeContent={item.badge.text} color={item.badge.variant === "danger" ? "error" : item.badge.variant === "warning" ? "warning" : "success"} sx={{ position: "static", fontFamily: "var(--font-sans)", "& .MuiBadge-badge": { position: "static", transform: "none", minWidth: 21, height: 21, px: .75, fontSize: 11, fontFamily: "var(--font-sans)" } }} />}
+      {item.badge && <Badge data-testid={badgeTestId} aria-label={item.badge.text + " unread messages"} badgeContent={item.badge.text} color={item.badge.variant === "danger" ? "error" : item.badge.variant === "warning" ? "warning" : "success"} sx={{ position: "static", fontFamily: "var(--font-sans)", "& .MuiBadge-badge": { position: "static", transform: "none", minWidth: 21, height: 21, px: .75, fontSize: 11, fontFamily: "var(--font-sans)" } }} />}
       {hasChildren && (open ? <ChevronDown size={16} duration={0.6} /> : <ChevronRight size={16} duration={0.6} />)}
     </span>
   );
@@ -70,8 +71,9 @@ export function SidebarMenuItem({ item }: { item: NavigationItem }) {
   if (state === "collapsed") {
     return <ListItem disablePadding sx={{ display: "block" }}>
       <Tooltip title={item.title} placement="right" enterDelay={200}>
-        <ListItemButton component={Link} to={destination} onClick={handleNavigation} aria-current={active ? "page" : undefined} {...common} sx={{ ...buttonSx, width: 44, mx: "auto", px: 0, justifyContent: "center" }}>
+        <ListItemButton component={Link} to={destination} onClick={handleNavigation} aria-current={active ? "page" : undefined} {...common} sx={{ ...buttonSx, position: "relative", width: 44, mx: "auto", px: 0, justifyContent: "center" }}>
           <ListItemIcon sx={{ minWidth: 0, color: "inherit", justifyContent: "center" }}>{icon}</ListItemIcon>
+          {item.badge && <span data-testid={badgeTestId} aria-label={item.badge.text + " unread messages"} className="absolute right-0.5 top-0.5 flex min-w-4 items-center justify-center rounded-full bg-[#ef4444] px-1 text-[9px] font-bold leading-4 text-white">{item.badge.text}</span>}
         </ListItemButton>
       </Tooltip>
     </ListItem>;

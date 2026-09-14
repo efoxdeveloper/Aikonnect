@@ -37,6 +37,8 @@ describe("TeamMembers", () => {
   it("loads members and sends an invitation with the selected role", async () => {
     renderPage();
     expect(await screen.findByRole("heading", { name: "Team members" })).toBeInTheDocument();
+    expect(screen.getByTestId("team-members-page")).toHaveClass("h-full", "overflow-hidden");
+    expect(screen.getByTestId("team-members-scroll-region")).toHaveClass("overflow-y-auto");
     expect(screen.getByText("Support Agent")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Invite member" }));
     fireEvent.change(screen.getByLabelText("Work email"), { target: { value: "new@example.com" } });

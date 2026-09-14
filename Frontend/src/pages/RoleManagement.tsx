@@ -3,6 +3,8 @@ import {
   ArrowRightIcon as ArrowRight,
   ChartBarIcon as ChartBar,
   CheckIcon as Check,
+  ChevronDownIcon as ChevronDown,
+  ChevronRightIcon as ChevronRight,
   InboxIcon as Inbox,
   KeyRoundIcon as KeyRound,
   MegaphoneIcon as Megaphone,
@@ -43,7 +45,7 @@ type WorkspaceRole = {
 
 const groupMetadata: Array<{ id: PermissionGroup; title: string; description: string; icon: AnimatedIcon }> = [
   { id: "contacts", title: "Contact Hub", description: "Control how this role can work with contacts.", icon: Store },
-  { id: "contact-data", title: "Access to contact details", description: "Choose which sensitive contact details remain visible.", icon: KeyRound },
+  { id: "contact-data", title: "Contact access", description: "Choose which sensitive contact details remain visible.", icon: KeyRound },
   { id: "inbox", title: "Shared inbox", description: "Manage access to conversations and assignment tools.", icon: Inbox },
   { id: "marketing", title: "Campaigns and templates", description: "Control campaign execution and WhatsApp templates.", icon: Megaphone },
   { id: "automation-reports", title: "Automations and reports", description: "Manage workflow configuration and analytics access.", icon: ChartBar },
@@ -57,7 +59,6 @@ function roleOrder(role: WorkspaceRole) {
 
 function PermissionSection({
   title,
-  description,
   icon: Icon,
   permissions,
   selected,
@@ -66,7 +67,6 @@ function PermissionSection({
   onToggle,
 }: {
   title: string;
-  description: string;
   icon: AnimatedIcon;
   permissions: PermissionDefinition[];
   selected: Set<string>;
@@ -75,13 +75,20 @@ function PermissionSection({
   onToggle: (key: string, checked: boolean) => void;
 }) {
   const sectionIcon = useAnimatedIcon();
+  const [open, setOpen] = useState(title === "Contact Hub");
   return (
-    <section className="rounded-md border border-[var(--border-soft)] bg-white shadow-[0_2px_9px_rgba(30,40,55,.035)]" onMouseEnter={sectionIcon.onMouseEnter} onMouseLeave={sectionIcon.onMouseLeave}>
-      <div className="flex items-start gap-3 border-b border-[var(--border-soft)] px-5 py-4 sm:px-6">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[var(--brand-soft)] text-[var(--brand)]"><Icon ref={sectionIcon.ref} size={18} duration={0.7} aria-hidden="true" /></div>
-        <div><h2 className="text-[15px] font-medium text-[var(--text-primary)]">{title}</h2><p className="mt-0.5">{description}</p></div>
-      </div>
-      <div className="divide-y divide-[var(--border-soft)] px-5 sm:px-6">
+    <section className="rounded-lg border border-[var(--border-soft)] bg-white shadow-[0_2px_8px_rgba(30,40,55,.04)]" onMouseEnter={sectionIcon.onMouseEnter} onMouseLeave={sectionIcon.onMouseLeave}>
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+        className="flex w-full items-center gap-3 px-5 py-4 text-left transition-colors hover:bg-[var(--surface-subtle)] sm:px-6"
+      >
+        <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><Icon ref={sectionIcon.ref} size={17} duration={0.7} aria-hidden="true" /></div>
+        <h2 className="min-w-0 flex-1 text-sm font-medium text-[var(--text-primary)]">{title}</h2>
+        {open ? <ChevronDown className="text-[var(--text-muted)]" size={16} duration={0.5} aria-hidden="true" /> : <ChevronRight className="text-[var(--text-muted)]" size={16} duration={0.5} aria-hidden="true" />}
+      </button>
+      {open && <div className="divide-y divide-[var(--border-soft)] border-t border-[var(--border-soft)] px-5 sm:px-6">
         {permissions.map((permission) => {
           const checked = selected.has(permission.key);
           return (
@@ -91,7 +98,7 @@ function PermissionSection({
             </div>
           );
         })}
-      </div>
+      </div>}
     </section>
   );
 }
@@ -227,25 +234,32 @@ export function RoleManagement() {
     } finally { setCreating(false); }
   };
 
-  if (loading) return <div className="mx-auto max-w-[1180px] animate-pulse px-5 py-8 sm:px-8"><div className="h-8 w-64 rounded-md bg-slate-200" /><div className="mt-6 h-12 rounded-md bg-slate-200" /><div className="mt-5 h-80 rounded-md bg-slate-200" /></div>;
+  if (loading) return <div className="flex h-full min-h-0 flex-col overflow-hidden bg-[var(--page-background)]"><header className="flex-none border-b border-[var(--border-soft)] bg-white"><div className="mx-auto w-full max-w-[1400px] px-5 py-3 sm:px-8"><div className="h-6 w-56 animate-pulse rounded bg-slate-200" /></div></header><main className="min-h-0 flex-1 overflow-y-auto"><div className="mx-auto w-full max-w-[1400px] animate-pulse px-5 py-5 sm:px-8 sm:py-7"><div className="h-12 rounded-lg bg-slate-200" /><div className="mt-4 h-80 rounded-lg bg-slate-200" /></div></main></div>;
 
   return (
-    <div className="mx-auto max-w-[1180px] px-5 py-7 sm:px-8 sm:py-9">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><h1 className="text-[25px] font-medium tracking-[-0.025em] text-[var(--text-primary)]">Roles and permissions</h1><p className="mt-1">Control what each role can view and manage in this workspace.</p></div>{canManage && <button type="button" onClick={() => { setCreateError(null); setCreateOpen(true); }} onMouseEnter={plusIcon.onMouseEnter} onMouseLeave={plusIcon.onMouseLeave} className="flex h-10 w-fit items-center rounded-md bg-[var(--brand)] px-4 text-sm font-medium text-white hover:bg-[var(--brand-hover)]"><Plus ref={plusIcon.ref} size={16} duration={0.55} className="mr-1.5" aria-hidden="true" />Create role</button>}</div>
+    <div data-testid="role-management-page" className="flex h-full min-h-0 flex-col overflow-hidden bg-[var(--page-background)]">
+      <header className="flex-none border-b border-[var(--border-soft)] bg-white shadow-[0_1px_3px_rgba(30,40,55,.04)]">
+        <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between gap-4 px-5 py-3 sm:px-8">
+          <h1 className="text-[19px] font-medium leading-6 tracking-[-0.015em] text-[var(--text-primary)]">Roles and permissions</h1>
+          {canManage && <button type="button" onClick={() => { setCreateError(null); setCreateOpen(true); }} onMouseEnter={plusIcon.onMouseEnter} onMouseLeave={plusIcon.onMouseLeave} className="flex h-9 w-fit items-center rounded-md bg-[var(--brand)] px-3.5 text-xs font-medium text-white transition-colors hover:bg-[var(--brand-hover)]"><Plus ref={plusIcon.ref} size={15} duration={0.55} className="mr-1.5" aria-hidden="true" />Create role</button>}
+        </div>
+      </header>
 
-      {error && <p role="alert" className="mt-5 rounded-md bg-red-50 px-4 py-3">{error}</p>}
-      {success && <div role="status" className="mt-5 flex items-center rounded-md bg-emerald-50 px-4 py-3 text-sm text-emerald-700"><Check size={15} duration={0.5} className="mr-2" aria-hidden="true" />{success}</div>}
+      <main data-testid="role-management-scroll-region" className="min-h-0 flex-1 overflow-y-auto">
+        <div className="mx-auto w-full max-w-[1400px] px-5 py-5 sm:px-8 sm:py-7">
+      {error && <div role="alert" className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-[var(--danger)]">{error}</div>}
+      {success && <div role="status" className="mb-4 flex items-center rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700"><Check size={15} duration={0.5} className="mr-2" aria-hidden="true" />{success}</div>}
 
-      <div className="mt-6 overflow-x-auto border-b border-[var(--border)]" role="tablist" aria-label="Workspace roles">
+      <div className="overflow-x-auto rounded-lg border border-[var(--border-soft)] bg-white shadow-[0_2px_8px_rgba(30,40,55,.04)]" role="tablist" aria-label="Workspace roles">
         <div className="flex min-w-max gap-1">
           {roles.map((role) => <button key={role.id} type="button" role="tab" aria-selected={role.id === selectedRoleId} onClick={() => setSelectedRoleId(role.id)} className={cn("relative flex h-11 items-center gap-2 px-4 text-sm font-medium transition-colors", role.id === selectedRoleId ? "text-[var(--brand)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]")}><span>{role.name}</span>{!role.isSystem && <span className="rounded-md bg-[var(--gray-100)] px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-[var(--text-muted)]">Custom</span>}<span className="text-[10px] font-normal text-[var(--text-muted)]">{role.memberCount}</span>{role.id === selectedRoleId && <span className="absolute inset-x-2 bottom-0 h-0.5 bg-[var(--brand-accent)]" />}</button>)}
         </div>
       </div>
 
       {selectedRole && <>
-        <div className="mt-5 flex flex-col gap-3 rounded-md border border-[var(--border-soft)] bg-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-start gap-3"><div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[var(--brand-soft)] text-[var(--brand)]"><ShieldCheck size={18} duration={0.65} aria-hidden="true" /></div><div><h2 className="text-sm font-medium text-[var(--text-primary)]">{selectedRole.name}</h2><p className="mt-0.5">{selectedRole.slug === "owner" ? "The Owner always has every permission and cannot be restricted." : selectedRole.description ?? "A custom workspace access role."}</p></div></div><span className="w-fit text-[11px] font-medium text-[var(--text-muted)]">{selectedPermissions.size} of {catalog.length} permissions enabled</span></div>
+        <div className="mt-4 flex flex-col gap-3 rounded-lg border border-[var(--border-soft)] bg-white px-5 py-4 shadow-[0_2px_8px_rgba(30,40,55,.04)] sm:flex-row sm:items-center sm:justify-between"><div className="flex items-start gap-3"><div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><ShieldCheck size={17} duration={0.65} aria-hidden="true" /></div><div><h2 className="text-sm font-medium text-[var(--text-primary)]">{selectedRole.name}</h2><p className="mt-0.5 text-xs text-[var(--text-muted)]">{selectedRole.slug === "owner" ? "The Owner always has every permission and cannot be restricted." : selectedRole.description ?? "A custom workspace access role."}</p></div></div><span className="w-fit text-[11px] font-medium text-[var(--text-muted)]">{selectedPermissions.size} of {catalog.length} permissions enabled</span></div>
 
-        <div className="mt-5 space-y-5">
+        <div className="mt-4 space-y-3">
           {permissionGroups.map((group) => <PermissionSection key={group.id} {...group} selected={selectedPermissions} disabled={readOnly} roleName={selectedRole.name} onToggle={togglePermission} />)}
         </div>
 
@@ -253,6 +267,8 @@ export function RoleManagement() {
       </>}
 
       <CreateRoleDialog open={createOpen} creating={creating} error={createError} onClose={() => setCreateOpen(false)} onCreate={createRole} />
+        </div>
+      </main>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { validateBody, validateParams, validateQuery } from "../../middleware/va
 import { requireAnyWorkspacePermission, requireWorkspacePermission } from "../../middleware/workspace-access.js";
 import { PERMISSIONS } from "../workspaces/permissions.js";
 import * as controller from "./conversation.controller.js";
-import { contactConversationParamsSchema, conversationListQuerySchema, conversationParamsSchema, createConversationSchema, createMessageSchema, inboxConversationListQuerySchema, workspaceConversationParamsSchema } from "./conversation.schemas.js";
+import { contactConversationParamsSchema, conversationListQuerySchema, conversationParamsSchema, createConversationSchema, createMessageSchema, forwardTargetListQuerySchema, inboxConversationListQuerySchema, pinConversationSchema, workspaceConversationParamsSchema } from "./conversation.schemas.js";
 
 export const conversationRouter = Router({ mergeParams: true });
 conversationRouter.get("/", requireWorkspacePermission(PERMISSIONS.CONTACTS_READ), validateParams(contactConversationParamsSchema), validateQuery(conversationListQuerySchema), asyncHandler(controller.list));
@@ -14,7 +14,13 @@ conversationRouter.get("/history", requireWorkspacePermission(PERMISSIONS.CONTAC
 conversationRouter.get("/:conversationId/messages", requireAnyWorkspacePermission(PERMISSIONS.CONTACTS_READ, PERMISSIONS.INBOX_READ), validateParams(conversationParamsSchema), validateQuery(conversationListQuerySchema), asyncHandler(controller.messages));
 conversationRouter.get("/:conversationId/messages/:messageId/media", requireAnyWorkspacePermission(PERMISSIONS.CONTACTS_READ, PERMISSIONS.INBOX_READ), validateParams(conversationParamsSchema.extend({ messageId: z.uuid() })), asyncHandler(controller.media));
 conversationRouter.post("/:conversationId/read", requireAnyWorkspacePermission(PERMISSIONS.CONTACTS_READ, PERMISSIONS.INBOX_READ), validateParams(conversationParamsSchema), asyncHandler(controller.markRead));
+conversationRouter.patch("/:conversationId/pin", requireWorkspacePermission(PERMISSIONS.INBOX_READ), validateParams(conversationParamsSchema), validateBody(pinConversationSchema), asyncHandler(controller.pin));
+conversationRouter.post("/:conversationId/clear", requireWorkspacePermission(PERMISSIONS.INBOX_READ), validateParams(conversationParamsSchema), asyncHandler(controller.clear));
+conversationRouter.delete("/:conversationId", requireWorkspacePermission(PERMISSIONS.CONVERSATIONS_MANAGE), validateParams(conversationParamsSchema), asyncHandler(controller.deleteConversation));
+conversationRouter.delete("/:conversationId/messages/:messageId", requireWorkspacePermission(PERMISSIONS.CONVERSATIONS_MANAGE), validateParams(conversationParamsSchema.extend({ messageId: z.uuid() })), asyncHandler(controller.deleteMessage));
 conversationRouter.post("/:conversationId/messages", requireWorkspacePermission(PERMISSIONS.CONVERSATIONS_REPLY), validateParams(conversationParamsSchema), validateBody(createMessageSchema), asyncHandler(controller.createMessage));
 
 export const inboxRouter = Router({ mergeParams: true });
+inboxRouter.get("/forward-targets", requireWorkspacePermission(PERMISSIONS.INBOX_READ), validateParams(workspaceConversationParamsSchema), validateQuery(forwardTargetListQuerySchema), asyncHandler(controller.forwardTargets));
+inboxRouter.get("/unread-count", requireWorkspacePermission(PERMISSIONS.INBOX_READ), validateParams(workspaceConversationParamsSchema), asyncHandler(controller.inboxUnreadCount));
 inboxRouter.get("/", requireWorkspacePermission(PERMISSIONS.INBOX_READ), validateParams(workspaceConversationParamsSchema), validateQuery(inboxConversationListQuerySchema), asyncHandler(controller.inboxList));
