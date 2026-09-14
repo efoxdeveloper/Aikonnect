@@ -1,6 +1,6 @@
 import type { ForwardRefExoticComponent, RefAttributes } from "react";
 import {
-  ActivityIcon as Activity, BlocksIcon as Blocks, ChartNoAxesCombinedIcon as ChartNoAxesCombined,
+  BlocksIcon as Blocks, ChartNoAxesCombinedIcon as ChartNoAxesCombined,
   ChartSplineIcon as ChartSpline, CreditCardIcon as CreditCard,
   FileTextIcon as FileText, HouseIcon as House, LayoutDashboardIcon as PanelsTopLeft,
   ListChecksIcon as ListTodo, MegaphoneIcon as Megaphone, MessageCircleIcon as MessageCircle,
@@ -58,7 +58,6 @@ export const navigationGroups: NavigationGroup[] = [
   { title: "Developer", items: [
     { title: "Integrations", url: "/integrations", icon: Blocks },
     { title: "API & Webhooks", url: "/api-webhooks", icon: Webhook },
-    { title: "Webhook Events", url: "/webhook-events", icon: Activity },
   ] },
   { title: "Settings", items: [
     { title: "WhatsApp Account", url: "/whatsapp-account", icon: MessageCircle },

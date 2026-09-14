@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Scalable Express API for Interakt",
+  "description": "Scalable Express API for AiKonnect",
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",

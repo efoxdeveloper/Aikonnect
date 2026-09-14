@@ -12,6 +12,7 @@ import { Templates } from "@/pages/Templates";
 import { Pipelines } from "@/pages/Pipelines";
 import { Reports } from "@/pages/Reports";
 import { BillingUsage } from "@/pages/BillingUsage";
+import { Integrations } from "@/pages/Integrations";
 
 export function Dashboard() {
   const { pathname } = useLocation();
@@ -22,6 +23,7 @@ export function Dashboard() {
   if (pathname === "/settings") return <WorkspaceSettings />;
   if (pathname === "/account-settings") return <AccountSettings />;
   if (pathname === "/billing") return <BillingUsage />;
+  if (pathname === "/integrations") return <Integrations />;
   if (pathname === "/contacts") return <ContactHub />;
   if (pathname === "/campaigns") return <Campaigns />;
   if (pathname === "/templates") return <Templates />;

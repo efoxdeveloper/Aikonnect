@@ -1,4 +1,4 @@
-# Interakt Backend
+# AiKonnect Backend
 
 TypeScript Express API with Prisma ORM, PostgreSQL pooling, secure session-based
 authentication, workspace-scoped RBAC, validated configuration, structured logging,

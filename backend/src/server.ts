@@ -26,7 +26,7 @@ async function startServer(): Promise<void> {
   server.listen(env.PORT, env.HOST, () => {
     logger.info(
       { host: env.HOST, port: env.PORT, apiPrefix: env.API_PREFIX },
-      "Interakt API is listening",
+      "AiKonnect API is listening",
     );
   });
 }

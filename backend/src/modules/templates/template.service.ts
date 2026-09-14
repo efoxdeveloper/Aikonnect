@@ -14,7 +14,7 @@ const templateInclude = {
 type TemplateRecord = Prisma.TemplateGetPayload<{ include: typeof templateInclude }>;
 
 function creatorName(user: TemplateRecord["createdBy"]): string {
-  return user ? `${user.firstName} ${user.lastName}`.trim() : "Interakt Admin";
+  return user ? `${user.firstName} ${user.lastName}`.trim() : "AiKonnect Admin";
 }
 
 function serializeTemplate(template: TemplateRecord) {

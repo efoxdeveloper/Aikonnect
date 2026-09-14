@@ -49,7 +49,7 @@ export function Login() {
         <div className="text-center">
           <AuthMark className="mx-auto" />
           <h1 id="login-title" className="mt-4 text-[23px] font-semibold leading-tight tracking-[-0.035em] text-[var(--text-primary)]">Login to your account</h1>
-          <div className="mt-2 text-[13px] text-[var(--text-secondary)]">Enter your email below to access your Interakt workspace.</div>
+          <div className="mt-2 text-[13px] text-[var(--text-secondary)]">Enter your email below to access your AiKonnect workspace.</div>
         </div>
 
         <form className="mt-7" onSubmit={handleSubmit}>

@@ -32,4 +32,10 @@ describe("navigation structure", () => {
     expect(allItems.some((item) => item.title === "Click-to-WhatsApp Ads")).toBe(false);
     expect(allItems.some((item) => item.url === "/click-to-whatsapp-ads")).toBe(false);
   });
+
+  it("hides Webhook Events from the Developer sidebar", () => {
+    const developer = navigationGroups.find((group) => group.title === "Developer");
+
+    expect(developer?.items.some((item) => item.title === "Webhook Events" || item.url === "/webhook-events")).toBe(false);
+  });
 });

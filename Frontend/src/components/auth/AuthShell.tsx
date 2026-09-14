@@ -63,7 +63,7 @@ export function AuthShell({ children, contentClassName }: AuthShellProps) {
           </footer>
         </section>
 
-        <aside className="relative hidden min-h-0 overflow-hidden bg-[var(--green-900)] lg:order-1 lg:flex lg:rounded-xl" aria-label="Interakt product preview">
+        <aside className="relative hidden min-h-0 overflow-hidden bg-[var(--green-900)] lg:order-1 lg:flex lg:rounded-xl" aria-label="AiKonnect product preview">
           <img key={authSlides[visualIndex].image} src={authSlides[visualIndex].image} alt="" className="auth-visual absolute inset-0 size-full object-cover object-top" />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,63,41,.05)_25%,rgba(4,63,41,.22)_54%,rgba(4,45,29,.94)_100%)]" />
           <div className="relative z-10 flex min-h-0 w-full flex-col justify-end px-10 pb-11 pt-10 xl:px-14 xl:pb-14">

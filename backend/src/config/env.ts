@@ -30,7 +30,7 @@ const envSchema = z.object({
   SMTP_USER: z.string().min(1).optional(),
   SMTP_PASSWORD: z.string().min(1).optional(),
   SMTP_FROM_EMAIL: z.email().optional(),
-  SMTP_FROM_NAME: z.string().min(1).default("Interakt"),
+  SMTP_FROM_NAME: z.string().min(1).default("AiKonnect"),
   DATABASE_URL: z.string().min(1),
   DB_POOL_MAX: z.coerce.number().int().positive().default(20),
   DB_IDLE_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),

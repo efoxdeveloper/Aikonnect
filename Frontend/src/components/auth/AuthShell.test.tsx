@@ -15,7 +15,7 @@ describe("AuthShell", () => {
   it("uses the generated product artwork only in the responsive visual panel", () => {
     const { container } = render(<AuthShell><h1>Account access</h1></AuthShell>);
 
-    const preview = screen.getByRole("complementary", { name: "Interakt product preview" });
+    const preview = screen.getByRole("complementary", { name: "AiKonnect product preview" });
     expect(preview).toHaveClass("hidden", "lg:order-1", "lg:flex");
     expect(preview).toHaveClass("lg:rounded-xl");
     expect(screen.getByRole("region", { name: "Account access" })).toHaveClass("lg:order-2");
