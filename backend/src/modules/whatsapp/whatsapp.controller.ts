@@ -18,6 +18,10 @@ export async function sync(request: Request, response: Response) {
   response.status(200).json({ success: true, data: await whatsappService.syncWhatsApp(request.params.workspaceId as string) });
 }
 
+export async function attachSharedBilling(request: Request, response: Response) {
+  response.status(200).json({ success: true, data: await whatsappService.attachWhatsAppSharedBilling(request.params.workspaceId as string) });
+}
+
 export async function disconnect(request: Request, response: Response) {
   response.status(200).json({ success: true, data: await whatsappService.disconnectWhatsApp(request.params.workspaceId as string) });
 }

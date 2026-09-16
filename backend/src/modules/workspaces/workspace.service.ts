@@ -116,6 +116,9 @@ export async function getWorkspaceSetup(workspaceId: string) {
           connectedAt: true,
           lastSyncedAt: true,
           lastError: true,
+          sharedBillingStatus: true,
+          sharedBillingAllocationId: true,
+          sharedBillingError: true,
           phoneNumbers: {
             orderBy: { createdAt: "asc" },
             select: {

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { asyncHandler } from "../../middleware/async-handler.js";
 import { validateBody, validateParams } from "../../middleware/validate.js";
-import { requireWorkspacePermission } from "../../middleware/workspace-access.js";
+import { requireAnyWorkspacePermission, requireWorkspacePermission } from "../../middleware/workspace-access.js";
 import { PERMISSIONS } from "../workspaces/permissions.js";
 import * as controller from "./whatsapp.controller.js";
 import { embeddedSignupSchema, testMessageSchema, whatsappWorkspaceParamsSchema } from "./whatsapp.schemas.js";
@@ -25,6 +25,11 @@ whatsappRouter.post(
   "/sync",
   requireWorkspacePermission(PERMISSIONS.WHATSAPP_MANAGE),
   asyncHandler(controller.sync),
+);
+whatsappRouter.post(
+  "/shared-billing",
+  requireAnyWorkspacePermission(PERMISSIONS.WHATSAPP_MANAGE, PERMISSIONS.BILLING_MANAGE),
+  asyncHandler(controller.attachSharedBilling),
 );
 whatsappRouter.delete(
   "/connection",

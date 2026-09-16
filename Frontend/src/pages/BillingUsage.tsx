@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { BarChart3, CalendarDays, CheckCircle2, Info, MessageSquare, Users } from "lucide-react";
+import { BarChart3, CalendarDays, CheckCircle2, Info, MessageSquare, Users, WalletCards } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { apiRequest } from "@/lib/api";
 import { getActiveMembership } from "@/lib/workspace";
 
 type UsageData = {
+  wallet?: { currency: string; balancePaise: number; balance: number; configuredFromBackend: boolean };
   filters: { from: string; to: string };
   summary: {
     totalMessages: number;
@@ -114,7 +115,8 @@ export function BillingUsage() {
 
       {error && <div role="alert" className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-[var(--danger)]">{error}</div>}
       {loading && !data ? <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><div className="h-28 animate-pulse rounded-lg bg-slate-200" /><div className="h-28 animate-pulse rounded-lg bg-slate-200" /><div className="h-28 animate-pulse rounded-lg bg-slate-200" /><div className="h-28 animate-pulse rounded-lg bg-slate-200" /></div> : data && <>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <MetricCard icon={<WalletCards size={17} />} label="Wallet balance" value={data.wallet ? `${data.wallet.currency === "INR" ? "₹" : data.wallet.currency} ${data.wallet.balance.toFixed(2)}` : "--"} detail="Configured by backend" />
           <MetricCard icon={<MessageSquare size={17} />} label="Total messages" value={data.summary.totalMessages} detail={`${numberFormat.format(data.summary.incomingMessages)} incoming`} />
           <MetricCard icon={<BarChart3 size={17} />} label="Outbound messages" value={data.summary.outgoingMessages} detail={`${numberFormat.format(data.summary.deliveredMessages)} delivered`} />
           <MetricCard icon={<CheckCircle2 size={17} />} label="Read messages" value={data.summary.readMessages} detail={`${numberFormat.format(data.summary.failedMessages)} failed`} />
@@ -141,8 +143,8 @@ export function BillingUsage() {
   );
 }
 
-function MetricCard({ icon, label, value, detail }: { icon: ReactNode; label: string; value: number; detail: string }) {
-  return <section className="rounded-lg border border-[var(--border-soft)] bg-white p-4 shadow-[0_2px_8px_rgba(30,40,55,.04)]"><div className="flex items-center justify-between"><div className="flex size-8 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]">{icon}</div><span className="text-2xl font-medium tracking-[-0.03em] text-[var(--text-primary)]">{numberFormat.format(value)}</span></div><div className="mt-3 text-xs font-medium text-[var(--text-secondary)]">{label}</div><div className="mt-0.5 text-[11px] text-[var(--text-muted)]">{detail}</div></section>;
+function MetricCard({ icon, label, value, detail }: { icon: ReactNode; label: string; value: ReactNode; detail: string }) {
+  return <section className="rounded-lg border border-[var(--border-soft)] bg-white p-4 shadow-[0_2px_8px_rgba(30,40,55,.04)]"><div className="flex items-center justify-between"><div className="flex size-8 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]">{icon}</div><span className="text-2xl font-medium tracking-[-0.03em] text-[var(--text-primary)]">{typeof value === "number" ? numberFormat.format(value) : value}</span></div><div className="mt-3 text-xs font-medium text-[var(--text-secondary)]">{label}</div><div className="mt-0.5 text-[11px] text-[var(--text-muted)]">{detail}</div></section>;
 }
 
 function PageFrame({ title, children }: { title: string; children: ReactNode }) {

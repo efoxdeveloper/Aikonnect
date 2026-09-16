@@ -26,6 +26,9 @@ export type WorkspaceSetupData = {
       connectedAt: string | null;
       lastSyncedAt: string | null;
       lastError: string | null;
+      sharedBillingStatus?: "NOT_CONFIGURED" | "ATTACHED" | "ERROR" | string;
+      sharedBillingAllocationId?: string | null;
+      sharedBillingError?: string | null;
       phoneNumbers: Array<{
         id: string;
         metaPhoneNumberId: string;

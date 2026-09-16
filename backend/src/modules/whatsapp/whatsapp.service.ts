@@ -14,6 +14,7 @@ type MetaRequestStage =
   | "load_phone_number"
   | "list_phone_numbers"
   | "subscribe_webhooks"
+  | "share_credit_line"
   | "request_history_sync"
   | "request_app_state_sync"
   | "send_message"
@@ -35,6 +36,7 @@ const metaStageLabels: Record<MetaRequestStage, string> = {
   load_phone_number: "loading the WhatsApp phone number",
   list_phone_numbers: "finding the WhatsApp phone number",
   subscribe_webhooks: "subscribing the app to WhatsApp webhooks",
+  share_credit_line: "sharing the Meta credit line with the WhatsApp Business Account",
   request_history_sync: "requesting WhatsApp message history",
   request_app_state_sync: "requesting WhatsApp Business App synchronization",
   send_message: "sending the WhatsApp message",
@@ -389,6 +391,20 @@ export async function listWhatsAppTemplates(workspaceId: string) {
     throw error;
   }
   return { wabaId, templates, debug: { wabaId, tokenSource, pages, remoteCount: templates.length } satisfies WhatsAppTemplateSyncDebug };
+}
+
+async function shareCreditLineWithWaba(wabaId: string) {
+  if (!env.META_CREDIT_LINE_ID) return { status: "NOT_CONFIGURED" as const, allocationConfigId: null };
+  const accessToken = env.META_SYSTEM_USER_ACCESS_TOKEN;
+  if (!accessToken) {
+    throw new AppError(503, "Configure META_SYSTEM_USER_ACCESS_TOKEN before sharing the Meta credit line.", "META_CREDIT_LINE_TOKEN_MISSING");
+  }
+  const path = `/${encodeURIComponent(env.META_CREDIT_LINE_ID)}/whatsapp_credit_sharing_and_attach?waba_id=${encodeURIComponent(wabaId)}&waba_currency=${encodeURIComponent(env.META_CREDIT_LINE_CURRENCY)}`;
+  const result = await postMeta<{ allocation_config_id?: string }>(path, accessToken, {}, "share_credit_line");
+  if (typeof result.allocation_config_id !== "string" || !result.allocation_config_id.trim()) {
+    throw new AppError(502, "Meta did not return a credit-line allocation ID. Shared billing could not be confirmed.", "META_RESPONSE_INVALID", { stage: "share_credit_line" });
+  }
+  return { status: "ATTACHED" as const, allocationConfigId: result.allocation_config_id };
 }
 
 export async function listWhatsAppTemplateLibrary(workspaceId: string, query: WhatsAppTemplateLibraryQuery = {}) {
@@ -795,7 +811,7 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
         lastSyncedAt: now,
         lastError: null,
       },
-      select: { id: true, metaBusinessId: true, metaWabaId: true, displayName: true, status: true, connectedAt: true },
+      select: { id: true, metaBusinessId: true, metaWabaId: true, displayName: true, status: true, connectedAt: true, sharedBillingStatus: true, sharedBillingAllocationId: true, sharedBillingError: true },
     });
     const phoneNumber = await transaction.whatsAppPhoneNumber.upsert({
       where: { businessAccountId_metaPhoneNumberId: { businessAccountId: account.id, metaPhoneNumberId } },
@@ -853,8 +869,50 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
       }
     }
   }
+  let sharedBilling = { status: connected.account.sharedBillingStatus ?? "NOT_CONFIGURED", allocationConfigId: connected.account.sharedBillingAllocationId };
+  if (env.META_CREDIT_LINE_ID) {
+    try {
+      const result = await shareCreditLineWithWaba(input.wabaId);
+      sharedBilling = { status: result.status, allocationConfigId: result.allocationConfigId };
+      await prisma.whatsAppBusinessAccount.update({
+        where: { id: connected.account.id },
+        data: { sharedBillingStatus: result.status, sharedBillingAllocationId: result.allocationConfigId, sharedBillingError: null },
+      });
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : "Meta credit-line sharing failed.";
+      sharedBilling = { status: "ERROR", allocationConfigId: null };
+      syncWarnings.push(`${reason} WhatsApp was connected, but shared billing is not active.`);
+      await prisma.whatsAppBusinessAccount.update({ where: { id: connected.account.id }, data: { sharedBillingStatus: "ERROR", sharedBillingAllocationId: null, sharedBillingError: reason } });
+    }
+  }
   if (syncWarnings.length) {
     await prisma.whatsAppBusinessAccount.update({ where: { id: connected.account.id }, data: { lastError: syncWarnings.join("; ") } });
   }
-  return { ...connected, syncRequestIds, syncWarnings };
+  return { ...connected, sharedBilling, syncRequestIds, syncWarnings };
+}
+
+export async function attachWhatsAppSharedBilling(workspaceId: string) {
+  if (!env.META_CREDIT_LINE_ID) {
+    throw new AppError(503, "Configure META_CREDIT_LINE_ID before attaching shared billing.", "META_CREDIT_LINE_NOT_CONFIGURED");
+  }
+  const account = await prisma.whatsAppBusinessAccount.findFirst({
+    where: { workspaceId, status: "CONNECTED", metaWabaId: { not: null }, encryptedAccessToken: { not: null } },
+    orderBy: [{ connectedAt: "desc" }, { updatedAt: "desc" }],
+    select: { id: true, metaWabaId: true },
+  });
+  if (!account?.metaWabaId) throw new AppError(409, "Connect a WhatsApp Business Account before attaching shared billing.", "WHATSAPP_NOT_CONNECTED");
+
+  try {
+    const result = await shareCreditLineWithWaba(account.metaWabaId);
+    const updated = await prisma.whatsAppBusinessAccount.update({
+      where: { id: account.id },
+      data: { sharedBillingStatus: result.status, sharedBillingAllocationId: result.allocationConfigId, sharedBillingError: null },
+      select: { sharedBillingStatus: true, sharedBillingAllocationId: true, sharedBillingError: true },
+    });
+    return { status: updated.sharedBillingStatus, allocationConfigId: updated.sharedBillingAllocationId, error: updated.sharedBillingError };
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : "Meta credit-line sharing failed.";
+    await prisma.whatsAppBusinessAccount.update({ where: { id: account.id }, data: { sharedBillingStatus: "ERROR", sharedBillingAllocationId: null, sharedBillingError: reason } });
+    throw error;
+  }
 }

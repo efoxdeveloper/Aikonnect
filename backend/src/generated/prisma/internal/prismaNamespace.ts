@@ -3354,6 +3354,9 @@ export const WhatsAppBusinessAccountScalarFieldEnum = {
   connectedAt: 'connectedAt',
   lastSyncedAt: 'lastSyncedAt',
   lastError: 'lastError',
+  sharedBillingStatus: 'sharedBillingStatus',
+  sharedBillingAllocationId: 'sharedBillingAllocationId',
+  sharedBillingError: 'sharedBillingError',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

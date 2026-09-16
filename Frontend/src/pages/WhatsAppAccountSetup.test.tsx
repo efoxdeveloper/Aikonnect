@@ -42,7 +42,7 @@ const connectedData = {
     accountCount: 1,
     phoneNumberCount: 1,
     accounts: [{
-      id: "account-1", metaBusinessId: null, metaWabaId: null, displayName: "Acme WhatsApp", status: "CONNECTED" as const, connectedAt: null, lastSyncedAt: null, lastError: null,
+      id: "account-1", metaBusinessId: null, metaWabaId: null, displayName: "Acme WhatsApp", status: "CONNECTED" as const, connectedAt: null, lastSyncedAt: null, lastError: null, sharedBillingStatus: "ATTACHED", sharedBillingAllocationId: "allocation-1", sharedBillingError: null,
       phoneNumbers: [{ id: "phone-1", metaPhoneNumberId: "meta-phone-1", displayPhoneNumber: "+919876543210", verifiedName: "Acme", status: "ACTIVE" as const, qualityRating: null, messagingLimit: null, isOnBusinessApp: false, platformType: "CLOUD_API", connectedAt: null, lastSyncedAt: null }],
     }],
   },

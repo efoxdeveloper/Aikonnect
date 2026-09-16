@@ -46,6 +46,7 @@ export function WhatsAppAccountSetup() {
   const [recipient, setRecipient] = useState("");
   const [sendingTest, setSendingTest] = useState(false);
   const [disconnecting, setDisconnecting] = useState(false);
+  const [attachingBilling, setAttachingBilling] = useState(false);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const messageIcon = useAnimatedIcon();
   const externalIcon = useAnimatedIcon();
@@ -91,6 +92,25 @@ export function WhatsAppAccountSetup() {
       setActionMessage(caughtError instanceof Error ? caughtError.message : "The WhatsApp connection could not be removed.");
     } finally {
       setDisconnecting(false);
+    }
+  }
+
+  async function attachSharedBilling() {
+    if (!membership?.workspace.id || !accessToken) return;
+    setAttachingBilling(true);
+    setActionMessage(null);
+    try {
+      await apiRequest(`/workspaces/${membership.workspace.id}/whatsapp/shared-billing`, {
+        method: "POST",
+        headers: { authorization: `Bearer ${accessToken}` },
+      });
+      setActionMessage("Shared billing attached successfully.");
+      await refresh();
+    } catch (caughtError) {
+      setActionMessage(caughtError instanceof Error ? caughtError.message : "Shared billing could not be attached.");
+      await refresh();
+    } finally {
+      setAttachingBilling(false);
     }
   }
 
@@ -142,7 +162,13 @@ export function WhatsAppAccountSetup() {
                       <InfoTile icon={<RefreshCw size={17} />} title="Last sync" detail={connectedAccount?.lastSyncedAt ? new Intl.DateTimeFormat("en-IN", { day: "2-digit", month: "short", hour: "numeric", minute: "2-digit" }).format(new Date(connectedAccount.lastSyncedAt)) : "Pending"} />
                     </div>}
 
+                    <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                      <InfoTile icon={<ShieldCheck size={17} />} title="Shared billing" detail={connectedAccount?.sharedBillingStatus === "ATTACHED" ? "Active" : connectedAccount?.sharedBillingStatus === "ERROR" ? "Needs attention" : "Not configured"} />
+                    </div>
+                    {connectedAccount?.sharedBillingStatus !== "ATTACHED" && <button type="button" onClick={() => void attachSharedBilling()} disabled={attachingBilling} className="mt-3 h-9 rounded-md border border-[var(--brand)] px-3 text-xs font-medium text-[var(--brand)] hover:bg-[var(--brand-soft)] disabled:opacity-60">{attachingBilling ? "Attaching shared billing…" : "Attach shared billing"}</button>}
+
                     {connectedAccount?.lastError && <div role="alert" className="mt-4 flex items-start gap-2.5 rounded-md border border-amber-200 bg-amber-50 px-3.5 py-3 text-xs leading-5 text-amber-800"><RefreshCw size={15} className="mt-0.5 shrink-0" /><div><strong>Sync needs attention.</strong> {connectedAccount.lastError}</div></div>}
+                    {connectedAccount?.sharedBillingError && <div role="alert" className="mt-4 flex items-start gap-2.5 rounded-md border border-amber-200 bg-amber-50 px-3.5 py-3 text-xs leading-5 text-amber-800"><ShieldCheck size={15} className="mt-0.5 shrink-0" /><div><strong>Shared billing needs attention.</strong> {connectedAccount.sharedBillingError}</div></div>}
                     <form onSubmit={sendTest} className="mt-5 rounded-md border border-[var(--border-soft)] bg-[var(--surface-subtle)] p-4">
                       <h3 className="text-sm font-medium text-[var(--text-primary)]">Send a test message</h3>
                       <div className="mt-1 text-xs leading-5 text-[var(--text-secondary)]">Use an E.164 number, including the country code. The recipient must message your connected number first; otherwise Meta requires an approved template.</div>

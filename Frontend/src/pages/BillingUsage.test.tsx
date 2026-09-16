@@ -25,6 +25,7 @@ const auth = (permissions: string[] = ["billing.read"]): AuthContextValue => ({
 });
 
 const usage = {
+  wallet: { currency: "INR", balancePaise: 12500, balance: 125, configuredFromBackend: true },
   filters: { from: "2026-08-01T00:00:00.000Z", to: "2026-08-31T23:59:59.999Z" },
   summary: { totalMessages: 42, incomingMessages: 18, outgoingMessages: 24, deliveredMessages: 22, readMessages: 16, failedMessages: 2, engagedContacts: 9, activeConversations: 7, mediaMessages: 3 },
   breakdown: [
@@ -49,6 +50,7 @@ describe("BillingUsage", () => {
     expect(screen.getByTestId("billing-usage-page")).toHaveClass("h-full", "overflow-hidden");
     expect(screen.getByTestId("billing-usage-scroll-region")).toHaveClass("overflow-y-auto");
     expect(await screen.findByText("Total messages")).toBeInTheDocument();
+    expect(screen.getByText("₹ 125.00")).toBeInTheDocument();
     expect(screen.getByText("42")).toBeInTheDocument();
     expect(screen.getByText("Meta billing is separate")).toBeInTheDocument();
 

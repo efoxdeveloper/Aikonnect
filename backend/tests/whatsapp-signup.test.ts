@@ -15,6 +15,7 @@ Object.assign(process.env, {
   LOG_LEVEL: "silent",
 });
 const { completeEmbeddedSignup } = await import("../src/modules/whatsapp/whatsapp.service.js");
+const { env } = await import("../src/config/env.js");
 const { prisma } = await import("../src/database/prisma.js");
 const { AppError } = await import("../src/middleware/error-handler.js");
 const { embeddedSignupSchema } = await import("../src/modules/whatsapp/whatsapp.schemas.js");
@@ -43,6 +44,7 @@ function fixture(t: TestContext, options: {
   syncFails?: boolean;
   genericSyncError?: boolean;
   missingSyncId?: boolean;
+  creditLine?: boolean;
 } = {}) {
   const steps: string[] = [];
   const accountWrites: Record<string, any>[] = [];
@@ -52,9 +54,13 @@ function fixture(t: TestContext, options: {
     steps.push("persist");
     return callback(prisma);
   });
+  if (options.creditLine) {
+    Object.assign(env, { META_CREDIT_LINE_ID: "test-credit-line", META_SYSTEM_USER_ACCESS_TOKEN: "test-system-token", META_CREDIT_LINE_CURRENCY: "INR" });
+    t.after(() => { delete (env as any).META_CREDIT_LINE_ID; delete (env as any).META_SYSTEM_USER_ACCESS_TOKEN; });
+  }
   stubDelegate(t, prisma.whatsAppBusinessAccount, "upsert", async (args: Record<string, any>) => {
     accountWrites.push(args);
-    return { id: "account-id", metaWabaId: signup.wabaId, status: "CONNECTED" };
+    return { id: "account-id", metaWabaId: signup.wabaId, status: "CONNECTED", sharedBillingStatus: "NOT_CONFIGURED", sharedBillingAllocationId: null };
   });
   stubDelegate(t, prisma.whatsAppPhoneNumber, "upsert", async (args: Record<string, any>) => {
     phoneWrites.push(args);
@@ -62,7 +68,7 @@ function fixture(t: TestContext, options: {
   });
   stubDelegate(t, prisma.workspaceSetupProgress, "upsert", async () => ({}));
   stubDelegate(t, prisma.whatsAppBusinessAccount, "update", async (args: Record<string, any>) => {
-    warnings.push(args.data.lastError);
+    if (typeof args.data.lastError === "string") warnings.push(args.data.lastError);
     return {};
   });
   t.mock.method(globalThis, "fetch", async (input: string | URL, init?: RequestInit) => {
@@ -73,6 +79,13 @@ function fixture(t: TestContext, options: {
       steps.push("exchange");
       assert.equal(url.searchParams.get("code"), signup.code);
       return json({ access_token: "test-business-token" });
+    }
+    if (options.creditLine && url.pathname.endsWith("/whatsapp_credit_sharing_and_attach")) {
+      assert.equal((init?.headers as Record<string, string>).authorization, "Bearer test-system-token");
+      assert.equal(url.searchParams.get("waba_id"), signup.wabaId);
+      assert.equal(url.searchParams.get("waba_currency"), "INR");
+      steps.push("credit-line");
+      return json({ allocation_config_id: "allocation-config-id" });
     }
     assert.equal((init?.headers as Record<string, string>).authorization, "Bearer test-business-token");
     if (url.pathname === "/v25.0/test-waba") return json({ id: signup.wabaId, name: "Test Business" });
@@ -138,6 +151,14 @@ test("provider field rejection preserves its reason and stage instead of a gener
   });
   assert.equal(state.accountWrites.length, 0);
   assert.equal(state.steps.filter((step) => step === "exchange").length, 1);
+});
+
+test("configured provider credit line is attached to the newly connected WABA", async (t) => {
+  const state = fixture(t, { creditLine: true });
+  const result = await completeEmbeddedSignup("workspace-id", signup);
+  assert.deepEqual(result.sharedBilling, { status: "ATTACHED", allocationConfigId: "allocation-config-id" });
+  assert.equal(state.steps.at(-1), "credit-line");
+  assert.equal(state.warnings.length, 0);
 });
 
 for (const subscriptionOptions of [{ subscriptionFails: true }, { subscription: { success: false } }, { subscription: {} }]) {

@@ -36,6 +36,9 @@ export type WhatsAppBusinessAccountMinAggregateOutputType = {
   connectedAt: Date | null
   lastSyncedAt: Date | null
   lastError: string | null
+  sharedBillingStatus: string | null
+  sharedBillingAllocationId: string | null
+  sharedBillingError: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -52,6 +55,9 @@ export type WhatsAppBusinessAccountMaxAggregateOutputType = {
   connectedAt: Date | null
   lastSyncedAt: Date | null
   lastError: string | null
+  sharedBillingStatus: string | null
+  sharedBillingAllocationId: string | null
+  sharedBillingError: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -68,6 +74,9 @@ export type WhatsAppBusinessAccountCountAggregateOutputType = {
   connectedAt: number
   lastSyncedAt: number
   lastError: number
+  sharedBillingStatus: number
+  sharedBillingAllocationId: number
+  sharedBillingError: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -86,6 +95,9 @@ export type WhatsAppBusinessAccountMinAggregateInputType = {
   connectedAt?: true
   lastSyncedAt?: true
   lastError?: true
+  sharedBillingStatus?: true
+  sharedBillingAllocationId?: true
+  sharedBillingError?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -102,6 +114,9 @@ export type WhatsAppBusinessAccountMaxAggregateInputType = {
   connectedAt?: true
   lastSyncedAt?: true
   lastError?: true
+  sharedBillingStatus?: true
+  sharedBillingAllocationId?: true
+  sharedBillingError?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -118,6 +133,9 @@ export type WhatsAppBusinessAccountCountAggregateInputType = {
   connectedAt?: true
   lastSyncedAt?: true
   lastError?: true
+  sharedBillingStatus?: true
+  sharedBillingAllocationId?: true
+  sharedBillingError?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -207,6 +225,9 @@ export type WhatsAppBusinessAccountGroupByOutputType = {
   connectedAt: Date | null
   lastSyncedAt: Date | null
   lastError: string | null
+  sharedBillingStatus: string
+  sharedBillingAllocationId: string | null
+  sharedBillingError: string | null
   createdAt: Date
   updatedAt: Date
   _count: WhatsAppBusinessAccountCountAggregateOutputType | null
@@ -244,6 +265,9 @@ export type WhatsAppBusinessAccountWhereInput = {
   connectedAt?: Prisma.DateTimeNullableFilter<"WhatsAppBusinessAccount"> | Date | string | null
   lastSyncedAt?: Prisma.DateTimeNullableFilter<"WhatsAppBusinessAccount"> | Date | string | null
   lastError?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
+  sharedBillingStatus?: Prisma.StringFilter<"WhatsAppBusinessAccount"> | string
+  sharedBillingAllocationId?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
+  sharedBillingError?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
   createdAt?: Prisma.DateTimeFilter<"WhatsAppBusinessAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WhatsAppBusinessAccount"> | Date | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
@@ -262,6 +286,9 @@ export type WhatsAppBusinessAccountOrderByWithRelationInput = {
   connectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSyncedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastError?: Prisma.SortOrderInput | Prisma.SortOrder
+  sharedBillingStatus?: Prisma.SortOrder
+  sharedBillingAllocationId?: Prisma.SortOrderInput | Prisma.SortOrder
+  sharedBillingError?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
@@ -284,6 +311,9 @@ export type WhatsAppBusinessAccountWhereUniqueInput = Prisma.AtLeast<{
   connectedAt?: Prisma.DateTimeNullableFilter<"WhatsAppBusinessAccount"> | Date | string | null
   lastSyncedAt?: Prisma.DateTimeNullableFilter<"WhatsAppBusinessAccount"> | Date | string | null
   lastError?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
+  sharedBillingStatus?: Prisma.StringFilter<"WhatsAppBusinessAccount"> | string
+  sharedBillingAllocationId?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
+  sharedBillingError?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
   createdAt?: Prisma.DateTimeFilter<"WhatsAppBusinessAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WhatsAppBusinessAccount"> | Date | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
@@ -302,6 +332,9 @@ export type WhatsAppBusinessAccountOrderByWithAggregationInput = {
   connectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSyncedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastError?: Prisma.SortOrderInput | Prisma.SortOrder
+  sharedBillingStatus?: Prisma.SortOrder
+  sharedBillingAllocationId?: Prisma.SortOrderInput | Prisma.SortOrder
+  sharedBillingError?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.WhatsAppBusinessAccountCountOrderByAggregateInput
@@ -324,6 +357,9 @@ export type WhatsAppBusinessAccountScalarWhereWithAggregatesInput = {
   connectedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WhatsAppBusinessAccount"> | Date | string | null
   lastSyncedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WhatsAppBusinessAccount"> | Date | string | null
   lastError?: Prisma.StringNullableWithAggregatesFilter<"WhatsAppBusinessAccount"> | string | null
+  sharedBillingStatus?: Prisma.StringWithAggregatesFilter<"WhatsAppBusinessAccount"> | string
+  sharedBillingAllocationId?: Prisma.StringNullableWithAggregatesFilter<"WhatsAppBusinessAccount"> | string | null
+  sharedBillingError?: Prisma.StringNullableWithAggregatesFilter<"WhatsAppBusinessAccount"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"WhatsAppBusinessAccount"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"WhatsAppBusinessAccount"> | Date | string
 }
@@ -339,6 +375,9 @@ export type WhatsAppBusinessAccountCreateInput = {
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   lastError?: string | null
+  sharedBillingStatus?: string
+  sharedBillingAllocationId?: string | null
+  sharedBillingError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutWhatsappBusinessAccountsInput
@@ -357,6 +396,9 @@ export type WhatsAppBusinessAccountUncheckedCreateInput = {
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   lastError?: string | null
+  sharedBillingStatus?: string
+  sharedBillingAllocationId?: string | null
+  sharedBillingError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   phoneNumbers?: Prisma.WhatsAppPhoneNumberUncheckedCreateNestedManyWithoutBusinessAccountInput
@@ -373,6 +415,9 @@ export type WhatsAppBusinessAccountUpdateInput = {
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  sharedBillingAllocationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWhatsappBusinessAccountsNestedInput
@@ -391,6 +436,9 @@ export type WhatsAppBusinessAccountUncheckedUpdateInput = {
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  sharedBillingAllocationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   phoneNumbers?: Prisma.WhatsAppPhoneNumberUncheckedUpdateManyWithoutBusinessAccountNestedInput
@@ -408,6 +456,9 @@ export type WhatsAppBusinessAccountCreateManyInput = {
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   lastError?: string | null
+  sharedBillingStatus?: string
+  sharedBillingAllocationId?: string | null
+  sharedBillingError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -423,6 +474,9 @@ export type WhatsAppBusinessAccountUpdateManyMutationInput = {
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  sharedBillingAllocationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -439,6 +493,9 @@ export type WhatsAppBusinessAccountUncheckedUpdateManyInput = {
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  sharedBillingAllocationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -470,6 +527,9 @@ export type WhatsAppBusinessAccountCountOrderByAggregateInput = {
   connectedAt?: Prisma.SortOrder
   lastSyncedAt?: Prisma.SortOrder
   lastError?: Prisma.SortOrder
+  sharedBillingStatus?: Prisma.SortOrder
+  sharedBillingAllocationId?: Prisma.SortOrder
+  sharedBillingError?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -486,6 +546,9 @@ export type WhatsAppBusinessAccountMaxOrderByAggregateInput = {
   connectedAt?: Prisma.SortOrder
   lastSyncedAt?: Prisma.SortOrder
   lastError?: Prisma.SortOrder
+  sharedBillingStatus?: Prisma.SortOrder
+  sharedBillingAllocationId?: Prisma.SortOrder
+  sharedBillingError?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -502,6 +565,9 @@ export type WhatsAppBusinessAccountMinOrderByAggregateInput = {
   connectedAt?: Prisma.SortOrder
   lastSyncedAt?: Prisma.SortOrder
   lastError?: Prisma.SortOrder
+  sharedBillingStatus?: Prisma.SortOrder
+  sharedBillingAllocationId?: Prisma.SortOrder
+  sharedBillingError?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -582,6 +648,9 @@ export type WhatsAppBusinessAccountCreateWithoutWorkspaceInput = {
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   lastError?: string | null
+  sharedBillingStatus?: string
+  sharedBillingAllocationId?: string | null
+  sharedBillingError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   phoneNumbers?: Prisma.WhatsAppPhoneNumberCreateNestedManyWithoutBusinessAccountInput
@@ -598,6 +667,9 @@ export type WhatsAppBusinessAccountUncheckedCreateWithoutWorkspaceInput = {
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   lastError?: string | null
+  sharedBillingStatus?: string
+  sharedBillingAllocationId?: string | null
+  sharedBillingError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   phoneNumbers?: Prisma.WhatsAppPhoneNumberUncheckedCreateNestedManyWithoutBusinessAccountInput
@@ -644,6 +716,9 @@ export type WhatsAppBusinessAccountScalarWhereInput = {
   connectedAt?: Prisma.DateTimeNullableFilter<"WhatsAppBusinessAccount"> | Date | string | null
   lastSyncedAt?: Prisma.DateTimeNullableFilter<"WhatsAppBusinessAccount"> | Date | string | null
   lastError?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
+  sharedBillingStatus?: Prisma.StringFilter<"WhatsAppBusinessAccount"> | string
+  sharedBillingAllocationId?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
+  sharedBillingError?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
   createdAt?: Prisma.DateTimeFilter<"WhatsAppBusinessAccount"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"WhatsAppBusinessAccount"> | Date | string
 }
@@ -659,6 +734,9 @@ export type WhatsAppBusinessAccountCreateWithoutPhoneNumbersInput = {
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   lastError?: string | null
+  sharedBillingStatus?: string
+  sharedBillingAllocationId?: string | null
+  sharedBillingError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutWhatsappBusinessAccountsInput
@@ -676,6 +754,9 @@ export type WhatsAppBusinessAccountUncheckedCreateWithoutPhoneNumbersInput = {
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   lastError?: string | null
+  sharedBillingStatus?: string
+  sharedBillingAllocationId?: string | null
+  sharedBillingError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -707,6 +788,9 @@ export type WhatsAppBusinessAccountUpdateWithoutPhoneNumbersInput = {
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  sharedBillingAllocationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWhatsappBusinessAccountsNestedInput
@@ -724,6 +808,9 @@ export type WhatsAppBusinessAccountUncheckedUpdateWithoutPhoneNumbersInput = {
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  sharedBillingAllocationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -739,6 +826,9 @@ export type WhatsAppBusinessAccountCreateManyWorkspaceInput = {
   connectedAt?: Date | string | null
   lastSyncedAt?: Date | string | null
   lastError?: string | null
+  sharedBillingStatus?: string
+  sharedBillingAllocationId?: string | null
+  sharedBillingError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -754,6 +844,9 @@ export type WhatsAppBusinessAccountUpdateWithoutWorkspaceInput = {
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  sharedBillingAllocationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   phoneNumbers?: Prisma.WhatsAppPhoneNumberUpdateManyWithoutBusinessAccountNestedInput
@@ -770,6 +863,9 @@ export type WhatsAppBusinessAccountUncheckedUpdateWithoutWorkspaceInput = {
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  sharedBillingAllocationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   phoneNumbers?: Prisma.WhatsAppPhoneNumberUncheckedUpdateManyWithoutBusinessAccountNestedInput
@@ -786,6 +882,9 @@ export type WhatsAppBusinessAccountUncheckedUpdateManyWithoutWorkspaceInput = {
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  sharedBillingAllocationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sharedBillingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -833,6 +932,9 @@ export type WhatsAppBusinessAccountSelect<ExtArgs extends runtime.Types.Extensio
   connectedAt?: boolean
   lastSyncedAt?: boolean
   lastError?: boolean
+  sharedBillingStatus?: boolean
+  sharedBillingAllocationId?: boolean
+  sharedBillingError?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
@@ -852,6 +954,9 @@ export type WhatsAppBusinessAccountSelectCreateManyAndReturn<ExtArgs extends run
   connectedAt?: boolean
   lastSyncedAt?: boolean
   lastError?: boolean
+  sharedBillingStatus?: boolean
+  sharedBillingAllocationId?: boolean
+  sharedBillingError?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
@@ -869,6 +974,9 @@ export type WhatsAppBusinessAccountSelectUpdateManyAndReturn<ExtArgs extends run
   connectedAt?: boolean
   lastSyncedAt?: boolean
   lastError?: boolean
+  sharedBillingStatus?: boolean
+  sharedBillingAllocationId?: boolean
+  sharedBillingError?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
@@ -886,11 +994,14 @@ export type WhatsAppBusinessAccountSelectScalar = {
   connectedAt?: boolean
   lastSyncedAt?: boolean
   lastError?: boolean
+  sharedBillingStatus?: boolean
+  sharedBillingAllocationId?: boolean
+  sharedBillingError?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type WhatsAppBusinessAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "metaBusinessId" | "metaWabaId" | "displayName" | "status" | "encryptedAccessToken" | "tokenExpiresAt" | "connectedAt" | "lastSyncedAt" | "lastError" | "createdAt" | "updatedAt", ExtArgs["result"]["whatsAppBusinessAccount"]>
+export type WhatsAppBusinessAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "metaBusinessId" | "metaWabaId" | "displayName" | "status" | "encryptedAccessToken" | "tokenExpiresAt" | "connectedAt" | "lastSyncedAt" | "lastError" | "sharedBillingStatus" | "sharedBillingAllocationId" | "sharedBillingError" | "createdAt" | "updatedAt", ExtArgs["result"]["whatsAppBusinessAccount"]>
 export type WhatsAppBusinessAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   phoneNumbers?: boolean | Prisma.WhatsAppBusinessAccount$phoneNumbersArgs<ExtArgs>
@@ -921,6 +1032,9 @@ export type $WhatsAppBusinessAccountPayload<ExtArgs extends runtime.Types.Extens
     connectedAt: Date | null
     lastSyncedAt: Date | null
     lastError: string | null
+    sharedBillingStatus: string
+    sharedBillingAllocationId: string | null
+    sharedBillingError: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["whatsAppBusinessAccount"]>
@@ -1359,6 +1473,9 @@ export interface WhatsAppBusinessAccountFieldRefs {
   readonly connectedAt: Prisma.FieldRef<"WhatsAppBusinessAccount", 'DateTime'>
   readonly lastSyncedAt: Prisma.FieldRef<"WhatsAppBusinessAccount", 'DateTime'>
   readonly lastError: Prisma.FieldRef<"WhatsAppBusinessAccount", 'String'>
+  readonly sharedBillingStatus: Prisma.FieldRef<"WhatsAppBusinessAccount", 'String'>
+  readonly sharedBillingAllocationId: Prisma.FieldRef<"WhatsAppBusinessAccount", 'String'>
+  readonly sharedBillingError: Prisma.FieldRef<"WhatsAppBusinessAccount", 'String'>
   readonly createdAt: Prisma.FieldRef<"WhatsAppBusinessAccount", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"WhatsAppBusinessAccount", 'DateTime'>
 }

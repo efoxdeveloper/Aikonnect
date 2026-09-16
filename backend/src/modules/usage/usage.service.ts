@@ -1,3 +1,4 @@
+import { env } from "../../config/env.js";
 import { prisma } from "../../database/prisma.js";
 import type { UsageQuery } from "./usage.schemas.js";
 
@@ -52,6 +53,12 @@ export async function getUsage(workspaceId: string, query: UsageQuery) {
     { key: "automation", label: "Automation messages", messages: sourceCounts.get("automation") ?? 0 },
   ].map((item) => ({ ...item, percentage: messages.length ? Math.round((item.messages / messages.length) * 100) : 0 }));
   return {
+    wallet: {
+      currency: env.WALLET_CURRENCY,
+      balancePaise: env.WALLET_BALANCE_PAISE,
+      balance: env.WALLET_BALANCE_PAISE / 100,
+      configuredFromBackend: true,
+    },
     filters: { from: dates.from.toISOString(), to: dates.to.toISOString() },
     summary: {
       totalMessages: messages.length,

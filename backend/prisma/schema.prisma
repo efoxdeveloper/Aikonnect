@@ -665,6 +665,9 @@ model WhatsAppBusinessAccount {
   connectedAt          DateTime?                @map("connected_at") @db.Timestamptz(3)
   lastSyncedAt         DateTime?                @map("last_synced_at") @db.Timestamptz(3)
   lastError            String?                  @map("last_error")
+  sharedBillingStatus  String                   @default("NOT_CONFIGURED") @map("shared_billing_status") @db.VarChar(30)
+  sharedBillingAllocationId String?             @map("shared_billing_allocation_id") @db.VarChar(100)
+  sharedBillingError   String?                  @map("shared_billing_error") @db.Text
   createdAt            DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt            DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
   workspace            Workspace                @relation(fields: [workspaceId], references: [id], onDelete: Cascade)

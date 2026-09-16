@@ -39,6 +39,8 @@ const envSchema = z.object({
   META_APP_SECRET: z.string().min(1).optional(),
   META_CONFIG_ID: z.string().min(1).optional(),
   META_SYSTEM_USER_ACCESS_TOKEN: z.string().min(1).optional(),
+  META_CREDIT_LINE_ID: z.string().min(1).optional(),
+  META_CREDIT_LINE_CURRENCY: z.string().regex(/^[A-Z]{3}$/).default("INR"),
   META_WEBHOOK_VERIFY_TOKEN: z.string().min(1).optional(),
   META_WEBHOOK_URL: z.url().optional(),
   META_TOKEN_ENCRYPTION_KEY: z.string().min(32).optional(),
@@ -49,6 +51,8 @@ const envSchema = z.object({
   GOOGLE_REDIRECT_URI: z.url().optional(),
   GROQ_API_KEY: z.string().min(1).optional(),
   GROQ_MODEL: z.string().min(1).default("openai/gpt-oss-20b"),
+  WALLET_CURRENCY: z.string().regex(/^[A-Z]{3}$/).default("INR"),
+  WALLET_BALANCE_PAISE: z.coerce.number().int().nonnegative().max(9_000_000_000).default(0),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
