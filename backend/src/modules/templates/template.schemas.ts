@@ -34,6 +34,31 @@ export const listTemplatesQuerySchema = z.object({
   pageSize: z.coerce.number().int().min(1).max(100).default(25),
 });
 
+export const templateLibraryQuerySchema = z.object({
+  language: z.string().trim().min(1).max(50).default("en_US"),
+  category: z.enum(["UTILITY", "MARKETING", "AUTHENTICATION"]).optional(),
+  topic: z.enum(["ACCOUNT_OR_PRODUCT_PROTECTION", "ACCOUNT_UPDATES", "AI_AGENTS", "CALL_PERMISSIONS", "CONTACT_REQUEST", "CUSTOMER_FEEDBACK", "CUSTOMER_RE_ENGAGEMENT", "EVENT_REMINDER", "FIXED_TEMPLATE_PRICE_TEST", "GROUP_INVITE_LINK", "IDENTITY_VERIFICATION", "LEGAL_REGULATORY_COMPLIANCE", "ORDER_MANAGEMENT", "PAYMENTS", "PUBLIC_ANNOUNCEMENTS", "PUBLIC_DISRUPTION", "PUBLIC_SAFETY", "PUBLIC_SERVICE", "REGULATORY_COMPLIANCE"]).optional(),
+  industry: z.string().trim().max(100).optional(),
+  search: z.string().trim().max(120).optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(25),
+  after: z.string().trim().max(500).optional(),
+});
+
+const libraryTemplateButtonInputSchema = z.object({
+  type: z.enum(["URL", "PHONE_NUMBER"]),
+  value: z.string().trim().min(1).max(2_000),
+});
+
+export const addLibraryTemplateSchema = z.object({
+  libraryTemplateName: z.string().trim().min(1).max(160),
+  name: z.string().trim().min(1).max(160),
+  language: z.string().trim().min(1).max(50),
+  category: z.enum(["UTILITY", "MARKETING", "AUTHENTICATION"]),
+  libraryTemplateButtonInputs: z.array(libraryTemplateButtonInputSchema).max(20).optional(),
+});
+
 export type CreateTemplateInput = z.infer<typeof createTemplateSchema>;
 export type UpdateTemplateInput = z.infer<typeof updateTemplateSchema>;
 export type ListTemplatesQuery = z.infer<typeof listTemplatesQuerySchema>;
+export type TemplateLibraryQuery = z.infer<typeof templateLibraryQuerySchema>;
+export type AddLibraryTemplateInput = z.infer<typeof addLibraryTemplateSchema>;

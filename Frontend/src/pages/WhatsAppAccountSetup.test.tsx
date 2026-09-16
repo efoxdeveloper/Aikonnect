@@ -62,6 +62,7 @@ describe("WhatsAppAccountSetup", () => {
     expect(screen.getByTestId("whatsapp-account-scroll-region")).toHaveClass("overflow-y-auto");
     expect(screen.getByRole("heading", { name: "WhatsApp account" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "WhatsApp is connected" })).toBeInTheDocument();
+    expect(screen.getByText(/recipient must message your connected number first/i)).toBeInTheDocument();
     expect(screen.queryByText("Developer configuration")).not.toBeInTheDocument();
   });
 });

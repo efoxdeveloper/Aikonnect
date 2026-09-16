@@ -238,15 +238,18 @@ export async function createMessage(workspaceId: string, contactId: string, conv
   let metaMessageId = input.metaMessageId;
   let mediaId = input.mediaId;
   let mediaUrl = input.mediaUrl;
+  let routedPhoneNumberId: string | undefined;
   if (input.direction === "OUTGOING" && input.type === "TEXT" && conversation.channelKey === "whatsapp") {
     if (typeof input.text !== "string" || !input.text.trim()) throw new AppError(422, "Message text cannot be empty", "MESSAGE_TEXT_REQUIRED");
     const sent = await sendWhatsAppConversationText(workspaceId, conversationId, input.text);
     metaMessageId = sent.metaMessageId;
+    routedPhoneNumberId = sent.phoneNumberId;
     sentAt = sent.sentAt;
   }
   if (input.direction === "OUTGOING" && ["IMAGE", "VIDEO", "AUDIO", "DOCUMENT"].includes(input.type) && conversation.channelKey === "whatsapp") {
     const sent = await sendWhatsAppConversationMedia(workspaceId, conversationId, input.type as "IMAGE" | "VIDEO" | "AUDIO" | "DOCUMENT", input.mediaData, input.mediaId ?? undefined, input.text?.trim() || undefined, input.mediaFileName);
     metaMessageId = sent.metaMessageId;
+    routedPhoneNumberId = sent.phoneNumberId;
     mediaId = sent.mediaId;
     // Keep the provider media ID as the durable reference. The upload data URL is
     // only used for the immediate browser preview and must not bloat message rows.
@@ -269,7 +272,7 @@ export async function createMessage(workspaceId: string, contactId: string, conv
       },
       select: messageSelect,
     });
-    await transaction.conversation.update({ where: { id: conversationId, workspaceId, contactId }, data: { lastMessagePreview: input.direction === "OUTGOING" ? `You: ${input.text ?? input.type}` : input.text ?? input.type, lastMessageAt: sentAt, ...(input.direction === "INCOMING" ? { unreadCount: { increment: 1 } } : {}) } });
+    await transaction.conversation.update({ where: { id: conversationId, workspaceId, contactId }, data: { lastMessagePreview: input.direction === "OUTGOING" ? `You: ${input.text ?? input.type}` : input.text ?? input.type, lastMessageAt: sentAt, ...(routedPhoneNumberId ? { phoneNumberId: routedPhoneNumberId } : {}), ...(input.direction === "INCOMING" ? { unreadCount: { increment: 1 } } : {}) } });
     return { message, deduplicated: false };
   });
   if (!result.deduplicated) publishInboxRefresh(workspaceId, conversationId);

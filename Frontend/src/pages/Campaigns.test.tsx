@@ -249,6 +249,15 @@ describe("Campaigns", () => {
     ).toBeInTheDocument();
   });
 
+  it("opens the create flow with a selected approved template", async () => {
+    renderPage("/campaigns?templateKey=august_product_launch");
+
+    expect(
+      await screen.findByRole("heading", { name: "Create WhatsApp Campaign" }),
+    ).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByLabelText("WhatsApp template")).toHaveValue("august_product_launch"));
+  });
+
   it("validates and saves a campaign draft, then filters it by status", async () => {
     renderPage();
     fireEvent.click(

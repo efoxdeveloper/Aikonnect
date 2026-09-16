@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import { requireAuth } from "../../middleware/authenticate.js";
-import type { CreateTemplateInput, ListTemplatesQuery, UpdateTemplateInput } from "./template.schemas.js";
+import type { AddLibraryTemplateInput, CreateTemplateInput, ListTemplatesQuery, TemplateLibraryQuery, UpdateTemplateInput } from "./template.schemas.js";
 import * as service from "./template.service.js";
 
 export async function list(request: Request, response: Response) {
@@ -9,6 +9,14 @@ export async function list(request: Request, response: Response) {
 
 export async function sync(request: Request, response: Response) {
   response.status(200).json({ success: true, data: await service.syncTemplatesFromMeta(request.params.workspaceId as string, requireAuth(request).userId) });
+}
+
+export async function library(request: Request, response: Response) {
+  response.status(200).json({ success: true, data: await service.listTemplateLibrary(request.params.workspaceId as string, request.validatedQuery as TemplateLibraryQuery) });
+}
+
+export async function addLibraryTemplate(request: Request, response: Response) {
+  response.status(201).json({ success: true, data: await service.addTemplateFromLibrary(request.params.workspaceId as string, requireAuth(request).userId, request.body as AddLibraryTemplateInput) });
 }
 
 export async function get(request: Request, response: Response) {

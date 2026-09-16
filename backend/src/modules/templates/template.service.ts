@@ -3,8 +3,9 @@ import { TemplateStatus } from "../../generated/prisma/enums.js";
 import { prisma } from "../../database/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { toSlug } from "../../utils/slug.js";
-import { connectedWhatsAppWabaId, createWhatsAppTemplate, deleteWhatsAppTemplate, listWhatsAppTemplates, updateWhatsAppTemplate } from "../whatsapp/whatsapp.service.js";
-import type { CreateTemplateInput, ListTemplatesQuery, UpdateTemplateInput } from "./template.schemas.js";
+import { addWhatsAppTemplateFromLibrary, connectedWhatsAppWabaId, createWhatsAppTemplate, deleteWhatsAppTemplate, listWhatsAppTemplateLibrary, listWhatsAppTemplates, updateWhatsAppTemplate } from "../whatsapp/whatsapp.service.js";
+import { reviewTemplateWithAI, type TemplateAIReview } from "./template-ai.service.js";
+import type { AddLibraryTemplateInput, CreateTemplateInput, ListTemplatesQuery, TemplateLibraryQuery, UpdateTemplateInput } from "./template.schemas.js";
 
 const templateInclude = {
   createdBy: { select: { firstName: true, lastName: true } },
@@ -72,6 +73,17 @@ function metaComponents(input: CreateTemplateInput | UpdateTemplateInput) {
   if (input.templateType && input.templateType !== "standard") {
     throw new AppError(422, "Only standard WhatsApp templates can be submitted to Meta from this editor", "META_TEMPLATE_TYPE_UNSUPPORTED");
   }
+  if (input.category === "Authentication") {
+    const authContent = input.content && typeof input.content === "object" && !Array.isArray(input.content) ? input.content as Record<string, unknown> : {};
+    const otpType = authContent.otpType === "ONE_TAP" || authContent.otpType === "ZERO_TAP" ? authContent.otpType : "COPY_CODE";
+    const requestedExpiration = typeof authContent.codeExpirationMinutes === "number" ? authContent.codeExpirationMinutes : 10;
+    const codeExpirationMinutes = Number.isInteger(requestedExpiration) && requestedExpiration >= 1 && requestedExpiration <= 90 ? requestedExpiration : 10;
+    return [
+      { type: "BODY", add_security_recommendation: authContent.addSecurityRecommendation !== false },
+      { type: "FOOTER", code_expiration_minutes: codeExpirationMinutes },
+      { type: "BUTTONS", buttons: [{ type: "OTP", otp_type: otpType }] },
+    ];
+  }
   const components: Array<Record<string, unknown>> = [];
   const headerType = input.headerType ?? "none";
   if (headerType === "text") {
@@ -92,9 +104,22 @@ function metaComponents(input: CreateTemplateInput | UpdateTemplateInput) {
 
   const content = input.content && typeof input.content === "object" && !Array.isArray(input.content) ? input.content as Record<string, unknown> : {};
   const buttonIds = Array.isArray(content.buttons) ? content.buttons.filter((item): item is string => typeof item === "string") : [];
+  const specialButtonIds = buttonIds.filter((buttonId) => ["flow", "catalog", "offer"].includes(buttonId));
+  if (specialButtonIds.length && buttonIds.length > 1) {
+    throw new AppError(422, "Flow, catalog, and offer-code buttons must be submitted by themselves", "META_TEMPLATE_BUTTON_COMBINATION_INVALID");
+  }
+  if (buttonIds.includes("quick-reply") && buttonIds.some((buttonId) => ["website", "call"].includes(buttonId))) {
+    throw new AppError(422, "Quick reply and call-to-action buttons cannot be combined", "META_TEMPLATE_BUTTON_COMBINATION_INVALID");
+  }
+  const configuredButtonTexts = content.buttonTexts && typeof content.buttonTexts === "object" && !Array.isArray(content.buttonTexts) ? content.buttonTexts as Record<string, unknown> : {};
+  const buttonText = (buttonId: string, fallback: string) => {
+    const value = typeof configuredButtonTexts[buttonId] === "string" ? configuredButtonTexts[buttonId].trim() : fallback;
+    if (!value || value.length > 25) throw new AppError(422, "Button text must be between 1 and 25 characters", "META_TEMPLATE_BUTTON_TEXT_INVALID", { buttonType: buttonId });
+    return value;
+  };
   const buttons: Array<Record<string, unknown>> = [];
   for (const buttonId of buttonIds) {
-    if (buttonId === "quick-reply") buttons.push({ type: "QUICK_REPLY", text: "Quick reply" });
+    if (buttonId === "quick-reply") buttons.push({ type: "QUICK_REPLY", text: buttonText(buttonId, "Quick reply") });
     else if (buttonId === "website") {
       const url = typeof content.websiteUrl === "string" ? content.websiteUrl.trim() : "";
       if (!url) throw new AppError(422, "Add a website URL before submitting a website button to Meta", "META_TEMPLATE_BUTTON_URL_REQUIRED");
@@ -104,7 +129,24 @@ function metaComponents(input: CreateTemplateInput | UpdateTemplateInput) {
       } catch {
         throw new AppError(422, "Website buttons require a valid http(s) URL", "META_TEMPLATE_BUTTON_URL_INVALID");
       }
-      buttons.push({ type: "URL", text: "Visit Website", url });
+      buttons.push({ type: "URL", text: buttonText(buttonId, "Visit Website"), url });
+    } else if (buttonId === "call") {
+      const value = typeof content.phoneNumber === "string" ? content.phoneNumber.trim() : "";
+      const phone = value.replace(/[\s().-]/g, "").replace(/^\+/, "");
+      if (!/^\d{7,15}$/.test(phone)) throw new AppError(422, "Call buttons require a valid phone number with country code", "META_TEMPLATE_PHONE_NUMBER_INVALID");
+      buttons.push({ type: "PHONE_NUMBER", text: buttonText(buttonId, "Call"), phone_number: phone });
+    } else if (buttonId === "flow") {
+      const flow = typeof content.flowId === "string" ? content.flowId.trim() : "";
+      const screen = typeof content.flowNavigateScreen === "string" ? content.flowNavigateScreen.trim() : "";
+      if (!flow) throw new AppError(422, "Flow buttons require a Meta WhatsApp Flow ID", "META_TEMPLATE_FLOW_ID_REQUIRED");
+      if (!screen) throw new AppError(422, "Flow buttons require a navigation screen ID", "META_TEMPLATE_FLOW_SCREEN_REQUIRED");
+      buttons.push({ type: "FLOW", text: buttonText(buttonId, "Open flow"), flow_id: flow, navigate_screen: screen, flow_action: "navigate" });
+    } else if (buttonId === "catalog") {
+      buttons.push({ type: "CATALOG", text: buttonText(buttonId, "View catalog") });
+    } else if (buttonId === "offer") {
+      const code = typeof content.offerCodeExample === "string" ? content.offerCodeExample.trim() : "";
+      if (!code) throw new AppError(422, "Copy offer code buttons require an example code", "META_TEMPLATE_OFFER_CODE_REQUIRED");
+      buttons.push({ type: "COPY_CODE", example: code });
     } else {
       throw new AppError(422, "This button type is not supported by the Meta template editor yet", "META_TEMPLATE_BUTTON_UNSUPPORTED", { buttonType: buttonId });
     }
@@ -118,17 +160,44 @@ function metaTemplatePayload(input: CreateTemplateInput | UpdateTemplateInput) {
   return { name: metaTemplateName(input.name), language: languageCode(input.language), category: input.category.toUpperCase(), components: metaComponents(input) };
 }
 
+function aiReviewInput(input: CreateTemplateInput) {
+  const content = input.content && typeof input.content === "object" && !Array.isArray(input.content) ? input.content as Record<string, unknown> : {};
+  const buttons = Array.isArray(content.buttons) ? content.buttons.filter((item): item is string => typeof item === "string").slice(0, 7) : [];
+  return {
+    name: input.name,
+    category: input.category,
+    language: input.language,
+    headerType: input.headerType,
+    headerText: input.headerText ?? null,
+    body: input.body,
+    footer: input.footer ?? null,
+    buttons,
+    websiteUrl: typeof content.websiteUrl === "string" ? content.websiteUrl : "",
+  };
+}
+
+function aiRejectionReason(review: TemplateAIReview) {
+  return [`AI preflight: ${review.summary}`, ...review.issues.map((issue) => `${issue.field}: ${issue.message}${issue.suggestion ? ` ${issue.suggestion}` : ""}`)].join("\n").slice(0, 10_000);
+}
+
 function localTemplateFromMeta(template: MetaTemplate) {
   const components = componentList(template.components);
   const header = components.find((item) => item.type === "HEADER");
   const body = components.find((item) => item.type === "BODY");
   const footer = components.find((item) => item.type === "FOOTER");
   const buttonsComponent = components.find((item) => item.type === "BUTTONS");
-  const buttons = Array.isArray(buttonsComponent?.buttons) ? buttonsComponent.buttons.map((item) => {
-    const button = item && typeof item === "object" ? item as Record<string, unknown> : {};
-    return button.type === "QUICK_REPLY" ? "quick-reply" : button.type === "URL" ? "website" : String(button.type ?? "button").toLowerCase();
-  }) : [];
-  const websiteButton = Array.isArray(buttonsComponent?.buttons) ? buttonsComponent.buttons.find((item) => item && typeof item === "object" && (item as Record<string, unknown>).type === "URL") as Record<string, unknown> | undefined : undefined;
+  const buttonRecords = Array.isArray(buttonsComponent?.buttons) ? buttonsComponent.buttons.map((item) => item && typeof item === "object" ? item as Record<string, unknown> : {}) : [];
+  const buttons = buttonRecords.map((button) => {
+    return button.type === "QUICK_REPLY" ? "quick-reply" : button.type === "URL" ? "website" : button.type === "PHONE_NUMBER" ? "call" : button.type === "FLOW" ? "flow" : button.type === "CATALOG" ? "catalog" : button.type === "COPY_CODE" ? "offer" : String(button.type ?? "button").toLowerCase();
+  });
+  const websiteButton = buttonRecords.find((button) => button.type === "URL");
+  const phoneButton = buttonRecords.find((button) => button.type === "PHONE_NUMBER");
+  const flowButton = buttonRecords.find((button) => button.type === "FLOW");
+  const offerButton = buttonRecords.find((button) => button.type === "COPY_CODE");
+  const buttonTexts = Object.fromEntries(buttonRecords.map((button, index) => {
+    const buttonId = buttons[index];
+    return [buttonId, typeof button.text === "string" ? button.text : undefined];
+  }).filter(([, text]) => typeof text === "string"));
   const format = typeof header?.format === "string" ? header.format : "NONE";
   const headerType = format === "TEXT" ? "text" : format === "IMAGE" ? "image" : format === "VIDEO" ? "video" : format === "DOCUMENT" ? "doc" : "none";
   return {
@@ -142,7 +211,36 @@ function localTemplateFromMeta(template: MetaTemplate) {
     headerFileName: null,
     body: typeof body?.text === "string" ? body.text : "",
     footer: typeof footer?.text === "string" ? footer.text : null,
-    content: { metaComponents: template.components ?? [], buttons, ...(typeof websiteButton?.url === "string" ? { websiteUrl: websiteButton.url } : {}) },
+    content: { metaComponents: template.components ?? [], buttons, buttonTexts, ...(typeof websiteButton?.url === "string" ? { websiteUrl: websiteButton.url } : {}), ...(typeof phoneButton?.phone_number === "string" ? { phoneNumber: phoneButton.phone_number } : {}), ...(typeof flowButton?.flow_id === "string" ? { flowId: flowButton.flow_id } : {}), ...(typeof flowButton?.navigate_screen === "string" ? { flowNavigateScreen: flowButton.navigate_screen } : {}), ...(typeof offerButton?.example === "string" ? { offerCodeExample: offerButton.example } : {}) },
+  };
+}
+
+function libraryComponentList(value: unknown) {
+  return componentList(value).map((component) => ({
+    type: typeof component.type === "string" ? component.type : undefined,
+    format: typeof component.format === "string" ? component.format : undefined,
+    text: typeof component.text === "string" ? component.text : undefined,
+    buttons: Array.isArray(component.buttons) ? component.buttons : undefined,
+    example: component.example,
+  }));
+}
+
+function normalizeLibraryTemplate(template: Record<string, unknown>) {
+  const components = libraryComponentList(template.components);
+  const bodyComponent = components.find((component) => component.type === "BODY");
+  const buttonsComponent = components.find((component) => component.type === "BUTTONS");
+  return {
+    id: typeof template.id === "string" ? template.id : null,
+    name: typeof template.name === "string" ? template.name : "Meta template",
+    language: typeof template.language === "string" ? template.language : "en_US",
+    category: typeof template.category === "string" ? template.category : "UTILITY",
+    topic: typeof template.topic === "string" ? template.topic : null,
+    industry: typeof template.industry === "string" ? template.industry : null,
+    usecase: typeof template.usecase === "string" ? template.usecase : null,
+    body: typeof template.body === "string" ? template.body : bodyComponent?.text ?? "",
+    parameters: template.parameters ?? bodyComponent?.example ?? null,
+    buttons: Array.isArray(template.buttons) ? template.buttons : buttonsComponent?.buttons ?? [],
+    components: template.components ?? [],
   };
 }
 
@@ -242,21 +340,54 @@ export async function syncTemplatesFromMeta(workspaceId: string, actorUserId: st
   return { imported, wabaId: result.wabaId, debug: { ...result.debug, importedCount: imported, categories } };
 }
 
+export async function listTemplateLibrary(workspaceId: string, query: TemplateLibraryQuery) {
+  const result = await listWhatsAppTemplateLibrary(workspaceId, query);
+  return {
+    items: result.items.map((item) => normalizeLibraryTemplate(item as Record<string, unknown>)),
+    paging: result.paging,
+  };
+}
+
+export async function addTemplateFromLibrary(workspaceId: string, actorUserId: string, input: AddLibraryTemplateInput) {
+  const libraryButtonInputs = input.libraryTemplateButtonInputs?.map((button) => button.type === "URL"
+    ? { type: "URL", url: { base_url: button.value, url_suffix_example: button.value } }
+    : { type: "PHONE_NUMBER", phone_number: button.value });
+  const remote = await addWhatsAppTemplateFromLibrary(workspaceId, {
+    name: metaTemplateName(input.name),
+    language: languageCode(input.language),
+    category: input.category,
+    library_template_name: input.libraryTemplateName,
+    ...(libraryButtonInputs?.length ? { library_template_button_inputs: libraryButtonInputs } : {}),
+  });
+  const sync = await syncTemplatesFromMeta(workspaceId, actorUserId);
+  const template = remote.id
+    ? await prisma.template.findFirst({ where: { workspaceId, metaTemplateId: remote.id }, include: templateInclude })
+    : null;
+  return { template: template ? serializeTemplate(template) : null, remote: { id: remote.id ?? null, status: remote.status ?? "PENDING" }, sync };
+}
+
 export async function createTemplate(workspaceId: string, actorUserId: string, input: CreateTemplateInput) {
   const templateKey = await uniqueTemplateKey(workspaceId, input.name);
   const submitted = input.saveAs === "submit";
-  const remote = submitted ? await createWhatsAppTemplate(workspaceId, metaTemplatePayload(input)) : null;
-  if (submitted && !remote?.id) throw new AppError(502, "Meta accepted the template but did not return a template ID", "META_TEMPLATE_RESPONSE_INVALID");
+  let remote: MetaTemplate | null = null;
+  let aiReview: TemplateAIReview | null = null;
+  if (submitted) {
+    const payload = metaTemplatePayload(input);
+    aiReview = await reviewTemplateWithAI(aiReviewInput(input));
+    if (!aiReview || aiReview.decision === "pass") remote = await createWhatsAppTemplate(workspaceId, payload);
+  }
+  if (submitted && aiReview?.decision !== "block" && !remote?.id) throw new AppError(502, "Meta accepted the template but did not return a template ID", "META_TEMPLATE_RESPONSE_INVALID");
   try {
     const template = await prisma.template.create({
       data: {
         workspaceId,
-        status: submitted ? metaTemplateStatus(remote?.status) : TemplateStatus.DRAFT,
-        metaTemplateId: remote?.id ?? null,
-        metaTemplateName: submitted ? metaTemplateName(input.name) : null,
-        metaWabaId: submitted ? await connectedWhatsAppWabaId(workspaceId) : null,
-        metaLanguageCode: submitted ? languageCode(input.language) : null,
-        metaStatus: submitted ? (remote?.status ?? "PENDING") : null,
+        status: submitted && aiReview?.decision === "block" ? TemplateStatus.REJECTED : submitted ? metaTemplateStatus(remote?.status) : TemplateStatus.DRAFT,
+        metaTemplateId: submitted && aiReview?.decision !== "block" ? remote?.id ?? null : null,
+        metaTemplateName: submitted && aiReview?.decision !== "block" ? metaTemplateName(input.name) : null,
+        metaWabaId: submitted && aiReview?.decision !== "block" ? await connectedWhatsAppWabaId(workspaceId) : null,
+        metaLanguageCode: submitted && aiReview?.decision !== "block" ? languageCode(input.language) : null,
+        metaStatus: submitted && aiReview?.decision !== "block" ? (remote?.status ?? "PENDING") : null,
+        metaRejectionReason: aiReview?.decision === "block" ? aiRejectionReason(aiReview) : null,
         templateKey,
         name: input.name,
         category: input.category,
@@ -301,7 +432,9 @@ export async function updateTemplate(workspaceId: string, templateId: string, ac
     footer: input.footer === undefined ? existing.footer : input.footer,
     content: input.content ?? (existing.content as Record<string, unknown>),
   } as CreateTemplateInput;
-  const remote = existing.metaTemplateId ? await updateWhatsAppTemplate(workspaceId, existing.metaTemplateId, metaTemplatePayload(merged)) : null;
+  const aiReview = input.saveAs === "submit" ? await reviewTemplateWithAI(aiReviewInput(merged)) : null;
+  const aiRejected = aiReview?.decision === "block";
+  const remote = !aiRejected && existing.metaTemplateId ? await updateWhatsAppTemplate(workspaceId, existing.metaTemplateId, metaTemplatePayload(merged)) : null;
   try {
     const template = await prisma.template.update({
       where: { id: templateId },
@@ -316,7 +449,7 @@ export async function updateTemplate(workspaceId: string, templateId: string, ac
         ...(input.body !== undefined ? { body: input.body } : {}),
         ...(input.footer !== undefined ? { footer: input.footer || null } : {}),
         ...(input.content !== undefined ? { content: input.content as Prisma.InputJsonValue } : {}),
-        ...(input.saveAs !== undefined ? { status: existing.metaTemplateId ? metaTemplateStatus(remote?.status ?? existing.metaStatus ?? "PENDING") : input.saveAs === "submit" ? TemplateStatus.PENDING : TemplateStatus.DRAFT } : {}),
+        ...(input.saveAs !== undefined ? { status: aiRejected ? TemplateStatus.REJECTED : existing.metaTemplateId ? metaTemplateStatus(remote?.status ?? existing.metaStatus ?? "PENDING") : input.saveAs === "submit" ? TemplateStatus.PENDING : TemplateStatus.DRAFT, metaRejectionReason: aiRejected && aiReview ? aiRejectionReason(aiReview) : null } : {}),
         ...(existing.metaTemplateId ? { metaStatus: remote?.status ?? existing.metaStatus ?? "PENDING" } : {}),
         updatedById: actorUserId,
       },

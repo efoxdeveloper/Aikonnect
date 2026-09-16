@@ -11,11 +11,14 @@ import {
   LoaderCircle,
   MessageCircle,
   MessageSquareReply,
+  Phone,
   Plus,
   Save,
+  ShoppingBag,
   Timer,
   Upload,
   Trash2,
+  Workflow,
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -27,8 +30,9 @@ import { cn } from "@/lib/utils";
 import { toast } from "react-toastify";
 
 type TemplateType = "standard" | "catalog" | "carousel" | "limited";
-type ButtonType = "website" | "offer" | "call" | "quick-reply" | "flow";
+type ButtonType = "website" | "offer" | "call" | "quick-reply" | "flow" | "catalog";
 type HeaderType = "none" | "text" | "image" | "video" | "doc";
+type OtpType = "COPY_CODE" | "ONE_TAP" | "ZERO_TAP";
 type ValidationField = "name" | "language" | "body";
 type SaveAction = "draft" | "template";
 
@@ -49,8 +53,21 @@ const buttonOptions: Array<{
   icon: typeof ExternalLink;
 }> = [
   { id: "website", label: "Visit Website", icon: ExternalLink },
+  { id: "call", label: "Call Phone Number", icon: Phone },
   { id: "quick-reply", label: "Quick replies", icon: MessageSquareReply },
+  { id: "flow", label: "Open WhatsApp Flow", icon: Workflow },
+  { id: "catalog", label: "View Catalog", icon: ShoppingBag },
+  { id: "offer", label: "Copy Offer Code", icon: CopyIcon },
 ];
+
+const defaultButtonTexts: Record<ButtonType, string> = {
+  website: "Visit Website",
+  offer: "Copy offer code",
+  call: "Call",
+  "quick-reply": "Quick reply",
+  flow: "Open flow",
+  catalog: "View catalog",
+};
 
 const headerOptions: Array<{ id: HeaderType; label: string }> = [
   { id: "none", label: "None" },
@@ -332,6 +349,14 @@ export function TemplateBuilder() {
   const [footer, setFooter] = useState("");
   const [buttons, setButtons] = useState<ButtonType[]>([]);
   const [websiteUrl, setWebsiteUrl] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [flowId, setFlowId] = useState("");
+  const [flowNavigateScreen, setFlowNavigateScreen] = useState("");
+  const [offerCodeExample, setOfferCodeExample] = useState("");
+  const [buttonTexts, setButtonTexts] = useState<Record<ButtonType, string>>(defaultButtonTexts);
+  const [otpType, setOtpType] = useState<OtpType>("COPY_CODE");
+  const [addSecurityRecommendation, setAddSecurityRecommendation] = useState(true);
+  const [codeExpirationMinutes, setCodeExpirationMinutes] = useState("10");
   const [error, setError] = useState("");
   const [validationErrors, setValidationErrors] = useState<Partial<Record<ValidationField, string>>>({});
   const [savingAction, setSavingAction] = useState<SaveAction | null>(null);
@@ -348,11 +373,14 @@ export function TemplateBuilder() {
           name: string; category: string; language: string; templateType: TemplateType; headerType: HeaderType;
           headerText: string | null; body: string; footer: string | null; content: {
             websiteUrl?: string;
+            phoneNumber?: string; flowId?: string; flowNavigateScreen?: string; offerCodeExample?: string;
+            buttonTexts?: Partial<Record<ButtonType, string>>;
             buttons?: ButtonType[]; carouselCards?: Array<Omit<CarouselCard, "id" | "mediaFile"> & { mediaFileName?: string | null }>;
             limitedOffer?: LimitedOfferData;
+            otpType?: OtpType; addSecurityRecommendation?: boolean; codeExpirationMinutes?: number;
           };
           }>(`/workspaces/${workspaceId}/templates/${editTemplateId}`, { headers: { authorization: `Bearer ${accessToken}` } });
-        setTemplateName(template.name); setCategory(template.category); setLanguage(template.language); setTemplateType(template.templateType); setHeaderType(template.headerType); setCampaignTitle(template.headerText ?? ""); setBody(template.body); setFooter(template.footer ?? ""); setButtons(template.content.buttons ?? []); setWebsiteUrl(typeof template.content.websiteUrl === "string" ? template.content.websiteUrl : "");
+        setTemplateName(template.name); setCategory(template.category); setLanguage(template.language); setTemplateType(template.templateType); setHeaderType(template.headerType); setCampaignTitle(template.headerText ?? ""); setBody(template.body || (template.category === "Authentication" ? "Your verification code is {{1}}." : "")); setFooter(template.footer ?? ""); setButtons(template.content.buttons ?? []); setWebsiteUrl(typeof template.content.websiteUrl === "string" ? template.content.websiteUrl : ""); setPhoneNumber(typeof template.content.phoneNumber === "string" ? template.content.phoneNumber : ""); setFlowId(typeof template.content.flowId === "string" ? template.content.flowId : ""); setFlowNavigateScreen(typeof template.content.flowNavigateScreen === "string" ? template.content.flowNavigateScreen : ""); setOfferCodeExample(typeof template.content.offerCodeExample === "string" ? template.content.offerCodeExample : ""); setButtonTexts({ ...defaultButtonTexts, ...(template.content.buttonTexts ?? {}) }); setOtpType(template.content.otpType ?? "COPY_CODE"); setAddSecurityRecommendation(template.content.addSecurityRecommendation !== false); setCodeExpirationMinutes(String(template.content.codeExpirationMinutes ?? 10));
         setCarouselCards(template.content.carouselCards?.map((card, index) => ({ ...card, id: index + 1, mediaFile: null })) ?? [defaultCarouselCard()]);
         setLimitedOffer(template.content.limitedOffer ?? { offerText: "", expiry: "", couponCode: "", copyButtonText: "Copy offer code", visitButtonText: "Visit shop", destination: "" });
       } catch (caughtError) { setError(caughtError instanceof ApiError ? caughtError.message : "Unable to load the template."); }
@@ -404,19 +432,38 @@ export function TemplateBuilder() {
     });
   };
 
+  const handleCategoryChange = (nextCategory: string) => {
+    setCategory(nextCategory);
+    if (nextCategory === "Authentication") {
+      setTemplateType("standard");
+      setHeaderType("none");
+      setHeaderFile(null);
+      setCampaignTitle("");
+      setButtons([]);
+      setWebsiteUrl("");
+      if (!body.trim()) setBody("Your verification code is {{1}}.");
+    }
+  };
+
   const metaSubmitIssue = templateType !== "standard"
     ? "Only standard templates can be submitted to Meta from this editor. Save this design as a draft."
-    : category === "Authentication"
-      ? "Authentication templates require Meta's OTP-specific format and cannot be submitted from this editor yet."
-      : headerType === "text" && !campaignTitle.trim()
-        ? "Add text to the header or choose None before submitting this template."
-      : headerType !== "none" && headerType !== "text"
+    : headerType !== "none" && headerType !== "text"
         ? "Media headers require a Meta media handle and cannot be submitted from this editor yet."
-        : buttons.some((button) => button !== "website" && button !== "quick-reply")
-          ? "Only website and quick-reply buttons can be submitted to Meta from this editor."
-          : buttons.includes("website") && !/^https?:\/\/[^\s]+$/i.test(websiteUrl.trim())
-            ? "Enter a valid http(s) website URL before submitting this template."
-            : null;
+        : buttons.includes("website") && !/^https?:\/\/[^\s]+$/i.test(websiteUrl.trim())
+          ? "Enter a valid http(s) website URL before submitting this template."
+          : buttons.includes("call") && !/^\+?[1-9][\d\s().-]{6,18}$/.test(phoneNumber.trim())
+            ? "Enter a valid phone number with country code before submitting this template."
+            : buttons.includes("flow") && !flowId.trim()
+              ? "Enter a Meta WhatsApp Flow ID before submitting this template."
+              : buttons.includes("flow") && !flowNavigateScreen.trim()
+                ? "Enter a Flow navigation screen ID before submitting this template."
+                : buttons.includes("offer") && !offerCodeExample.trim()
+                  ? "Enter an example offer code before submitting this template."
+                  : buttons.some((button) => ["flow", "catalog", "offer"].includes(button)) && buttons.length > 1
+                    ? "Flow, catalog, and offer-code buttons must be submitted by themselves."
+                    : buttons.includes("quick-reply") && buttons.some((button) => ["website", "call"].includes(button))
+                      ? "Choose quick replies or call-to-action buttons, not both."
+                      : null;
 
   const saveTemplate = async (action: SaveAction) => {
     setError("");
@@ -432,7 +479,10 @@ export function TemplateBuilder() {
     }
     setSavingAction(action);
     try {
-      await apiRequest(editTemplateId ? `/workspaces/${workspaceId}/templates/${editTemplateId}` : `/workspaces/${workspaceId}/templates`, {
+      const submittedHeaderType = templateType === "standard" && headerType === "text" && !campaignTitle.trim()
+        ? "none"
+        : headerType;
+      const savedTemplate = await apiRequest<{ status?: string }>(editTemplateId ? `/workspaces/${workspaceId}/templates/${editTemplateId}` : `/workspaces/${workspaceId}/templates`, {
         method: editTemplateId ? "PATCH" : "POST",
         headers: { authorization: `Bearer ${accessToken}` },
         body: JSON.stringify({
@@ -441,25 +491,42 @@ export function TemplateBuilder() {
           category,
           language,
           templateType,
-          headerType: templateType === "standard" ? headerType : "none",
-          headerText: templateType === "standard" && headerType === "text" ? campaignTitle : templateType === "limited" ? campaignTitle : null,
+          headerType: templateType === "standard" ? submittedHeaderType : "none",
+          headerText: templateType === "standard" && submittedHeaderType === "text" ? campaignTitle : templateType === "limited" ? campaignTitle : null,
           headerFileName: headerFile?.name ?? null,
           body,
           footer: templateType === "standard" ? footer : null,
           content: {
             buttons,
             websiteUrl,
+            phoneNumber,
+            flowId,
+            flowNavigateScreen,
+            offerCodeExample,
+            buttonTexts,
             carouselCards: carouselCards.map(({ mediaFile, ...card }) => ({ ...card, mediaFileName: mediaFile?.name ?? null })),
             limitedOffer,
+            otpType,
+            addSecurityRecommendation,
+            codeExpirationMinutes: Number(codeExpirationMinutes) || 10,
           },
         }),
       });
       setError("");
       setSavedAction(action);
-      toast.success(action === "draft" ? "Template saved as draft." : "Template submitted for review.");
+      toast.success(savedTemplate?.status === "REJECTED" ? "Template saved and marked Rejected in the library." : action === "draft" ? "Template saved as draft." : "Template submitted for review.");
       window.setTimeout(() => navigate("/templates"), 800);
     } catch (caughtError) {
-      setError(caughtError instanceof ApiError ? caughtError.message : "Unable to save the template.");
+      if (caughtError instanceof ApiError && caughtError.code === "TEMPLATE_AI_VALIDATION_FAILED" && caughtError.details && typeof caughtError.details === "object" && "issues" in caughtError.details && Array.isArray(caughtError.details.issues)) {
+        const issueText = caughtError.details.issues.map((issue) => {
+          if (!issue || typeof issue !== "object") return "";
+          const item = issue as { field?: unknown; message?: unknown; suggestion?: unknown };
+          return `${typeof item.field === "string" ? `${item.field}: ` : ""}${typeof item.message === "string" ? item.message : ""}${typeof item.suggestion === "string" && item.suggestion ? ` ${item.suggestion}` : ""}`.trim();
+        }).filter(Boolean).join(" ");
+        setError(`${caughtError.message}${issueText ? ` ${issueText}` : ""}`);
+      } else {
+        setError(caughtError instanceof ApiError ? caughtError.message : "Unable to save the template.");
+      }
     } finally {
       setSavingAction(null);
     }
@@ -503,7 +570,7 @@ export function TemplateBuilder() {
               <SectionTitle number="1" title="Template details" />
               <div className="grid gap-4 sm:grid-cols-2">
                 <div><FieldLabel htmlFor="template-name">Template Name</FieldLabel><Input ref={templateNameRef} id="template-name" value={templateName} aria-invalid={Boolean(validationErrors.name)} aria-describedby={validationErrors.name ? "template-name-error" : undefined} onChange={(event) => { setTemplateName(event.target.value); setSavedAction(null); clearValidationError("name"); }} placeholder="Template Name" className={cn(validationErrors.name && "border-[var(--danger)] focus:border-[var(--danger)] focus-visible:ring-red-100")} />{validationErrors.name && <div id="template-name-error" role="alert" className="mt-1.5 text-[12px] text-[var(--danger)]">{validationErrors.name}</div>}</div>
-                <div><FieldLabel htmlFor="template-category">Category</FieldLabel><div className="relative"><select id="template-category" value={category} onChange={(event) => setCategory(event.target.value)} className="h-10 w-full appearance-none rounded-md border border-[var(--border)] bg-white px-3 pr-9 text-sm outline-none focus:border-[var(--brand)]"><option>Marketing</option><option>Utility</option><option>Authentication</option></select><ChevronDown className="pointer-events-none absolute right-3 top-3 size-4 text-[var(--text-muted)]" /></div></div>
+                <div><FieldLabel htmlFor="template-category">Category</FieldLabel><div className="relative"><select id="template-category" value={category} onChange={(event) => handleCategoryChange(event.target.value)} className="h-10 w-full appearance-none rounded-md border border-[var(--border)] bg-white px-3 pr-9 text-sm outline-none focus:border-[var(--brand)]"><option>Marketing</option><option>Utility</option><option>Authentication</option></select><ChevronDown className="pointer-events-none absolute right-3 top-3 size-4 text-[var(--text-muted)]" /></div></div>
                 <div><FieldLabel htmlFor="template-language">Language</FieldLabel><div className="relative"><select ref={languageRef} id="template-language" value={language} aria-invalid={Boolean(validationErrors.language)} aria-describedby={validationErrors.language ? "template-language-error" : undefined} onChange={(event) => { setLanguage(event.target.value); setSavedAction(null); clearValidationError("language"); }} className={cn("h-10 w-full appearance-none rounded-md border border-[var(--border)] bg-white px-3 pr-9 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--brand)]", validationErrors.language && "border-[var(--danger)] focus:border-[var(--brand)] focus-visible:ring-red-100")}><option value="">Language...</option><option value="en_US">English (US)</option><option value="en_GB">English (UK)</option><option value="hi">Hindi</option><option value="English">English (legacy)</option></select><ChevronDown className="pointer-events-none absolute right-3 top-3 size-4 text-[var(--text-muted)]" /></div>{validationErrors.language && <div id="template-language-error" role="alert" className="mt-1.5 text-[12px] text-[var(--danger)]">{validationErrors.language}</div>}</div>
               </div>
             </section>
@@ -528,19 +595,27 @@ export function TemplateBuilder() {
             <section className="rounded-md border border-[var(--border)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:p-6">
               <SectionTitle number="3" title="Message content" />
               <div className="space-y-5">
-                {templateType === "standard" && <div><FieldLabel htmlFor="campaign-title" optional>Campaign title</FieldLabel><div role="radiogroup" aria-label="Campaign title type" className="grid grid-cols-2 gap-2 sm:grid-cols-5">{headerOptions.map((option) => { const selectedHeader = headerType === option.id; return <button key={option.id} type="button" role="radio" aria-checked={selectedHeader} onClick={() => { setHeaderType(option.id); setHeaderFile(null); }} className={cn("flex items-center gap-2 rounded-md border px-3 py-2 text-left text-[11px] transition-colors", selectedHeader ? "border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--brand)]" : "border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--brand)]/50")}><span className={cn("flex size-3.5 items-center justify-center rounded-full border", selectedHeader ? "border-[var(--brand)]" : "border-[var(--border)]")}>{selectedHeader && <span className="size-1.5 rounded-full bg-[var(--brand)]" />}</span>{option.label}</button>; })}</div>{headerType === "text" && <textarea id="campaign-title" value={campaignTitle} onChange={(event) => setCampaignTitle(event.target.value)} maxLength={60} rows={2} placeholder="Highlight your brand here, use images or videos, to stand out" className="mt-3 w-full resize-none rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10" />}{headerType !== "none" && headerType !== "text" && <div className="mt-3 flex items-center gap-3 rounded-md border border-dashed border-[var(--border)] bg-[#fbfcfc] px-3.5 py-3 text-[11px] text-[var(--text-secondary)]"><span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-[var(--accent-blue-soft)] text-[var(--accent-blue)]"><Upload size={15} /></span><div className="min-w-0 flex-1"><div className="font-medium text-[var(--text-primary)]">{headerFile ? headerFile.name : `Upload ${headerType === "doc" ? "document" : headerType}`}</div><div className="mt-0.5">{headerFile ? "File selected" : `Add a ${headerType === "doc" ? "document" : headerType} for your campaign header.`}</div></div>{headerFile ? <button type="button" onClick={() => setHeaderFile(null)} className="shrink-0 font-medium text-[var(--danger)] hover:underline">Remove</button> : <label htmlFor="header-media-file" className="flex h-8 shrink-0 cursor-pointer items-center rounded-md bg-[var(--accent-blue)] px-3 text-[11px] font-medium text-white hover:brightness-95">Choose file<input id="header-media-file" aria-label={`Upload ${headerType === "doc" ? "document" : headerType}`} type="file" accept={headerType === "image" ? "image/*" : headerType === "video" ? "video/*" : ".pdf,.doc,.docx,application/pdf"} onChange={(event) => setHeaderFile(event.target.files?.[0] ?? null)} className="sr-only" /></label>}</div>}</div>}
+                {category === "Authentication" && <div data-testid="authentication-template-settings" className="rounded-md border border-[var(--brand)]/20 bg-[var(--brand-soft)]/45 p-4"><div className="text-[13px] font-medium text-[var(--text-primary)]">OTP authentication template</div><div className="mt-1 text-[11px] leading-5 text-[var(--text-secondary)]">Meta supplies the secure OTP format when this template is submitted.</div><div className="mt-4 grid gap-4 sm:grid-cols-2"><div><FieldLabel htmlFor="otp-type">OTP button</FieldLabel><select id="otp-type" value={otpType} onChange={(event) => setOtpType(event.target.value as OtpType)} className="h-10 w-full rounded-md border border-[var(--border)] bg-white px-3 text-sm outline-none focus:border-[var(--brand)]"><option value="COPY_CODE">Copy code</option></select></div><div><FieldLabel htmlFor="otp-expiration">Code expiration (minutes)</FieldLabel><Input id="otp-expiration" type="number" min={1} max={90} value={codeExpirationMinutes} onChange={(event) => setCodeExpirationMinutes(event.target.value)} className="h-10 text-sm" /></div></div><label className="mt-4 flex items-center gap-2 text-xs text-[var(--text-primary)]"><input type="checkbox" checked={addSecurityRecommendation} onChange={(event) => setAddSecurityRecommendation(event.target.checked)} className="size-4 accent-[var(--brand)]" />Add Meta's security recommendation</label></div>}
+                {templateType === "standard" && category !== "Authentication" && <div><FieldLabel htmlFor="campaign-title" optional>Campaign title</FieldLabel><div role="radiogroup" aria-label="Campaign title type" className="grid grid-cols-2 gap-2 sm:grid-cols-5">{headerOptions.map((option) => { const selectedHeader = headerType === option.id; return <button key={option.id} type="button" role="radio" aria-checked={selectedHeader} onClick={() => { setHeaderType(option.id); setHeaderFile(null); }} className={cn("flex items-center gap-2 rounded-md border px-3 py-2 text-left text-[11px] transition-colors", selectedHeader ? "border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--brand)]" : "border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--brand)]/50")}><span className={cn("flex size-3.5 items-center justify-center rounded-full border", selectedHeader ? "border-[var(--brand)]" : "border-[var(--border)]")}>{selectedHeader && <span className="size-1.5 rounded-full bg-[var(--brand)]" />}</span>{option.label}</button>; })}</div>{headerType === "text" && <textarea id="campaign-title" value={campaignTitle} onChange={(event) => setCampaignTitle(event.target.value)} maxLength={60} rows={2} placeholder="Highlight your brand here, use images or videos, to stand out" className="mt-3 w-full resize-none rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10" />}{headerType !== "none" && headerType !== "text" && <div className="mt-3 flex items-center gap-3 rounded-md border border-dashed border-[var(--border)] bg-[#fbfcfc] px-3.5 py-3 text-[11px] text-[var(--text-secondary)]"><span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-[var(--accent-blue-soft)] text-[var(--accent-blue)]"><Upload size={15} /></span><div className="min-w-0 flex-1"><div className="font-medium text-[var(--text-primary)]">{headerFile ? headerFile.name : `Upload ${headerType === "doc" ? "document" : headerType}`}</div><div className="mt-0.5">{headerFile ? "File selected" : `Add a ${headerType === "doc" ? "document" : headerType} for your campaign header.`}</div></div>{headerFile ? <button type="button" onClick={() => setHeaderFile(null)} className="shrink-0 font-medium text-[var(--danger)] hover:underline">Remove</button> : <label htmlFor="header-media-file" className="flex h-8 shrink-0 cursor-pointer items-center rounded-md bg-[var(--accent-blue)] px-3 text-[11px] font-medium text-white hover:brightness-95">Choose file<input id="header-media-file" aria-label={`Upload ${headerType === "doc" ? "document" : headerType}`} type="file" accept={headerType === "image" ? "image/*" : headerType === "video" ? "video/*" : ".pdf,.doc,.docx,application/pdf"} onChange={(event) => setHeaderFile(event.target.files?.[0] ?? null)} className="sr-only" /></label>}</div>}</div>}
                  {templateType === "limited" && <div><FieldLabel htmlFor="campaign-title" optional>Media header</FieldLabel><textarea id="campaign-title" value={campaignTitle} onChange={(event) => setCampaignTitle(event.target.value)} maxLength={60} rows={2} placeholder="Highlight your brand here, use images or videos, to stand out" className="w-full resize-none rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10" /></div>}
               <div><div className="flex items-start justify-between gap-3"><div><FieldLabel htmlFor="template-body">Body</FieldLabel><div className="-mt-1 mb-2 text-[12px] text-[var(--text-secondary)]">{templateType === "limited" ? "Let users know how and what they will be able to redeem below" : "Make your messages personal using numbered variables like {{1}} and get more replies!"}</div></div><button type="button" onClick={addVariable} className="mt-0.5 flex shrink-0 items-center gap-1 text-[12px] font-medium text-[var(--brand)] hover:underline"><Plus size={14} /> Add Variable</button></div><textarea ref={bodyRef} id="template-body" value={body} aria-invalid={Boolean(validationErrors.body)} aria-describedby={validationErrors.body ? "template-body-error" : undefined} onChange={(event) => { setBody(event.target.value); setSavedAction(null); clearValidationError("body"); }} maxLength={1024} rows={6} placeholder="Template Message..." className={cn("w-full resize-y rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm leading-6 outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10", validationErrors.body && "border-[var(--danger)] focus:border-[var(--danger)] focus:ring-red-100")} />{validationErrors.body && <div id="template-body-error" role="alert" className="mt-1.5 text-[12px] text-[var(--danger)]">{validationErrors.body}</div>}<div className="mt-1 text-right text-[12px] text-[var(--text-muted)]">{bodyCount}/1024</div></div>
-                 {templateType === "carousel" ? <CarouselEditor cards={carouselCards} setCards={setCarouselCards} /> : templateType === "limited" ? <LimitedOfferEditor data={limitedOffer} onChange={(changes) => setLimitedOffer((current) => ({ ...current, ...changes }))} /> : <div><FieldLabel htmlFor="template-footer" optional>Footer</FieldLabel><textarea id="template-footer" value={footer} onChange={(event) => setFooter(event.target.value)} maxLength={60} rows={2} placeholder="Footers are great to add any disclaimers or to add a thoughtful PS" className="w-full resize-none rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10" /><div className="mt-1 text-right text-[11px] text-[var(--text-muted)]">{footerCount}/60</div></div>}
+                 {templateType === "carousel" ? <CarouselEditor cards={carouselCards} setCards={setCarouselCards} /> : templateType === "limited" ? <LimitedOfferEditor data={limitedOffer} onChange={(changes) => setLimitedOffer((current) => ({ ...current, ...changes }))} /> : category === "Authentication" ? null : <div><FieldLabel htmlFor="template-footer" optional>Footer</FieldLabel><textarea id="template-footer" value={footer} onChange={(event) => setFooter(event.target.value)} maxLength={60} rows={2} placeholder="Footers are great to add any disclaimers or to add a thoughtful PS" className="w-full resize-none rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10" /><div className="mt-1 text-right text-[11px] text-[var(--text-muted)]">{footerCount}/60</div></div>}
               </div>
             </section>
 
-             {templateType === "standard" && <section className="rounded-md border border-[var(--border)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:p-6">
+             {templateType === "standard" && category !== "Authentication" && <section className="rounded-md border border-[var(--border)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:p-6">
               <div className="mb-1 flex items-start justify-between gap-3"><SectionTitle number="4" title="Buttons" /><span className="shrink-0 text-[12px] text-[var(--text-secondary)]">{buttons.length}/7</span></div>
               <div className="divide-y divide-[var(--border-soft)] rounded-md border border-[var(--border)]">
                 {buttonOptions.map(({ id, label, icon: Icon }) => { const added = buttons.includes(id); return <div key={id} className="flex items-center gap-3 px-3.5 py-3"><div className="flex size-7 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><Icon size={14} /></div><span className="flex-1 text-[12px] text-[var(--text-primary)]">{label}</span>{added ? <button type="button" onClick={() => setButtons((current) => current.filter((item) => item !== id))} className="flex items-center gap-1 text-[11px] text-[var(--text-secondary)] hover:text-[var(--danger)]"><Check size={13} /> Added <Trash2 size={12} /></button> : <button type="button" disabled={buttons.length >= 7} onClick={() => addButton(id)} className="flex items-center gap-1 text-[11px] font-medium text-[var(--brand)] disabled:text-[var(--text-muted)]"><Plus size={13} /> Add button</button>}</div>; })}
               </div>
-              {buttons.includes("website") && <div className="mt-3"><FieldLabel htmlFor="template-website-url">Website URL</FieldLabel><Input id="template-website-url" type="url" value={websiteUrl} onChange={(event) => setWebsiteUrl(event.target.value)} placeholder="https://example.com" /><div className="mt-1 text-[11px] text-[var(--text-secondary)]">Meta requires a valid URL for a website button.</div></div>}
+              <div className="mt-3 space-y-3">
+                {buttons.includes("website") && <div><FieldLabel htmlFor="template-website-url">Website URL</FieldLabel><Input id="template-website-url" type="url" value={websiteUrl} onChange={(event) => setWebsiteUrl(event.target.value)} placeholder="https://example.com" /><div className="mt-1 text-[11px] text-[var(--text-secondary)]">Meta URL payload: type URL.</div></div>}
+                {buttons.includes("call") && <div><FieldLabel htmlFor="template-phone-number">Phone number</FieldLabel><Input id="template-phone-number" type="tel" value={phoneNumber} onChange={(event) => setPhoneNumber(event.target.value)} placeholder="+14155552671" /><div className="mt-1 text-[11px] text-[var(--text-secondary)]">Include the country code, for example +14155552671.</div></div>}
+                {buttons.includes("flow") && <div className="grid gap-3 sm:grid-cols-2"><div><FieldLabel htmlFor="template-flow-id">WhatsApp Flow ID</FieldLabel><Input id="template-flow-id" value={flowId} onChange={(event) => setFlowId(event.target.value)} placeholder="123456789012345" /></div><div><FieldLabel htmlFor="template-flow-screen">Navigation screen ID</FieldLabel><Input id="template-flow-screen" value={flowNavigateScreen} onChange={(event) => setFlowNavigateScreen(event.target.value)} placeholder="WELCOME" /></div></div>}
+                {buttons.includes("offer") && <div><FieldLabel htmlFor="template-offer-code">Example offer code</FieldLabel><Input id="template-offer-code" value={offerCodeExample} onChange={(event) => setOfferCodeExample(event.target.value)} placeholder="SAVE25" /><div className="mt-1 text-[11px] text-[var(--text-secondary)]">Meta sends this as a COPY_CODE button. Use it with a coupon or limited-time offer body.</div></div>}
+                {buttons.some((button) => ["website", "call", "quick-reply", "flow", "catalog"].includes(button)) && <div className="grid gap-3 sm:grid-cols-2">{buttons.filter((button) => button !== "offer").map((button) => <div key={button}><FieldLabel htmlFor={`template-button-text-${button}`}>Button text · {buttonOptions.find((option) => option.id === button)?.label}</FieldLabel><Input id={`template-button-text-${button}`} value={buttonTexts[button]} onChange={(event) => setButtonTexts((current) => ({ ...current, [button]: event.target.value }))} maxLength={25} placeholder={defaultButtonTexts[button]} /></div>)}</div>}
+              </div>
+              <div className="mt-3 text-[11px] leading-5 text-[var(--text-secondary)]">Meta supports URL and phone call-to-action buttons, quick replies, Flow, Catalog, and COPY_CODE offer buttons. Some special button types must be submitted alone.</div>
             </section>}
           </section>
 

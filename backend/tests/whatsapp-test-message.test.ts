@@ -99,6 +99,33 @@ test("conversation replies are sent through Meta before being saved", async (t) 
   assert.equal(created, 1);
 });
 
+test("conversation replies rebind an unassigned conversation to the newest active workspace phone", async (t) => {
+  const { encryptSecret } = await import("../src/utils/crypto.js");
+  const conversation = {
+    id: "conversation", workspaceId: "workspace", contactId: "contact", phoneNumberId: null, channelKey: "whatsapp",
+    contact: { phoneE164: "+919876543210" }, phoneNumber: null,
+  };
+  const updates: any[] = [];
+  stub(t, prisma.conversation, "findFirst", async () => conversation);
+  stub(t, prisma.whatsAppBusinessAccount, "findFirst", async () => ({
+    encryptedAccessToken: encryptSecret("fresh-business-token", "test-token-encryption-key-for-tests-32chars"),
+    phoneNumbers: [{ id: "fresh-phone", metaPhoneNumberId: "fresh-meta-phone" }],
+  }));
+  stub(t, prisma.message, "findUnique", async () => null);
+  stub(t, prisma.message, "create", async (args: any) => ({ id: "message", ...args.data, createdAt: new Date(), updatedAt: new Date(), deliveredAt: null, readAt: null, failedAt: null, failureReason: null }));
+  stub(t, prisma.conversation, "update", async (args: any) => { updates.push(args); return {}; });
+  stub(t, prisma, "$transaction", async (callback: (client: any) => Promise<unknown>) => callback(prisma));
+  stub(t, globalThis, "fetch", async (input: string | URL, init?: RequestInit) => {
+    assert.match(String(input), /\/v25\.0\/fresh-meta-phone\/messages$/);
+    assert.equal((init?.headers as Record<string, string>).authorization, "Bearer fresh-business-token");
+    return new Response(JSON.stringify({ messages: [{ id: "wamid.fresh-reply" }] }), { status: 200 });
+  });
+
+  const result = await createMessage("workspace", "contact", "conversation", "user", { direction: "OUTGOING", type: "TEXT", status: "SENT", text: "Hello from the new portfolio", payload: {} });
+  assert.equal(result.message.metaMessageId, "wamid.fresh-reply");
+  assert.equal(updates[0].data.phoneNumberId, "fresh-phone");
+});
+
 test("campaign template messages use the approved Meta template payload", async (t) => {
   const { encryptSecret } = await import("../src/utils/crypto.js");
   stub(t, prisma.whatsAppBusinessAccount, "findFirst", async () => ({
@@ -198,6 +225,19 @@ test("a rejected Meta reply is not saved locally", async (t) => {
     (error: unknown) => { assert.ok(error instanceof AppError); assert.equal(error.statusCode, 502); assert.match(error.message, /Meta rejected.*sending the WhatsApp message/i); return true; },
   );
   assert.equal(created, 0);
+});
+
+test("a re-engagement rejection explains that an approved template is required", async (t) => {
+  const { encryptSecret } = await import("../src/utils/crypto.js");
+  stub(t, prisma.conversation, "findFirst", async () => ({
+    id: "conversation", workspaceId: "workspace", contactId: "contact", phoneNumberId: "phone", channelKey: "whatsapp",
+    contact: { phoneE164: "+919876543210" }, phoneNumber: { id: "phone", metaPhoneNumberId: "meta-phone", status: "ACTIVE", businessAccount: { status: "CONNECTED", encryptedAccessToken: encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars") } },
+  }));
+  stub(t, globalThis, "fetch", async () => new Response(JSON.stringify({ error: { message: "(#131047) Re-engagement message" } }), { status: 400 }));
+  await assert.rejects(
+    createMessage("workspace", "contact", "conversation", "user", { direction: "OUTGOING", type: "TEXT", status: "SENT", text: "Hello", payload: {} }),
+    (error: unknown) => { assert.ok(error instanceof AppError); assert.match(error.message, /24-hour.*approved WhatsApp template/i); return true; },
+  );
 });
 
 test("test recipient validation requires an E.164 number", () => {

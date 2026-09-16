@@ -183,4 +183,65 @@ describe("TemplateBuilder", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("Media headers require a Meta media handle");
     expect(apiRequest).not.toHaveBeenCalled();
   });
+
+  it("shows every supported Meta template button type", () => {
+    renderPage();
+
+    for (const label of ["Visit Website", "Call Phone Number", "Quick replies", "Open WhatsApp Flow", "View Catalog", "Copy Offer Code"]) {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    }
+
+    const addButtons = screen.getAllByRole("button", { name: "Add button" });
+    expect(addButtons).toHaveLength(6);
+    fireEvent.click(addButtons[1]);
+    expect(screen.getByLabelText("Phone number")).toBeInTheDocument();
+  });
+
+  it("submits without a header when the optional text header is empty", async () => {
+    renderPage();
+    fireEvent.change(screen.getByLabelText("Template Name"), { target: { value: "No Header Template" } });
+    fireEvent.change(screen.getByLabelText("Language"), { target: { value: "en_US" } });
+    fireEvent.change(screen.getByPlaceholderText("Template Message..."), { target: { value: "Hello" } });
+
+    expect(screen.queryByText("Add text to the header or choose None before submitting this template.")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Save template" }));
+
+    await waitFor(() => expect(screen.getByRole("button", { name: "Saved" })).toBeInTheDocument());
+    expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/templates",
+      expect.objectContaining({ body: expect.stringContaining('"headerType":"none"') }),
+    );
+  });
+
+  it("submits Authentication templates using the OTP configuration", async () => {
+    renderPage();
+    fireEvent.change(screen.getByLabelText("Template Name"), { target: { value: "Login Code" } });
+    fireEvent.change(screen.getByLabelText("Category"), { target: { value: "Authentication" } });
+    fireEvent.change(screen.getByLabelText("Language"), { target: { value: "en_US" } });
+
+    expect(screen.getByTestId("authentication-template-settings")).toBeInTheDocument();
+    expect(screen.getByLabelText("OTP button")).toHaveValue("COPY_CODE");
+    expect(screen.getByPlaceholderText("Template Message...")).toHaveValue("Your verification code is {{1}}.");
+
+    fireEvent.click(screen.getByRole("button", { name: "Save template" }));
+    await waitFor(() => expect(screen.getByRole("button", { name: "Saved" })).toBeInTheDocument());
+    expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/templates",
+      expect.objectContaining({ body: expect.stringContaining('"category":"Authentication"') }),
+    );
+  });
+
+  it("keeps AI-rejected submissions out of the inline error state", async () => {
+    vi.mocked(apiRequest).mockResolvedValue({ status: "REJECTED" });
+    renderPage();
+
+    fireEvent.change(screen.getByLabelText("Template Name"), { target: { value: "Credential request" } });
+    fireEvent.change(screen.getByLabelText("Language"), { target: { value: "en_US" } });
+    fireEvent.change(screen.getByPlaceholderText("Template Message..."), { target: { value: "Send us your password." } });
+    fireEvent.click(screen.getByRole("radio", { name: "None" }));
+    fireEvent.click(screen.getByRole("button", { name: "Save template" }));
+
+    await waitFor(() => expect(toast.success).toHaveBeenCalledWith("Template saved and marked Rejected in the library."));
+    expect(screen.queryByText(/AI preflight blocked/)).not.toBeInTheDocument();
+  });
 });

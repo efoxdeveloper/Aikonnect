@@ -292,6 +292,7 @@ function CreateCampaignDrawer({
   canSend,
   selectedContactCount,
   selectedContactIds,
+  initialTemplateKey,
   kind,
   workspaceId,
   accessToken,
@@ -302,6 +303,7 @@ function CreateCampaignDrawer({
   canSend: boolean;
   selectedContactCount: number;
   selectedContactIds: string[];
+  initialTemplateKey?: string | null;
   kind: CampaignKind;
   workspaceId?: string;
   accessToken?: string | null;
@@ -391,7 +393,10 @@ function CreateCampaignDrawer({
         const firstApproved = activeTemplates.find(
           (item) => item.status === "APPROVED",
         );
-        setTemplate(firstApproved?.key ?? "");
+        const requestedTemplate = activeTemplates.find(
+          (item) => item.key === initialTemplateKey && item.status === "APPROVED",
+        );
+        setTemplate(requestedTemplate?.key ?? firstApproved?.key ?? "");
       })
       .catch((caughtError) => {
         if (!active) return;
@@ -408,7 +413,7 @@ function CreateCampaignDrawer({
     return () => {
       active = false;
     };
-  }, [accessToken, open, workspaceId]);
+  }, [accessToken, initialTemplateKey, open, workspaceId]);
 
   useEffect(() => {
     if (!open || !workspaceId || !accessToken) return;
@@ -920,6 +925,7 @@ export function Campaigns() {
     .split(",")
     .filter(Boolean).length;
   const selectedContactIds = (searchParams.get("contactIds") ?? "").split(",").filter(Boolean);
+  const selectedTemplateKey = searchParams.get("templateKey");
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [totalCampaigns, setTotalCampaigns] = useState(0);
   const [hasCampaigns, setHasCampaigns] = useState(false);
@@ -932,7 +938,7 @@ export function Campaigns() {
   const [dateFilter, setDateFilter] = useState<string[]>([]);
   const [kind, setKind] = useState<CampaignKind>("one_time");
   const [createOpen, setCreateOpen] = useState(
-    selectedContactCount > 0 && canCreate,
+    (selectedContactCount > 0 || Boolean(selectedTemplateKey)) && canCreate,
   );
   const loadCampaigns = useCallback(async () => {
     if (!workspaceId || !accessToken || !canRead) { setCampaigns([]); setTotalCampaigns(0); setHasCampaigns(false); setLoading(false); return; }
@@ -1366,6 +1372,7 @@ export function Campaigns() {
         canSend={canSend}
         selectedContactCount={selectedContactCount}
         selectedContactIds={selectedContactIds}
+        initialTemplateKey={selectedTemplateKey}
         kind={kind}
         workspaceId={workspaceId}
         accessToken={accessToken}
