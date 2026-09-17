@@ -3,6 +3,7 @@ import { env } from "../../config/env.js";
 import { AppError } from "../../middleware/error-handler.js";
 
 const googleScopes = ["openid", "email", "profile"];
+const googleAuthorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 
 export type GoogleOAuthState = {
   state: string;
@@ -32,20 +33,41 @@ export function getRedirectUri(): string {
   return env.GOOGLE_REDIRECT_URI ?? new URL(`${env.API_PREFIX}/auth/google/callback`, env.APP_URL).toString();
 }
 
+export function buildGoogleAuthorizationUrl(input: {
+  clientId: string;
+  redirectUri: string;
+  state: string;
+  nonce: string;
+  codeChallenge: string;
+}): string {
+  const url = new URL(googleAuthorizationEndpoint);
+  url.search = new URLSearchParams({
+    access_type: "online",
+    prompt: "select_account",
+    scope: googleScopes.join(" "),
+    state: input.state,
+    nonce: input.nonce,
+    code_challenge: input.codeChallenge,
+    code_challenge_method: CodeChallengeMethod.S256,
+    response_type: "code",
+    client_id: input.clientId,
+    redirect_uri: input.redirectUri,
+  }).toString();
+  return url.toString();
+}
+
 export async function createAuthorizationUrl(state: GoogleOAuthState): Promise<{ url: string; codeVerifier: string }> {
   const client = getGoogleClient();
   const { codeVerifier, codeChallenge } = await client.generateCodeVerifierAsync();
   if (!codeChallenge) throw new AppError(503, "Google sign-in could not be initialized", "GOOGLE_OAUTH_UNAVAILABLE");
 
   return {
-    url: client.generateAuthUrl({
-      access_type: "online",
-      prompt: "select_account",
-      scope: googleScopes,
+    url: buildGoogleAuthorizationUrl({
+      clientId: env.GOOGLE_CLIENT_ID as string,
+      redirectUri: getRedirectUri(),
       state: state.state,
       nonce: state.nonce,
-      code_challenge: codeChallenge,
-      code_challenge_method: CodeChallengeMethod.S256,
+      codeChallenge,
     }),
     codeVerifier,
   };

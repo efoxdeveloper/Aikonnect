@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { AppError } from "../src/middleware/error-handler.js";
-import { parseGoogleIdentity } from "../src/modules/auth/google-oauth.service.js";
+import { buildGoogleAuthorizationUrl, parseGoogleIdentity } from "../src/modules/auth/google-oauth.service.js";
 
 const validPayload = {
   iss: "https://accounts.google.com",
@@ -29,4 +29,19 @@ test("Google identity parsing requires the expected nonce and verified email", (
     () => parseGoogleIdentity({ ...validPayload, nonce: "nonce-123", email_verified: false }, "nonce-123"),
     (error: unknown) => error instanceof AppError && error.code === "GOOGLE_EMAIL_UNVERIFIED",
   );
+});
+
+test("Google authorization always uses Google's authorization host", () => {
+  const url = new URL(buildGoogleAuthorizationUrl({
+    clientId: "client-id.apps.googleusercontent.com",
+    redirectUri: "https://aikonnect.example/api/v1/auth/google/callback",
+    state: "state-value",
+    nonce: "nonce-value",
+    codeChallenge: "challenge-value",
+  }));
+
+  assert.equal(url.origin, "https://accounts.google.com");
+  assert.equal(url.pathname, "/o/oauth2/v2/auth");
+  assert.equal(url.searchParams.get("redirect_uri"), "https://aikonnect.example/api/v1/auth/google/callback");
+  assert.equal(url.searchParams.get("state"), "state-value");
 });
