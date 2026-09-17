@@ -5,6 +5,7 @@ import { loadFacebookSdk } from "@/lib/meta-embedded-signup";
 
 type SignupData = { businessId?: string; wabaId: string; phoneNumberId?: string };
 type EmbeddedSignupResult = { syncWarnings?: string[] };
+export type WhatsAppSignupMode = "coexistence" | "new-number";
 
 type UseWhatsAppEmbeddedSignupOptions = {
   workspaceId: string | undefined;
@@ -18,28 +19,33 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
   const codeRef = useRef<string | null>(null);
   const signupDataRef = useRef<SignupData | null>(null);
   const submittedRef = useRef(false);
+  const modeRef = useRef<WhatsAppSignupMode>("coexistence");
+  const [pinRequired, setPinRequired] = useState(false);
 
   useEffect(() => {
     const appId = import.meta.env.VITE_META_APP_ID as string | undefined;
     if (appId) void loadFacebookSdk(appId).catch(() => undefined);
   }, []);
 
-  const submitSignup = useCallback(async () => {
+  const submitSignup = useCallback(async (registrationPin?: string) => {
     const code = codeRef.current;
     const signupData = signupDataRef.current;
+    const mode = modeRef.current;
     if (!workspaceId || !accessToken || !code || !signupData || submittedRef.current) return;
+    if (mode === "new-number" && !/^\d{6}$/.test(registrationPin ?? "")) return;
     submittedRef.current = true;
     try {
       const result = await apiRequest<EmbeddedSignupResult>(`/workspaces/${workspaceId}/whatsapp/embedded-signup`, {
         method: "POST",
         headers: { authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify({ code, ...signupData }),
+        body: JSON.stringify({ code, mode, ...signupData, ...(mode === "new-number" ? { pin: registrationPin } : {}) }),
       });
       const warnings = [...new Set(result?.syncWarnings?.filter(Boolean) ?? [])];
       toast.success(warnings.length
         ? `WhatsApp Business account connected successfully. Optional setup needs attention: ${warnings.join(" ")}`
         : "WhatsApp Business account connected successfully.");
       setConnecting(false);
+      setPinRequired(false);
     } catch (caughtError) {
       submittedRef.current = false;
       const message = caughtError instanceof ApiError ? caughtError.message : "WhatsApp could not be connected.";
@@ -80,21 +86,30 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
         return;
       }
       signupDataRef.current = { wabaId, ...(phoneNumberId ? { phoneNumberId } : {}), ...(typeof details?.business_id === "string" ? { businessId: details.business_id } : {}) };
+      if (modeRef.current === "new-number") {
+        setConnecting(false);
+        setPinRequired(true);
+        return;
+      }
       void submitSignup();
     };
     window.addEventListener("message", receiveSignupMessage);
     return () => window.removeEventListener("message", receiveSignupMessage);
   }, [submitSignup]);
 
-  const start = useCallback(async () => {
+  const start = useCallback(async (mode: WhatsAppSignupMode = "coexistence") => {
+    modeRef.current = mode;
     setError(null);
     setConnecting(true);
+    setPinRequired(false);
     codeRef.current = null;
     signupDataRef.current = null;
     submittedRef.current = false;
     try {
       const appId = import.meta.env.VITE_META_APP_ID as string | undefined;
-      const configId = import.meta.env.VITE_META_CONFIG_ID as string | undefined;
+      const configId = (mode === "new-number"
+        ? import.meta.env.VITE_META_NEW_NUMBER_CONFIG_ID || import.meta.env.VITE_META_CONFIG_ID
+        : import.meta.env.VITE_META_CONFIG_ID) as string | undefined;
       if (!appId || !configId) throw new Error("Meta Embedded Signup is not configured for this environment.");
       const facebook = window.FB;
       if (!facebook) throw new Error("Meta SDK is still loading. Please wait a moment and try again.");
@@ -111,11 +126,9 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
         config_id: configId,
         response_type: "code",
         override_default_response_type: true,
-        extras: {
-          setup: {},
-          featureType: "whatsapp_business_app_onboarding",
-          sessionInfoVersion: "3",
-        },
+        extras: mode === "coexistence"
+          ? { setup: {}, featureType: "whatsapp_business_app_onboarding", sessionInfoVersion: "3" }
+          : { setup: {} },
       });
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : "Meta Embedded Signup could not be started.");
@@ -123,5 +136,14 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
     }
   }, [submitSignup]);
 
-  return { connecting, error, start };
+  const submitRegistrationPin = useCallback((pin: string) => submitSignup(pin), [submitSignup]);
+  const cancelRegistrationPin = useCallback(() => {
+    codeRef.current = null;
+    signupDataRef.current = null;
+    submittedRef.current = false;
+    setPinRequired(false);
+    setError(null);
+  }, []);
+
+  return { connecting, error, pinRequired, submitRegistrationPin, cancelRegistrationPin, start };
 }

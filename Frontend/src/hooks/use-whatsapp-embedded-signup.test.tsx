@@ -1,4 +1,4 @@
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { toast } from "react-toastify";
 import { apiRequest } from "@/lib/api";
@@ -22,6 +22,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   vi.stubEnv("VITE_META_APP_ID", "meta-app-id");
   vi.stubEnv("VITE_META_CONFIG_ID", "818224721365383");
+  vi.stubEnv("VITE_META_NEW_NUMBER_CONFIG_ID", "new-number-config");
   vi.mocked(loadFacebookSdk).mockResolvedValue({
     init: vi.fn(),
     login,
@@ -52,8 +53,42 @@ test("launches the Coexistence config and accepts a finish event without a phone
 
   await waitFor(() => expect(vi.mocked(apiRequest)).toHaveBeenCalledWith(
     "/workspaces/workspace-1/whatsapp/embedded-signup",
-    expect.objectContaining({ method: "POST", body: JSON.stringify({ code: "signup-code", wabaId: "waba-1" }) }),
+    expect.objectContaining({ method: "POST", body: JSON.stringify({ code: "signup-code", mode: "coexistence", wabaId: "waba-1" }) }),
   ));
+});
+
+test("launches standard signup for a new number and registers it after PIN entry", async () => {
+  const { result } = renderHook(() => useWhatsAppEmbeddedSignup({ workspaceId: "workspace-1", accessToken: "access-token" }));
+
+  await result.current.start("new-number");
+  expect(login).toHaveBeenCalledTimes(1);
+  const options = login.mock.calls[0]?.[1] as FacebookLoginOptions;
+  expect(options.config_id).toBe("new-number-config");
+  expect(options.extras).toEqual({ setup: {} });
+
+  login.mock.calls[0]?.[0]({ authResponse: { code: "new-number-code" } });
+  window.dispatchEvent(new MessageEvent("message", {
+    origin: "https://www.facebook.com",
+    data: JSON.stringify({ type: "WA_EMBEDDED_SIGNUP", event: "FINISH", data: { business_id: "business-1", waba_id: "waba-1", phone_number_id: "phone-1" } }),
+  }));
+
+  await waitFor(() => expect(result.current.pinRequired).toBe(true));
+  expect(vi.mocked(apiRequest)).not.toHaveBeenCalled();
+  await act(async () => { await result.current.submitRegistrationPin("123456"); });
+  await waitFor(() => expect(vi.mocked(apiRequest)).toHaveBeenCalledWith(
+    "/workspaces/workspace-1/whatsapp/embedded-signup",
+    expect.objectContaining({ method: "POST", body: JSON.stringify({ code: "new-number-code", mode: "new-number", wabaId: "waba-1", phoneNumberId: "phone-1", businessId: "business-1", pin: "123456" }) }),
+  ));
+});
+
+test("falls back to the existing Meta config for a new number when no separate config is set", async () => {
+  vi.stubEnv("VITE_META_NEW_NUMBER_CONFIG_ID", "");
+  const { result } = renderHook(() => useWhatsAppEmbeddedSignup({ workspaceId: "workspace-1", accessToken: "access-token" }));
+
+  await result.current.start("new-number");
+  const options = login.mock.calls[0]?.[1] as FacebookLoginOptions;
+  expect(options.config_id).toBe("818224721365383");
+  expect(options.extras).toEqual({ setup: {} });
 });
 
 test("keeps a successful connection when the workspace status refresh fails", async () => {

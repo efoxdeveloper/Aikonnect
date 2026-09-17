@@ -13,6 +13,7 @@ type MetaRequestStage =
   | "load_business_account"
   | "load_phone_number"
   | "list_phone_numbers"
+  | "register_phone_number"
   | "subscribe_webhooks"
   | "share_credit_line"
   | "request_history_sync"
@@ -35,6 +36,7 @@ const metaStageLabels: Record<MetaRequestStage, string> = {
   load_business_account: "loading the WhatsApp Business Account",
   load_phone_number: "loading the WhatsApp phone number",
   list_phone_numbers: "finding the WhatsApp phone number",
+  register_phone_number: "registering the WhatsApp phone number",
   subscribe_webhooks: "subscribing the app to WhatsApp webhooks",
   share_credit_line: "sharing the Meta credit line with the WhatsApp Business Account",
   request_history_sync: "requesting WhatsApp message history",
@@ -182,10 +184,13 @@ type MetaPhoneNumber = MetaResponse & {
 
 // `messaging_limit` is not a valid field on the Graph API phone-number
 // resource in v25.0; requesting it makes the entire lookup fail with (#100).
-// Coexistence fields: https://developers.facebook.com/documentation/business-messaging/whatsapp/embedded-signup/onboarding-business-app-users
-const phoneNumberFields = "id,display_phone_number,verified_name,quality_rating,is_on_biz_app,platform_type";
+// Coexistence additionally needs `is_on_biz_app` and `platform_type` to verify
+// that Meta completed the Business App onboarding branch.
+const standardPhoneNumberFields = "id,display_phone_number,verified_name,quality_rating";
+const coexistencePhoneNumberFields = `${standardPhoneNumberFields},is_on_biz_app,platform_type`;
 
-async function findCoexistencePhoneNumber(wabaId: string, phoneNumberId: string | null | undefined, accessToken: string) {
+async function findPhoneNumber(wabaId: string, phoneNumberId: string | null | undefined, accessToken: string, mode: EmbeddedSignupInput["mode"]) {
+  const phoneNumberFields = mode === "new-number" ? standardPhoneNumberFields : coexistencePhoneNumberFields;
   if (phoneNumberId) {
     return fetchMeta<MetaPhoneNumber>(`/${encodeURIComponent(phoneNumberId)}?fields=${phoneNumberFields}`, accessToken, "load_phone_number");
   }
@@ -204,11 +209,24 @@ async function findCoexistencePhoneNumber(wabaId: string, phoneNumberId: string 
     );
   }
   const coexistenceNumbers = response.data.filter((phone) => phone.is_on_biz_app === true);
-  const phoneNumbers = coexistenceNumbers.length ? coexistenceNumbers : response.data;
+  const phoneNumbers = mode === "new-number"
+    ? response.data
+    : coexistenceNumbers.length ? coexistenceNumbers : response.data;
   if (phoneNumbers.length !== 1) {
     throw new AppError(422, "Meta did not identify exactly one WhatsApp phone number", "META_PHONE_NUMBER_NOT_FOUND");
   }
   return phoneNumbers[0];
+}
+
+async function registerNewPhoneNumber(phoneNumberId: string, accessToken: string, pin: string) {
+  const result = await postMeta<{ success?: boolean | string }>(`/${encodeURIComponent(phoneNumberId)}/register`, accessToken, {
+    messaging_product: "whatsapp",
+    pin,
+  }, "register_phone_number");
+  if (result.success !== true && result.success !== "true") {
+    throw new AppError(502, "Meta did not confirm phone number registration.", "META_PHONE_NUMBER_REGISTRATION_UNCONFIRMED", { stage: "register_phone_number" });
+  }
+  return result;
 }
 
 async function subscribeAppToWaba(wabaId: string, accessToken: string) {
@@ -761,6 +779,7 @@ export async function disconnectWhatsApp(workspaceId: string) {
 
 export async function completeEmbeddedSignup(workspaceId: string, input: EmbeddedSignupInput) {
   const { encryptionKey } = requireMetaConfiguration();
+  const mode = input.mode ?? "coexistence";
   const exchanged = await exchangeSignupCode(input);
   const accessToken = typeof exchanged.access_token === "string" ? exchanged.access_token : undefined;
   if (!accessToken) throw new AppError(502, "Meta did not return an access token", "META_TOKEN_MISSING");
@@ -769,17 +788,22 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
   if (waba.id !== input.wabaId) {
     throw new AppError(502, "Meta returned a different WhatsApp Business Account", "META_WABA_MISMATCH");
   }
-  const phone = await findCoexistencePhoneNumber(input.wabaId, input.phoneNumberId, accessToken);
+  const phone = await findPhoneNumber(input.wabaId, input.phoneNumberId, accessToken, mode);
   if (!phone || !phone.id) throw new AppError(502, "Meta did not return a WhatsApp phone number", "META_PHONE_NUMBER_MISSING");
   const metaPhoneNumberId = phone.id;
   if (input.phoneNumberId && metaPhoneNumberId !== input.phoneNumberId) {
     throw new AppError(502, "Meta returned a different WhatsApp phone number", "META_PHONE_NUMBER_MISMATCH");
   }
-  if (phone.is_on_biz_app === false) {
-    throw new AppError(422, "The selected number is not enabled for WhatsApp Business App coexistence", "META_COEXISTENCE_NOT_ENABLED");
-  }
-  if (phone.is_on_biz_app !== true || phone.platform_type !== "CLOUD_API") {
-    throw new AppError(422, "Meta has not confirmed that this WhatsApp Business App number is connected to Cloud API. Complete the coexistence connection in WhatsApp Business App, then launch signup again.", "META_COEXISTENCE_INCOMPLETE");
+  if (mode === "coexistence") {
+    if (phone.is_on_biz_app === false) {
+      throw new AppError(422, "The selected number is not enabled for WhatsApp Business App coexistence", "META_COEXISTENCE_NOT_ENABLED");
+    }
+    if (phone.is_on_biz_app !== true || phone.platform_type !== "CLOUD_API") {
+      throw new AppError(422, "Meta has not confirmed that this WhatsApp Business App number is connected to Cloud API. Complete the coexistence connection in WhatsApp Business App, then launch signup again.", "META_COEXISTENCE_INCOMPLETE");
+    }
+  } else {
+    if (!input.pin) throw new AppError(422, "A six-digit registration PIN is required for a new number.", "META_PHONE_NUMBER_PIN_REQUIRED");
+    await registerNewPhoneNumber(metaPhoneNumberId, accessToken, input.pin);
   }
   const now = new Date();
   const tokenExpiresAt = typeof exchanged.expires_in === "number" && exchanged.expires_in > 0
@@ -822,7 +846,7 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
         verifiedName: typeof phone.verified_name === "string" ? phone.verified_name : null,
         qualityRating: typeof phone.quality_rating === "string" ? phone.quality_rating : null,
         status: "ACTIVE",
-        isOnBusinessApp: phone.is_on_biz_app === true,
+        isOnBusinessApp: mode === "coexistence" && phone.is_on_biz_app === true,
         platformType: typeof phone.platform_type === "string" ? phone.platform_type : null,
         connectedAt: now,
         lastSyncedAt: now,
@@ -832,7 +856,7 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
         verifiedName: typeof phone.verified_name === "string" ? phone.verified_name : undefined,
         qualityRating: typeof phone.quality_rating === "string" ? phone.quality_rating : undefined,
         status: "ACTIVE",
-        isOnBusinessApp: phone.is_on_biz_app === true,
+        isOnBusinessApp: mode === "coexistence" && phone.is_on_biz_app === true,
         platformType: typeof phone.platform_type === "string" ? phone.platform_type : undefined,
         connectedAt: now,
         lastSyncedAt: now,
@@ -844,7 +868,7 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
       create: { workspaceId, whatsappConnectedAt: now, phoneNumberConnectedAt: now },
       update: { whatsappConnectedAt: now, phoneNumberConnectedAt: now },
     });
-    return { account, phoneNumber, coexistence: phone.is_on_biz_app === true };
+    return { account, phoneNumber, coexistence: mode === "coexistence" };
   });
 
   // Persist first so incoming webhooks can resolve this phone. Meta requires WABA

@@ -95,6 +95,8 @@ describe("workspace setup experience", () => {
     const connectButton = screen.getByRole("button", { name: "Connect" });
     expect(connectButton).toBeEnabled();
     fireEvent.click(connectButton);
+    expect(screen.getByRole("dialog", { name: "2 Ways to Setup WhatsApp API Number" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Proceed with WA Business App Number" }));
     await waitFor(() => expect(login).toHaveBeenCalled());
     expect(screen.getByText("Workspace created")).toBeInTheDocument();
     expect(screen.queryByText("Invite your team")).not.toBeInTheDocument();
@@ -166,12 +168,14 @@ describe("workspace setup experience", () => {
     window.FB = { init: vi.fn(), login };
     renderWithAuth(<WhatsAppAccountSetup />, "/whatsapp-account");
 
-    expect(await screen.findByRole("heading", { name: "WhatsApp Business account" })).toBeInTheDocument();
-    const button = screen.getByRole("button", { name: "Connect existing Business App" });
+    expect(await screen.findByRole("heading", { name: "WhatsApp account" })).toBeInTheDocument();
+    const button = screen.getByRole("button", { name: "Connect Number" });
     expect(button).toBeEnabled();
     expect(screen.getByRole("list", { name: "Coexistence setup steps" })).toBeInTheDocument();
-    expect(screen.getByText("The QR code appears inside Meta’s secure flow")).toBeInTheDocument();
+    expect(screen.getByText("Scan the QR code in Meta’s flow")).toBeInTheDocument();
     fireEvent.click(button);
+    expect(screen.getByRole("dialog", { name: "2 Ways to Setup WhatsApp API Number" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Proceed with WA Business App Number" }));
     await waitFor(() => expect(login).toHaveBeenCalled());
     window.dispatchEvent(new MessageEvent("message", {
       origin: "https://www.facebook.com",
@@ -179,7 +183,7 @@ describe("workspace setup experience", () => {
     }));
     await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
       "/workspaces/workspace-1/whatsapp/embedded-signup",
-      expect.objectContaining({ method: "POST", body: JSON.stringify({ code: "meta-auth-code", wabaId: "waba-1", phoneNumberId: "phone-1", businessId: "business-1" }) }),
+      expect.objectContaining({ method: "POST", body: JSON.stringify({ code: "meta-auth-code", mode: "coexistence", wabaId: "waba-1", phoneNumberId: "phone-1", businessId: "business-1" }) }),
     ));
   });
 
@@ -198,7 +202,7 @@ describe("workspace setup experience", () => {
     expect(await screen.findByText("WhatsApp is connected")).toBeInTheDocument();
     expect(screen.getByText("Coexistence active")).toBeInTheDocument();
     expect(screen.getByText("Phone app")).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Connect existing Business App" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Connect Number" })).not.toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Test recipient phone number"), { target: { value: "+919876543210" } });
     fireEvent.click(screen.getByRole("button", { name: "Send test" }));
     await waitFor(() => expect(apiRequest).toHaveBeenCalledWith("/workspaces/workspace-1/whatsapp/test-message", expect.objectContaining({ method: "POST", body: JSON.stringify({ to: "+919876543210" }) })));

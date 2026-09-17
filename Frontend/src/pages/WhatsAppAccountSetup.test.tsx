@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AuthContext, type AuthContextValue } from "@/contexts/AuthContext";
@@ -49,10 +49,16 @@ const connectedData = {
   team: { memberCount: 1, pendingInvitationCount: 0 },
 };
 
+const disconnectedData = {
+  ...connectedData,
+  progress: { ...connectedData.progress, whatsappConnected: false, phoneNumberConnected: false },
+  whatsapp: { ...connectedData.whatsapp, status: "DISCONNECTED" as const, accountCount: 0, phoneNumberCount: 0, accounts: [] },
+};
+
 describe("WhatsAppAccountSetup", () => {
   beforeEach(() => {
     vi.mocked(useWorkspaceSetup).mockReturnValue({ data: connectedData, loading: false, error: null, refresh: vi.fn() });
-    vi.mocked(useWhatsAppEmbeddedSignup).mockReturnValue({ connecting: false, error: null, start: vi.fn() });
+    vi.mocked(useWhatsAppEmbeddedSignup).mockReturnValue({ connecting: false, error: null, pinRequired: false, submitRegistrationPin: vi.fn(), cancelRegistrationPin: vi.fn(), start: vi.fn() });
   });
 
   it("uses the authenticated page frame and concise connected account content", () => {
@@ -64,5 +70,22 @@ describe("WhatsAppAccountSetup", () => {
     expect(screen.getByRole("heading", { name: "WhatsApp is connected" })).toBeInTheDocument();
     expect(screen.getByText(/recipient must message your connected number first/i)).toBeInTheDocument();
     expect(screen.queryByText("Developer configuration")).not.toBeInTheDocument();
+  });
+
+  it("opens the connection comparison and launches Meta from Proceed", () => {
+    const start = vi.fn();
+    vi.mocked(useWorkspaceSetup).mockReturnValue({ data: disconnectedData, loading: false, error: null, refresh: vi.fn() });
+    vi.mocked(useWhatsAppEmbeddedSignup).mockReturnValue({ connecting: false, error: null, pinRequired: false, submitRegistrationPin: vi.fn(), cancelRegistrationPin: vi.fn(), start });
+    render(<AuthContext.Provider value={auth}><MemoryRouter><WhatsAppAccountSetup /></MemoryRouter></AuthContext.Provider>);
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Connect Number" }));
+    expect(screen.getByRole("dialog", { name: "2 Ways to Setup WhatsApp API Number" })).toBeInTheDocument();
+    expect(screen.getByText("A number registered on WhatsApp Business App version 2.24.4+")).toBeInTheDocument();
+    expect(screen.getByText("Fresh number not on WA Personal/Business")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Proceed with New Number" }));
+    expect(start).toHaveBeenCalledWith("new-number");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 });

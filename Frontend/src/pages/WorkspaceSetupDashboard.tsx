@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ArrowRightIcon as ArrowRight,
   CheckIcon as Check,
@@ -17,6 +18,8 @@ import { useWorkspaceSetup } from "@/hooks/use-workspace-setup";
 import { useWhatsAppEmbeddedSignup } from "@/hooks/use-whatsapp-embedded-signup";
 import { cn } from "@/lib/utils";
 import { getActiveMembership } from "@/lib/workspace";
+import { WhatsAppConnectionGuide, type ConnectionChoice } from "@/components/whatsapp/WhatsAppConnectionGuide";
+import { WhatsAppRegistrationPinDialog } from "@/components/whatsapp/WhatsAppRegistrationPinDialog";
 
 type StepProps = {
   icon: AnimatedIcon;
@@ -73,7 +76,9 @@ export function WorkspaceSetupDashboard() {
   );
   const rocketIcon = useAnimatedIcon();
   const nextActionIcon = useAnimatedIcon();
-  const { connecting, error: connectionError, start } = useWhatsAppEmbeddedSignup({ workspaceId: membership?.workspace.id, accessToken, onConnected: refresh });
+  const { connecting, error: connectionError, pinRequired, submitRegistrationPin, cancelRegistrationPin, start } = useWhatsAppEmbeddedSignup({ workspaceId: membership?.workspace.id, accessToken, onConnected: refresh });
+  const [connectionGuideOpen, setConnectionGuideOpen] = useState(false);
+  const [connectionChoice, setConnectionChoice] = useState<ConnectionChoice>("business-app");
 
   if (loading) return <SetupLoading />;
   if (!membership) return <div className="p-8 text-sm text-[var(--text-secondary)]">No workspace is available for this account.</div>;
@@ -82,7 +87,7 @@ export function WorkspaceSetupDashboard() {
   const { progress } = data;
   const steps: StepProps[] = [
     { icon: Store, title: "Workspace created", description: `${data.workspace.name} is ready for your team.`, complete: progress.workspaceCreated, available: true },
-    { icon: MessageSquare, title: "Connect WhatsApp Business", description: "Connect your Meta business portfolio and WhatsApp Business Account.", complete: progress.whatsappConnected, available: progress.workspaceCreated, action: connecting ? "Opening…" : "Connect", onAction: () => void start(), actionDisabled: connecting },
+    { icon: MessageSquare, title: "Connect WhatsApp Business", description: "Connect your Meta business portfolio and WhatsApp Business Account.", complete: progress.whatsappConnected, available: progress.workspaceCreated, action: connecting ? "Opening…" : "Connect", onAction: () => setConnectionGuideOpen(true), actionDisabled: connecting },
     { icon: Phone, title: "Connect a phone number", description: "Select an existing WhatsApp number or register a new business number.", complete: progress.phoneNumberConnected, available: progress.whatsappConnected, action: "Add number", to: "/whatsapp-account" },
     { icon: Send, title: "Send a test message", description: "Confirm that your number, templates and webhook delivery are working.", complete: progress.testMessageSent, available: progress.phoneNumberConnected, action: "Send test", to: "/whatsapp-account" },
   ];
@@ -211,6 +216,21 @@ export function WorkspaceSetupDashboard() {
       </div>
         </div>
       </div>
+      {connectionGuideOpen && <WhatsAppConnectionGuide
+        choice={connectionChoice}
+        onChoiceChange={setConnectionChoice}
+        onClose={() => setConnectionGuideOpen(false)}
+        onNext={(choice) => {
+          setConnectionGuideOpen(false);
+          void start(choice === "new-number" ? "new-number" : "coexistence");
+        }}
+      />}
+      {pinRequired && <WhatsAppRegistrationPinDialog
+        submitting={connecting}
+        error={connectionError}
+        onClose={cancelRegistrationPin}
+        onSubmit={submitRegistrationPin}
+      />}
     </div>
   );
 }

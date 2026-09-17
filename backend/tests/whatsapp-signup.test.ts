@@ -24,6 +24,7 @@ const { PERMISSIONS } = await import("../src/modules/workspaces/permissions.js")
 
 const signup = { code: "test-code", wabaId: "test-waba", phoneNumberId: "test-phone" };
 const supportedFields = ["id", "display_phone_number", "verified_name", "quality_rating", "is_on_biz_app", "platform_type"];
+const standardSupportedFields = ["id", "display_phone_number", "verified_name", "quality_rating"];
 const phone = { id: "test-phone", display_phone_number: "+15555550100", verified_name: "Test Business", quality_rating: "GREEN", is_on_biz_app: true, platform_type: "CLOUD_API" };
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
 
@@ -37,6 +38,7 @@ function stubDelegate(t: TestContext, target: any, method: string, implementatio
 
 function fixture(t: TestContext, options: {
   phone?: Record<string, unknown>;
+  standardFields?: boolean;
   list?: unknown;
   subscription?: unknown;
   subscriptionFails?: boolean;
@@ -44,6 +46,7 @@ function fixture(t: TestContext, options: {
   syncFails?: boolean;
   genericSyncError?: boolean;
   missingSyncId?: boolean;
+  registrationFails?: boolean;
   creditLine?: boolean;
 } = {}) {
   const steps: string[] = [];
@@ -96,10 +99,18 @@ function fixture(t: TestContext, options: {
       if (fields.some((field) => !supportedFields.includes(field)) || options.phoneFails) {
         return json({ error: { message: "(#100) Tried accessing nonexisting field (messaging_limit)", code: 100 } }, 400);
       }
-      assert.deepEqual(fields, supportedFields);
+      const expectedFields = options.standardFields ? standardSupportedFields : supportedFields;
+      assert.deepEqual(fields, expectedFields);
       return json(url.pathname.endsWith("/phone_numbers") ? { data: options.list ?? [options.phone ?? phone] } : options.phone ?? phone);
     }
     assert.equal(init?.method, "POST");
+    if (url.pathname.endsWith("/register")) {
+      steps.push("register");
+      const body = JSON.parse(String(init?.body));
+      assert.deepEqual(body, { messaging_product: "whatsapp", pin: "123456" });
+      if (options.registrationFails) return json({ error: { message: "Registration PIN rejected", code: 100 } }, 400);
+      return json({ success: true });
+    }
     if (url.pathname.endsWith("/subscribed_apps")) {
       assert.ok(steps.includes("persist"), "webhooks must be able to resolve the saved account");
       steps.push("subscribe-start");
@@ -138,6 +149,29 @@ for (const omitPhoneId of [false, true]) {
     assert.equal("messagingLimit" in state.phoneWrites[0]!.update, false);
   });
 }
+
+test("fresh-number signup uses the standard phone fields, registers the number, and skips coexistence sync", async (t) => {
+  const state = fixture(t, { standardFields: true });
+  const result = await completeEmbeddedSignup("workspace-id", { ...signup, mode: "new-number", pin: "123456" });
+  assert.equal(result.coexistence, false);
+  assert.deepEqual(result.syncWarnings, []);
+  assert.deepEqual(result.syncRequestIds, []);
+  assert.deepEqual(state.steps, ["exchange", "phone", "register", "persist", "subscribe-start", "subscribed"]);
+  assert.equal(state.accountWrites[0]?.create.workspaceId, "workspace-id");
+  assert.equal(state.phoneWrites[0]?.create.isOnBusinessApp, false);
+});
+
+test("fresh-number registration failure does not persist an active connection", async (t) => {
+  const state = fixture(t, { standardFields: true, registrationFails: true });
+  await assert.rejects(completeEmbeddedSignup("workspace-id", { ...signup, mode: "new-number", pin: "123456" }), (error: unknown) => {
+    assert.ok(error instanceof AppError);
+    assert.equal(error.code, "META_API_ERROR");
+    assert.match(error.message, /registering the WhatsApp phone number: Registration PIN rejected/);
+    return true;
+  });
+  assert.equal(state.accountWrites.length, 0);
+  assert.equal(state.steps.includes("persist"), false);
+});
 
 test("provider field rejection preserves its reason and stage instead of a generic 500", async (t) => {
   const state = fixture(t, { phoneFails: true });
@@ -227,8 +261,9 @@ for (const list of [[null], [], [phone, { ...phone, id: "another-phone" }]]) {
 
 test("signup validates callback fields while permitting a missing phone ID", () => {
   assert.equal(embeddedSignupSchema.safeParse(signup).success, true);
+  assert.equal(embeddedSignupSchema.safeParse({ ...signup, mode: "new-number", pin: "123456" }).success, true);
   assert.equal(embeddedSignupSchema.safeParse({ code: "test", wabaId: "test-waba" }).success, true);
-  for (const input of [{ code: "test" }, { ...signup, code: " " }, { ...signup, wabaId: "../bad" }, { ...signup, phoneNumberId: "?fields=bad" }]) {
+  for (const input of [{ code: "test" }, { ...signup, mode: "new-number" }, { ...signup, mode: "new-number", pin: "12345" }, { ...signup, code: " " }, { ...signup, wabaId: "../bad" }, { ...signup, phoneNumberId: "?fields=bad" }]) {
     assert.equal(embeddedSignupSchema.safeParse(input).success, false);
   }
 });
