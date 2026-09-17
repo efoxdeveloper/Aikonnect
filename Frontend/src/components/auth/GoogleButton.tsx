@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { logGoogleOAuthEvent } from "@/lib/google-oauth-debug";
 
 const googleMark = (
   <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18" aria-hidden="true">
@@ -13,5 +14,16 @@ export function GoogleButton({ label = "Continue with Google", returnTo = "/dash
   const startUrl = new URL(`${(import.meta.env.VITE_API_URL ?? "http://localhost:5006/api/v1").replace(/\/$/, "")}/auth/google`, window.location.origin);
   startUrl.searchParams.set("returnTo", returnTo);
 
-  return <Button type="button" variant="outline" onClick={() => window.location.assign(startUrl.toString())} className="h-11 w-full rounded-md text-[13px] shadow-[0_1px_2px_rgba(4,45,29,.04)]">{googleMark}{label}</Button>;
+  const startGoogleOAuth = () => {
+    logGoogleOAuthEvent("oauth_start", {
+      currentOrigin: window.location.origin,
+      apiOrigin: startUrl.origin,
+      apiPath: startUrl.pathname,
+      sameOrigin: startUrl.origin === window.location.origin,
+      returnTo,
+    });
+    window.location.assign(startUrl.toString());
+  };
+
+  return <Button type="button" variant="outline" onClick={startGoogleOAuth} className="h-11 w-full rounded-md text-[13px] shadow-[0_1px_2px_rgba(4,45,29,.04)]">{googleMark}{label}</Button>;
 }

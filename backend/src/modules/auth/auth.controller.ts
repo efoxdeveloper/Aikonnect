@@ -79,6 +79,18 @@ export async function googleStart(request: Request, response: Response) {
     returnTo: safeReturnTo(queryValue(request, "returnTo")),
   };
   const authorization = await createAuthorizationUrl(state);
+  request.log.info({
+    oauthProvider: "google",
+    oauthStage: "start",
+    requestHost: request.get("host"),
+    forwardedHost: request.get("x-forwarded-host"),
+    forwardedProto: request.get("x-forwarded-proto"),
+    origin: request.get("origin"),
+    redirectUri: new URL(authorization.url).searchParams.get("redirect_uri"),
+    stateCookieName: googleStateCookieName,
+    stateCookiePath: googleStateCookieOptions.path,
+    stateCookieSecure: googleStateCookieOptions.secure,
+  }, "Google OAuth flow started");
   response.cookie(
     googleStateCookieName,
     encodeGoogleState({ ...state, codeVerifier: authorization.codeVerifier }),
@@ -88,12 +100,28 @@ export async function googleStart(request: Request, response: Response) {
 }
 
 export async function googleCallback(request: Request, response: Response) {
-  const storedState = decodeGoogleState(request.cookies[googleStateCookieName] as string | undefined);
+  const stateCookieValue = request.cookies[googleStateCookieName] as string | undefined;
+  const storedState = decodeGoogleState(stateCookieValue);
+  const returnedState = queryValue(request, "state");
+  const stateMatches = Boolean(storedState && returnedState && storedState.state === returnedState);
+  request.log.info({
+    oauthProvider: "google",
+    oauthStage: "callback_state_check",
+    requestHost: request.get("host"),
+    forwardedHost: request.get("x-forwarded-host"),
+    forwardedProto: request.get("x-forwarded-proto"),
+    origin: request.get("origin"),
+    stateCookiePresent: Boolean(stateCookieValue),
+    storedStateValid: Boolean(storedState),
+    returnedStatePresent: Boolean(returnedState),
+    stateMatches,
+    stateCookieName: googleStateCookieName,
+    stateCookiePath: googleStateCookieOptions.path,
+  }, "Google OAuth callback received");
   response.clearCookie(googleStateCookieName, googleStateCookieOptions);
 
   try {
-    const returnedState = queryValue(request, "state");
-    if (!storedState || !returnedState || storedState.state !== returnedState) {
+    if (!storedState || !returnedState || !stateMatches) {
       throw new AppError(401, "Google sign-in could not be verified", "GOOGLE_STATE_INVALID");
     }
     if (queryValue(request, "error")) {
@@ -106,9 +134,26 @@ export async function googleCallback(request: Request, response: Response) {
     const identity = await exchangeCode(code, storedState.codeVerifier, storedState.nonce);
     const result = await authService.loginWithGoogle(identity, requestMetadata(request));
     setRefreshCookie(response, result.refreshToken, result.refreshExpiresAt);
+    request.log.info({
+      oauthProvider: "google",
+      oauthStage: "success",
+      returnTo: storedState.returnTo,
+      refreshCookieName: env.AUTH_COOKIE_NAME,
+      refreshCookiePath: refreshCookieOptions.path,
+      refreshCookieSecure: refreshCookieOptions.secure,
+    }, "Google OAuth flow completed");
     response.redirect(new URL(storedState.returnTo, env.APP_URL).toString());
   } catch (error) {
     const code = error instanceof AppError ? error.code : "GOOGLE_AUTH_FAILED";
+    request.log.warn({
+      oauthProvider: "google",
+      oauthStage: "failure",
+      errorCode: code,
+      stateCookiePresent: Boolean(stateCookieValue),
+      storedStateValid: Boolean(storedState),
+      returnedStatePresent: Boolean(returnedState),
+      stateMatches,
+    }, "Google OAuth flow failed");
     response.redirect(googleFailureRedirect(code));
   }
 }

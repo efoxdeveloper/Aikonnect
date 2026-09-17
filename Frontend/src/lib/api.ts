@@ -1,4 +1,5 @@
 import { beginRequest, endRequest } from "@/lib/request-events";
+import { logGoogleOAuthEvent } from "@/lib/google-oauth-debug";
 
 const API_BASE_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:5006/api/v1").replace(/\/$/, "");
 
@@ -88,8 +89,20 @@ async function refreshAccessTokenRequest(): Promise<string> {
         credentials: "include",
       });
     } catch {
+      logGoogleOAuthEvent("session_refresh_network_error", {
+        apiOrigin: new URL(API_BASE_URL, window.location.origin).origin,
+        apiPath: `${new URL(API_BASE_URL, window.location.origin).pathname}/auth/refresh`,
+      }, "warn");
       throw new ApiError(0, "Unable to connect to the server. Please try again.", "NETWORK_ERROR");
     }
+
+    logGoogleOAuthEvent("session_refresh_response", {
+      apiOrigin: new URL(API_BASE_URL, window.location.origin).origin,
+      apiPath: `${new URL(API_BASE_URL, window.location.origin).pathname}/auth/refresh`,
+      status: response.status,
+      ok: response.ok,
+      credentialsIncluded: true,
+    }, response.ok ? "info" : "warn");
 
     const payload = (await response.json().catch(() => ({}))) as ApiEnvelope<LoginResponse> & ErrorEnvelope;
     if (!response.ok) {

@@ -56,6 +56,8 @@ describe("Login", () => {
   });
 
   it("explains when Google needs an existing password account to be linked", () => {
+    const info = vi.spyOn(console, "info").mockImplementation(() => undefined);
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     render(
       <AuthContext.Provider value={authValue()}>
         <MemoryRouter initialEntries={["/login?google_error=GOOGLE_ACCOUNT_LINK_REQUIRED"]}>
@@ -65,6 +67,11 @@ describe("Login", () => {
     );
 
     expect(screen.getByRole("alert")).toHaveTextContent("Log in with your password instead");
+    expect(warn).toHaveBeenCalledWith("[Google OAuth]", expect.objectContaining({
+      event: "oauth_returned_to_login",
+      errorCode: "GOOGLE_ACCOUNT_LINK_REQUIRED",
+    }));
+    expect(info).not.toHaveBeenCalled();
   });
 
   it("keeps the sign-in button emerald while submitting", () => {

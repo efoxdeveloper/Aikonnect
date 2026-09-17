@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ApiError } from "@/lib/api";
 import { getSafeRedirectPath } from "@/routes/AuthGuards";
 import { authTextFieldSx } from "@/components/auth/auth-text-field";
+import { logGoogleOAuthEvent } from "@/lib/google-oauth-debug";
 
 function googleErrorMessage(code: string | null): string | null {
   if (code === "GOOGLE_ACCOUNT_LINK_REQUIRED") return "This email already has a password account. Log in with your password instead.";
@@ -21,10 +22,20 @@ export function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
-  const googleError = googleErrorMessage(new URLSearchParams(location.search).get("google_error"));
+  const googleErrorCode = new URLSearchParams(location.search).get("google_error");
+  const googleError = googleErrorMessage(googleErrorCode);
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(googleError);
+
+  useEffect(() => {
+    if (!googleErrorCode) return;
+    logGoogleOAuthEvent("oauth_returned_to_login", {
+      currentOrigin: window.location.origin,
+      pagePath: location.pathname,
+      errorCode: googleErrorCode,
+    }, "warn");
+  }, [googleErrorCode, location.pathname]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
