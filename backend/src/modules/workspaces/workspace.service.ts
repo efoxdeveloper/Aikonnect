@@ -146,7 +146,11 @@ export async function getWorkspaceSetup(workspaceId: string) {
     phoneNumbers.some(({ status }) => status === "ACTIVE"),
   );
   const milestones = {
-    workspaceCreated: Boolean(workspace.onboardingCompletedAt),
+    // This endpoint can only return a record for an existing workspace. The
+    // onboarding-completion timestamp represents profile details being saved,
+    // not whether the workspace itself exists. Using it here can leave the
+    // checklist stuck at 0/4 with no action for the first step.
+    workspaceCreated: Boolean(workspace.id),
     whatsappConnected,
     phoneNumberConnected,
     testMessageSent: Boolean(workspace.setupProgress?.testMessageSentAt),
