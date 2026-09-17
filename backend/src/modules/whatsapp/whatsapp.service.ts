@@ -191,7 +191,12 @@ const coexistencePhoneNumberFields = `${standardPhoneNumberFields},is_on_biz_app
 
 async function findPhoneNumber(wabaId: string, phoneNumberId: string | null | undefined, accessToken: string, mode: EmbeddedSignupInput["mode"]) {
   const phoneNumberFields = mode === "new-number" ? standardPhoneNumberFields : coexistencePhoneNumberFields;
-  if (phoneNumberId) {
+  // Meta's fresh-number flow returns a phone ID during Embedded Signup, but the
+  // exchanged token is scoped to the WABA asset. Resolve the ID from the WABA's
+  // phone_numbers collection instead of reading the phone object directly. A
+  // direct `GET /{phone-number-id}` can otherwise fail with (#100) even though
+  // the number is present under the newly shared WABA.
+  if (phoneNumberId && mode !== "new-number") {
     return fetchMeta<MetaPhoneNumber>(`/${encodeURIComponent(phoneNumberId)}?fields=${phoneNumberFields}`, accessToken, "load_phone_number");
   }
   const response = await fetchMeta<{ data?: MetaPhoneNumber[] }>(
@@ -207,6 +212,18 @@ async function findPhoneNumber(wabaId: string, phoneNumberId: string | null | un
       "META_RESPONSE_INVALID",
       { stage: "list_phone_numbers", retryable: true },
     );
+  }
+  if (phoneNumberId) {
+    const selectedPhone = response.data.find((phone) => phone.id === phoneNumberId);
+    if (!selectedPhone) {
+      throw new AppError(
+        422,
+        "Meta did not return the selected WhatsApp phone number under this WhatsApp Business Account. Confirm that the Embedded Signup selected the intended business and that the app or system user has access to it.",
+        "META_PHONE_NUMBER_NOT_FOUND",
+        { stage: "list_phone_numbers", wabaId, phoneNumberId, availablePhoneCount: response.data.length },
+      );
+    }
+    return selectedPhone;
   }
   const coexistenceNumbers = response.data.filter((phone) => phone.is_on_biz_app === true);
   const phoneNumbers = mode === "new-number"

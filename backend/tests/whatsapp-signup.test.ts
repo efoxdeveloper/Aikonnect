@@ -47,6 +47,7 @@ function fixture(t: TestContext, options: {
   genericSyncError?: boolean;
   missingSyncId?: boolean;
   registrationFails?: boolean;
+  directPhoneFails?: boolean;
   creditLine?: boolean;
 } = {}) {
   const steps: string[] = [];
@@ -94,6 +95,9 @@ function fixture(t: TestContext, options: {
     if (url.pathname === "/v25.0/test-waba") return json({ id: signup.wabaId, name: "Test Business" });
     if (url.pathname.endsWith("/test-phone") || url.pathname.endsWith("/phone_numbers")) {
       steps.push("phone");
+      if (url.pathname.endsWith("/test-phone") && options.directPhoneFails) {
+        return json({ error: { message: "Unsupported get request", code: 100 } }, 400);
+      }
       // Model Meta's real contract: an unsupported field rejects the entire lookup.
       const fields = (url.searchParams.get("fields") ?? "").split(",");
       if (fields.some((field) => !supportedFields.includes(field)) || options.phoneFails) {
@@ -151,7 +155,7 @@ for (const omitPhoneId of [false, true]) {
 }
 
 test("fresh-number signup uses the standard phone fields, registers the number, and skips coexistence sync", async (t) => {
-  const state = fixture(t, { standardFields: true });
+  const state = fixture(t, { standardFields: true, directPhoneFails: true });
   const result = await completeEmbeddedSignup("workspace-id", { ...signup, mode: "new-number", pin: "123456" });
   assert.equal(result.coexistence, false);
   assert.deepEqual(result.syncWarnings, []);
