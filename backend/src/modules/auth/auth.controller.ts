@@ -5,7 +5,7 @@ import { env } from "../../config/env.js";
 import { requireAuth } from "../../middleware/authenticate.js";
 import { generateSecureToken } from "../../utils/crypto.js";
 import * as authService from "./auth.service.js";
-import { createAuthorizationUrl, exchangeCode, type GoogleOAuthState } from "./google-oauth.service.js";
+import { buildGoogleAuthorizationPage, createAuthorizationUrl, exchangeCode, type GoogleOAuthState } from "./google-oauth.service.js";
 
 const refreshCookieOptions: CookieOptions = {
   httpOnly: true,
@@ -90,13 +90,18 @@ export async function googleStart(request: Request, response: Response) {
     stateCookieName: googleStateCookieName,
     stateCookiePath: googleStateCookieOptions.path,
     stateCookieSecure: googleStateCookieOptions.secure,
+    responseMode: "html_meta_refresh",
   }, "Google OAuth flow started");
   response.cookie(
     googleStateCookieName,
     encodeGoogleState({ ...state, codeVerifier: authorization.codeVerifier }),
     { ...googleStateCookieOptions, maxAge: googleStateTtlMs },
   );
-  response.redirect(authorization.url);
+  response
+    .status(200)
+    .type("html")
+    .set("Cache-Control", "no-store")
+    .send(buildGoogleAuthorizationPage(authorization.url));
 }
 
 export async function googleCallback(request: Request, response: Response) {

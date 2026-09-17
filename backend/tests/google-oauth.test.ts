@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { AppError } from "../src/middleware/error-handler.js";
-import { buildGoogleAuthorizationUrl, parseGoogleIdentity } from "../src/modules/auth/google-oauth.service.js";
+import { buildGoogleAuthorizationPage, buildGoogleAuthorizationUrl, parseGoogleIdentity } from "../src/modules/auth/google-oauth.service.js";
 
 const validPayload = {
   iss: "https://accounts.google.com",
@@ -44,4 +44,12 @@ test("Google authorization always uses Google's authorization host", () => {
   assert.equal(url.pathname, "/o/oauth2/v2/auth");
   assert.equal(url.searchParams.get("redirect_uri"), "https://aikonnect.example/api/v1/auth/google/callback");
   assert.equal(url.searchParams.get("state"), "state-value");
+});
+
+test("Google authorization page avoids an external Location redirect", () => {
+  const page = buildGoogleAuthorizationPage("https://accounts.google.com/o/oauth2/v2/auth?state=state-value&scope=openid%20email");
+
+  assert.match(page, /http-equiv="refresh"/);
+  assert.match(page, /https:\/\/accounts\.google\.com\/o\/oauth2\/v2\/auth\?state=state-value&amp;scope=openid%20email/);
+  assert.doesNotMatch(page, /<script/i);
 });

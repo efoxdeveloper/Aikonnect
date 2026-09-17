@@ -56,6 +56,21 @@ export function buildGoogleAuthorizationUrl(input: {
   return url.toString();
 }
 
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  })[character] ?? character);
+}
+
+export function buildGoogleAuthorizationPage(authorizationUrl: string): string {
+  const safeAuthorizationUrl = escapeHtml(authorizationUrl);
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=${safeAuthorizationUrl}"><title>Continue with Google</title></head><body><p>Redirecting to Google…</p><p><a href="${safeAuthorizationUrl}">Continue with Google</a></p></body></html>`;
+}
+
 export async function createAuthorizationUrl(state: GoogleOAuthState): Promise<{ url: string; codeVerifier: string }> {
   const client = getGoogleClient();
   const { codeVerifier, codeChallenge } = await client.generateCodeVerifierAsync();
