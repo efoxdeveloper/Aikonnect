@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { XIcon as X } from "@animateicons/react/lucide";
+import { LoaderCircleIcon as LoaderCircle, XIcon as X } from "@animateicons/react/lucide";
 
 export type ConnectionChoice = "business-app" | "new-number";
 
@@ -46,11 +46,13 @@ export function WhatsAppConnectionGuide({
   onChoiceChange,
   onClose,
   onNext,
+  loading = false,
 }: {
   choice: ConnectionChoice;
   onChoiceChange: (choice: ConnectionChoice) => void;
   onClose: () => void;
-  onNext: (choice: ConnectionChoice) => void;
+  onNext: (choice: ConnectionChoice) => void | Promise<void>;
+  loading?: boolean;
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
@@ -68,11 +70,11 @@ export function WhatsAppConnectionGuide({
           {connectionChoices.map((option) => {
             const selected = choice === option.id;
             return <article key={option.id} className={`flex min-h-[360px] min-w-0 flex-1 flex-col overflow-hidden rounded-lg border bg-white transition-[border-color,box-shadow] ${selected ? "border-[var(--brand)] shadow-[0_0_0_2px_rgba(21,150,106,.12)]" : "border-slate-200"}`}>
-              <button type="button" aria-pressed={selected} onClick={() => onChoiceChange(option.id)} className={`shrink-0 px-4 py-3 text-left text-sm font-semibold ${option.tone}`}>{option.title}</button>
+              <button type="button" disabled={loading} aria-pressed={selected} onClick={() => onChoiceChange(option.id)} className={`shrink-0 px-4 py-3 text-left text-sm font-semibold ${option.tone} disabled:cursor-wait disabled:opacity-70`}>{option.title}</button>
               <div className="min-h-0 flex-1 overflow-y-auto px-3 py-1.5">
                 {option.sections.map((section) => <section key={section.title} className="border-b border-slate-200 py-3 last:border-b-0"><h3 className="text-[11px] font-medium text-slate-500">{section.title}</h3><div className="mt-2 space-y-1.5 text-[13px] leading-[1.35] text-slate-900 [&>strong]:block [&>span]:block">{section.content}</div></section>)}
               </div>
-              <button type="button" aria-label={`Proceed with ${option.title}`} onClick={() => { onChoiceChange(option.id); onNext(option.id); }} className="flex shrink-0 items-center justify-center gap-2 border-t border-emerald-200 bg-emerald-50 px-4 py-3 text-xs font-semibold text-emerald-800 transition-colors hover:bg-emerald-100">Proceed <span aria-hidden="true">→</span></button>
+              <button type="button" aria-label={`Proceed with ${option.title}`} aria-busy={loading && selected} disabled={loading} onClick={() => { onChoiceChange(option.id); onNext(option.id); }} className="flex shrink-0 items-center justify-center gap-2 border-t border-emerald-200 bg-emerald-50 px-4 py-3 text-xs font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 disabled:cursor-wait disabled:opacity-70">{loading && selected ? <><LoaderCircle size={14} className="animate-spin" aria-hidden="true" /> Opening Meta…</> : <>Proceed <span aria-hidden="true">→</span></>}</button>
             </article>;
           })}
         </div>

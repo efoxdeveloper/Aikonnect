@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowRightIcon as ArrowRight,
   CheckIcon as Check,
@@ -78,7 +78,15 @@ export function WorkspaceSetupDashboard() {
   const nextActionIcon = useAnimatedIcon();
   const { connecting, error: connectionError, pinRequired, submitRegistrationPin, cancelRegistrationPin, start } = useWhatsAppEmbeddedSignup({ workspaceId: membership?.workspace.id, accessToken, onConnected: refresh });
   const [connectionGuideOpen, setConnectionGuideOpen] = useState(false);
+  const [connectionLaunching, setConnectionLaunching] = useState(false);
   const [connectionChoice, setConnectionChoice] = useState<ConnectionChoice>("business-app");
+
+  useEffect(() => {
+    if (connectionLaunching && !connecting) {
+      setConnectionLaunching(false);
+      setConnectionGuideOpen(false);
+    }
+  }, [connecting, connectionLaunching]);
 
   if (loading) return <SetupLoading />;
   if (!membership) return <div className="p-8 text-sm text-[var(--text-secondary)]">No workspace is available for this account.</div>;
@@ -219,9 +227,10 @@ export function WorkspaceSetupDashboard() {
       {connectionGuideOpen && <WhatsAppConnectionGuide
         choice={connectionChoice}
         onChoiceChange={setConnectionChoice}
-        onClose={() => setConnectionGuideOpen(false)}
-        onNext={(choice) => {
-          setConnectionGuideOpen(false);
+        loading={connecting}
+        onClose={() => { setConnectionLaunching(false); setConnectionGuideOpen(false); }}
+        onNext={async (choice) => {
+          setConnectionLaunching(true);
           void start(choice === "new-number" ? "new-number" : "coexistence");
         }}
       />}

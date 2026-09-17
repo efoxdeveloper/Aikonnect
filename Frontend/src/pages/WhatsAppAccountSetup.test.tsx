@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AuthContext, type AuthContextValue } from "@/contexts/AuthContext";
@@ -72,7 +72,7 @@ describe("WhatsAppAccountSetup", () => {
     expect(screen.queryByText("Developer configuration")).not.toBeInTheDocument();
   });
 
-  it("opens the connection comparison and launches Meta from Proceed", () => {
+  it("opens the connection comparison and launches Meta from Proceed", async () => {
     const start = vi.fn();
     vi.mocked(useWorkspaceSetup).mockReturnValue({ data: disconnectedData, loading: false, error: null, refresh: vi.fn() });
     vi.mocked(useWhatsAppEmbeddedSignup).mockReturnValue({ connecting: false, error: null, pinRequired: false, submitRegistrationPin: vi.fn(), cancelRegistrationPin: vi.fn(), start });
@@ -86,6 +86,6 @@ describe("WhatsAppAccountSetup", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Proceed with New Number" }));
     expect(start).toHaveBeenCalledWith("new-number");
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
   });
 });
