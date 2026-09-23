@@ -19,6 +19,7 @@ const publicUserSelect = {
   lastName: true,
   phone: true,
   status: true,
+  platformRole: true,
   emailVerifiedAt: true,
   lastLoginAt: true,
   createdAt: true,
@@ -268,6 +269,7 @@ export async function getCurrentUser(userId: string) {
           workspace: {
             select: {
               id: true,
+              tenantId: true,
               name: true,
               slug: true,
               industry: true,

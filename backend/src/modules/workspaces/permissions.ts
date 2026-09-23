@@ -1,4 +1,5 @@
 import type { Prisma } from "../../generated/prisma/client.js";
+import { env } from "../../config/env.js";
 import { toSlug } from "../../utils/slug.js";
 
 export const PERMISSIONS = {
@@ -182,10 +183,27 @@ async function createUniqueWorkspaceSlug(
   throw new Error("Unable to generate a unique workspace slug");
 }
 
+async function createUniqueTenantSlug(
+  transaction: Prisma.TransactionClient,
+  name: string,
+): Promise<string> {
+  const base = toSlug(name) || "tenant";
+  let candidate = base;
+
+  for (let attempt = 0; attempt < 20; attempt += 1) {
+    const existing = await transaction.tenant.findUnique({ where: { slug: candidate }, select: { id: true } });
+    if (!existing) return candidate;
+    candidate = `${base}-${Math.random().toString(36).slice(2, 8)}`;
+  }
+
+  throw new Error("Unable to generate a unique tenant slug");
+}
+
 export async function createWorkspaceWithDefaults(
   transaction: Prisma.TransactionClient,
   ownerId: string,
   details: WorkspaceDetails,
+  tenantId?: string,
 ) {
   await transaction.permission.createMany({
     data: permissionDefinitions.map(({ key, description }) => ({ key, description })),
@@ -198,8 +216,19 @@ export async function createWorkspaceWithDefaults(
   });
   const permissionIds = new Map(permissions.map((permission) => [permission.key, permission.id]));
   const slug = await createUniqueWorkspaceSlug(transaction, details.name);
+  const tenant = tenantId
+    ? await transaction.tenant.findUnique({ where: { id: tenantId } })
+    : await transaction.tenant.create({
+        data: {
+          name: details.companyName || details.name,
+          slug: await createUniqueTenantSlug(transaction, details.companyName || details.name),
+          ownerId,
+        },
+      });
+  if (!tenant) throw new Error("The tenant could not be found");
   const workspace = await transaction.workspace.create({
     data: {
+      tenantId: tenant.id,
       name: details.name,
       slug,
       companyName: details.companyName,
@@ -209,6 +238,12 @@ export async function createWorkspaceWithDefaults(
       annualRevenue: details.annualRevenue,
       ownerId,
     },
+  });
+
+  await transaction.wallet.upsert({
+    where: { tenantId: tenant.id },
+    create: { tenantId: tenant.id, currency: env.WALLET_CURRENCY },
+    update: {},
   });
 
   await transaction.workspaceSetupProgress.create({
@@ -239,5 +274,5 @@ export async function createWorkspaceWithDefaults(
     data: { workspaceId: workspace.id, userId: ownerId, roleId: ownerRoleId },
   });
 
-  return { workspace, membership };
+  return { workspace, membership, tenant };
 }

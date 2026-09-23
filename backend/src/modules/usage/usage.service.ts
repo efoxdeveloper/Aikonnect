@@ -1,6 +1,6 @@
-import { env } from "../../config/env.js";
 import { prisma } from "../../database/prisma.js";
 import type { UsageQuery } from "./usage.schemas.js";
+import { getWallet } from "../wallet/wallet.service.js";
 
 type UsageSource = "incoming" | "inbox" | "campaign" | "automation";
 
@@ -26,11 +26,11 @@ function sourceOf(message: { direction: string; payload: unknown }): UsageSource
 
 export async function getUsage(workspaceId: string, query: UsageQuery) {
   const dates = dateRange(query);
-  const messages = await prisma.message.findMany({
+  const [messages, wallet] = await Promise.all([prisma.message.findMany({
     where: { workspaceId, sentAt: { gte: dates.from, lte: dates.to } },
     select: { direction: true, status: true, type: true, sentAt: true, contactId: true, conversationId: true, payload: true },
     orderBy: [{ sentAt: "asc" }, { id: "asc" }],
-  });
+  }), getWallet(workspaceId)]);
   const outgoing = messages.filter((message) => message.direction === "OUTGOING");
   const sourceCounts = new Map<UsageSource, number>([["incoming", 0], ["inbox", 0], ["campaign", 0], ["automation", 0]]);
   const daily = new Map<string, { total: number; incoming: number; outgoing: number; delivered: number }>();
@@ -54,10 +54,10 @@ export async function getUsage(workspaceId: string, query: UsageQuery) {
   ].map((item) => ({ ...item, percentage: messages.length ? Math.round((item.messages / messages.length) * 100) : 0 }));
   return {
     wallet: {
-      currency: env.WALLET_CURRENCY,
-      balancePaise: env.WALLET_BALANCE_PAISE,
-      balance: env.WALLET_BALANCE_PAISE / 100,
-      configuredFromBackend: true,
+      currency: wallet.currency,
+      balanceMinorUnits: wallet.balanceMinorUnits,
+      balance: wallet.balance,
+      configuredFromBackend: false,
     },
     filters: { from: dates.from.toISOString(), to: dates.to.toISOString() },
     summary: {

@@ -53,7 +53,7 @@ export function WorkspaceSwitcher() {
       const created = await apiRequest<{ id: string }>("/workspaces", {
         method: "POST",
         headers: { authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify({ name: name.trim(), companyName: companyName.trim() || undefined }),
+      body: JSON.stringify({ tenantId: workspace?.tenantId, name: name.trim(), companyName: companyName.trim() || undefined }),
       });
       setActiveWorkspaceId(created.id);
       markWorkspaceForOnboarding(created.id);

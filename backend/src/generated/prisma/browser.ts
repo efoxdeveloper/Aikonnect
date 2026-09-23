@@ -28,6 +28,11 @@ export type User = Prisma.UserModel
  */
 export type OAuthAccount = Prisma.OAuthAccountModel
 /**
+ * Model Tenant
+ * 
+ */
+export type Tenant = Prisma.TenantModel
+/**
  * Model Workspace
  * 
  */
@@ -177,6 +182,21 @@ export type WorkspaceInvitation = Prisma.WorkspaceInvitationModel
  * 
  */
 export type Session = Prisma.SessionModel
+/**
+ * Model Wallet
+ * 
+ */
+export type Wallet = Prisma.WalletModel
+/**
+ * Model WalletLedgerEntry
+ * 
+ */
+export type WalletLedgerEntry = Prisma.WalletLedgerEntryModel
+/**
+ * Model PlatformAuditLog
+ * 
+ */
+export type PlatformAuditLog = Prisma.PlatformAuditLogModel
 /**
  * Model EmailVerificationToken
  * 

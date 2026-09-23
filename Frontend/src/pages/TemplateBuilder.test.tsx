@@ -44,7 +44,7 @@ describe("TemplateBuilder", () => {
     expect(screen.queryByTestId("ai-enhancement")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Catalog/ })).not.toBeInTheDocument();
     expect(screen.getByTestId("template-type-grid")).toHaveClass(
-      "sm:grid-cols-3",
+      "sm:grid-cols-4",
     );
     expect(screen.queryByText("Start with a format that fits your message.")).not.toBeInTheDocument();
     expect(screen.queryByText("Choose the template category and language.")).not.toBeInTheDocument();
@@ -133,7 +133,7 @@ describe("TemplateBuilder", () => {
       target: { value: "English" },
     });
     fireEvent.change(screen.getByPlaceholderText("Template Message..."), {
-      target: { value: "Hi {{name}}, your offer is ready." },
+      target: { value: "Hi {{1}}, your offer is ready." },
     });
     fireEvent.change(
       screen.getByPlaceholderText(
@@ -146,13 +146,15 @@ describe("TemplateBuilder", () => {
 
     const preview = screen.getByTestId("template-live-preview");
     expect(preview).toHaveTextContent("A special offer for you");
-    expect(preview).toHaveTextContent("Hi {{name}}, your offer is ready.");
+    expect(preview).toHaveTextContent("Hi {{1}}, your offer is ready.");
     expect(preview).not.toHaveTextContent("Powered by wati.io");
 
     fireEvent.click(screen.getByRole("button", { name: "Add Variable" }));
     expect(screen.getByPlaceholderText("Template Message...")).toHaveValue(
-      "Hi {{name}}, your offer is ready. {{1}}",
+      "Hi {{1}}, your offer is ready. {{2}}",
     );
+    fireEvent.change(screen.getByLabelText("{{1}}"), { target: { value: "Rahul" } });
+    fireEvent.change(screen.getByLabelText("{{2}}"), { target: { value: "SAVE25" } });
 
     fireEvent.click(screen.getAllByRole("button", { name: "Add button" })[0]);
     expect(screen.getByText("1/7")).toBeInTheDocument();
@@ -180,7 +182,7 @@ describe("TemplateBuilder", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Save template" }));
 
-    expect(screen.getByRole("alert")).toHaveTextContent("Media headers require a Meta media handle");
+    expect(screen.getByRole("alert")).toHaveTextContent("Upload the selected media header");
     expect(apiRequest).not.toHaveBeenCalled();
   });
 
@@ -222,6 +224,7 @@ describe("TemplateBuilder", () => {
     expect(screen.getByTestId("authentication-template-settings")).toBeInTheDocument();
     expect(screen.getByLabelText("OTP button")).toHaveValue("COPY_CODE");
     expect(screen.getByPlaceholderText("Template Message...")).toHaveValue("Your verification code is {{1}}.");
+    fireEvent.change(screen.getByLabelText("{{1}}"), { target: { value: "123456" } });
 
     fireEvent.click(screen.getByRole("button", { name: "Save template" }));
     await waitFor(() => expect(screen.getByRole("button", { name: "Saved" })).toBeInTheDocument());

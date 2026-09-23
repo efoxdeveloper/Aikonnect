@@ -39,6 +39,9 @@
 - Constrain the page-header contents to the same centered maximum width as the main content
   (`max-w-[1400px]` by default) and use consistent responsive horizontal padding.
 - Keep page titles compact at approximately 19px medium weight with a tight line height.
+- Keep every authenticated page header to one page-title heading only. Do not add eyebrow labels,
+  subtitles, descriptions, helper text, or other secondary copy inside the page-header band unless
+  the user explicitly requests a different hierarchy for that specific page.
 - Do not add subtitles, descriptions, helper text, or secondary copy beneath authenticated page
   header titles unless the user explicitly requests it for that specific page.
 - Place primary page actions on the right side of the page header. Keep secondary actions outlined

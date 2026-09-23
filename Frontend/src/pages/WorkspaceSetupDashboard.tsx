@@ -35,7 +35,7 @@ type StepProps = {
   last?: boolean;
 };
 
-function SetupStep({ icon: Icon, title, description, complete, available, active, last }: StepProps) {
+function SetupStep({ icon: Icon, title, description, complete, available, active, to, onAction, actionDisabled, last }: StepProps) {
   const animatedIcon = useAnimatedIcon();
   return (
     <div className={cn("group/step relative flex gap-4 rounded-md pb-6 last:pb-0", active && "bg-[var(--brand-soft)]/55 px-3 py-3 last:pb-3")} onMouseEnter={animatedIcon.onMouseEnter} onMouseLeave={animatedIcon.onMouseLeave}>
@@ -52,7 +52,13 @@ function SetupStep({ icon: Icon, title, description, complete, available, active
           {complete ? (
             <span className="w-fit rounded-md bg-[#e9f7f1] px-2.5 py-1 text-[11px] font-medium text-[#137a57]">Complete</span>
           ) : active ? (
-            <span className="w-fit shrink-0 rounded-md bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--brand)] ring-1 ring-inset ring-[var(--brand)]/15">Next</span>
+            onAction ? (
+              <button type="button" aria-label={`Next: ${title}`} disabled={actionDisabled} onClick={onAction} className="w-fit shrink-0 rounded-md bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--brand)] ring-1 ring-inset ring-[var(--brand)]/15 transition-colors hover:bg-[var(--brand-soft)] disabled:cursor-wait disabled:opacity-60">Next</button>
+            ) : to ? (
+              <Link to={to} aria-label={`Next: ${title}`} className="w-fit shrink-0 rounded-md bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--brand)] ring-1 ring-inset ring-[var(--brand)]/15 transition-colors hover:bg-[var(--brand-soft)]">Next</Link>
+            ) : (
+              <span className="w-fit shrink-0 rounded-md bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--brand)] ring-1 ring-inset ring-[var(--brand)]/15">Next</span>
+            )
           ) : (
             <span className="w-fit rounded-md bg-[var(--gray-100)] px-2.5 py-1 text-[11px] font-medium text-[var(--text-muted)]">Locked</span>
           )}

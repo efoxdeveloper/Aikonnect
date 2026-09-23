@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Scalable Express API for AiKonnect",
+  "description": "Scalable Express API for Marento",
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
@@ -14,6 +14,8 @@
     "test:integration": "cross-env RATE_LIMIT_MAX=1000 META_APP_SECRET=test-meta-app-secret-for-webhook META_WEBHOOK_VERIFY_TOKEN=test-webhook-verify-token META_TOKEN_ENCRYPTION_KEY=test-token-encryption-key-for-tests-32chars tsx --test tests/auth-workspace.integration.test.ts",
     "db:check": "tsx src/scripts/check-database.ts",
     "email:check": "tsx src/scripts/check-email.ts",
+    "platform:grant-role": "tsx src/scripts/grant-platform-role.ts",
+    "platform:provision-admin": "tsx src/scripts/provision-platform-admin.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate:dev": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",

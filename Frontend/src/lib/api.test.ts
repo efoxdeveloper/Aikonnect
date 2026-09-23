@@ -21,6 +21,28 @@ afterEach(() => {
 });
 
 describe("authenticated API requests", () => {
+  it("automatically attaches the active access token when a request does not provide headers", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch")
+      .mockResolvedValue(jsonResponse({ success: true, data: { loaded: true } }));
+    setApiAccessToken("active-token");
+
+    await expect(apiRequest<{ loaded: boolean }>("/admin/workspaces")).resolves.toEqual({ loaded: true });
+
+    expect(new Headers((fetchMock.mock.calls[0]?.[1] as RequestInit).headers).get("authorization")).toBe("Bearer active-token");
+  });
+
+  it("does not attach an existing access token to login or refresh requests", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch")
+      .mockResolvedValue(jsonResponse({ success: true, data: { accessToken: "new-token" } }));
+    setApiAccessToken("old-token");
+
+    await apiRequest("/auth/login", { method: "POST", body: "{}" });
+    await apiRequest("/auth/refresh", { method: "POST" });
+
+    expect(new Headers((fetchMock.mock.calls[0]?.[1] as RequestInit).headers).get("authorization")).toBeNull();
+    expect(new Headers((fetchMock.mock.calls[1]?.[1] as RequestInit).headers).get("authorization")).toBeNull();
+  });
+
   it("refreshes an expired access token and retries the original request", async () => {
     const refreshed = vi.fn();
     const fetchMock = vi.spyOn(globalThis, "fetch")

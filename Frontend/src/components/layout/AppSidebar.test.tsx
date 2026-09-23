@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AuthContext, type AuthContextValue } from "@/contexts/AuthContext";
@@ -63,5 +63,37 @@ describe("SidebarVersion", () => {
     render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><AppSidebar /></SidebarProvider></MemoryRouter>);
 
     expect(screen.queryByTestId("sidebar-brand-header")).not.toBeInTheDocument();
+  });
+
+  it("shows only the platform links allowed for the signed-in platform role", () => {
+    const auth = {
+      status: "authenticated",
+      accessToken: "access-token",
+      user: {
+        id: "platform-1",
+        email: "support@example.com",
+        firstName: "Platform",
+        lastName: "Support",
+        emailVerifiedAt: "2026-08-22T00:00:00.000Z",
+        platformRole: "SUPPORT",
+        memberships: [],
+      },
+      login: vi.fn(),
+      register: vi.fn(),
+      verifyEmail: vi.fn(),
+      resendVerification: vi.fn(),
+      changeEmail: vi.fn(),
+      refreshUser: vi.fn(),
+      logout: vi.fn(),
+    } as AuthContextValue;
+
+    render(<AuthContext.Provider value={auth}><MemoryRouter initialEntries={["/admin/workspaces"]}><SidebarProvider><AppSidebar platformOnly /></SidebarProvider></MemoryRouter></AuthContext.Provider>);
+
+    expect(screen.getByText("Workspaces")).toBeInTheDocument();
+    expect(screen.getByText("Users")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Operations" }));
+    expect(screen.getByText("Audit log")).toBeInTheDocument();
+    expect(screen.queryByText("Billing & subscriptions")).not.toBeInTheDocument();
+    expect(screen.queryByText("Platform admins")).not.toBeInTheDocument();
   });
 });

@@ -30,7 +30,7 @@ const integrations: Integration[] = [
   { name: "Zendesk", description: "Create a consistent support workflow across your channels.", icon: siZendesk, category: "Support" },
   { name: "Mailchimp", description: "Use audience data to coordinate messaging and campaigns.", icon: siMailchimp, category: "Marketing" },
   { name: "Google Sheets", description: "Export and organize workspace data in shared spreadsheets.", icon: siGooglesheets, category: "Productivity" },
-  { name: "Zapier", description: "Connect Aikonnect to thousands of apps with automated workflows.", icon: siZapier, category: "Automation" },
+  { name: "Zapier", description: "Connect Marento to thousands of apps with automated workflows.", icon: siZapier, category: "Automation" },
   { name: "Instagram", description: "Bring social conversations and customer context together.", icon: siInstagram, category: "Social" },
 ];
 
@@ -67,7 +67,7 @@ export function Integrations() {
 
           <section className="mt-5">
             <div className="mb-3 flex items-end justify-between gap-3">
-              <div><h2 className="text-sm font-medium text-[var(--text-primary)]">More integrations</h2><p className="mt-1 text-xs text-[var(--text-muted)]">Popular platforms we are preparing for Aikonnect.</p></div>
+              <div><h2 className="text-sm font-medium text-[var(--text-primary)]">More integrations</h2><p className="mt-1 text-xs text-[var(--text-muted)]">Popular platforms we are preparing for Marento.</p></div>
               <span className="text-[11px] text-[var(--text-muted)]">{integrations.length} planned</span>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">

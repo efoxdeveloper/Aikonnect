@@ -29,10 +29,10 @@ import { getActiveMembership } from "@/lib/workspace";
 import { cn } from "@/lib/utils";
 import { toast } from "react-toastify";
 
-type TemplateType = "standard" | "catalog" | "carousel" | "limited";
+type TemplateType = "standard" | "carousel" | "limited" | "multi-product";
 type ButtonType = "website" | "offer" | "call" | "quick-reply" | "flow" | "catalog";
 type HeaderType = "none" | "text" | "image" | "video" | "doc";
-type OtpType = "COPY_CODE" | "ONE_TAP" | "ZERO_TAP";
+type OtpType = "COPY_CODE" | "ONE_TAP";
 type ValidationField = "name" | "language" | "body";
 type SaveAction = "draft" | "template";
 
@@ -45,6 +45,7 @@ const templateTypes: Array<{
   { id: "standard", label: "Standard", description: "Text & media", icon: ImageIcon },
   { id: "carousel", label: "Carousel", description: "Multiple cards", icon: Images },
   { id: "limited", label: "Limited time offers", description: "Create urgency", icon: Timer },
+  { id: "multi-product", label: "Multi-product", description: "Show catalog items", icon: ShoppingBag },
 ];
 
 const buttonOptions: Array<{
@@ -335,6 +336,9 @@ export function TemplateBuilder() {
   const [templateType, setTemplateType] = useState<TemplateType>("standard");
   const [headerType, setHeaderType] = useState<HeaderType>("text");
   const [headerFile, setHeaderFile] = useState<File | null>(null);
+  const [headerHandle, setHeaderHandle] = useState("");
+  const [headerHandleType, setHeaderHandleType] = useState<HeaderType>("none");
+  const [catalogReady, setCatalogReady] = useState(false);
   const [carouselCards, setCarouselCards] = useState<CarouselCard[]>([defaultCarouselCard()]);
   const [limitedOffer, setLimitedOffer] = useState<LimitedOfferData>({
     offerText: "",
@@ -346,6 +350,7 @@ export function TemplateBuilder() {
   });
   const [campaignTitle, setCampaignTitle] = useState("");
   const [body, setBody] = useState("");
+  const [bodyExamples, setBodyExamples] = useState<string[]>([]);
   const [footer, setFooter] = useState("");
   const [buttons, setButtons] = useState<ButtonType[]>([]);
   const [websiteUrl, setWebsiteUrl] = useState("");
@@ -354,7 +359,10 @@ export function TemplateBuilder() {
   const [flowNavigateScreen, setFlowNavigateScreen] = useState("");
   const [offerCodeExample, setOfferCodeExample] = useState("");
   const [buttonTexts, setButtonTexts] = useState<Record<ButtonType, string>>(defaultButtonTexts);
+  const [headerExamples, setHeaderExamples] = useState<string[]>([]);
   const [otpType, setOtpType] = useState<OtpType>("COPY_CODE");
+  const [oneTapPackageName, setOneTapPackageName] = useState("");
+  const [oneTapSignatureHash, setOneTapSignatureHash] = useState("");
   const [addSecurityRecommendation, setAddSecurityRecommendation] = useState(true);
   const [codeExpirationMinutes, setCodeExpirationMinutes] = useState("10");
   const [error, setError] = useState("");
@@ -366,21 +374,29 @@ export function TemplateBuilder() {
   const bodyRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+    if (!workspaceId || !accessToken) return;
+    void apiRequest<{ catalogReady?: boolean }>(`/workspaces/${workspaceId}/templates/capabilities`, { headers: { authorization: `Bearer ${accessToken}` } })
+      .then((result) => setCatalogReady(result.catalogReady === true))
+      .catch(() => setCatalogReady(false));
+  }, [accessToken, workspaceId]);
+
+  useEffect(() => {
     if (!editTemplateId || !workspaceId || !accessToken) { setLoadingTemplate(false); return; }
     void (async () => {
       try {
         const template = await apiRequest<{
           name: string; category: string; language: string; templateType: TemplateType; headerType: HeaderType;
-          headerText: string | null; body: string; footer: string | null; content: {
+          headerText: string | null; body: string; footer: string | null; metaTemplateId?: string | null; metaTemplateName?: string | null; content: {
             websiteUrl?: string;
             phoneNumber?: string; flowId?: string; flowNavigateScreen?: string; offerCodeExample?: string;
+            headerHandle?: string; bodyExamples?: string[]; headerExamples?: string[]; websiteUrlExamples?: string[];
             buttonTexts?: Partial<Record<ButtonType, string>>;
             buttons?: ButtonType[]; carouselCards?: Array<Omit<CarouselCard, "id" | "mediaFile"> & { mediaFileName?: string | null }>;
             limitedOffer?: LimitedOfferData;
-            otpType?: OtpType; addSecurityRecommendation?: boolean; codeExpirationMinutes?: number;
+            otpType?: OtpType; addSecurityRecommendation?: boolean; codeExpirationMinutes?: number; packageName?: string; signatureHash?: string;
           };
           }>(`/workspaces/${workspaceId}/templates/${editTemplateId}`, { headers: { authorization: `Bearer ${accessToken}` } });
-        setTemplateName(template.name); setCategory(template.category); setLanguage(template.language); setTemplateType(template.templateType); setHeaderType(template.headerType); setCampaignTitle(template.headerText ?? ""); setBody(template.body || (template.category === "Authentication" ? "Your verification code is {{1}}." : "")); setFooter(template.footer ?? ""); setButtons(template.content.buttons ?? []); setWebsiteUrl(typeof template.content.websiteUrl === "string" ? template.content.websiteUrl : ""); setPhoneNumber(typeof template.content.phoneNumber === "string" ? template.content.phoneNumber : ""); setFlowId(typeof template.content.flowId === "string" ? template.content.flowId : ""); setFlowNavigateScreen(typeof template.content.flowNavigateScreen === "string" ? template.content.flowNavigateScreen : ""); setOfferCodeExample(typeof template.content.offerCodeExample === "string" ? template.content.offerCodeExample : ""); setButtonTexts({ ...defaultButtonTexts, ...(template.content.buttonTexts ?? {}) }); setOtpType(template.content.otpType ?? "COPY_CODE"); setAddSecurityRecommendation(template.content.addSecurityRecommendation !== false); setCodeExpirationMinutes(String(template.content.codeExpirationMinutes ?? 10));
+        setTemplateName(template.name); setCategory(template.category); setLanguage(template.language); setTemplateType(template.templateType); setHeaderType(template.headerType); setHeaderHandle(template.content.headerHandle ?? ""); setHeaderHandleType(template.content.headerHandle ? template.headerType : "none"); setCampaignTitle(template.headerText ?? ""); const loadedBody = template.body || (template.category === "Authentication" ? "Your verification code is {{1}}." : ""); setBody(loadedBody); setBodyExamples(template.content.bodyExamples ?? []); setHeaderExamples(template.content.headerExamples ?? []); setFooter(template.footer ?? ""); setButtons(template.content.buttons ?? []); setWebsiteUrl(typeof template.content.websiteUrl === "string" ? template.content.websiteUrl : ""); setPhoneNumber(typeof template.content.phoneNumber === "string" ? template.content.phoneNumber : ""); setFlowId(typeof template.content.flowId === "string" ? template.content.flowId : ""); setFlowNavigateScreen(typeof template.content.flowNavigateScreen === "string" ? template.content.flowNavigateScreen : ""); setOfferCodeExample(typeof template.content.offerCodeExample === "string" ? template.content.offerCodeExample : ""); setButtonTexts({ ...defaultButtonTexts, ...(template.content.buttonTexts ?? {}) }); setOtpType(template.content.otpType ?? "COPY_CODE"); setOneTapPackageName(template.content.packageName ?? ""); setOneTapSignatureHash(template.content.signatureHash ?? ""); setAddSecurityRecommendation(template.content.addSecurityRecommendation !== false); setCodeExpirationMinutes(String(template.content.codeExpirationMinutes ?? 10));
         setCarouselCards(template.content.carouselCards?.map((card, index) => ({ ...card, id: index + 1, mediaFile: null })) ?? [defaultCarouselCard()]);
         setLimitedOffer(template.content.limitedOffer ?? { offerText: "", expiry: "", couponCode: "", copyButtonText: "Copy offer code", visitButtonText: "Visit shop", destination: "" });
       } catch (caughtError) { setError(caughtError instanceof ApiError ? caughtError.message : "Unable to load the template."); }
@@ -390,6 +406,8 @@ export function TemplateBuilder() {
 
   const bodyCount = body.length;
   const footerCount = footer.length;
+  const bodyVariableNumbers = useMemo(() => [...new Set([...body.matchAll(/\{\{\s*(\d+)\s*\}\}/g)].map((match) => Number(match[1])))].sort((a, b) => a - b), [body]);
+  const headerVariableNumbers = useMemo(() => [...new Set([...campaignTitle.matchAll(/\{\{\s*(\d+)\s*\}\}/g)].map((match) => Number(match[1])))].sort((a, b) => a - b), [campaignTitle]);
   const nextVariable = useMemo(() => {
     const values = [...body.matchAll(/{{\s*(\d+)\s*}}/g)].map((match) => Number(match[1]));
     return Math.max(0, ...values) + 1;
@@ -404,11 +422,30 @@ export function TemplateBuilder() {
     setButtons((current) => [...current, id]);
   };
 
-  const validateRequiredFields = () => {
+  const validateRequiredFields = (action: SaveAction) => {
     const nextErrors: Partial<Record<ValidationField, string>> = {};
     if (!templateName.trim()) nextErrors.name = "Template name is required.";
+    else if (!templateName.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "")) nextErrors.name = "Enter a template name containing letters or numbers.";
     if (!language) nextErrors.language = "Select a template language.";
-    if (!body.trim()) nextErrors.body = "Template message is required.";
+    if (category !== "Authentication" && !body.trim()) nextErrors.body = "Template message is required.";
+    const bodyNumbers = category === "Authentication" ? [] : [...body.matchAll(/\{\{\s*(\d+)\s*\}\}/g)].map((match) => Number(match[1]));
+    const bodyExpected = Array.from({ length: Math.max(0, ...bodyNumbers) }, (_, index) => index + 1);
+    if (bodyNumbers.length && ([...new Set(bodyNumbers)].sort((a, b) => a - b).some((value, index) => value !== bodyExpected[index]) || bodyExamples.slice(0, Math.max(...bodyNumbers)).some((value) => !value.trim()) || bodyExamples.length < Math.max(...bodyNumbers))) {
+      nextErrors.body = "Add one non-empty sample value for every numbered body variable, in order.";
+    }
+    if (headerType === "text" && campaignTitle.trim()) {
+      const headerNumbers = [...campaignTitle.matchAll(/\{\{\s*(\d+)\s*\}\}/g)].map((match) => Number(match[1]));
+      const headerExpected = Array.from({ length: Math.max(0, ...headerNumbers) }, (_, index) => index + 1);
+      if (headerNumbers.length && ([...new Set(headerNumbers)].sort((a, b) => a - b).some((value, index) => value !== headerExpected[index]) || headerExamples.slice(0, Math.max(...headerNumbers)).some((value) => !value.trim()) || headerExamples.length < Math.max(...headerNumbers))) nextErrors.body = "Add a sample value for every text-header variable.";
+    }
+    if (action === "template") {
+      if (templateType === "standard" && ["image", "video", "doc"].includes(headerType) && !headerHandle && !headerFile) nextErrors.body = "Upload the selected media header before submitting this template.";
+      if (templateType === "multi-product" && category !== "Marketing") nextErrors.body = "Multi-product templates must use the Marketing category.";
+      if (templateType === "carousel") nextErrors.body = "Carousel template submission is not available until Meta's current schema is configured.";
+      if (templateType === "limited") nextErrors.body = "Limited Time Offer template submission is not available for the configured Meta API version.";
+      if (category === "Authentication" && otpType === "ONE_TAP" && (!oneTapPackageName.trim() || !oneTapSignatureHash.trim())) nextErrors.body = "ONE_TAP authentication requires package name and signature hash.";
+      if (category === "Authentication" && (!Number.isInteger(Number(codeExpirationMinutes)) || Number(codeExpirationMinutes) < 1 || Number(codeExpirationMinutes) > 90)) nextErrors.body = "Code expiration must be a whole number from 1 to 90 minutes.";
+    }
     setValidationErrors(nextErrors);
     if (Object.keys(nextErrors).length) {
       const firstInvalid = (Object.keys(nextErrors) as ValidationField[])[0];
@@ -438,6 +475,8 @@ export function TemplateBuilder() {
       setTemplateType("standard");
       setHeaderType("none");
       setHeaderFile(null);
+      setHeaderHandle("");
+      setHeaderHandleType("none");
       setCampaignTitle("");
       setButtons([]);
       setWebsiteUrl("");
@@ -445,10 +484,12 @@ export function TemplateBuilder() {
     }
   };
 
-  const metaSubmitIssue = templateType !== "standard"
-    ? "Only standard templates can be submitted to Meta from this editor. Save this design as a draft."
+  const metaSubmitIssue = templateType === "carousel"
+    ? "Carousel template submission is disabled until Meta's current official schema is configured. Save this design as a draft."
+    : templateType === "limited"
+      ? "Limited Time Offer template submission is disabled until Meta's current official schema is configured. Save this design as a draft."
     : headerType !== "none" && headerType !== "text"
-        ? "Media headers require a Meta media handle and cannot be submitted from this editor yet."
+        ? !headerHandle && !headerFile ? "Upload the selected media header before submitting this template." : null
         : buttons.includes("website") && !/^https?:\/\/[^\s]+$/i.test(websiteUrl.trim())
           ? "Enter a valid http(s) website URL before submitting this template."
           : buttons.includes("call") && !/^\+?[1-9][\d\s().-]{6,18}$/.test(phoneNumber.trim())
@@ -463,12 +504,12 @@ export function TemplateBuilder() {
                     ? "Flow, catalog, and offer-code buttons must be submitted by themselves."
                     : buttons.includes("quick-reply") && buttons.some((button) => ["website", "call"].includes(button))
                       ? "Choose quick replies or call-to-action buttons, not both."
-                      : null;
+                    : null;
 
   const saveTemplate = async (action: SaveAction) => {
     setError("");
     setSavedAction(null);
-    if (!validateRequiredFields()) return;
+    if (!validateRequiredFields(action)) return;
     if (!workspaceId || !accessToken) {
       setError("Select an active workspace before saving the template.");
       return;
@@ -479,7 +520,24 @@ export function TemplateBuilder() {
     }
     setSavingAction(action);
     try {
-      const submittedHeaderType = templateType === "standard" && headerType === "text" && !campaignTitle.trim()
+      let uploadedHeaderHandle = headerHandleType === headerType ? headerHandle : "";
+      if (action === "template" && headerFile && ["image", "video", "doc"].includes(headerType)) {
+        const uploaded = await apiRequest<{ handle?: string }>(`/workspaces/${workspaceId}/templates/media`, {
+          method: "POST",
+          headers: {
+            authorization: `Bearer ${accessToken}`,
+            "content-type": "application/octet-stream",
+            "x-file-type": headerFile.type,
+            "x-file-name": headerFile.name,
+          },
+          body: await headerFile.arrayBuffer(),
+        });
+        if (!uploaded?.handle) throw new Error("Meta did not return a media handle for the selected header.");
+        uploadedHeaderHandle = uploaded.handle;
+        setHeaderHandle(uploadedHeaderHandle);
+        setHeaderHandleType(headerType);
+      }
+      const submittedHeaderType = (templateType === "standard" || templateType === "multi-product") && headerType === "text" && !campaignTitle.trim()
         ? "none"
         : headerType;
       const savedTemplate = await apiRequest<{ status?: string }>(editTemplateId ? `/workspaces/${workspaceId}/templates/${editTemplateId}` : `/workspaces/${workspaceId}/templates`, {
@@ -491,13 +549,16 @@ export function TemplateBuilder() {
           category,
           language,
           templateType,
-          headerType: templateType === "standard" ? submittedHeaderType : "none",
-          headerText: templateType === "standard" && submittedHeaderType === "text" ? campaignTitle : templateType === "limited" ? campaignTitle : null,
+          headerType: templateType === "standard" || templateType === "multi-product" ? submittedHeaderType : "none",
+          headerText: (templateType === "standard" || templateType === "multi-product") && submittedHeaderType === "text" ? campaignTitle : templateType === "limited" ? campaignTitle : null,
           headerFileName: headerFile?.name ?? null,
           body,
           footer: templateType === "standard" ? footer : null,
           content: {
             buttons,
+            bodyExamples: bodyExamples.slice(0, Math.max(0, ...bodyVariableNumbers)),
+            headerExamples: headerExamples.slice(0, Math.max(0, ...headerVariableNumbers)),
+            headerHandle: uploadedHeaderHandle || undefined,
             websiteUrl,
             phoneNumber,
             flowId,
@@ -507,6 +568,8 @@ export function TemplateBuilder() {
             carouselCards: carouselCards.map(({ mediaFile, ...card }) => ({ ...card, mediaFileName: mediaFile?.name ?? null })),
             limitedOffer,
             otpType,
+            packageName: oneTapPackageName,
+            signatureHash: oneTapSignatureHash,
             addSecurityRecommendation,
             codeExpirationMinutes: Number(codeExpirationMinutes) || 10,
           },
@@ -577,8 +640,8 @@ export function TemplateBuilder() {
 
             <section className="rounded-md border border-[var(--border)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:p-6">
               <SectionTitle number="2" title="Select Marketing template" />
-              <div data-testid="template-type-grid" className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                {templateTypes.map((item) => {
+              <div data-testid="template-type-grid" className="grid grid-cols-1 gap-3 sm:grid-cols-4">
+                {templateTypes.filter((item) => item.id !== "multi-product" || catalogReady).map((item) => {
                   const Icon = item.icon;
                   const selected = templateType === item.id;
                   return (
@@ -594,11 +657,13 @@ export function TemplateBuilder() {
 
             <section className="rounded-md border border-[var(--border)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:p-6">
               <SectionTitle number="3" title="Message content" />
+              {templateType === "standard" && headerVariableNumbers.length > 0 && <div className="mb-5 rounded-md border border-[var(--border-soft)] bg-[#fbfcfc] p-3.5"><div className="text-[12px] font-medium text-[var(--text-primary)]">Header variable samples</div>{headerVariableNumbers.map((number, index) => <div key={number} className="mt-2"><FieldLabel htmlFor={`header-example-${number}`}>{`{{${number}}}`}</FieldLabel><Input id={`header-example-${number}`} value={headerExamples[index] ?? ""} onChange={(event) => setHeaderExamples((current) => { const next = [...current]; next[index] = event.target.value; return next; })} placeholder="Example value" /></div>)}</div>}
               <div className="space-y-5">
-                {category === "Authentication" && <div data-testid="authentication-template-settings" className="rounded-md border border-[var(--brand)]/20 bg-[var(--brand-soft)]/45 p-4"><div className="text-[13px] font-medium text-[var(--text-primary)]">OTP authentication template</div><div className="mt-1 text-[11px] leading-5 text-[var(--text-secondary)]">Meta supplies the secure OTP format when this template is submitted.</div><div className="mt-4 grid gap-4 sm:grid-cols-2"><div><FieldLabel htmlFor="otp-type">OTP button</FieldLabel><select id="otp-type" value={otpType} onChange={(event) => setOtpType(event.target.value as OtpType)} className="h-10 w-full rounded-md border border-[var(--border)] bg-white px-3 text-sm outline-none focus:border-[var(--brand)]"><option value="COPY_CODE">Copy code</option></select></div><div><FieldLabel htmlFor="otp-expiration">Code expiration (minutes)</FieldLabel><Input id="otp-expiration" type="number" min={1} max={90} value={codeExpirationMinutes} onChange={(event) => setCodeExpirationMinutes(event.target.value)} className="h-10 text-sm" /></div></div><label className="mt-4 flex items-center gap-2 text-xs text-[var(--text-primary)]"><input type="checkbox" checked={addSecurityRecommendation} onChange={(event) => setAddSecurityRecommendation(event.target.checked)} className="size-4 accent-[var(--brand)]" />Add Meta's security recommendation</label></div>}
+                {category === "Authentication" && <div data-testid="authentication-template-settings" className="rounded-md border border-[var(--brand)]/20 bg-[var(--brand-soft)]/45 p-4"><div className="text-[13px] font-medium text-[var(--text-primary)]">OTP authentication template</div><div className="mt-1 text-[11px] leading-5 text-[var(--text-secondary)]">Meta supplies the secure OTP format when this template is submitted.</div><div className="mt-4 grid gap-4 sm:grid-cols-2"><div><FieldLabel htmlFor="otp-type">OTP button</FieldLabel><select id="otp-type" value={otpType} onChange={(event) => setOtpType(event.target.value as OtpType)} className="h-10 w-full rounded-md border border-[var(--border)] bg-white px-3 text-sm outline-none"><option value="COPY_CODE">Copy code</option><option value="ONE_TAP">One-tap autofill</option></select></div><div><FieldLabel htmlFor="otp-expiration">Code expiration (minutes)</FieldLabel><Input id="otp-expiration" type="number" min={1} max={90} value={codeExpirationMinutes} onChange={(event) => setCodeExpirationMinutes(event.target.value)} className="h-10 text-sm" /></div></div>{otpType === "ONE_TAP" && <div className="mt-4 grid gap-4 sm:grid-cols-2"><div><FieldLabel htmlFor="otp-package-name">Android package name</FieldLabel><Input id="otp-package-name" value={oneTapPackageName} onChange={(event) => setOneTapPackageName(event.target.value)} placeholder="com.example.app" /></div><div><FieldLabel htmlFor="otp-signature-hash">App signature hash</FieldLabel><Input id="otp-signature-hash" value={oneTapSignatureHash} onChange={(event) => setOneTapSignatureHash(event.target.value)} placeholder="K8a%2FAINcGX7" /></div></div>}<label className="mt-4 flex items-center gap-2 text-xs text-[var(--text-primary)]"><input type="checkbox" checked={addSecurityRecommendation} onChange={(event) => setAddSecurityRecommendation(event.target.checked)} className="size-4 accent-[var(--brand)]" />Add Meta's security recommendation</label></div>}
                 {templateType === "standard" && category !== "Authentication" && <div><FieldLabel htmlFor="campaign-title" optional>Campaign title</FieldLabel><div role="radiogroup" aria-label="Campaign title type" className="grid grid-cols-2 gap-2 sm:grid-cols-5">{headerOptions.map((option) => { const selectedHeader = headerType === option.id; return <button key={option.id} type="button" role="radio" aria-checked={selectedHeader} onClick={() => { setHeaderType(option.id); setHeaderFile(null); }} className={cn("flex items-center gap-2 rounded-md border px-3 py-2 text-left text-[11px] transition-colors", selectedHeader ? "border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--brand)]" : "border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--brand)]/50")}><span className={cn("flex size-3.5 items-center justify-center rounded-full border", selectedHeader ? "border-[var(--brand)]" : "border-[var(--border)]")}>{selectedHeader && <span className="size-1.5 rounded-full bg-[var(--brand)]" />}</span>{option.label}</button>; })}</div>{headerType === "text" && <textarea id="campaign-title" value={campaignTitle} onChange={(event) => setCampaignTitle(event.target.value)} maxLength={60} rows={2} placeholder="Highlight your brand here, use images or videos, to stand out" className="mt-3 w-full resize-none rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10" />}{headerType !== "none" && headerType !== "text" && <div className="mt-3 flex items-center gap-3 rounded-md border border-dashed border-[var(--border)] bg-[#fbfcfc] px-3.5 py-3 text-[11px] text-[var(--text-secondary)]"><span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-[var(--accent-blue-soft)] text-[var(--accent-blue)]"><Upload size={15} /></span><div className="min-w-0 flex-1"><div className="font-medium text-[var(--text-primary)]">{headerFile ? headerFile.name : `Upload ${headerType === "doc" ? "document" : headerType}`}</div><div className="mt-0.5">{headerFile ? "File selected" : `Add a ${headerType === "doc" ? "document" : headerType} for your campaign header.`}</div></div>{headerFile ? <button type="button" onClick={() => setHeaderFile(null)} className="shrink-0 font-medium text-[var(--danger)] hover:underline">Remove</button> : <label htmlFor="header-media-file" className="flex h-8 shrink-0 cursor-pointer items-center rounded-md bg-[var(--accent-blue)] px-3 text-[11px] font-medium text-white hover:brightness-95">Choose file<input id="header-media-file" aria-label={`Upload ${headerType === "doc" ? "document" : headerType}`} type="file" accept={headerType === "image" ? "image/*" : headerType === "video" ? "video/*" : ".pdf,.doc,.docx,application/pdf"} onChange={(event) => setHeaderFile(event.target.files?.[0] ?? null)} className="sr-only" /></label>}</div>}</div>}
                  {templateType === "limited" && <div><FieldLabel htmlFor="campaign-title" optional>Media header</FieldLabel><textarea id="campaign-title" value={campaignTitle} onChange={(event) => setCampaignTitle(event.target.value)} maxLength={60} rows={2} placeholder="Highlight your brand here, use images or videos, to stand out" className="w-full resize-none rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10" /></div>}
               <div><div className="flex items-start justify-between gap-3"><div><FieldLabel htmlFor="template-body">Body</FieldLabel><div className="-mt-1 mb-2 text-[12px] text-[var(--text-secondary)]">{templateType === "limited" ? "Let users know how and what they will be able to redeem below" : "Make your messages personal using numbered variables like {{1}} and get more replies!"}</div></div><button type="button" onClick={addVariable} className="mt-0.5 flex shrink-0 items-center gap-1 text-[12px] font-medium text-[var(--brand)] hover:underline"><Plus size={14} /> Add Variable</button></div><textarea ref={bodyRef} id="template-body" value={body} aria-invalid={Boolean(validationErrors.body)} aria-describedby={validationErrors.body ? "template-body-error" : undefined} onChange={(event) => { setBody(event.target.value); setSavedAction(null); clearValidationError("body"); }} maxLength={1024} rows={6} placeholder="Template Message..." className={cn("w-full resize-y rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm leading-6 outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10", validationErrors.body && "border-[var(--danger)] focus:border-[var(--danger)] focus:ring-red-100")} />{validationErrors.body && <div id="template-body-error" role="alert" className="mt-1.5 text-[12px] text-[var(--danger)]">{validationErrors.body}</div>}<div className="mt-1 text-right text-[12px] text-[var(--text-muted)]">{bodyCount}/1024</div></div>
+                 {bodyVariableNumbers.length > 0 && <div className="rounded-md border border-[var(--border-soft)] bg-[#fbfcfc] p-3.5"><div className="text-[12px] font-medium text-[var(--text-primary)]">Body variable samples</div><div className="mt-2 grid gap-2 sm:grid-cols-2">{bodyVariableNumbers.map((number, index) => <div key={number}><FieldLabel htmlFor={`body-example-${number}`}>{`{{${number}}}`}</FieldLabel><Input id={`body-example-${number}`} value={bodyExamples[index] ?? ""} onChange={(event) => setBodyExamples((current) => { const next = [...current]; next[index] = event.target.value; return next; })} placeholder="Example value" /></div>)}</div></div>}
                  {templateType === "carousel" ? <CarouselEditor cards={carouselCards} setCards={setCarouselCards} /> : templateType === "limited" ? <LimitedOfferEditor data={limitedOffer} onChange={(changes) => setLimitedOffer((current) => ({ ...current, ...changes }))} /> : category === "Authentication" ? null : <div><FieldLabel htmlFor="template-footer" optional>Footer</FieldLabel><textarea id="template-footer" value={footer} onChange={(event) => setFooter(event.target.value)} maxLength={60} rows={2} placeholder="Footers are great to add any disclaimers or to add a thoughtful PS" className="w-full resize-none rounded-md border border-[var(--border)] bg-white px-3 py-2.5 text-sm outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/10" /><div className="mt-1 text-right text-[11px] text-[var(--text-muted)]">{footerCount}/60</div></div>}
               </div>
             </section>

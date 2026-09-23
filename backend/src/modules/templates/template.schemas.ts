@@ -11,10 +11,10 @@ export const templateParamsSchema = z.object({ workspaceId: z.uuid(), templateId
 export const createTemplateSchema = z.object({
   saveAs: z.enum(["draft", "submit"]).default("draft"),
   name: z.string().trim().min(1).max(160),
-  category: z.enum(["Marketing", "Utility", "Authentication"]).default("Marketing"),
+  category: z.enum(["Marketing", "Utility", "Authentication", "MARKETING", "UTILITY", "AUTHENTICATION"]).default("Marketing"),
   language: z.string().trim().min(1).max(50),
-  templateType: z.enum(["standard", "carousel", "limited"]),
-  headerType: z.enum(["none", "text", "image", "video", "doc"]).default("none"),
+  templateType: z.enum(["standard", "carousel", "limited", "multi-product"]),
+  headerType: z.enum(["none", "text", "image", "video", "doc", "location"]).default("none"),
   headerText: z.string().trim().max(60).optional().nullable(),
   headerFileName: z.string().trim().max(255).optional().nullable(),
   body: z.string().trim().min(1).max(1024),

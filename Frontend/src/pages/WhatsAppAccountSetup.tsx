@@ -195,7 +195,7 @@ export function WhatsAppAccountSetup() {
                       <div onMouseEnter={messageIcon.onMouseEnter} onMouseLeave={messageIcon.onMouseLeave} className="flex size-9 shrink-0 items-center justify-center rounded-md bg-white text-[var(--brand)] shadow-[0_4px_12px_rgba(4,63,50,.08)]"><MessageSquare ref={messageIcon.ref} size={18} duration={0.7} aria-hidden="true" /></div>
                       <div>
                         <h2 className="text-base font-medium text-[var(--text-primary)]">Connect WhatsApp Business</h2>
-                        <div className="mt-1 max-w-[560px] text-xs leading-5 text-[var(--text-secondary)]">Use the same number in WhatsApp and Aikonnect.</div>
+                        <div className="mt-1 max-w-[560px] text-xs leading-5 text-[var(--text-secondary)]">Use the same number in WhatsApp and Marento.</div>
                       </div>
                     </div>
                     <ol aria-label="Coexistence setup steps" className="mt-5 grid gap-2 sm:grid-cols-4">

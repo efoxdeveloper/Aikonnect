@@ -7,6 +7,7 @@ const permissionValues = Object.values(PERMISSIONS) as [string, ...string[]];
 const industry = z.enum(industryValues);
 
 export const createWorkspaceSchema = z.object({
+  tenantId: z.uuid().optional(),
   name: z.string().trim().min(1).max(160),
   companyName: optionalText(160),
   industry: industry.optional(),
@@ -24,7 +25,7 @@ const validTimezone = (value: string) => {
   }
 };
 
-export const updateWorkspaceSchema = createWorkspaceSchema.partial().extend({
+export const updateWorkspaceSchema = createWorkspaceSchema.omit({ tenantId: true }).partial().extend({
   logoData: z.union([z.string().max(2_500_000), z.literal("")]).optional(),
   country: optionalText(100),
   timezone: z.string().trim().max(100).refine(validTimezone, "Select a valid time zone").optional(),

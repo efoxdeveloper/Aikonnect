@@ -8,7 +8,7 @@ import { SidebarMenuItem } from "./SidebarMenuItem";
 
 function isItemActive(item: NavigationItem, pathname: string) {
   return Boolean(
-    (item.url && (item.url === pathname || pathname.startsWith(`${item.url}/`))) ||
+    (item.url && (item.url === pathname || (item.url !== "/admin" && pathname.startsWith(`${item.url}/`)))) ||
       item.children?.some((child) => child.url === pathname),
   );
 }

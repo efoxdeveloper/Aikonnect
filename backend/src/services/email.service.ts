@@ -69,7 +69,7 @@ function actionEmailHtml(options: {
 export function sendVerificationEmail(to: string, verificationUrl: string): Promise<boolean> {
   return sendEmail({
     to,
-    subject: "Verify your AiKonnect email",
+    subject: "Verify your Marento email",
     text: `Verify your email by opening this link: ${verificationUrl}`,
     html: actionEmailHtml({
       heading: "Verify your email",
@@ -84,7 +84,7 @@ export function sendVerificationEmail(to: string, verificationUrl: string): Prom
 export function sendPasswordResetEmail(to: string, resetUrl: string): Promise<boolean> {
   return sendEmail({
     to,
-    subject: "Reset your AiKonnect password",
+    subject: "Reset your Marento password",
     text: `Reset your password by opening this link: ${resetUrl}`,
     html: actionEmailHtml({
       heading: "Reset your password",

@@ -14,17 +14,22 @@ const { env } = await import("../src/config/env.js");
 const { prisma } = await import("../src/database/prisma.js");
 const { getUsage } = await import("../src/modules/usage/usage.service.js");
 
-test("usage exposes the backend-configured wallet amount", async (t: TestContext) => {
-  const originalBalance = env.WALLET_BALANCE_PAISE;
+test("usage exposes the persisted wallet balance", async (t: TestContext) => {
   const originalCurrency = env.WALLET_CURRENCY;
-  Object.assign(env, { WALLET_BALANCE_PAISE: 12500, WALLET_CURRENCY: "INR" });
+  Object.assign(env, { WALLET_CURRENCY: "INR" });
   const originalFindMany = prisma.message.findMany;
+  const originalTransaction = prisma.$transaction;
   prisma.message.findMany = async () => [] as never;
+  (prisma as any).$transaction = async (callback: (client: any) => Promise<unknown>) => callback({
+    workspace: { findUnique: async () => ({ tenantId: "tenant-id" }) },
+    wallet: { upsert: async () => ({ id: "wallet-id", tenantId: "tenant-id", currency: "INR", balanceMinorUnits: 12500n, createdAt: new Date("2026-01-01T00:00:00.000Z"), updatedAt: new Date("2026-01-01T00:00:00.000Z") }) },
+  });
   t.after(() => {
     prisma.message.findMany = originalFindMany;
-    Object.assign(env, { WALLET_BALANCE_PAISE: originalBalance, WALLET_CURRENCY: originalCurrency });
+    (prisma as any).$transaction = originalTransaction;
+    Object.assign(env, { WALLET_CURRENCY: originalCurrency });
   });
 
   const result = await getUsage("workspace-id", {});
-  assert.deepEqual(result.wallet, { currency: "INR", balancePaise: 12500, balance: 125, configuredFromBackend: true });
+  assert.deepEqual(result.wallet, { currency: "INR", balanceMinorUnits: "12500", balance: "125.00", configuredFromBackend: false });
 });

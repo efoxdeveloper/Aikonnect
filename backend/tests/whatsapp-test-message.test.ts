@@ -32,7 +32,7 @@ test("test message sends through the saved active phone and records setup progre
     assert.match(String(input), /\/v25\.0\/meta-phone\/messages$/);
     assert.equal((init?.headers as Record<string, string>).authorization, "Bearer business-token");
     const body = JSON.parse(String(init?.body));
-    assert.deepEqual(body, { messaging_product: "whatsapp", recipient_type: "individual", to: "919876543210", type: "text", text: { body: "This is a test message from Aikonnect." } });
+    assert.deepEqual(body, { messaging_product: "whatsapp", recipient_type: "individual", to: "919876543210", type: "text", text: { body: "This is a test message from Marento." } });
     return new Response(JSON.stringify({ messages: [{ id: "wamid.test" }] }), { status: 200 });
   });
   const result = await sendTestMessage("workspace", "+919876543210");

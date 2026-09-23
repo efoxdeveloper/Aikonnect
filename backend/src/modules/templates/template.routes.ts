@@ -1,4 +1,5 @@
 import { Router } from "express";
+import express from "express";
 import { asyncHandler } from "../../middleware/async-handler.js";
 import { validateBody, validateParams, validateQuery } from "../../middleware/validate.js";
 import { requireWorkspacePermission } from "../../middleware/workspace-access.js";
@@ -12,6 +13,8 @@ templateRouter.get("/", requireWorkspacePermission(PERMISSIONS.TEMPLATES_READ), 
 templateRouter.post("/sync", requireWorkspacePermission(PERMISSIONS.TEMPLATES_MANAGE), asyncHandler(controller.sync));
 templateRouter.get("/library", requireWorkspacePermission(PERMISSIONS.TEMPLATES_READ), validateQuery(templateLibraryQuerySchema), asyncHandler(controller.library));
 templateRouter.post("/library/add", requireWorkspacePermission(PERMISSIONS.TEMPLATES_MANAGE), validateBody(addLibraryTemplateSchema), asyncHandler(controller.addLibraryTemplate));
+templateRouter.post("/media", requireWorkspacePermission(PERMISSIONS.TEMPLATES_MANAGE), express.raw({ type: "application/octet-stream", limit: "100mb" }), asyncHandler(controller.uploadMedia));
+templateRouter.get("/capabilities", requireWorkspacePermission(PERMISSIONS.TEMPLATES_READ), asyncHandler(controller.capabilities));
 templateRouter.post("/", requireWorkspacePermission(PERMISSIONS.TEMPLATES_MANAGE), validateBody(createTemplateSchema), asyncHandler(controller.create));
 templateRouter.get("/:templateId", requireWorkspacePermission(PERMISSIONS.TEMPLATES_READ), validateParams(templateParamsSchema), asyncHandler(controller.get));
 templateRouter.patch("/:templateId", requireWorkspacePermission(PERMISSIONS.TEMPLATES_MANAGE), validateParams(templateParamsSchema), validateBody(updateTemplateSchema), asyncHandler(controller.update));

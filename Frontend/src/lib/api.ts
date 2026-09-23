@@ -64,6 +64,10 @@ function isBearerAuthorization(value: string | null): boolean {
   return Boolean(value?.startsWith("Bearer ") && value.slice(7));
 }
 
+function isAuthBootstrapPath(path: string): boolean {
+  return path === "/auth/login" || path === "/auth/register" || path === "/auth/refresh";
+}
+
 function notifyAuthenticationLost(): void {
   activeAccessToken = null;
   authSessionHandlers.onAuthenticationLost?.();
@@ -140,7 +144,9 @@ export async function refreshAccessToken(): Promise<string> {
 
 async function requestWithAuthRetry(path: string, options: RequestInit, headers: Headers): Promise<Response> {
   const suppliedAuthorization = headers.get("authorization");
-  if (isBearerAuthorization(suppliedAuthorization) && activeAccessToken && suppliedAuthorization !== `Bearer ${activeAccessToken}`) {
+  if (!suppliedAuthorization && activeAccessToken && !isAuthBootstrapPath(path)) {
+    headers.set("authorization", `Bearer ${activeAccessToken}`);
+  } else if (isBearerAuthorization(suppliedAuthorization) && activeAccessToken && suppliedAuthorization !== `Bearer ${activeAccessToken}`) {
     headers.set("authorization", `Bearer ${activeAccessToken}`);
   }
 

@@ -56,7 +56,7 @@ describe("AppHeader", () => {
     expect(screen.getByText("Acme Support")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Notifications" })).toBeInTheDocument();
     expect(screen.getByTestId("sidebar-brand-header")).toBeInTheDocument();
-    expect(screen.getByTestId("sidebar-brand-header")).toHaveAttribute("aria-label", "AiKonnect");
+    expect(screen.getByTestId("sidebar-brand-header")).toHaveAttribute("aria-label", "Marento");
     expect(document.querySelector("[data-sidebar-workspace]")).not.toBeInTheDocument();
     expect(screen.getByRole("banner")).toHaveClass("shadow-[0_4px_12px_rgba(16,24,20,0.10)]");
     expect(screen.getByRole("banner")).not.toHaveClass("border-b");

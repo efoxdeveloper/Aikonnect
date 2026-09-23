@@ -27,6 +27,7 @@ import { reportRouter } from "../reports/report.routes.js";
 import { apiKeyRouter } from "../api-keys/api-key.routes.js";
 import { webhookRouter } from "../webhooks/webhook.routes.js";
 import { usageRouter } from "../usage/usage.routes.js";
+import { walletRouter } from "../wallet/wallet.routes.js";
 
 export const workspaceRouter = Router();
 
@@ -66,3 +67,4 @@ workspaceRouter.use("/:workspaceId/reports", reportRouter);
 workspaceRouter.use("/:workspaceId/api-keys", apiKeyRouter);
 workspaceRouter.use("/:workspaceId/webhooks", webhookRouter);
 workspaceRouter.use("/:workspaceId/usage", usageRouter);
+workspaceRouter.use("/:workspaceId/wallet", walletRouter);

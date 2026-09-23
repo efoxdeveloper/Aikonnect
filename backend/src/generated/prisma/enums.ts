@@ -18,6 +18,18 @@ export const UserStatus = {
 export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
 
 
+export const PlatformRole = {
+  NONE: 'NONE',
+  SUPPORT: 'SUPPORT',
+  OPERATIONS: 'OPERATIONS',
+  BILLING: 'BILLING',
+  ADMIN: 'ADMIN',
+  SUPER_ADMIN: 'SUPER_ADMIN'
+} as const
+
+export type PlatformRole = (typeof PlatformRole)[keyof typeof PlatformRole]
+
+
 export const MembershipStatus = {
   ACTIVE: 'ACTIVE',
   SUSPENDED: 'SUSPENDED'
@@ -207,3 +219,11 @@ export const CampaignRecipientStatus = {
 } as const
 
 export type CampaignRecipientStatus = (typeof CampaignRecipientStatus)[keyof typeof CampaignRecipientStatus]
+
+
+export const WalletEntryDirection = {
+  CREDIT: 'CREDIT',
+  DEBIT: 'DEBIT'
+} as const
+
+export type WalletEntryDirection = (typeof WalletEntryDirection)[keyof typeof WalletEntryDirection]

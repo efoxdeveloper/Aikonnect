@@ -53,6 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   OAuthAccount: 'OAuthAccount',
+  Tenant: 'Tenant',
   Workspace: 'Workspace',
   Template: 'Template',
   PublicApiKey: 'PublicApiKey',
@@ -83,6 +84,9 @@ export const ModelName = {
   RolePermission: 'RolePermission',
   WorkspaceInvitation: 'WorkspaceInvitation',
   Session: 'Session',
+  Wallet: 'Wallet',
+  WalletLedgerEntry: 'WalletLedgerEntry',
+  PlatformAuditLog: 'PlatformAuditLog',
   EmailVerificationToken: 'EmailVerificationToken',
   PasswordResetToken: 'PasswordResetToken'
 } as const
@@ -111,6 +115,7 @@ export const UserScalarFieldEnum = {
   lastName: 'lastName',
   phone: 'phone',
   status: 'status',
+  platformRole: 'platformRole',
   emailVerifiedAt: 'emailVerifiedAt',
   lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
@@ -132,8 +137,21 @@ export const OAuthAccountScalarFieldEnum = {
 export type OAuthAccountScalarFieldEnum = (typeof OAuthAccountScalarFieldEnum)[keyof typeof OAuthAccountScalarFieldEnum]
 
 
+export const TenantScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  ownerId: 'ownerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof TenantScalarFieldEnum]
+
+
 export const WorkspaceScalarFieldEnum = {
   id: 'id',
+  tenantId: 'tenantId',
   name: 'name',
   slug: 'slug',
   companyName: 'companyName',
@@ -692,6 +710,53 @@ export const SessionScalarFieldEnum = {
 } as const
 
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
+
+
+export const WalletScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  currency: 'currency',
+  balanceMinorUnits: 'balanceMinorUnits',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WalletScalarFieldEnum = (typeof WalletScalarFieldEnum)[keyof typeof WalletScalarFieldEnum]
+
+
+export const WalletLedgerEntryScalarFieldEnum = {
+  id: 'id',
+  walletId: 'walletId',
+  tenantId: 'tenantId',
+  workspaceId: 'workspaceId',
+  direction: 'direction',
+  amountMinorUnits: 'amountMinorUnits',
+  balanceAfterMinorUnits: 'balanceAfterMinorUnits',
+  idempotencyKey: 'idempotencyKey',
+  reason: 'reason',
+  description: 'description',
+  metadata: 'metadata',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+} as const
+
+export type WalletLedgerEntryScalarFieldEnum = (typeof WalletLedgerEntryScalarFieldEnum)[keyof typeof WalletLedgerEntryScalarFieldEnum]
+
+
+export const PlatformAuditLogScalarFieldEnum = {
+  id: 'id',
+  actorUserId: 'actorUserId',
+  action: 'action',
+  resourceType: 'resourceType',
+  resourceId: 'resourceId',
+  workspaceId: 'workspaceId',
+  metadata: 'metadata',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+} as const
+
+export type PlatformAuditLogScalarFieldEnum = (typeof PlatformAuditLogScalarFieldEnum)[keyof typeof PlatformAuditLogScalarFieldEnum]
 
 
 export const EmailVerificationTokenScalarFieldEnum = {

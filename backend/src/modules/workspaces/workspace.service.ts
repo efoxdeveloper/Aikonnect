@@ -66,15 +66,21 @@ export async function listWorkspaces(userId: string) {
 
 export async function createWorkspace(userId: string, input: CreateWorkspaceInput) {
   const canCreate = await prisma.workspaceMember.findFirst({
-    where: { userId, status: "ACTIVE", role: { slug: { in: ["owner", "admin"] } } },
-    select: { id: true },
+    where: {
+      userId,
+      status: "ACTIVE",
+      role: { slug: { in: ["owner", "admin"] } },
+      ...(input.tenantId ? { workspace: { tenantId: input.tenantId } } : {}),
+    },
+    select: { id: true, workspace: { select: { tenantId: true } } },
   });
   if (!canCreate) throw new AppError(403, "Only workspace owners and admins can create a workspace", "WORKSPACE_CREATE_FORBIDDEN");
+  const { tenantId: requestedTenantId, ...details } = input;
   return prisma.$transaction((transaction) =>
     createWorkspaceWithDefaults(transaction, userId, {
-      ...input,
-      companyWebsite: input.companyWebsite || undefined,
-    }),
+      ...details,
+      companyWebsite: details.companyWebsite || undefined,
+    }, requestedTenantId ?? canCreate.workspace.tenantId),
   );
 }
 

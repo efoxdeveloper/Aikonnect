@@ -72,7 +72,7 @@ app.use(createRateLimiter({ windowMs: env.RATE_LIMIT_WINDOW_MS, limit: env.RATE_
 app.get("/", (_request, response) => {
   response.status(200).json({
     success: true,
-    data: { service: "AiKonnect API", version: "0.1.0" },
+    data: { service: "Marento API", version: "0.1.0" },
   });
 });
 app.use("/api/webhooks/whatsapp", whatsappWebhookRouter);

@@ -73,7 +73,17 @@ export function PublicOnlyRoute() {
     return <>{status === "unauthenticated" && <Outlet />}<SessionLoading exiting={loadingTransition.exiting} /></>;
   }
   if (status === "authenticated") {
-    return <Navigate to={user?.emailVerifiedAt ? invitationPath ?? "/dashboard" : invitation ? `/verify-email?invitation=${encodeURIComponent(invitation)}` : "/verify-email"} replace />;
+    const platformHome = user?.platformRole && user.platformRole !== "NONE" ? "/admin" : "/dashboard";
+    return <Navigate to={user?.emailVerifiedAt ? invitationPath ?? platformHome : invitation ? `/verify-email?invitation=${encodeURIComponent(invitation)}` : "/verify-email"} replace />;
+  }
+  return <Outlet />;
+}
+
+export function PlatformAdminRoute() {
+  const { status, user } = useAuth();
+  if (status !== "authenticated") return null;
+  if (!user?.platformRole || user.platformRole === "NONE") {
+    return <Navigate to="/dashboard" replace />;
   }
   return <Outlet />;
 }

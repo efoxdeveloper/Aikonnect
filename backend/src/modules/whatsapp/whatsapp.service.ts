@@ -1,11 +1,24 @@
+import { randomUUID } from "node:crypto";
 import { env } from "../../config/env.js";
 import { prisma } from "../../database/prisma.js";
+import { logger } from "../../config/logger.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { decryptSecret, encryptSecret } from "../../utils/crypto.js";
+import { chargeOutboundMessage, refundWalletCharge } from "../wallet/wallet.service.js";
 import type { EmbeddedSignupInput } from "./whatsapp.schemas.js";
 
 type MetaResponse = Record<string, unknown> & {
-  error?: { message?: string; code?: number; error_subcode?: number; type?: string; is_transient?: boolean };
+  error?: {
+    message?: string;
+    type?: string;
+    code?: number;
+    error_subcode?: number;
+    error_user_title?: string;
+    error_user_msg?: string;
+    fbtrace_id?: string;
+    is_transient?: boolean;
+    error_data?: unknown;
+  };
 };
 
 type MetaRequestStage =
@@ -20,6 +33,8 @@ type MetaRequestStage =
   | "request_app_state_sync"
   | "send_message"
   | "upload_media"
+  | "upload_template_media_session"
+  | "upload_template_media_data"
   | "download_media"
   | "list_templates"
   | "list_template_library"
@@ -30,6 +45,27 @@ type MetaRequestStage =
 
 // Allow for slow provider connections while bounding unavailable requests.
 const META_REQUEST_TIMEOUT_MS = 60_000;
+
+async function chargeAndRun<T>(workspaceId: string, source: string, chargeKey: string | undefined, operation: () => Promise<T>) {
+  const walletCharge = await chargeOutboundMessage({
+    workspaceId,
+    idempotencyKey: chargeKey ?? `outbound:${source}:${randomUUID()}`,
+    metadata: { source },
+  });
+  try {
+    const value = await operation();
+    return { value, walletCharge };
+  } catch (error) {
+    if (walletCharge) {
+      try {
+        await refundWalletCharge({ workspaceId, ...walletCharge, metadata: { source } });
+      } catch (refundError) {
+        logger.error({ workspaceId, source, walletCharge, error: refundError }, "Failed to refund a WhatsApp wallet charge after provider failure");
+      }
+    }
+    throw error;
+  }
+}
 
 const metaStageLabels: Record<MetaRequestStage, string> = {
   exchange_signup_code: "exchanging the signup code",
@@ -43,6 +79,8 @@ const metaStageLabels: Record<MetaRequestStage, string> = {
   request_app_state_sync: "requesting WhatsApp Business App synchronization",
   send_message: "sending the WhatsApp message",
   upload_media: "uploading the WhatsApp media",
+  upload_template_media_session: "creating a Meta template-media upload session",
+  upload_template_media_data: "uploading the WhatsApp template media",
   download_media: "loading the WhatsApp media",
   list_templates: "loading WhatsApp templates",
   list_template_library: "loading the Meta template library",
@@ -100,6 +138,7 @@ async function parseMetaResponse(response: Response, stage: MetaRequestStage): P
     ? parsedBody as MetaResponse
     : {};
   if (!response.ok || body.error) {
+    logger.error({ stage, providerStatus: response.status, metaError: body.error ?? body }, "Meta returned an API error");
     const rawProviderMessage = (body.error?.message ?? response.statusText) || "Meta returned an error without a description.";
     const providerMessage = stage === "send_message" && /131047|re-engagement message/i.test(rawProviderMessage)
       ? "This contact is outside WhatsApp's 24-hour customer-service window. Send an approved WhatsApp template first, then continue with a normal message after the customer replies."
@@ -115,6 +154,11 @@ async function parseMetaResponse(response: Response, stage: MetaRequestStage): P
         providerStatus: response.status,
         ...(typeof body.error?.code === "number" ? { providerCode: body.error.code } : {}),
         ...(typeof body.error?.error_subcode === "number" ? { providerSubcode: body.error.error_subcode } : {}),
+        ...(typeof body.error?.type === "string" ? { providerType: body.error.type } : {}),
+        ...(typeof body.error?.error_user_title === "string" ? { providerUserTitle: body.error.error_user_title } : {}),
+        ...(typeof body.error?.error_user_msg === "string" ? { providerUserMessage: body.error.error_user_msg } : {}),
+        ...(typeof body.error?.fbtrace_id === "string" ? { fbtraceId: body.error.fbtrace_id } : {}),
+        ...(body.error?.error_data !== undefined ? { providerErrorData: body.error.error_data } : {}),
       },
     );
   }
@@ -153,7 +197,21 @@ async function postMeta<T extends MetaResponse>(path: string, accessToken: strin
     headers: { authorization: `Bearer ${accessToken}`, "content-type": "application/json" },
     body: JSON.stringify(body),
   }, stage);
-  return parseMetaResponse(response, stage) as Promise<T>;
+  try {
+    return await parseMetaResponse(response, stage) as T;
+  } catch (error) {
+    if (error instanceof AppError) logger.error({ stage, payload: sanitizeMetaPayload(body), metaError: error.details }, "Meta API request failed");
+    throw error;
+  }
+}
+
+function sanitizeMetaPayload(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(sanitizeMetaPayload);
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([key, item]) => {
+    if (/authorization|access[_-]?token|secret|password|credential/i.test(key)) return [key, "[REDACTED]"];
+    return [key, sanitizeMetaPayload(item)];
+  }));
 }
 
 async function deleteMeta<T extends MetaResponse>(path: string, accessToken: string, stage: MetaRequestStage): Promise<T> {
@@ -380,8 +438,75 @@ async function workspaceMetaCredentials(workspaceId: string) {
   };
 }
 
+const templateMediaTypes = new Set([
+  "image/jpeg",
+  "image/png",
+  "video/mp4",
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+]);
+
+export async function uploadWhatsAppTemplateMedia(workspaceId: string, input: { bytes: Uint8Array; mimeType: string; fileName: string }) {
+  const { appId } = requireMetaConfiguration();
+  const { accessToken } = await workspaceMetaCredentials(workspaceId);
+  const mimeType = input.mimeType.toLowerCase();
+  if (!templateMediaTypes.has(mimeType)) throw new AppError(422, "Template media must be a JPEG, PNG, MP4, PDF, DOC, or DOCX file", "META_TEMPLATE_MEDIA_TYPE_INVALID");
+  if (!input.bytes.byteLength) throw new AppError(422, "Template media cannot be empty", "META_TEMPLATE_MEDIA_EMPTY");
+  const sessionUrl = new URL(`https://graph.facebook.com/${env.META_GRAPH_API_VERSION}/${encodeURIComponent(appId)}/uploads`);
+  sessionUrl.searchParams.set("file_length", String(input.bytes.byteLength));
+  sessionUrl.searchParams.set("file_type", mimeType);
+  sessionUrl.searchParams.set("file_name", input.fileName || "template-media");
+  const sessionResponse = await requestMeta(sessionUrl, {
+    method: "POST",
+    headers: { authorization: `Bearer ${accessToken}` },
+  }, "upload_template_media_session");
+  const session = await parseMetaResponse(sessionResponse, "upload_template_media_session");
+  const uploadId = typeof session.id === "string" ? session.id : undefined;
+  if (!uploadId) throw new AppError(502, "Meta did not return a template-media upload session", "META_RESPONSE_INVALID", { stage: "upload_template_media_session" });
+
+  const uploadResponse = await requestMeta(`https://graph.facebook.com/${env.META_GRAPH_API_VERSION}/${uploadId}`, {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${accessToken}`,
+      file_offset: "0",
+      "content-type": mimeType,
+      "content-length": String(input.bytes.byteLength),
+    },
+    body: Buffer.from(input.bytes),
+  }, "upload_template_media_data");
+  const uploaded = await parseMetaResponse(uploadResponse, "upload_template_media_data");
+  const handle = typeof uploaded.h === "string" ? uploaded.h : undefined;
+  if (!handle) throw new AppError(502, "Meta did not return a template-media handle", "META_RESPONSE_INVALID", { stage: "upload_template_media_data" });
+  return { handle };
+}
+
 export async function connectedWhatsAppWabaId(workspaceId: string) {
   return (await workspaceMetaCredentials(workspaceId)).wabaId;
+}
+
+export async function assertWhatsAppCatalogReady(workspaceId: string) {
+  const { accessToken } = await workspaceMetaCredentials(workspaceId);
+  const account = await prisma.whatsAppBusinessAccount.findFirst({
+    where: { workspaceId, status: "CONNECTED", metaWabaId: { not: null }, encryptedAccessToken: { not: null } },
+    select: { phoneNumbers: { where: { status: "ACTIVE" }, orderBy: [{ updatedAt: "desc" }], take: 1, select: { metaPhoneNumberId: true } } },
+  });
+  const phoneNumberId = account?.phoneNumbers[0]?.metaPhoneNumberId;
+  if (!phoneNumberId) throw new AppError(409, "Connect an active WhatsApp phone number before using a Catalog template", "META_CATALOG_NOT_READY");
+  const settings = await fetchMeta<{ data?: Array<{ is_catalog_visible?: boolean }> }>(`/${encodeURIComponent(phoneNumberId)}/whatsapp_commerce_settings`, accessToken, "list_templates");
+  if (settings.data?.[0]?.is_catalog_visible !== true) {
+    throw new AppError(422, "Catalog templates require a visible Meta catalog on the connected WhatsApp number", "META_CATALOG_NOT_READY");
+  }
+}
+
+export async function getWhatsAppTemplateCapabilities(workspaceId: string) {
+  try {
+    await assertWhatsAppCatalogReady(workspaceId);
+    return { catalogReady: true };
+  } catch (error) {
+    if (error instanceof AppError) return { catalogReady: false };
+    throw error;
+  }
 }
 
 function metaPathFromNextUrl(value: unknown) {
@@ -475,7 +600,7 @@ export async function deleteWhatsAppTemplate(workspaceId: string, metaTemplateId
   return deleteMeta<MetaResponse>(`/${encodeURIComponent(wabaId)}/message_templates?hsm_id=${encodeURIComponent(metaTemplateId)}&name=${encodeURIComponent(name)}`, accessToken, "delete_template");
 }
 
-export async function sendWhatsAppConversationText(workspaceId: string, conversationId: string, body: string) {
+export async function sendWhatsAppConversationText(workspaceId: string, conversationId: string, body: string, chargeKey?: string) {
   const { encryptionKey } = requireMetaConfiguration();
   const conversation = await prisma.conversation.findFirst({
     where: { id: conversationId, workspaceId },
@@ -527,16 +652,19 @@ export async function sendWhatsAppConversationText(workspaceId: string, conversa
   if (!body.trim()) throw new AppError(422, "Message text cannot be empty", "MESSAGE_TEXT_REQUIRED");
 
   const accessToken = decryptSecret(phone.businessAccount.encryptedAccessToken, encryptionKey);
-  const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(phone.metaPhoneNumberId)}/messages`, accessToken, {
-    messaging_product: "whatsapp",
-    recipient_type: "individual",
-    to,
-    type: "text",
-    text: { body },
-  }, "send_message");
-  const metaMessageId = sent.messages?.[0]?.id;
-  if (!metaMessageId) throw new AppError(502, "Meta accepted the message but did not return a message ID. Please try again.", "META_RESPONSE_INVALID", { stage: "send_message" });
-  return { metaMessageId, phoneNumberId: phone.id, sentAt: new Date() };
+  const { value: metaMessageId, walletCharge } = await chargeAndRun(workspaceId, "conversation_text", chargeKey, async () => {
+    const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(phone.metaPhoneNumberId)}/messages`, accessToken, {
+      messaging_product: "whatsapp",
+      recipient_type: "individual",
+      to,
+      type: "text",
+      text: { body },
+    }, "send_message");
+    const providerMessageId = sent.messages?.[0]?.id;
+    if (!providerMessageId) throw new AppError(502, "Meta accepted the message but did not return a message ID. Please try again.", "META_RESPONSE_INVALID", { stage: "send_message" });
+    return providerMessageId;
+  });
+  return { metaMessageId, phoneNumberId: phone.id, sentAt: new Date(), walletCharge };
 }
 
 type WhatsAppMediaType = "IMAGE" | "VIDEO" | "AUDIO" | "DOCUMENT";
@@ -549,7 +677,7 @@ function mediaBytes(dataUrl: string) {
   return Buffer.from(dataUrl.slice(dataUrl.indexOf(";base64,") + ";base64,".length), "base64");
 }
 
-export async function sendWhatsAppConversationMedia(workspaceId: string, conversationId: string, type: WhatsAppMediaType, mediaData: string | undefined, existingMediaId: string | undefined, caption: string | undefined, fileName: string | undefined) {
+export async function sendWhatsAppConversationMedia(workspaceId: string, conversationId: string, type: WhatsAppMediaType, mediaData: string | undefined, existingMediaId: string | undefined, caption: string | undefined, fileName: string | undefined, chargeKey?: string) {
   const { encryptionKey } = requireMetaConfiguration();
   const conversation = await prisma.conversation.findFirst({
     where: { id: conversationId, workspaceId },
@@ -591,33 +719,37 @@ export async function sendWhatsAppConversationMedia(workspaceId: string, convers
   }
   const to = conversation.contact.phoneE164.replace(/\D/g, "");
   if (!to) throw new AppError(422, "The contact does not have a valid WhatsApp number", "CONTACT_PHONE_INVALID");
+  if (!existingMediaId && !mediaData) throw new AppError(422, "Media data is required", "MEDIA_DATA_REQUIRED");
   const accessToken = decryptSecret(phone.businessAccount.encryptedAccessToken, encryptionKey);
-  let mediaId = existingMediaId;
-  if (!mediaId) {
-    if (!mediaData) throw new AppError(422, "Media data is required", "MEDIA_DATA_REQUIRED");
-    const mimeType = mediaMimeType(mediaData);
-    const upload = new FormData();
-    upload.append("messaging_product", "whatsapp");
-    upload.append("type", mimeType);
-    upload.append("file", new Blob([mediaBytes(mediaData)], { type: mimeType }), fileName || "upload");
-    const uploaded = await postMetaForm<{ id?: string }>(`/${encodeURIComponent(phone.metaPhoneNumberId)}/media`, accessToken, upload, "upload_media");
-    mediaId = uploaded.id;
-  }
-  if (!mediaId) throw new AppError(502, "Meta did not return a media ID. Please try again.", "META_RESPONSE_INVALID", { stage: "upload_media" });
-  const mediaPayload = type === "IMAGE" ? { id: mediaId, ...(caption ? { caption } : {}) }
-    : type === "VIDEO" ? { id: mediaId, ...(caption ? { caption } : {}) }
-      : type === "AUDIO" ? { id: mediaId }
-        : { id: mediaId, ...(caption ? { caption } : {}), ...(fileName ? { filename: fileName } : {}) };
-  const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(phone.metaPhoneNumberId)}/messages`, accessToken, {
-    messaging_product: "whatsapp",
-    recipient_type: "individual",
-    to,
-    type: type.toLowerCase(),
-    [type.toLowerCase()]: mediaPayload,
-  }, "send_message");
-  const metaMessageId = sent.messages?.[0]?.id;
-  if (!metaMessageId) throw new AppError(502, "Meta accepted the media but did not return a message ID. Please try again.", "META_RESPONSE_INVALID", { stage: "send_message" });
-  return { metaMessageId, mediaId, phoneNumberId: phone.id, sentAt: new Date() };
+  const { value, walletCharge } = await chargeAndRun(workspaceId, "conversation_media", chargeKey, async () => {
+    let mediaId = existingMediaId;
+    if (!mediaId) {
+      if (!mediaData) throw new AppError(422, "Media data is required", "MEDIA_DATA_REQUIRED");
+      const mimeType = mediaMimeType(mediaData);
+      const upload = new FormData();
+      upload.append("messaging_product", "whatsapp");
+      upload.append("type", mimeType);
+      upload.append("file", new Blob([mediaBytes(mediaData)], { type: mimeType }), fileName || "upload");
+      const uploaded = await postMetaForm<{ id?: string }>(`/${encodeURIComponent(phone.metaPhoneNumberId)}/media`, accessToken, upload, "upload_media");
+      mediaId = uploaded.id;
+    }
+    if (!mediaId) throw new AppError(502, "Meta did not return a media ID. Please try again.", "META_RESPONSE_INVALID", { stage: "upload_media" });
+    const mediaPayload = type === "IMAGE" ? { id: mediaId, ...(caption ? { caption } : {}) }
+      : type === "VIDEO" ? { id: mediaId, ...(caption ? { caption } : {}) }
+        : type === "AUDIO" ? { id: mediaId }
+          : { id: mediaId, ...(caption ? { caption } : {}), ...(fileName ? { filename: fileName } : {}) };
+    const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(phone.metaPhoneNumberId)}/messages`, accessToken, {
+      messaging_product: "whatsapp",
+      recipient_type: "individual",
+      to,
+      type: type.toLowerCase(),
+      [type.toLowerCase()]: mediaPayload,
+    }, "send_message");
+    const metaMessageId = sent.messages?.[0]?.id;
+    if (!metaMessageId) throw new AppError(502, "Meta accepted the media but did not return a message ID. Please try again.", "META_RESPONSE_INVALID", { stage: "send_message" });
+    return { metaMessageId, mediaId };
+  });
+  return { ...value, phoneNumberId: phone.id, sentAt: new Date(), walletCharge };
 }
 
 export async function downloadWhatsAppMedia(workspaceId: string, conversationId: string, messageId: string) {
@@ -638,7 +770,7 @@ export async function downloadWhatsAppMedia(workspaceId: string, conversationId:
 }
 
 /** Sends an automation reply and records it in the same conversation shown in Inbox. */
-export async function sendAutomationText(workspaceId: string, conversationId: string, body: string) {
+export async function sendAutomationText(workspaceId: string, conversationId: string, body: string, chargeKey?: string) {
   const { encryptionKey } = requireMetaConfiguration();
   const conversation = await prisma.conversation.findFirst({
     where: { id: conversationId, workspaceId },
@@ -648,25 +780,32 @@ export async function sendAutomationText(workspaceId: string, conversationId: st
     },
   });
   if (!conversation) throw new AppError(404, "Conversation was not found", "CONVERSATION_NOT_FOUND");
-  if (!conversation.phoneNumber?.metaPhoneNumberId || !conversation.phoneNumber.businessAccount.encryptedAccessToken) {
+  const phoneNumber = conversation.phoneNumber;
+  const encryptedAccessToken = phoneNumber?.businessAccount.encryptedAccessToken;
+  if (!phoneNumber?.metaPhoneNumberId || !encryptedAccessToken) {
     throw new AppError(503, "Connect a WhatsApp phone number before sending automation messages", "WHATSAPP_NOT_CONNECTED");
   }
   const to = conversation.contact.phoneE164.replace(/\D/g, "");
   if (!to) throw new AppError(422, "The contact does not have a valid WhatsApp number", "CONTACT_PHONE_INVALID");
-  const accessToken = decryptSecret(conversation.phoneNumber.businessAccount.encryptedAccessToken, encryptionKey);
-  const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(conversation.phoneNumber.metaPhoneNumberId)}/messages`, accessToken, {
-    messaging_product: "whatsapp",
-    to,
-    type: "text",
-    text: { body },
-  }, "send_message");
+  if (!body.trim()) throw new AppError(422, "Message text cannot be empty", "MESSAGE_TEXT_REQUIRED");
+  const accessToken = decryptSecret(encryptedAccessToken, encryptionKey);
+  const { value: metaMessageId, walletCharge } = await chargeAndRun(workspaceId, "automation_text", chargeKey, async () => {
+    const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(phoneNumber.metaPhoneNumberId)}/messages`, accessToken, {
+      messaging_product: "whatsapp",
+      to,
+      type: "text",
+      text: { body },
+    }, "send_message");
+    const providerMessageId = sent.messages?.[0]?.id;
+    if (!providerMessageId) throw new AppError(502, "Meta accepted the automation message but did not return a message ID", "META_RESPONSE_INVALID", { stage: "send_message" });
+    return providerMessageId;
+  });
   const sentAt = new Date();
-  const metaMessageId = sent.messages?.[0]?.id ?? null;
   return prisma.$transaction(async (transaction) => {
     const message = await transaction.message.create({
       data: {
         workspaceId, conversationId: conversation.id, contactId: conversation.contactId, metaMessageId,
-        direction: "OUTGOING", type: "TEXT", status: "SENT", text: body, payload: { source: "automation" }, sentAt,
+        direction: "OUTGOING", type: "TEXT", status: "SENT", text: body, payload: { source: "automation", ...(walletCharge ? { walletCharge: { entryId: walletCharge.entryId, amountMinorUnits: walletCharge.amountMinorUnits.toString() } } : {}) }, sentAt,
       },
       select: { id: true, metaMessageId: true, sentAt: true },
     });
@@ -707,7 +846,7 @@ export async function sendTestMessage(workspaceId: string, to: string) {
     recipient_type: "individual",
     to: to.replace(/\D/g, ""),
     type: "text",
-    text: { body: "This is a test message from Aikonnect." },
+    text: { body: "This is a test message from Marento." },
   }, "send_message");
   const messageId = sent.messages?.[0]?.id;
   if (!messageId) throw new AppError(502, "Meta accepted the request but did not return a message ID. The test message could not be confirmed.", "META_RESPONSE_INVALID", { stage: "send_message" });
@@ -729,6 +868,7 @@ export async function sendWhatsAppTemplateMessage(
   templateName: string,
   languageCode: string,
   parameters: WhatsAppTemplateParameter[],
+  chargeKey?: string,
 ) {
   const { encryptionKey } = requireMetaConfiguration();
   const connection = await prisma.whatsAppBusinessAccount.findFirst({
@@ -758,20 +898,23 @@ export async function sendWhatsAppTemplateMessage(
   if (!templateName.trim() || !languageCode.trim()) throw new AppError(422, "The campaign template identity is incomplete", "CAMPAIGN_TEMPLATE_IDENTITY_INVALID");
 
   const accessToken = env.META_SYSTEM_USER_ACCESS_TOKEN ?? decryptSecret(connection.encryptedAccessToken, encryptionKey);
-  const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(phone.metaPhoneNumberId)}/messages`, accessToken, {
-    messaging_product: "whatsapp",
-    recipient_type: "individual",
-    to: normalizedTo,
-    type: "template",
-    template: {
-      name: templateName,
-      language: { code: languageCode },
-      ...(parameters.length ? { components: [{ type: "body", parameters }] } : {}),
-    },
-  }, "send_message");
-  const metaMessageId = sent.messages?.[0]?.id;
-  if (!metaMessageId) throw new AppError(502, "Meta accepted the campaign message but did not return a message ID", "META_RESPONSE_INVALID", { stage: "send_message", retryable: true });
-  return { metaMessageId, phoneNumberId: phone.id, sentAt: new Date() };
+  const { value: metaMessageId, walletCharge } = await chargeAndRun(workspaceId, "campaign_template", chargeKey, async () => {
+    const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(phone.metaPhoneNumberId)}/messages`, accessToken, {
+      messaging_product: "whatsapp",
+      recipient_type: "individual",
+      to: normalizedTo,
+      type: "template",
+      template: {
+        name: templateName,
+        language: { code: languageCode },
+        ...(parameters.length ? { components: [{ type: "body", parameters }] } : {}),
+      },
+    }, "send_message");
+    const providerMessageId = sent.messages?.[0]?.id;
+    if (!providerMessageId) throw new AppError(502, "Meta accepted the campaign message but did not return a message ID", "META_RESPONSE_INVALID", { stage: "send_message", retryable: true });
+    return providerMessageId;
+  });
+  return { metaMessageId, phoneNumberId: phone.id, sentAt: new Date(), walletCharge };
 }
 
 /** Removes the connection from this workspace. Full coexistence offboarding is done in WhatsApp Business. */

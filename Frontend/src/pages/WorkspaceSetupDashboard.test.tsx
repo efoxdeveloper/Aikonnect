@@ -106,6 +106,15 @@ describe("workspace setup experience", () => {
     ));
   });
 
+  it("triggers the active checklist step when its Next badge is clicked", async () => {
+    renderWithAuth(<WorkspaceSetupDashboard />, "/dashboard");
+
+    expect(await screen.findByRole("heading", { name: "Welcome, Pawan" })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Next: Connect WhatsApp Business" }));
+
+    expect(screen.getByRole("dialog", { name: "2 Ways to Setup WhatsApp API Number" })).toBeInTheDocument();
+  });
+
   it("shows launch actions instead of the onboarding checklist when setup is complete", async () => {
     const completed: WorkspaceSetupData = {
       ...setupData,

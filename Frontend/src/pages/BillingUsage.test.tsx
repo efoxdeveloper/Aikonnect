@@ -25,7 +25,7 @@ const auth = (permissions: string[] = ["billing.read"]): AuthContextValue => ({
 });
 
 const usage = {
-  wallet: { currency: "INR", balancePaise: 12500, balance: 125, configuredFromBackend: true },
+  wallet: { currency: "INR", balanceMinorUnits: "12500", balance: "125.00", configuredFromBackend: false },
   filters: { from: "2026-08-01T00:00:00.000Z", to: "2026-08-31T23:59:59.999Z" },
   summary: { totalMessages: 42, incomingMessages: 18, outgoingMessages: 24, deliveredMessages: 22, readMessages: 16, failedMessages: 2, engagedContacts: 9, activeConversations: 7, mediaMessages: 3 },
   breakdown: [
@@ -42,7 +42,7 @@ function renderPage(value = auth()) {
 }
 
 describe("BillingUsage", () => {
-  beforeEach(() => vi.mocked(apiRequest).mockResolvedValue(usage));
+  beforeEach(() => vi.mocked(apiRequest).mockImplementation(async (path) => String(path).includes("/wallet/ledger") ? { items: [], pagination: { page: 1, pageSize: 50, total: 0, totalPages: 1, hasNext: false, hasPrevious: false } } : usage));
 
   it("loads workspace usage with a selected date range", async () => {
     renderPage();
@@ -55,13 +55,14 @@ describe("BillingUsage", () => {
     expect(screen.getByText("Meta billing is separate")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "7 days" }));
-    await waitFor(() => expect(apiRequest).toHaveBeenLastCalledWith(expect.stringContaining("/workspaces/workspace-1/usage?"), { headers: { authorization: "Bearer access-token" } }));
+    await waitFor(() => expect(vi.mocked(apiRequest).mock.calls.some(([path]) => String(path).includes("/workspaces/workspace-1/usage?"))).toBe(true));
 
     fireEvent.change(screen.getByLabelText("Usage start date"), { target: { value: "2026-08-01" } });
     fireEvent.change(screen.getByLabelText("Usage end date"), { target: { value: "2026-08-31" } });
     fireEvent.click(screen.getByRole("button", { name: "Apply date range" }));
     await waitFor(() => {
-      const requestUrl = String(vi.mocked(apiRequest).mock.lastCall?.[0]);
+      const usageCall = [...vi.mocked(apiRequest).mock.calls].reverse().find((call) => String(call[0]).includes("/workspaces/workspace-1/usage?") && String(call[0]).includes("from=2026-08-01"));
+      const requestUrl = String(usageCall?.[0]);
       expect(decodeURIComponent(requestUrl)).toContain("from=2026-08-01T00:00:00.000Z");
       expect(decodeURIComponent(requestUrl)).toContain("to=2026-08-31T23:59:59.999Z");
     });

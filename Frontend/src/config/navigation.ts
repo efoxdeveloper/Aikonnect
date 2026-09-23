@@ -31,6 +31,7 @@ export interface NavigationItem {
   icon: AnimatedIcon;
   badge?: { text: string; variant: "danger" | "warning" | "success" };
   children?: NavigationItem[];
+  platformRoles?: Array<"SUPPORT" | "OPERATIONS" | "BILLING" | "ADMIN" | "SUPER_ADMIN">;
 }
 
 export interface NavigationGroup { title?: string; items: NavigationItem[]; }
@@ -64,5 +65,26 @@ export const navigationGroups: NavigationGroup[] = [
     { title: "Team Members", url: "/team-members", icon: UsersRound },
     { title: "Billing & Usage", url: "/billing", icon: WalletCards },
     { title: "Settings", url: "/account-settings", icon: UserRound },
+  ] },
+];
+
+export const platformNavigationGroups: NavigationGroup[] = [
+  { items: [{ title: "Overview", url: "/admin", icon: House }] },
+  { title: "Customers", items: [
+    { title: "Workspaces", url: "/admin/workspaces", icon: PanelsTopLeft, platformRoles: ["SUPPORT", "OPERATIONS", "ADMIN", "SUPER_ADMIN"] },
+    { title: "Users", url: "/admin/users", icon: Users, platformRoles: ["SUPPORT", "OPERATIONS", "ADMIN", "SUPER_ADMIN"] },
+    { title: "WhatsApp connections", url: "/admin/whatsapp", icon: MessageCircle, platformRoles: ["SUPPORT", "OPERATIONS", "ADMIN", "SUPER_ADMIN"] },
+    { title: "Billing & subscriptions", url: "/admin/billing", icon: WalletCards, platformRoles: ["BILLING", "ADMIN", "SUPER_ADMIN"] },
+    { title: "Usage & limits", url: "/admin/usage", icon: ChartNoAxesCombined, platformRoles: ["BILLING", "OPERATIONS", "ADMIN", "SUPER_ADMIN"] },
+  ] },
+  { title: "Operations", items: [
+    { title: "System health", url: "/admin/health", icon: ChartSpline, platformRoles: ["OPERATIONS", "ADMIN", "SUPER_ADMIN"] },
+    { title: "Webhook endpoints", url: "/admin/webhooks", icon: Webhook, platformRoles: ["OPERATIONS", "ADMIN", "SUPER_ADMIN"] },
+    { title: "Audit log", url: "/admin/audit-logs", icon: FileText, platformRoles: ["SUPPORT", "ADMIN", "SUPER_ADMIN"] },
+  ] },
+  { title: "Administration", items: [
+    { title: "Platform admins", url: "/admin/platform-admins", icon: UsersRound, platformRoles: ["ADMIN", "SUPER_ADMIN"] },
+    { title: "Feature flags", url: "/admin/feature-flags", icon: Blocks, platformRoles: ["ADMIN", "SUPER_ADMIN"] },
+    { title: "Platform settings", url: "/admin/settings", icon: UserRound, platformRoles: ["ADMIN", "SUPER_ADMIN"] },
   ] },
 ];

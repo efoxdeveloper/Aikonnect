@@ -7,6 +7,9 @@ declare global {
         email: string;
         emailVerifiedAt: Date | null;
       };
+      platformAccess?: {
+        role: "SUPPORT" | "OPERATIONS" | "BILLING" | "ADMIN" | "SUPER_ADMIN";
+      };
       workspaceAccess?: {
         workspaceId: string;
         membershipId: string;

@@ -25,7 +25,7 @@ function serialize(campaign: CampaignRecord) {
     ...campaign,
     kind: campaign.kind === "ONGOING" ? "ongoing" : campaign.kind === "API" ? "api" : "one_time",
     createdById: campaign.createdBy?.id ?? null,
-    createdBy: campaign.createdBy ? `${campaign.createdBy.firstName} ${campaign.createdBy.lastName}`.trim() || campaign.createdBy.email : "AiKonnect Admin",
+    createdBy: campaign.createdBy ? `${campaign.createdBy.firstName} ${campaign.createdBy.lastName}`.trim() || campaign.createdBy.email : "Marento Admin",
     totalCost: campaign.totalCost === null ? null : Number(campaign.totalCost),
   };
 }

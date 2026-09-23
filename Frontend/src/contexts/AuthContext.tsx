@@ -9,10 +9,12 @@ export type AuthUser = {
   firstName: string;
   lastName: string;
   emailVerifiedAt: string | null;
+  platformRole?: "NONE" | "SUPPORT" | "OPERATIONS" | "BILLING" | "ADMIN" | "SUPER_ADMIN";
   memberships: Array<{
     id: string;
     workspace: {
       id: string;
+      tenantId?: string;
       name: string;
       slug: string;
       country: string | null;

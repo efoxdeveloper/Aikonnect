@@ -87,6 +87,7 @@ async function sendRecipient(campaignId: string, recipientId: string) {
     campaign.metaTemplateName,
     campaign.templateLanguageCode,
     templateParameters(campaign.templateBody, variables(campaign.templateVariables), recipient.contact),
+    `campaign:${campaign.id}:recipient:${recipient.id}`,
   );
   const sentAt = sent.sentAt;
   await prisma.$transaction(async (transaction) => {
@@ -97,7 +98,7 @@ async function sendRecipient(campaignId: string, recipientId: string) {
       select: { id: true },
     });
     await transaction.message.create({
-      data: { workspaceId: campaign.workspaceId, conversationId: conversation.id, contactId: recipient.contact!.id, metaMessageId: sent.metaMessageId, direction: "OUTGOING", type: "TEXT", status: "SENT", text: campaign.templateBody, payload: { source: "campaign", campaignId: campaign.id }, sentAt },
+      data: { workspaceId: campaign.workspaceId, conversationId: conversation.id, contactId: recipient.contact!.id, metaMessageId: sent.metaMessageId, direction: "OUTGOING", type: "TEXT", status: "SENT", text: campaign.templateBody, payload: { source: "campaign", campaignId: campaign.id, ...(sent.walletCharge ? { walletCharge: { entryId: sent.walletCharge.entryId, amountMinorUnits: sent.walletCharge.amountMinorUnits.toString() } } : {}) }, sentAt },
     });
     await transaction.campaignRecipient.updateMany({ where: { id: recipient.id, status: "ATTEMPTED" }, data: { status: "SENT", metaMessageId: sent.metaMessageId, sentAt, failedAt: null, failureReason: null } });
     await transaction.conversation.update({ where: { id: conversation.id }, data: { lastMessagePreview: `You: ${campaign.templateBody}`, lastMessageAt: sentAt } });

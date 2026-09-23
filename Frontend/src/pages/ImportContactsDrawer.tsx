@@ -376,7 +376,7 @@ function downloadTemplate(customFields: ContactCustomFieldDefinition[]) {
   );
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = "aikonnect-contacts-template.csv";
+  anchor.download = "marento-contacts-template.csv";
   anchor.click();
   URL.revokeObjectURL(url);
 }

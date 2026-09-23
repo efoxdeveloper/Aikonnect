@@ -4,7 +4,7 @@ import { Dashboard } from "@/pages/Dashboard";
 import { Login } from "@/pages/Login";
 import { Register } from "@/pages/Register";
 import { ForgotPassword } from "@/pages/ForgotPassword";
-import { ProtectedRoute, PublicOnlyRoute } from "@/routes/AuthGuards";
+import { PlatformAdminRoute, ProtectedRoute, PublicOnlyRoute } from "@/routes/AuthGuards";
 import { VerifyEmail } from "@/pages/VerifyEmail";
 import { InvitationAccept } from "@/pages/InvitationAccept";
 import { ContactDetails } from "@/pages/ContactDetails";
@@ -17,6 +17,9 @@ import { Workflows } from "@/pages/Workflows";
 import { WorkflowBuilder } from "@/pages/WorkflowBuilder";
 import { Tasks } from "@/pages/Tasks";
 import { ApiWebhooks } from "@/pages/ApiWebhooks";
+import { AdminDashboard } from "@/pages/AdminDashboard";
+import { PlatformAdminLayout } from "@/layouts/PlatformAdminLayout";
+import { PlatformAdminSection } from "@/pages/PlatformAdminSection";
 
 const paths = ["dashboard/analytics", "dashboard/activity", "contacts", "campaigns", "templates", "createtemplate", "pipelines", "catalog", "orders", "reports", "integrations", "settings", "account-settings", "payments", "click-to-whatsapp-ads", "conversation-analytics", "campaign-analytics", "webhook-events", "whatsapp-account", "team-members", "team-members/roles", "billing"];
 export function AppRoutes() {
@@ -31,6 +34,22 @@ export function AppRoutes() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
       </Route>
       <Route element={<ProtectedRoute />}>
+        <Route element={<PlatformAdminRoute />}>
+          <Route element={<PlatformAdminLayout />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/workspaces" element={<PlatformAdminSection />} />
+            <Route path="/admin/users" element={<PlatformAdminSection />} />
+            <Route path="/admin/platform-admins" element={<PlatformAdminSection />} />
+            <Route path="/admin/whatsapp" element={<PlatformAdminSection />} />
+            <Route path="/admin/billing" element={<PlatformAdminSection />} />
+            <Route path="/admin/usage" element={<PlatformAdminSection />} />
+            <Route path="/admin/health" element={<PlatformAdminSection />} />
+            <Route path="/admin/webhooks" element={<PlatformAdminSection />} />
+            <Route path="/admin/audit-logs" element={<PlatformAdminSection />} />
+            <Route path="/admin/feature-flags" element={<PlatformAdminSection />} />
+            <Route path="/admin/settings" element={<PlatformAdminSection />} />
+          </Route>
+        </Route>
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/contacts/:contactId" element={<ContactDetails />} />

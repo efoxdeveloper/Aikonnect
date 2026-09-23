@@ -1,8 +1,9 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import { Box, Drawer } from "@mui/material";
+import { ShieldCheck } from "@animateicons/react/lucide";
 import { useLocation } from "react-router-dom";
 import { useSidebar } from "@/hooks/use-sidebar";
-import { navigationGroups, type NavigationItem } from "@/config/navigation";
+import { navigationGroups, platformNavigationGroups, type NavigationItem } from "@/config/navigation";
 import { SidebarSection } from "./SidebarSection";
 import { AuthContext } from "@/contexts/AuthContext";
 import { getActiveMembership } from "@/lib/workspace";
@@ -15,7 +16,7 @@ const appBuild = import.meta.env.VITE_APP_BUILD ?? "local";
 
 function isItemActive(item: NavigationItem, pathname: string) {
   return Boolean(
-    (item.url && (item.url === pathname || pathname.startsWith(`${item.url}/`))) ||
+    (item.url && (item.url === pathname || (item.url !== "/admin" && pathname.startsWith(`${item.url}/`)))) ||
       item.children?.some((child) => child.url === pathname),
   );
 }
@@ -27,7 +28,7 @@ export function SidebarVersion() {
   </Box>;
 }
 
-export function AppSidebar() {
+export function AppSidebar({ platformOnly = false }: { platformOnly?: boolean }) {
   const { state, isMobile, openMobile, setOpenMobile } = useSidebar();
   const pathname = useLocation().pathname;
   const auth = useContext(AuthContext);
@@ -38,14 +39,21 @@ export function AppSidebar() {
     accessToken: auth?.accessToken,
     enabled: canReadInbox,
   });
-  const sidebarGroups = useMemo(() => navigationGroups.map((group) => ({
-    ...group,
-    items: group.items.map((item) => item.title === "Inbox"
-      ? { ...item, badge: unreadCount > 0 ? { text: unreadCount > 99 ? "99+" : String(unreadCount), variant: "danger" as const } : undefined }
-      : item),
-  })), [unreadCount]);
-  const activeSection = navigationGroups.find((group) => group.title && group.items.some((item) => isItemActive(item, pathname)))?.title;
-  const [openSection, setOpenSection] = useState<string | null>(activeSection ?? navigationGroups.find((group) => group.title)?.title ?? null);
+  const platformRole = auth?.user?.platformRole;
+  const canAccessPlatformAdmin = Boolean(platformRole && platformRole !== "NONE");
+  const visiblePlatformRole = platformRole && platformRole !== "NONE" ? platformRole : undefined;
+  const sidebarGroups = useMemo(() => {
+    const sourceGroups = platformOnly ? platformNavigationGroups : navigationGroups;
+    const groups = sourceGroups.map((group) => ({
+      ...group,
+      items: group.items.filter((item) => !platformOnly || !item.platformRoles || Boolean(visiblePlatformRole && item.platformRoles.includes(visiblePlatformRole))).map((item) => item.title === "Inbox"
+        ? { ...item, badge: unreadCount > 0 ? { text: unreadCount > 99 ? "99+" : String(unreadCount), variant: "danger" as const } : undefined }
+        : item),
+    }));
+    return !platformOnly && canAccessPlatformAdmin ? [...groups, { title: "Platform", items: [{ title: "Admin console", url: "/admin", icon: ShieldCheck }] }] : groups;
+  }, [canAccessPlatformAdmin, platformOnly, unreadCount, visiblePlatformRole]);
+  const activeSection = sidebarGroups.find((group) => group.title && group.items.some((item) => isItemActive(item, pathname)))?.title;
+  const [openSection, setOpenSection] = useState<string | null>(activeSection ?? sidebarGroups.find((group) => group.title)?.title ?? null);
   const width = isMobile ? "var(--sidebar-width)" : state === "collapsed" ? "var(--sidebar-collapsed-width)" : "var(--sidebar-width)";
 
   useEffect(() => {

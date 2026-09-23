@@ -30,7 +30,7 @@ const envSchema = z.object({
   SMTP_USER: z.string().min(1).optional(),
   SMTP_PASSWORD: z.string().min(1).optional(),
   SMTP_FROM_EMAIL: z.email().optional(),
-  SMTP_FROM_NAME: z.string().min(1).default("AiKonnect"),
+  SMTP_FROM_NAME: z.string().min(1).default("Marento"),
   DATABASE_URL: z.string().min(1),
   DB_POOL_MAX: z.coerce.number().int().positive().default(20),
   DB_IDLE_TIMEOUT_MS: z.coerce.number().int().positive().default(30_000),
@@ -49,11 +49,11 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string().min(1).optional(),
   GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
   GOOGLE_REDIRECT_URI: z.url().optional(),
-  GROQ_API_KEY: z.string().min(1).optional(),
-  GROQ_MODEL: z.string().min(1).default("openai/gpt-oss-20b"),
-  WALLET_CURRENCY: z.string().regex(/^[A-Z]{3}$/).default("INR"),
-  WALLET_BALANCE_PAISE: z.coerce.number().int().nonnegative().max(9_000_000_000).default(0),
-});
+    GROQ_API_KEY: z.string().min(1).optional(),
+    GROQ_MODEL: z.string().min(1).default("openai/gpt-oss-20b"),
+    WALLET_CURRENCY: z.string().regex(/^[A-Z]{3}$/).default("INR"),
+    WALLET_OUTBOUND_MESSAGE_RATE_MINOR_UNITS: z.coerce.bigint().nonnegative().default(0n),
+  });
 
 const parsedEnv = envSchema.safeParse(process.env);
 

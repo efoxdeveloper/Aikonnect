@@ -112,6 +112,23 @@ describe("PublicOnlyRoute", () => {
     );
     expect(screen.getByRole("heading", { name: "Dashboard" })).toBeInTheDocument();
   });
+
+  it("sends platform admins to the platform control plane after login", () => {
+    const adminAuth = authValue("authenticated");
+    if (adminAuth.user) adminAuth.user = { ...adminAuth.user, platformRole: "SUPER_ADMIN" };
+    render(
+      <AuthContext.Provider value={adminAuth}>
+        <MemoryRouter initialEntries={["/login"]}>
+          <Routes>
+            <Route element={<PublicOnlyRoute />}><Route path="/login" element={<h1>Sign in</h1>} /></Route>
+            <Route path="/admin" element={<h1>Platform control plane</h1>} />
+            <Route path="/dashboard" element={<h1>Dashboard</h1>} />
+          </Routes>
+        </MemoryRouter>
+      </AuthContext.Provider>,
+    );
+    expect(screen.getByRole("heading", { name: "Platform control plane" })).toBeInTheDocument();
+  });
 });
 
 describe("getSafeRedirectPath", () => {

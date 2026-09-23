@@ -14,6 +14,15 @@ enum UserStatus {
   DISABLED
 }
 
+enum PlatformRole {
+  NONE
+  SUPPORT
+  OPERATIONS
+  BILLING
+  ADMIN
+  SUPER_ADMIN
+}
+
 enum MembershipStatus {
   ACTIVE
   SUSPENDED
@@ -148,6 +157,11 @@ enum CampaignRecipientStatus {
   FAILED
 }
 
+enum WalletEntryDirection {
+  CREDIT
+  DEBIT
+}
+
 model User {
   id                         String                   @id @default(uuid()) @db.Uuid
   email                      String                   @unique @db.VarChar(320)
@@ -156,11 +170,13 @@ model User {
   lastName                   String                   @map("last_name") @db.VarChar(100)
   phone                      String?                  @db.VarChar(30)
   status                     UserStatus               @default(ACTIVE)
+  platformRole               PlatformRole             @default(NONE) @map("platform_role")
   emailVerifiedAt            DateTime?                @map("email_verified_at") @db.Timestamptz(3)
   lastLoginAt                DateTime?                @map("last_login_at") @db.Timestamptz(3)
   createdAt                  DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt                  DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
   ownedWorkspaces            Workspace[]              @relation("WorkspaceOwner")
+  ownedTenants               Tenant[]                 @relation("TenantOwner")
   memberships                WorkspaceMember[]
   sessions                   Session[]
   oauthAccounts              OAuthAccount[]
@@ -190,6 +206,8 @@ model User {
   campaignsCreated           Campaign[]               @relation("CampaignCreator")
   apiKeysCreated             PublicApiKey[]           @relation("ApiKeyCreator")
   webhookEndpointsCreated    WebhookEndpoint[]        @relation("WebhookEndpointCreator")
+  walletLedgerEntries         WalletLedgerEntry[]      @relation("WalletLedgerActor")
+  platformAuditLogs          PlatformAuditLog[]       @relation("PlatformAuditActor")
 
   @@index([status])
   @@map("users")
@@ -210,8 +228,25 @@ model OAuthAccount {
   @@map("oauth_accounts")
 }
 
+model Tenant {
+  id          String     @id @default(uuid()) @db.Uuid
+  name        String     @db.VarChar(160)
+  slug        String     @unique @db.VarChar(180)
+  ownerId     String     @map("owner_id") @db.Uuid
+  createdAt   DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+  owner       User       @relation("TenantOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  workspaces  Workspace[]
+  wallet      Wallet?
+  ledgerEntries WalletLedgerEntry[]
+
+  @@index([ownerId])
+  @@map("tenants")
+}
+
 model Workspace {
   id                       String                    @id @default(uuid()) @db.Uuid
+  tenantId                 String                    @map("tenant_id") @db.Uuid
   name                     String                    @db.VarChar(160)
   slug                     String                    @unique @db.VarChar(180)
   companyName              String?                   @map("company_name") @db.VarChar(160)
@@ -227,6 +262,7 @@ model Workspace {
   createdAt                DateTime                  @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt                DateTime                  @updatedAt @map("updated_at") @db.Timestamptz(3)
   owner                    User                      @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  tenant                   Tenant                    @relation(fields: [tenantId], references: [id], onDelete: Restrict)
   memberships              WorkspaceMember[]
   roles                    Role[]
   invitations              WorkspaceInvitation[]
@@ -250,8 +286,10 @@ model Workspace {
   campaignRecipients       CampaignRecipient[]
   apiKeys                  PublicApiKey[]
   webhookEndpoints         WebhookEndpoint[]
+  walletLedgerEntries      WalletLedgerEntry[]
 
   @@index([ownerId])
+  @@index([tenantId])
   @@map("workspaces")
 }
 
@@ -958,6 +996,64 @@ model Session {
   @@index([userId, revokedAt])
   @@index([expiresAt])
   @@map("sessions")
+}
+
+model Wallet {
+  id                 String              @id @default(uuid()) @db.Uuid
+  tenantId           String              @unique @map("tenant_id") @db.Uuid
+  currency           String              @db.Char(3)
+  balanceMinorUnits  BigInt              @default(0) @map("balance_minor_units")
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  tenant             Tenant              @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  entries            WalletLedgerEntry[]
+
+  @@map("wallets")
+}
+
+model WalletLedgerEntry {
+  id                  String              @id @default(uuid()) @db.Uuid
+  walletId            String              @map("wallet_id") @db.Uuid
+  tenantId            String              @map("tenant_id") @db.Uuid
+  workspaceId         String?             @map("workspace_id") @db.Uuid
+  direction           WalletEntryDirection
+  amountMinorUnits    BigInt              @map("amount_minor_units")
+  balanceAfterMinorUnits BigInt           @map("balance_after_minor_units")
+  idempotencyKey      String              @map("idempotency_key") @db.VarChar(255)
+  reason              String              @db.VarChar(80)
+  description         String?             @db.Text
+  metadata            Json                @default("{}") @db.JsonB
+  createdById         String?             @map("created_by_id") @db.Uuid
+  createdAt           DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  wallet              Wallet              @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  tenant             Tenant              @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  workspace           Workspace?          @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  createdBy           User?               @relation("WalletLedgerActor", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@unique([walletId, idempotencyKey])
+  @@index([tenantId, createdAt])
+  @@index([workspaceId, createdAt])
+  @@index([walletId, createdAt])
+  @@map("wallet_ledger_entries")
+}
+
+model PlatformAuditLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  actorUserId String   @map("actor_user_id") @db.Uuid
+  action      String   @db.VarChar(120)
+  resourceType String  @map("resource_type") @db.VarChar(80)
+  resourceId  String?  @map("resource_id") @db.Uuid
+  workspaceId String?  @map("workspace_id") @db.Uuid
+  metadata    Json     @default("{}") @db.JsonB
+  ipAddress   String?  @map("ip_address") @db.VarChar(45)
+  userAgent   String?  @map("user_agent") @db.VarChar(500)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  actorUser   User     @relation("PlatformAuditActor", fields: [actorUserId], references: [id], onDelete: Restrict)
+
+  @@index([createdAt])
+  @@index([actorUserId, createdAt])
+  @@index([resourceType, resourceId, createdAt])
+  @@map("platform_audit_logs")
 }
 
 model EmailVerificationToken {
