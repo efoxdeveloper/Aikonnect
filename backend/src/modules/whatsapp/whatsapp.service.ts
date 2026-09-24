@@ -47,7 +47,7 @@ type MetaRequestStage =
 // Allow for slow provider connections while bounding unavailable requests.
 const META_REQUEST_TIMEOUT_MS = 60_000;
 const META_OPTIONAL_REQUEST_TIMEOUT_MS = 15_000;
-const META_EMBEDDED_SIGNUP_TIMEOUT_MS = 20_000;
+const META_EMBEDDED_SIGNUP_TIMEOUT_MS = 30_000;
 
 type MetaRequestOptions = {
   attempts?: number;
