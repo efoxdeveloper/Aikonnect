@@ -24,7 +24,6 @@ const { PERMISSIONS } = await import("../src/modules/workspaces/permissions.js")
 
 const signup = { code: "test-code", wabaId: "test-waba", phoneNumberId: "test-phone" };
 const supportedFields = ["id", "display_phone_number", "verified_name", "quality_rating", "is_on_biz_app", "platform_type"];
-const standardSupportedFields = ["id", "display_phone_number", "verified_name", "quality_rating"];
 const phone = { id: "test-phone", display_phone_number: "+15555550100", verified_name: "Test Business", quality_rating: "GREEN", is_on_biz_app: true, platform_type: "CLOUD_API" };
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status });
 
@@ -38,7 +37,6 @@ function stubDelegate(t: TestContext, target: any, method: string, implementatio
 
 function fixture(t: TestContext, options: {
   phone?: Record<string, unknown>;
-  standardFields?: boolean;
   list?: unknown;
   subscription?: unknown;
   subscriptionFails?: boolean;
@@ -47,7 +45,6 @@ function fixture(t: TestContext, options: {
   genericSyncError?: boolean;
   missingSyncId?: boolean;
   registrationFails?: boolean;
-  directPhoneFails?: boolean;
   creditLine?: boolean;
 } = {}) {
   const steps: string[] = [];
@@ -95,15 +92,12 @@ function fixture(t: TestContext, options: {
     if (url.pathname === "/v25.0/test-waba") return json({ id: signup.wabaId, name: "Test Business" });
     if (url.pathname.endsWith("/test-phone") || url.pathname.endsWith("/phone_numbers")) {
       steps.push("phone");
-      if (url.pathname.endsWith("/test-phone") && options.directPhoneFails) {
-        return json({ error: { message: "Unsupported get request", code: 100 } }, 400);
-      }
       // Model Meta's real contract: an unsupported field rejects the entire lookup.
       const fields = (url.searchParams.get("fields") ?? "").split(",");
       if (fields.some((field) => !supportedFields.includes(field)) || options.phoneFails) {
         return json({ error: { message: "(#100) Tried accessing nonexisting field (messaging_limit)", code: 100 } }, 400);
       }
-      const expectedFields = options.standardFields ? standardSupportedFields : supportedFields;
+      const expectedFields = supportedFields;
       assert.deepEqual(fields, expectedFields);
       return json(url.pathname.endsWith("/phone_numbers") ? { data: options.list ?? [options.phone ?? phone] } : options.phone ?? phone);
     }
@@ -154,13 +148,13 @@ for (const omitPhoneId of [false, true]) {
   });
 }
 
-test("fresh-number signup uses the standard phone fields, registers the number, and skips coexistence sync", async (t) => {
-  const state = fixture(t, { standardFields: true, directPhoneFails: true });
+test("fresh-number signup registers the selected ID without a blocking phone lookup", async (t) => {
+  const state = fixture(t);
   const result = await completeEmbeddedSignup("workspace-id", { ...signup, mode: "new-number", pin: "123456" });
   assert.equal(result.coexistence, false);
   assert.deepEqual(result.syncWarnings, []);
   assert.deepEqual(result.syncRequestIds, []);
-  assert.deepEqual(state.steps, ["exchange", "phone", "register", "persist", "subscribe-start", "subscribed"]);
+  assert.deepEqual(state.steps, ["exchange", "register", "persist", "subscribe-start", "subscribed"]);
   assert.equal(state.accountWrites[0]?.create.workspaceId, "workspace-id");
   assert.equal(state.phoneWrites[0]?.create.isOnBusinessApp, false);
 });

@@ -6,6 +6,7 @@ import { AppError } from "../../middleware/error-handler.js";
 import { decryptSecret, encryptSecret } from "../../utils/crypto.js";
 import { chargeOutboundMessage, refundWalletCharge } from "../wallet/wallet.service.js";
 import type { EmbeddedSignupInput } from "./whatsapp.schemas.js";
+import { META_TEMPLATE_VARIABLE_RATIO_MESSAGE } from "../templates/meta-template-payload.js";
 
 type MetaResponse = Record<string, unknown> & {
   error?: {
@@ -45,6 +46,7 @@ type MetaRequestStage =
 
 // Allow for slow provider connections while bounding unavailable requests.
 const META_REQUEST_TIMEOUT_MS = 60_000;
+const META_OPTIONAL_REQUEST_TIMEOUT_MS = 15_000;
 
 async function chargeAndRun<T>(workspaceId: string, source: string, chargeKey: string | undefined, operation: () => Promise<T>) {
   const walletCharge = await chargeOutboundMessage({
@@ -97,9 +99,9 @@ function requireMetaConfiguration() {
   return { appId: env.META_APP_ID, appSecret: env.META_APP_SECRET, encryptionKey: env.META_TOKEN_ENCRYPTION_KEY };
 }
 
-function networkFailureReason(error: unknown) {
+function networkFailureReason(error: unknown, timeoutMs = META_REQUEST_TIMEOUT_MS) {
   if (error instanceof DOMException && (error.name === "TimeoutError" || error.name === "AbortError")) {
-    return `Meta did not respond within ${META_REQUEST_TIMEOUT_MS / 1_000} seconds.`;
+    return `Meta did not respond within ${timeoutMs / 1_000} seconds.`;
   }
   const cause = error instanceof Error && "cause" in error && typeof error.cause === "object" && error.cause
     ? error.cause as { code?: unknown }
@@ -114,16 +116,16 @@ function networkFailureReason(error: unknown) {
   return "The server could not establish a connection to Meta.";
 }
 
-async function requestMeta(url: string | URL, init: RequestInit, stage: MetaRequestStage, attempts = 1) {
+async function requestMeta(url: string | URL, init: RequestInit, stage: MetaRequestStage, attempts = 1, timeoutMs = META_REQUEST_TIMEOUT_MS) {
   let lastError: unknown;
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     try {
-      return await fetch(url, { ...init, signal: AbortSignal.timeout(META_REQUEST_TIMEOUT_MS) });
+      return await fetch(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
     } catch (error) {
       lastError = error;
     }
   }
-  const reason = networkFailureReason(lastError);
+  const reason = networkFailureReason(lastError, timeoutMs);
   throw new AppError(
     502,
     `The server could not reach Meta while ${metaStageLabels[stage]}. ${reason} Please try again.`,
@@ -138,7 +140,18 @@ async function parseMetaResponse(response: Response, stage: MetaRequestStage): P
     ? parsedBody as MetaResponse
     : {};
   if (!response.ok || body.error) {
-    logger.error({ stage, providerStatus: response.status, metaError: body.error ?? body }, "Meta returned an API error");
+    logger.error({ stage, providerStatus: response.status, metaError: sanitizeMetaPayload(body.error ?? body) }, "Meta returned an API error");
+    if ((stage === "create_template" || stage === "update_template") && body.error?.code === 100 && body.error.error_subcode === 2388293) {
+      throw new AppError(
+        422,
+        META_TEMPLATE_VARIABLE_RATIO_MESSAGE,
+        "META_TEMPLATE_VARIABLE_RATIO_INVALID",
+        {
+          field: "body",
+          suggestedAction: "Add more descriptive text or reduce the number of placeholders.",
+        },
+      );
+    }
     const rawProviderMessage = (body.error?.message ?? response.statusText) || "Meta returned an error without a description.";
     const providerMessage = stage === "send_message" && /131047|re-engagement message/i.test(rawProviderMessage)
       ? "This contact is outside WhatsApp's 24-hour customer-service window. Send an approved WhatsApp template first, then continue with a normal message after the customer replies."
@@ -191,12 +204,12 @@ async function fetchMeta<T extends MetaResponse>(path: string, accessToken: stri
   return parseMetaResponse(response, stage) as Promise<T>;
 }
 
-async function postMeta<T extends MetaResponse>(path: string, accessToken: string, body: Record<string, unknown>, stage: MetaRequestStage): Promise<T> {
+async function postMeta<T extends MetaResponse>(path: string, accessToken: string, body: Record<string, unknown>, stage: MetaRequestStage, timeoutMs = META_REQUEST_TIMEOUT_MS): Promise<T> {
   const response = await requestMeta(`https://graph.facebook.com/${env.META_GRAPH_API_VERSION}${path}`, {
     method: "POST",
     headers: { authorization: `Bearer ${accessToken}`, "content-type": "application/json" },
     body: JSON.stringify(body),
-  }, stage);
+  }, stage, 1, timeoutMs);
   try {
     return await parseMetaResponse(response, stage) as T;
   } catch (error) {
@@ -305,7 +318,7 @@ async function registerNewPhoneNumber(phoneNumberId: string, accessToken: string
 }
 
 async function subscribeAppToWaba(wabaId: string, accessToken: string) {
-  const result = await postMeta(`/${encodeURIComponent(wabaId)}/subscribed_apps`, accessToken, {}, "subscribe_webhooks");
+  const result = await postMeta(`/${encodeURIComponent(wabaId)}/subscribed_apps`, accessToken, {}, "subscribe_webhooks", META_OPTIONAL_REQUEST_TIMEOUT_MS);
   if (result.success !== true) {
     throw new AppError(502, "Meta did not confirm the WhatsApp webhook subscription. Check the app's webhook configuration and permissions.", "META_RESPONSE_INVALID", { stage: "subscribe_webhooks" });
   }
@@ -317,7 +330,7 @@ async function requestCoexistenceSync(phoneNumberId: string, accessToken: string
   const result = await postMeta<{ request_id?: string }>(`/${encodeURIComponent(phoneNumberId)}/smb_app_data`, accessToken, {
     messaging_product: "whatsapp",
     sync_type: syncType,
-  }, stage);
+  }, stage, META_OPTIONAL_REQUEST_TIMEOUT_MS);
   if (typeof result.request_id !== "string" || !result.request_id.trim()) {
     throw new AppError(502, `Meta did not return a request ID while ${metaStageLabels[stage]}. Synchronization could not be confirmed.`, "META_RESPONSE_INVALID", { stage });
   }
@@ -560,7 +573,7 @@ async function shareCreditLineWithWaba(wabaId: string) {
     throw new AppError(503, "Configure META_SYSTEM_USER_ACCESS_TOKEN before sharing the Meta credit line.", "META_CREDIT_LINE_TOKEN_MISSING");
   }
   const path = `/${encodeURIComponent(env.META_CREDIT_LINE_ID)}/whatsapp_credit_sharing_and_attach?waba_id=${encodeURIComponent(wabaId)}&waba_currency=${encodeURIComponent(env.META_CREDIT_LINE_CURRENCY)}`;
-  const result = await postMeta<{ allocation_config_id?: string }>(path, accessToken, {}, "share_credit_line");
+  const result = await postMeta<{ allocation_config_id?: string }>(path, accessToken, {}, "share_credit_line", META_OPTIONAL_REQUEST_TIMEOUT_MS);
   if (typeof result.allocation_config_id !== "string" || !result.allocation_config_id.trim()) {
     throw new AppError(502, "Meta did not return a credit-line allocation ID. Shared billing could not be confirmed.", "META_RESPONSE_INVALID", { stage: "share_credit_line" });
   }
@@ -948,7 +961,25 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
   if (waba.id !== input.wabaId) {
     throw new AppError(502, "Meta returned a different WhatsApp Business Account", "META_WABA_MISMATCH");
   }
-  const phone = await findPhoneNumber(input.wabaId, input.phoneNumberId, accessToken, mode);
+  let phone: MetaPhoneNumber | undefined;
+  if (mode === "new-number" && input.phoneNumberId) {
+    // Meta returns the selected phone ID from Embedded Signup. Register that
+    // ID immediately instead of making a pre-registration WABA phone-list call
+    // that can be unavailable while the new number is being provisioned.
+    if (!input.pin) throw new AppError(422, "A six-digit registration PIN is required for a new number.", "META_PHONE_NUMBER_PIN_REQUIRED");
+    await registerNewPhoneNumber(input.phoneNumberId, accessToken, input.pin);
+    // Registration success is enough to activate the connection. Phone
+    // display details are filled by the normal sync path after onboarding;
+    // do not block the PIN response on a second Meta lookup.
+    phone = { id: input.phoneNumberId };
+  } else {
+    phone = await findPhoneNumber(input.wabaId, input.phoneNumberId, accessToken, mode);
+    if (mode === "new-number") {
+      if (!input.pin) throw new AppError(422, "A six-digit registration PIN is required for a new number.", "META_PHONE_NUMBER_PIN_REQUIRED");
+      if (!phone?.id) throw new AppError(502, "Meta did not return a WhatsApp phone number", "META_PHONE_NUMBER_MISSING");
+      await registerNewPhoneNumber(phone.id, accessToken, input.pin);
+    }
+  }
   if (!phone || !phone.id) throw new AppError(502, "Meta did not return a WhatsApp phone number", "META_PHONE_NUMBER_MISSING");
   const metaPhoneNumberId = phone.id;
   if (input.phoneNumberId && metaPhoneNumberId !== input.phoneNumberId) {
@@ -961,9 +992,6 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
     if (phone.is_on_biz_app !== true || phone.platform_type !== "CLOUD_API") {
       throw new AppError(422, "Meta has not confirmed that this WhatsApp Business App number is connected to Cloud API. Complete the coexistence connection in WhatsApp Business App, then launch signup again.", "META_COEXISTENCE_INCOMPLETE");
     }
-  } else {
-    if (!input.pin) throw new AppError(422, "A six-digit registration PIN is required for a new number.", "META_PHONE_NUMBER_PIN_REQUIRED");
-    await registerNewPhoneNumber(metaPhoneNumberId, accessToken, input.pin);
   }
   const now = new Date();
   const tokenExpiresAt = typeof exchanged.expires_in === "number" && exchanged.expires_in > 0

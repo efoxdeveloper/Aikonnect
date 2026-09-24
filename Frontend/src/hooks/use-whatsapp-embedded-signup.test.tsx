@@ -74,11 +74,18 @@ test("launches standard signup for a new number and registers it after PIN entry
 
   await waitFor(() => expect(result.current.pinRequired).toBe(true));
   expect(vi.mocked(apiRequest)).not.toHaveBeenCalled();
-  await act(async () => { await result.current.submitRegistrationPin("123456"); });
+  let resolveRequest: (value: undefined) => void = () => undefined;
+  vi.mocked(apiRequest).mockImplementationOnce(() => new Promise<undefined>((resolve) => {
+    resolveRequest = resolve;
+  }));
+  act(() => { void result.current.submitRegistrationPin("123456"); });
+  await waitFor(() => expect(result.current.connecting).toBe(true));
   await waitFor(() => expect(vi.mocked(apiRequest)).toHaveBeenCalledWith(
     "/workspaces/workspace-1/whatsapp/embedded-signup",
     expect.objectContaining({ method: "POST", body: JSON.stringify({ code: "new-number-code", mode: "new-number", wabaId: "waba-1", phoneNumberId: "phone-1", businessId: "business-1", pin: "123456" }) }),
   ));
+  resolveRequest(undefined);
+  await waitFor(() => expect(result.current.connecting).toBe(false));
 });
 
 test("falls back to the existing Meta config for a new number when no separate config is set", async () => {

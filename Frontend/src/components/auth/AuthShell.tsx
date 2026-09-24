@@ -1,5 +1,4 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { MessageSquareMore, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type AuthShellProps = {
@@ -29,12 +28,7 @@ const authSlides = [
 ];
 
 export function AuthMark({ className }: { className?: string }) {
-  return (
-    <div className={cn("relative flex size-11 items-center justify-center rounded-xl bg-[var(--green-900)] text-white shadow-[0_6px_16px_rgba(4,63,41,.18)]", className)} aria-hidden="true">
-      <MessageSquareMore className="size-6" strokeWidth={2.2} />
-      <Sparkles className="absolute right-1.5 top-1.5 size-2.5 text-[var(--green-300)]" strokeWidth={2.5} />
-    </div>
-  );
+  return <img src="/brand-logo-icon-oly.png" alt="Marento" className={cn("size-11 rounded-xl object-contain", className)} />;
 }
 
 export function AuthShell({ children, contentClassName }: AuthShellProps) {

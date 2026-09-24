@@ -14,7 +14,7 @@ type VerificationState = "waiting" | "verifying" | "verified" | "error";
 export function VerifyEmail() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { status, user, verifyEmail, resendVerification, changeEmail } = useAuth();
+  const { status, user, verifyEmail, resendVerification, changeEmail, logout } = useAuth();
   const [verificationState, setVerificationState] = useState<VerificationState>(
     searchParams.get("token") ? "verifying" : "waiting",
   );
@@ -24,9 +24,21 @@ export function VerifyEmail() {
   const [newEmail, setNewEmail] = useState("");
   const [password, setPassword] = useState("");
   const [changingEmail, setChangingEmail] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   const verificationStarted = useRef(false);
   const statusIcon = useAnimatedIcon();
   const actionIcon = useAnimatedIcon();
+
+  const handleGoToLogin = async () => {
+    setLoggingOut(true);
+    try {
+      await logout();
+    } catch {
+      // The local session is cleared in AuthContext even if the API request fails.
+    } finally {
+      navigate("/login", { replace: true });
+    }
+  };
 
   useEffect(() => {
     const token = searchParams.get("token");
@@ -121,14 +133,20 @@ export function VerifyEmail() {
         )}
 
         {!editingEmail && verified ? (
-          <Button type="button" onClick={() => navigate(status === "authenticated" ? "/dashboard" : "/login", { replace: true })} onMouseEnter={actionIcon.onMouseEnter} onMouseLeave={actionIcon.onMouseLeave} className="mt-6 h-12 w-full rounded-md text-sm font-semibold">
-            Continue<ArrowRight ref={actionIcon.ref} size={16} duration={0.55} className="ml-2" aria-hidden="true" />
+          <Button type="button" disabled={loggingOut} onClick={handleGoToLogin} onMouseEnter={actionIcon.onMouseEnter} onMouseLeave={actionIcon.onMouseLeave} className="mt-6 h-12 w-full rounded-md text-sm font-semibold">
+            {loggingOut ? "Signing out…" : "Go to login"}<ArrowRight ref={actionIcon.ref} size={16} duration={0.55} className="ml-2" aria-hidden="true" />
           </Button>
         ) : !editingEmail && status === "authenticated" && verificationState !== "verifying" ? (
           <Button type="button" variant="outline" disabled={resending} onClick={handleResend} onMouseEnter={actionIcon.onMouseEnter} onMouseLeave={actionIcon.onMouseLeave} className="mt-6 h-12 w-full rounded-md text-sm font-semibold text-[var(--brand)]">
             {resending ? "Sending…" : "Resend verification email"}<RefreshCw ref={actionIcon.ref} size={16} duration={0.65} className="ml-2" aria-hidden="true" />
           </Button>
         ) : null}
+
+        {!editingEmail && status === "authenticated" && !verified && (
+          <button type="button" disabled={loggingOut} onClick={handleGoToLogin} className="mt-4 block w-full text-center text-[13px] font-semibold text-[var(--brand)] underline decoration-[var(--green-300)] underline-offset-4 hover:text-[var(--brand-hover)]">
+            {loggingOut ? "Signing out…" : "Go to login"}
+          </button>
+        )}
 
         {status !== "authenticated" && verificationState !== "verifying" && !verified && (
           <Link to="/login" className="mt-6 block text-center text-[13px] font-semibold text-[var(--brand)]">Back to login</Link>

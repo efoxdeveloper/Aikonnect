@@ -1,9 +1,15 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { AuthShell } from "@/components/auth/AuthShell";
+import { AuthMark, AuthShell } from "@/components/auth/AuthShell";
 import { authTextFieldSx } from "@/components/auth/auth-text-field";
 
 describe("AuthShell", () => {
+  it("uses the brand logo icon for the shared auth mark", () => {
+    render(<AuthMark />);
+
+    expect(screen.getByRole("img", { name: "Marento" })).toHaveAttribute("src", "/brand-logo-icon-oly.png");
+  });
+
   it("keeps the auth page viewport-bound and scrolls only the form region", () => {
     render(<AuthShell><h1>Account access</h1></AuthShell>);
 

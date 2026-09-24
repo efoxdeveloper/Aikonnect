@@ -46,7 +46,7 @@ test("submitting a template sends a Meta message template request and stores its
   }));
 
   const result = await createTemplate("workspace", "user", {
-    saveAs: "submit", name: "Summer Sale", category: "Marketing", language: "English", templateType: "standard", headerType: "none", headerText: null, headerFileName: null, body: "Hi {{1}}, save today.", footer: null, content: {},
+    saveAs: "submit", name: "Summer Sale", category: "Marketing", language: "English", templateType: "standard", headerType: "none", headerText: null, headerFileName: null, body: "Hi {{1}}, save today.", footer: null, content: { bodyExamples: ["Example"] },
   });
   assert.equal(result.status, "PENDING");
   assert.equal(result.metaTemplateId, "meta-template-1");
@@ -113,6 +113,7 @@ test("AI preflight runs before Meta submission and allows a passing review", { c
     requests.push(String(input));
     if (String(input).includes("api.groq.com")) {
       assert.equal((init?.headers as Record<string, string>).authorization, "Bearer test-groq-key");
+      assert.equal(JSON.parse(String(init?.body)).max_tokens, 900);
       return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({ decision: "pass", summary: "The template is ready for Meta review.", issues: [] }) } }] }), { status: 200 });
     }
     return new Response(JSON.stringify({ id: "meta-template-ai-1", status: "PENDING" }), { status: 200 });
@@ -120,7 +121,7 @@ test("AI preflight runs before Meta submission and allows a passing review", { c
   stub(t, prisma.template, "create", async (args: any) => ({ id: "template-ai-1", ...args.data, createdAt: new Date(), updatedAt: new Date(), deletedAt: null, createdBy: null, updatedBy: null }));
 
   const result = await createTemplate("workspace", "user", {
-    saveAs: "submit", name: "AI checked", category: "Marketing", language: "English", templateType: "standard", headerType: "none", body: "Hi {{1}}, your order is ready.", content: {},
+    saveAs: "submit", name: "AI checked", category: "Marketing", language: "English", templateType: "standard", headerType: "none", body: "Hi {{1}}, your order is ready.", content: { bodyExamples: ["Example"] },
   });
   assert.equal(result.metaTemplateId, "meta-template-ai-1");
   assert.equal(requests[0], "https://api.groq.com/openai/v1/chat/completions");
@@ -272,4 +273,66 @@ test("Meta template submission rejects invalid variables and website URLs before
     (error: unknown) => error instanceof AppError && error.code === "META_TEMPLATE_BUTTON_URL_INVALID",
   );
   assert.equal(called, false);
+});
+
+test("Meta rejects a body with too many variables before the provider is called", { concurrency: false }, async (t) => {
+  stub(t, prisma.template, "findFirst", async () => null);
+  stub(t, prisma.whatsAppBusinessAccount, "findFirst", async () => account());
+  let called = false;
+  stub(t, globalThis, "fetch", async () => { called = true; return new Response("{}", { status: 200 }); });
+
+  await assert.rejects(
+    createTemplate("workspace", "user", {
+      saveAs: "submit", name: "Too many variables", category: "Marketing", language: "en_US", templateType: "standard", headerType: "none", body: "Hi {{1}} {{2}}", content: { bodyExamples: ["one", "two"] },
+    }),
+    (error: unknown) => error instanceof AppError
+      && error.statusCode === 422
+      && error.code === "META_TEMPLATE_VARIABLE_RATIO_INVALID"
+      && error.message === "Your template has too many variables for its text. Add more descriptive text or reduce the number of placeholders."
+      && JSON.stringify(error.details).includes('"field":"body"')
+      && JSON.stringify(error.details).includes('"variableCount":2')
+      && JSON.stringify(error.details).includes('"suggestedAction"'),
+  );
+  assert.equal(called, false);
+});
+
+test("Meta body variables cannot be at the start or end of the text", { concurrency: false }, async (t) => {
+  stub(t, prisma.template, "findFirst", async () => null);
+  stub(t, prisma.whatsAppBusinessAccount, "findFirst", async () => account());
+  let called = false;
+  stub(t, globalThis, "fetch", async () => { called = true; return new Response("{}", { status: 200 }); });
+
+  for (const body of ["{{1}} is your order", "Your order is {{1}}"] ) {
+    await assert.rejects(
+      createTemplate("workspace", "user", {
+        saveAs: "submit", name: `Boundary ${body.slice(0, 3)}`, category: "Marketing", language: "en_US", templateType: "standard", headerType: "none", body, content: { bodyExamples: ["order-1"] },
+      }),
+      (error: unknown) => error instanceof AppError && error.statusCode === 422 && error.code === "META_TEMPLATE_VARIABLE_RATIO_INVALID",
+    );
+  }
+  assert.equal(called, false);
+});
+
+test("Meta subcode 2388293 is returned as a safe template validation error", { concurrency: false }, async (t) => {
+  stub(t, prisma.template, "findFirst", async () => null);
+  stub(t, prisma.whatsAppBusinessAccount, "findFirst", async () => account());
+  stub(t, globalThis, "fetch", async () => new Response(JSON.stringify({ error: {
+    message: "(#100) Provider details that must not be shown to the user",
+    code: 100,
+    error_subcode: 2388293,
+    type: "OAuthException",
+    error_data: { access_token: "secret-token" },
+  } }), { status: 400 }));
+
+  await assert.rejects(
+    createTemplate("workspace", "user", {
+      saveAs: "submit", name: "Provider ratio error", category: "Marketing", language: "en_US", templateType: "standard", headerType: "none", body: "Hi {{1}}, your order is ready.", content: { bodyExamples: ["order-1"] },
+    }),
+    (error: unknown) => error instanceof AppError
+      && error.statusCode === 422
+      && error.code === "META_TEMPLATE_VARIABLE_RATIO_INVALID"
+      && error.message === "Your template has too many variables for its text. Add more descriptive text or reduce the number of placeholders."
+      && !JSON.stringify(error).includes("Provider details")
+      && !JSON.stringify(error).includes("secret-token"),
+  );
 });

@@ -12,7 +12,18 @@ vi.mock("@/contexts/AuthContext", () => ({
   }),
 }));
 vi.mock("@/lib/api", () => ({
-  ApiError: class ApiError extends Error {},
+  ApiError: class ApiError extends Error {
+    status: number;
+    code?: string;
+    details?: unknown;
+
+    constructor(status: number, message: string, code?: string, details?: unknown) {
+      super(message);
+      this.status = status;
+      this.code = code;
+      this.details = details;
+    }
+  },
   apiRequest: vi.fn().mockResolvedValue({}),
 }));
 vi.mock("react-toastify", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
@@ -246,5 +257,31 @@ describe("TemplateBuilder", () => {
 
     await waitFor(() => expect(toast.success).toHaveBeenCalledWith("Template saved and marked Rejected in the library."));
     expect(screen.queryByText(/AI preflight blocked/)).not.toBeInTheDocument();
+  });
+
+  it("renders a body variable API error, preserves the form, and clears it after retry", async () => {
+    const { ApiError } = await import("@/lib/api");
+    vi.mocked(apiRequest).mockImplementation(async (path) => {
+      if (path.includes("/capabilities")) return {};
+      throw new ApiError(422, "Your template has too many variables for its text. Add more descriptive text or reduce the number of placeholders.", "META_TEMPLATE_VARIABLE_RATIO_INVALID", { field: "body", variableCount: 2 });
+    });
+    renderPage();
+
+    fireEvent.change(screen.getByLabelText("Template Name"), { target: { value: "Ratio template" } });
+    fireEvent.change(screen.getByLabelText("Language"), { target: { value: "en_US" } });
+    fireEvent.change(screen.getByPlaceholderText("Template Message..."), { target: { value: "Hi {{1}} {{2}}" } });
+    fireEvent.change(screen.getByLabelText("{{1}}"), { target: { value: "one" } });
+    fireEvent.change(screen.getByLabelText("{{2}}"), { target: { value: "two" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save template" }));
+
+    await waitFor(() => expect(screen.getByTestId("template-save-error")).toHaveTextContent("too many variables"));
+    expect(screen.getByPlaceholderText("Template Message...")).toHaveValue("Hi {{1}} {{2}}");
+    expect(screen.getByPlaceholderText("Template Message...")).toHaveAttribute("aria-invalid", "true");
+
+    vi.mocked(apiRequest).mockResolvedValue({ status: "PENDING" });
+    fireEvent.click(screen.getByRole("button", { name: "Save template" }));
+    await waitFor(() => expect(screen.getByRole("button", { name: "Saved" })).toBeInTheDocument());
+    expect(screen.queryByTestId("template-save-error")).not.toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Template Message...")).toHaveValue("Hi {{1}} {{2}}");
   });
 });

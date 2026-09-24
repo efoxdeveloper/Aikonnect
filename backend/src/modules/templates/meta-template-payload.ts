@@ -5,6 +5,15 @@ type TemplateInput = CreateTemplateInput | UpdateTemplateInput;
 type JsonRecord = Record<string, unknown>;
 type MetaComponent = JsonRecord;
 
+export const META_TEMPLATE_VARIABLE_RATIO_MESSAGE = "Your template has too many variables for its text. Add more descriptive text or reduce the number of placeholders.";
+
+export type MetaTemplateVariableRatioDetails = {
+  field: "body";
+  variableCount: number;
+  fixedTextWordCount: number;
+  suggestedAction: "Add more descriptive text or reduce the number of placeholders.";
+};
+
 const CATEGORY_MAP = {
   MARKETING: "MARKETING",
   Marketing: "MARKETING",
@@ -71,7 +80,7 @@ function variableNumbers(value: string): number[] {
   return [...value.matchAll(/\{\{\s*(\d+)\s*\}\}/g)].map((match) => Number(match[1]));
 }
 
-export function validateVariables(text: string, examples: string[], field: "body" | "header" | "url"): number[] {
+function sequentialVariableNumbers(text: string, field: "body" | "header" | "url"): number[] {
   const numbers = variableNumbers(text);
   const malformed = [...text.matchAll(/\{\{([^}]*)\}\}/g)].some((match) => !/^\s*\d+\s*$/.test(match[1] ?? ""));
   const max = Math.max(0, ...numbers);
@@ -80,6 +89,33 @@ export function validateVariables(text: string, examples: string[], field: "body
   if (malformed || unique.some((value, index) => value !== expected[index])) {
     throw new AppError(422, `${field === "body" ? "Body" : field === "header" ? "Header" : "URL"} variables must be numbered sequentially starting at {{1}}`, "META_TEMPLATE_VARIABLES_INVALID", { field });
   }
+  return unique;
+}
+
+function fixedTextWordCount(text: string): number {
+  const fixedText = text.replace(/\{\{\s*\d+\s*\}\}/g, " ");
+  return fixedText.match(/[\p{L}\p{N}]+/gu)?.length ?? 0;
+}
+
+function validateBodyVariableRatio(text: string, variables: number[]): void {
+  const trimmed = text.trim();
+  const variablePattern = /^\{\{\s*\d+\s*\}\}/;
+  const variableAtStart = variablePattern.test(trimmed);
+  const variableAtEnd = /\{\{\s*\d+\s*\}\}$/.test(trimmed);
+  const fixedWords = fixedTextWordCount(trimmed);
+  if (!variableAtStart && !variableAtEnd && variables.length <= fixedWords) return;
+
+  const details: MetaTemplateVariableRatioDetails = {
+    field: "body",
+    variableCount: variables.length,
+    fixedTextWordCount: fixedWords,
+    suggestedAction: "Add more descriptive text or reduce the number of placeholders.",
+  };
+  throw new AppError(422, META_TEMPLATE_VARIABLE_RATIO_MESSAGE, "META_TEMPLATE_VARIABLE_RATIO_INVALID", details);
+}
+
+export function validateVariables(text: string, examples: string[], field: "body" | "header" | "url"): number[] {
+  const unique = sequentialVariableNumbers(text, field);
   if (examples.length !== unique.length || examples.some((example) => !example)) {
     throw new AppError(422, `${field === "body" ? "Body" : field === "header" ? "Header" : "URL"} variable examples must match the number and order of variables`, "META_TEMPLATE_VARIABLE_EXAMPLES_INVALID", { field, expected: unique.length, received: examples.length });
   }
@@ -98,7 +134,11 @@ function buildBodyComponent(input: TemplateInput, content: JsonRecord): MetaComp
   const text = nonEmptyString(input.body);
   if (!text) throw new AppError(422, "Template body is required", "META_TEMPLATE_BODY_REQUIRED");
   const examples = bodyExamples(content);
-  const variables = validateVariables(text, examples, "body");
+  const variables = sequentialVariableNumbers(text, "body");
+  validateBodyVariableRatio(text, variables);
+  if (examples.length !== variables.length || examples.some((example) => !example)) {
+    throw new AppError(422, "Body variable examples must match the number and order of variables", "META_TEMPLATE_VARIABLE_EXAMPLES_INVALID", { field: "body", expected: variables.length, received: examples.length });
+  }
   return {
     type: "BODY",
     text,

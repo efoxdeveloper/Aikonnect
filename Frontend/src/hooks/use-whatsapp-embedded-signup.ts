@@ -33,6 +33,8 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
     const mode = modeRef.current;
     if (!workspaceId || !accessToken || !code || !signupData || submittedRef.current) return;
     if (mode === "new-number" && !/^\d{6}$/.test(registrationPin ?? "")) return;
+    setConnecting(true);
+    setError(null);
     submittedRef.current = true;
     try {
       const result = await apiRequest<EmbeddedSignupResult>(`/workspaces/${workspaceId}/whatsapp/embedded-signup`, {

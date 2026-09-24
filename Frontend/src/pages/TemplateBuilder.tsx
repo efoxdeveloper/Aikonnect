@@ -576,10 +576,25 @@ export function TemplateBuilder() {
         }),
       });
       setError("");
+      setValidationErrors({});
       setSavedAction(action);
       toast.success(savedTemplate?.status === "REJECTED" ? "Template saved and marked Rejected in the library." : action === "draft" ? "Template saved as draft." : "Template submitted for review.");
       window.setTimeout(() => navigate("/templates"), 800);
     } catch (caughtError) {
+      const apiError = caughtError instanceof ApiError ? caughtError : null;
+      const apiErrorDetails = apiError?.details && typeof apiError.details === "object" ? apiError.details as { field?: unknown } : null;
+      const isBodyVariableError = Boolean(apiError && (
+        apiError.code === "META_TEMPLATE_VARIABLE_RATIO_INVALID"
+        || (typeof apiError.code === "string" && apiError.code.includes("VARIABLE") && apiErrorDetails?.field === "body")
+        || apiErrorDetails?.field === "body"
+      ));
+      if (isBodyVariableError) {
+        setValidationErrors((current) => ({ ...current, body: apiError!.message }));
+        window.requestAnimationFrame(() => {
+          bodyRef.current?.scrollIntoView?.({ behavior: "smooth", block: "center" });
+          bodyRef.current?.focus?.();
+        });
+      }
       if (caughtError instanceof ApiError && caughtError.code === "TEMPLATE_AI_VALIDATION_FAILED" && caughtError.details && typeof caughtError.details === "object" && "issues" in caughtError.details && Array.isArray(caughtError.details.issues)) {
         const issueText = caughtError.details.issues.map((issue) => {
           if (!issue || typeof issue !== "object") return "";
@@ -627,7 +642,7 @@ export function TemplateBuilder() {
       <main className="min-h-0 flex-1 overflow-hidden bg-[var(--page-background)]">
         <div className="mx-auto flex h-full min-h-0 max-w-[1400px] flex-col gap-5 overflow-y-auto px-5 py-5 sm:px-8 lg:flex-row lg:overflow-hidden">
           <section data-testid="template-editor-scroll-region" className="min-h-0 flex-1 space-y-4 overflow-visible lg:overflow-y-auto lg:pr-1">
-            {error && <div role="alert" className="rounded-md border border-red-100 bg-red-50 px-4 py-3 text-[12px] text-[var(--danger)]">{error}</div>}
+            {error && <div data-testid="template-save-error" role="alert" className="rounded-md border border-red-100 bg-red-50 px-4 py-3 text-[12px] text-[var(--danger)]">{error}</div>}
 
             <section className="rounded-md border border-[var(--border)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:p-6">
               <SectionTitle number="1" title="Template details" />

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, useLocation } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 import { AuthContext, type AuthContextValue } from "@/contexts/AuthContext";
 import { VerifyEmail } from "@/pages/VerifyEmail";
@@ -9,9 +9,15 @@ function renderPage(value: AuthContextValue, route = "/verify-email") {
     <AuthContext.Provider value={value}>
       <MemoryRouter initialEntries={[route]}>
         <VerifyEmail />
+        <LocationProbe />
       </MemoryRouter>
     </AuthContext.Provider>,
   );
+}
+
+function LocationProbe() {
+  const location = useLocation();
+  return <span data-testid="location-probe">{location.pathname}</span>;
 }
 
 function context(overrides: Partial<AuthContextValue> = {}): AuthContextValue {
@@ -44,6 +50,18 @@ describe("VerifyEmail", () => {
 
     await waitFor(() => expect(verifyEmail).toHaveBeenCalledWith("secure-verification-token"));
     expect(await screen.findByRole("heading", { name: "Email verified" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /go to login/i })).toBeInTheDocument();
+  });
+
+  it("signs out and takes the user to login from the verified state", async () => {
+    const logout = vi.fn().mockResolvedValue(undefined);
+    renderPage(context({ logout }), "/verify-email?token=secure-verification-token");
+
+    await screen.findByRole("heading", { name: "Email verified" });
+    fireEvent.click(screen.getByRole("button", { name: /go to login/i }));
+
+    await waitFor(() => expect(logout).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(screen.getByTestId("location-probe")).toHaveTextContent("/login"));
   });
 
   it("shows the signed-in user's email and resend control while waiting", () => {
@@ -51,6 +69,7 @@ describe("VerifyEmail", () => {
     expect(screen.getByTestId("auth-shell")).toBeInTheDocument();
     expect(screen.getByText("owner@example.com")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /resend verification email/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /go to login/i })).toBeInTheDocument();
   });
 
   it("changes an incorrect email after confirming the account password", async () => {
