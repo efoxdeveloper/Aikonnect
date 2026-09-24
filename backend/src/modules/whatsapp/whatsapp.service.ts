@@ -47,6 +47,12 @@ type MetaRequestStage =
 // Allow for slow provider connections while bounding unavailable requests.
 const META_REQUEST_TIMEOUT_MS = 60_000;
 const META_OPTIONAL_REQUEST_TIMEOUT_MS = 15_000;
+const META_EMBEDDED_SIGNUP_TIMEOUT_MS = 20_000;
+
+type MetaRequestOptions = {
+  attempts?: number;
+  timeoutMs?: number;
+};
 
 async function chargeAndRun<T>(workspaceId: string, source: string, chargeKey: string | undefined, operation: () => Promise<T>) {
   const walletCharge = await chargeOutboundMessage({
@@ -186,21 +192,27 @@ async function parseMetaResponse(response: Response, stage: MetaRequestStage): P
   return body;
 }
 
-async function exchangeSignupCode(input: EmbeddedSignupInput) {
+async function exchangeSignupCode(input: EmbeddedSignupInput, options: MetaRequestOptions = {}) {
   const { appId, appSecret } = requireMetaConfiguration();
   const url = new URL(`https://graph.facebook.com/${env.META_GRAPH_API_VERSION}/oauth/access_token`);
   url.searchParams.set("client_id", appId);
   url.searchParams.set("client_secret", appSecret);
   url.searchParams.set("code", input.code);
   // Authorization codes are single-use, so this exchange must not be retried automatically.
-  const response = await requestMeta(url, { method: "GET" }, "exchange_signup_code");
+  const response = await requestMeta(
+    url,
+    { method: "GET" },
+    "exchange_signup_code",
+    options.attempts ?? 1,
+    options.timeoutMs ?? META_REQUEST_TIMEOUT_MS,
+  );
   return parseMetaResponse(response, "exchange_signup_code");
 }
 
-async function fetchMeta<T extends MetaResponse>(path: string, accessToken: string, stage: MetaRequestStage): Promise<T> {
+async function fetchMeta<T extends MetaResponse>(path: string, accessToken: string, stage: MetaRequestStage, options: MetaRequestOptions = {}): Promise<T> {
   const response = await requestMeta(`https://graph.facebook.com/${env.META_GRAPH_API_VERSION}${path}`, {
     headers: { authorization: `Bearer ${accessToken}` },
-  }, stage, 2);
+  }, stage, options.attempts ?? 2, options.timeoutMs ?? META_REQUEST_TIMEOUT_MS);
   return parseMetaResponse(response, stage) as Promise<T>;
 }
 
@@ -260,7 +272,7 @@ type MetaPhoneNumber = MetaResponse & {
 const standardPhoneNumberFields = "id,display_phone_number,verified_name,quality_rating";
 const coexistencePhoneNumberFields = `${standardPhoneNumberFields},is_on_biz_app,platform_type`;
 
-async function findPhoneNumber(wabaId: string, phoneNumberId: string | null | undefined, accessToken: string, mode: EmbeddedSignupInput["mode"]) {
+async function findPhoneNumber(wabaId: string, phoneNumberId: string | null | undefined, accessToken: string, mode: EmbeddedSignupInput["mode"], options: MetaRequestOptions = {}) {
   const phoneNumberFields = mode === "new-number" ? standardPhoneNumberFields : coexistencePhoneNumberFields;
   // Meta's fresh-number flow returns a phone ID during Embedded Signup, but the
   // exchanged token is scoped to the WABA asset. Resolve the ID from the WABA's
@@ -268,12 +280,13 @@ async function findPhoneNumber(wabaId: string, phoneNumberId: string | null | un
   // direct `GET /{phone-number-id}` can otherwise fail with (#100) even though
   // the number is present under the newly shared WABA.
   if (phoneNumberId && mode !== "new-number") {
-    return fetchMeta<MetaPhoneNumber>(`/${encodeURIComponent(phoneNumberId)}?fields=${phoneNumberFields}`, accessToken, "load_phone_number");
+    return fetchMeta<MetaPhoneNumber>(`/${encodeURIComponent(phoneNumberId)}?fields=${phoneNumberFields}`, accessToken, "load_phone_number", options);
   }
   const response = await fetchMeta<{ data?: MetaPhoneNumber[] }>(
     `/${encodeURIComponent(wabaId)}/phone_numbers?fields=${phoneNumberFields}`,
     accessToken,
     "list_phone_numbers",
+    options,
   );
   if (!Array.isArray(response.data) || response.data.some((phone) =>
     typeof phone !== "object" || phone === null || Array.isArray(phone) || typeof phone.id !== "string")) {
@@ -306,11 +319,11 @@ async function findPhoneNumber(wabaId: string, phoneNumberId: string | null | un
   return phoneNumbers[0];
 }
 
-async function registerNewPhoneNumber(phoneNumberId: string, accessToken: string, pin: string) {
+async function registerNewPhoneNumber(phoneNumberId: string, accessToken: string, pin: string, options: MetaRequestOptions = {}) {
   const result = await postMeta<{ success?: boolean | string }>(`/${encodeURIComponent(phoneNumberId)}/register`, accessToken, {
     messaging_product: "whatsapp",
     pin,
-  }, "register_phone_number");
+  }, "register_phone_number", options.timeoutMs ?? META_REQUEST_TIMEOUT_MS);
   if (result.success !== true && result.success !== "true") {
     throw new AppError(502, "Meta did not confirm phone number registration.", "META_PHONE_NUMBER_REGISTRATION_UNCONFIRMED", { stage: "register_phone_number" });
   }
@@ -953,11 +966,15 @@ export async function disconnectWhatsApp(workspaceId: string) {
 export async function completeEmbeddedSignup(workspaceId: string, input: EmbeddedSignupInput) {
   const { encryptionKey } = requireMetaConfiguration();
   const mode = input.mode ?? "coexistence";
-  const exchanged = await exchangeSignupCode(input);
+  // Cloudflare can return its own HTML 502 before the API's normal error
+  // handler if a provider call is allowed to run for too long. Embedded
+  // Signup should fail with a useful JSON response within the proxy budget.
+  const signupMetaOptions: MetaRequestOptions = { attempts: 1, timeoutMs: META_EMBEDDED_SIGNUP_TIMEOUT_MS };
+  const exchanged = await exchangeSignupCode(input, signupMetaOptions);
   const accessToken = typeof exchanged.access_token === "string" ? exchanged.access_token : undefined;
   if (!accessToken) throw new AppError(502, "Meta did not return an access token", "META_TOKEN_MISSING");
 
-  const waba = await fetchMeta<{ id?: string; name?: string }>(`/${encodeURIComponent(input.wabaId)}?fields=id,name`, accessToken, "load_business_account");
+  const waba = await fetchMeta<{ id?: string; name?: string }>(`/${encodeURIComponent(input.wabaId)}?fields=id,name`, accessToken, "load_business_account", signupMetaOptions);
   if (waba.id !== input.wabaId) {
     throw new AppError(502, "Meta returned a different WhatsApp Business Account", "META_WABA_MISMATCH");
   }
@@ -967,17 +984,17 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
     // ID immediately instead of making a pre-registration WABA phone-list call
     // that can be unavailable while the new number is being provisioned.
     if (!input.pin) throw new AppError(422, "A six-digit registration PIN is required for a new number.", "META_PHONE_NUMBER_PIN_REQUIRED");
-    await registerNewPhoneNumber(input.phoneNumberId, accessToken, input.pin);
+    await registerNewPhoneNumber(input.phoneNumberId, accessToken, input.pin, signupMetaOptions);
     // Registration success is enough to activate the connection. Phone
     // display details are filled by the normal sync path after onboarding;
     // do not block the PIN response on a second Meta lookup.
     phone = { id: input.phoneNumberId };
   } else {
-    phone = await findPhoneNumber(input.wabaId, input.phoneNumberId, accessToken, mode);
+    phone = await findPhoneNumber(input.wabaId, input.phoneNumberId, accessToken, mode, signupMetaOptions);
     if (mode === "new-number") {
       if (!input.pin) throw new AppError(422, "A six-digit registration PIN is required for a new number.", "META_PHONE_NUMBER_PIN_REQUIRED");
       if (!phone?.id) throw new AppError(502, "Meta did not return a WhatsApp phone number", "META_PHONE_NUMBER_MISSING");
-      await registerNewPhoneNumber(phone.id, accessToken, input.pin);
+      await registerNewPhoneNumber(phone.id, accessToken, input.pin, signupMetaOptions);
     }
   }
   if (!phone || !phone.id) throw new AppError(502, "Meta did not return a WhatsApp phone number", "META_PHONE_NUMBER_MISSING");
