@@ -32,10 +32,10 @@ app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
-        "script-src": ["'self'", "https://connect.facebook.net"],
-        "script-src-elem": ["'self'", "https://connect.facebook.net"],
-        "connect-src": ["'self'", "https://graph.facebook.com", "https://connect.facebook.net"],
-        "frame-src": ["'self'", "https://www.facebook.com", "https://web.facebook.com"],
+        "script-src": ["'self'", "https://connect.facebook.net", "https://challenges.cloudflare.com"],
+        "script-src-elem": ["'self'", "https://connect.facebook.net", "https://challenges.cloudflare.com"],
+        "connect-src": ["'self'", "https://graph.facebook.com", "https://connect.facebook.net", "https://challenges.cloudflare.com"],
+        "frame-src": ["'self'", "https://www.facebook.com", "https://web.facebook.com", "https://challenges.cloudflare.com"],
         "child-src": ["'self'", "https://www.facebook.com", "https://web.facebook.com"],
         "img-src": ["'self'", "data:", "blob:", "https://*.facebook.com", "https://*.fbcdn.net"],
         "media-src": ["'self'", "data:", "blob:", "https://*.facebook.com", "https://*.fbcdn.net"],

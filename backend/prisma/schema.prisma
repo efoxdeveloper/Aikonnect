@@ -257,6 +257,8 @@ model Workspace {
   logoData                 String?                   @map("logo_data") @db.Text
   country                  String?                   @db.VarChar(100)
   timezone                 String?                   @db.VarChar(100)
+  onboardingData           Json                      @default("{}") @map("onboarding_data") @db.JsonB
+  onboardingStep           Int                       @default(0) @map("onboarding_step")
   onboardingCompletedAt    DateTime?                 @map("onboarding_completed_at") @db.Timestamptz(3)
   ownerId                  String                    @map("owner_id") @db.Uuid
   createdAt                DateTime                  @default(now()) @map("created_at") @db.Timestamptz(3)

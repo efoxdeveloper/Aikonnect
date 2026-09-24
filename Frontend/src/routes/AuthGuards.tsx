@@ -3,6 +3,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { Wave } from "@/components/loading-ui/wave";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
+import { needsWorkspaceOnboarding } from "@/lib/workspace";
 
 const sessionLoaderExitDuration = 280;
 
@@ -59,6 +60,7 @@ export function ProtectedRoute() {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
   if (!user?.emailVerifiedAt) return <Navigate to="/verify-email" replace />;
+  if ((!user.platformRole || user.platformRole === "NONE") && needsWorkspaceOnboarding(user) && location.pathname !== "/onboarding" && location.pathname !== "/whatsapp-account") return <Navigate to="/onboarding" replace />;
   return <Outlet />;
 }
 
@@ -74,7 +76,10 @@ export function PublicOnlyRoute() {
   }
   if (status === "authenticated") {
     const platformHome = user?.platformRole && user.platformRole !== "NONE" ? "/admin" : "/dashboard";
-    return <Navigate to={user?.emailVerifiedAt ? invitationPath ?? platformHome : invitation ? `/verify-email?invitation=${encodeURIComponent(invitation)}` : "/verify-email"} replace />;
+    const home = user?.emailVerifiedAt
+      ? invitationPath ?? (user.platformRole && user.platformRole !== "NONE" ? platformHome : needsWorkspaceOnboarding(user) ? "/onboarding" : platformHome)
+      : invitation ? `/verify-email?invitation=${encodeURIComponent(invitation)}` : "/verify-email";
+    return <Navigate to={home} replace />;
   }
   return <Outlet />;
 }

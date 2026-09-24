@@ -46,6 +46,7 @@ const envSchema = z.object({
   META_TOKEN_ENCRYPTION_KEY: z.string().min(32).optional(),
   META_REVIEW_ADMIN_KEY: z.string().min(1).optional(),
   META_GRAPH_API_VERSION: z.string().regex(/^v\d+\.\d+$/).default("v23.0"),
+  CLOUDFLARE_TURNSTILE_SECRET_KEY: z.string().min(1).optional(),
   GOOGLE_CLIENT_ID: z.string().min(1).optional(),
   GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
   GOOGLE_REDIRECT_URI: z.url().optional(),

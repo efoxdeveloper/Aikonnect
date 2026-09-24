@@ -101,6 +101,11 @@
 * { box-sizing: border-box; }
 html { scrollbar-gutter: stable; }
 html, body, #root { height: 100%; min-height: 100%; overflow: hidden; }
+@keyframes onboarding-preview-text-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.onboarding-preview-text { animation: onboarding-preview-text-in 420ms cubic-bezier(.2, .8, .2, 1); }
 body {
   margin: 0;
   min-width: 320px;

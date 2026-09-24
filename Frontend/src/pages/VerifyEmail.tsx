@@ -50,6 +50,7 @@ export function VerifyEmail() {
         setMessage("Your email address has been verified successfully.");
         const invitation = searchParams.get("invitation");
         if (invitation) navigate(`/invitations/accept?token=${encodeURIComponent(invitation)}`, { replace: true });
+        else navigate("/onboarding", { replace: true });
       })
       .catch((error) => {
         setVerificationState("error");
@@ -110,7 +111,7 @@ export function VerifyEmail() {
           </h1>
           <p className="mx-auto mt-3">
             {verified
-              ? "Your account is ready. You can now access your workspace."
+              ? "Your email is verified. We’ll now finish setting up your workspace."
               : <>We sent a verification link to {user?.email ? <span className="font-semibold text-[var(--text-primary)]">{user.email}</span> : "your email address"}.</>}
           </p>
           {!verified && status === "authenticated" && !editingEmail && verificationState !== "verifying" && (

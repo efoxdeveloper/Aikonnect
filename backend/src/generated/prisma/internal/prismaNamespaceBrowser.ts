@@ -162,6 +162,8 @@ export const WorkspaceScalarFieldEnum = {
   logoData: 'logoData',
   country: 'country',
   timezone: 'timezone',
+  onboardingData: 'onboardingData',
+  onboardingStep: 'onboardingStep',
   onboardingCompletedAt: 'onboardingCompletedAt',
   ownerId: 'ownerId',
   createdAt: 'createdAt',

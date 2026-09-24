@@ -13,6 +13,11 @@ export function getActiveMembership(user: AuthUser | null) {
   return user.memberships.find(({ workspace }) => workspace.id === activeId) ?? user.memberships[0];
 }
 
+export function needsWorkspaceOnboarding(user: AuthUser | null) {
+  const membership = getActiveMembership(user);
+  return Boolean(membership?.role.slug === "owner" && !membership.workspace.onboardingCompletedAt);
+}
+
 export function markWorkspaceForOnboarding(workspaceId: string) {
   window.sessionStorage.setItem(ONBOARDING_WORKSPACE_KEY, workspaceId);
 }

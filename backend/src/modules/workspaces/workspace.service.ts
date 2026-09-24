@@ -1,6 +1,7 @@
 import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
 import { prisma } from "../../database/prisma.js";
+import type { Prisma } from "../../generated/prisma/client.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { generateSecureToken, hashToken } from "../../utils/crypto.js";
 import { toSlug } from "../../utils/slug.js";
@@ -11,6 +12,7 @@ import type {
   CreateRoleInput,
   CreateWorkspaceInput,
   InviteMemberInput,
+  SaveWorkspaceOnboardingInput,
   UpdateRoleInput,
   UpdateWorkspaceInput,
 } from "./workspace.schemas.js";
@@ -219,6 +221,51 @@ export async function deleteWorkspace(workspaceId: string, userId: string): Prom
   await prisma.workspace.delete({ where: { id: workspaceId } });
 }
 
+export async function getWorkspaceOnboarding(workspaceId: string) {
+  const workspace = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+    select: {
+      id: true,
+      name: true,
+      companyName: true,
+      companyWebsite: true,
+      companyLocation: true,
+      annualRevenue: true,
+      country: true,
+      timezone: true,
+      onboardingStep: true,
+      onboardingData: true,
+      onboardingCompletedAt: true,
+    },
+  });
+  if (!workspace) throw new AppError(404, "Workspace was not found", "WORKSPACE_NOT_FOUND");
+  return { ...workspace, data: workspace.onboardingData };
+}
+
+export async function saveWorkspaceOnboarding(
+  workspaceId: string,
+  userId: string,
+  input: SaveWorkspaceOnboardingInput,
+) {
+  const workspace = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+    select: { ownerId: true, onboardingCompletedAt: true },
+  });
+  if (!workspace) throw new AppError(404, "Workspace was not found", "WORKSPACE_NOT_FOUND");
+  if (workspace.ownerId !== userId) throw new AppError(403, "Only the workspace owner can update onboarding", "WORKSPACE_OWNER_REQUIRED");
+  if (workspace.onboardingCompletedAt) throw new AppError(409, "Workspace onboarding is already complete", "ONBOARDING_ALREADY_COMPLETE");
+
+  return prisma.workspace.update({
+    where: { id: workspaceId },
+    data: {
+      onboardingStep: input.step,
+      onboardingData: input.data as Prisma.InputJsonValue,
+      ...(input.data.industry ? { industry: input.data.industry } : {}),
+    },
+    select: { id: true, onboardingStep: true, onboardingData: true },
+  });
+}
+
 export async function completeWorkspaceOnboarding(
   workspaceId: string,
   userId: string,
@@ -226,12 +273,13 @@ export async function completeWorkspaceOnboarding(
 ) {
   const workspace = await prisma.workspace.findUnique({
     where: { id: workspaceId },
-    select: { ownerId: true, onboardingCompletedAt: true },
+    select: { ownerId: true, onboardingCompletedAt: true, onboardingData: true },
   });
   if (!workspace) throw new AppError(404, "Workspace was not found", "WORKSPACE_NOT_FOUND");
   if (workspace.ownerId !== userId) {
     throw new AppError(403, "Only the workspace owner can complete onboarding", "WORKSPACE_OWNER_REQUIRED");
   }
+  if (workspace.onboardingCompletedAt) throw new AppError(409, "Workspace onboarding is already complete", "ONBOARDING_ALREADY_COMPLETE");
 
   return prisma.workspace.update({
     where: { id: workspaceId },
@@ -239,7 +287,12 @@ export async function completeWorkspaceOnboarding(
       name: input.name,
       country: input.country,
       timezone: input.timezone,
-      onboardingCompletedAt: workspace.onboardingCompletedAt ?? new Date(),
+      onboardingStep: 4,
+      onboardingData: {
+        ...(workspace.onboardingData as Record<string, unknown>),
+        ...input,
+      } as Prisma.InputJsonValue,
+      onboardingCompletedAt: new Date(),
     },
     select: {
       id: true,

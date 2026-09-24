@@ -35,11 +35,17 @@ export type RegisterRequest = {
   firstName: string;
   lastName: string;
   phone: string;
+  channel: "whatsapp" | "instagram" | "both";
   companyName: string;
   industry?: string;
   companyWebsite?: string;
   companyLocation: string;
+  country: string;
+  state: string;
   annualRevenue: string;
+  whatsappUpdatesConsent: boolean;
+  termsAccepted: boolean;
+  captchaToken: string;
 };
 
 export type AuthContextValue = {

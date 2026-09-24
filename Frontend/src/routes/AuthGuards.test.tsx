@@ -94,6 +94,29 @@ describe("ProtectedRoute", () => {
     expect(screen.getByRole("heading", { name: "Verify email" })).toBeInTheDocument();
     expect(screen.queryByText("Dashboard")).not.toBeInTheDocument();
   });
+
+  it("redirects a verified workspace owner into onboarding before the dashboard", () => {
+    const auth = authValue("authenticated");
+    if (!auth.user) throw new Error("Expected an authenticated test user");
+    auth.user.memberships = [{
+      id: "membership-1",
+      workspace: { id: "workspace-1", name: "Acme", slug: "acme", country: "India", timezone: "Asia/Kolkata", onboardingCompletedAt: null },
+      role: { id: "role-1", name: "Owner", slug: "owner", permissions: ["workspace.update"] },
+    }];
+    render(
+      <AuthContext.Provider value={auth}>
+        <MemoryRouter initialEntries={["/dashboard"]}>
+          <Routes>
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<h1>Dashboard</h1>} />
+              <Route path="/onboarding" element={<h1>Onboarding</h1>} />
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </AuthContext.Provider>,
+    );
+    expect(screen.getByRole("heading", { name: "Onboarding" })).toBeInTheDocument();
+  });
 });
 
 describe("PublicOnlyRoute", () => {

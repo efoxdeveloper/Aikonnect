@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AuthContext, type AuthContextValue } from "@/contexts/AuthContext";
@@ -41,6 +41,10 @@ const auth: AuthContextValue = {
 };
 
 describe("AppHeader", () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+
   it("places the compact workspace switcher in the navbar", () => {
     render(
       <AuthContext.Provider value={auth}>
@@ -60,5 +64,23 @@ describe("AppHeader", () => {
     expect(document.querySelector("[data-sidebar-workspace]")).not.toBeInTheDocument();
     expect(screen.getByRole("banner")).toHaveClass("shadow-[0_4px_12px_rgba(16,24,20,0.10)]");
     expect(screen.getByRole("banner")).not.toHaveClass("border-b");
+  });
+
+  it("keeps the full brand header when the navigation is collapsed", () => {
+    window.localStorage.setItem("interakt-sidebar", "collapsed");
+
+    render(
+      <AuthContext.Provider value={auth}>
+        <MemoryRouter initialEntries={["/dashboard"]}>
+          <SidebarProvider>
+            <AppHeader />
+          </SidebarProvider>
+        </MemoryRouter>
+      </AuthContext.Provider>,
+    );
+
+    const brandHeader = screen.getByTestId("sidebar-brand-header");
+    expect(brandHeader.parentElement).toHaveClass("w-[var(--sidebar-width)]");
+    expect(screen.getByRole("img", { name: "Marento" })).toHaveClass("h-10", "w-[220px]");
   });
 });

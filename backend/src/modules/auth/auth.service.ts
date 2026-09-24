@@ -7,6 +7,7 @@ import { createWorkspaceWithDefaults } from "../workspaces/permissions.js";
 import { generateSecureToken, hashPassword, hashToken, verifyPassword } from "../../utils/crypto.js";
 import { signAccessToken } from "../../utils/tokens.js";
 import { sendPasswordResetEmail, sendVerificationEmail } from "../../services/email.service.js";
+import { verifyTurnstileToken } from "../../services/turnstile.service.js";
 import type { ChangeEmailInput, ChangePasswordInput, LoginInput, RegisterInput, ResetPasswordInput } from "./auth.schemas.js";
 import type { GoogleIdentity } from "./google-oauth.service.js";
 
@@ -68,6 +69,8 @@ async function createSession(userId: string, metadata: SessionMetadata) {
 }
 
 export async function register(input: RegisterInput, metadata: SessionMetadata) {
+  if (input.captchaToken) await verifyTurnstileToken(input.captchaToken, metadata.ipAddress);
+  else if (env.NODE_ENV !== "test") throw new AppError(422, "Complete the Cloudflare verification before creating your account.", "CAPTCHA_REQUIRED");
   const existingUser = await prisma.user.findUnique({ where: { email: input.email }, select: { id: true } });
   if (existingUser) throw new AppError(409, "An account with this email already exists", "EMAIL_IN_USE");
 
@@ -103,8 +106,15 @@ export async function register(input: RegisterInput, metadata: SessionMetadata) 
           companyName: input.companyName,
           industry: input.industry,
           companyWebsite: input.companyWebsite || undefined,
-          companyLocation: input.companyLocation || undefined,
+          companyLocation: input.state || input.companyLocation || undefined,
           annualRevenue: input.annualRevenue,
+          country: input.country || undefined,
+          onboardingData: {
+            ...(input.channel ? { channel: input.channel } : {}),
+            ...(input.state ? { state: input.state } : {}),
+            ...(typeof input.whatsappUpdatesConsent === "boolean" ? { whatsappUpdatesConsent: input.whatsappUpdatesConsent } : {}),
+            ...(typeof input.termsAccepted === "boolean" ? { termsAccepted: input.termsAccepted } : {}),
+          },
         })).workspace;
     await transaction.emailVerificationToken.create({
       data: {

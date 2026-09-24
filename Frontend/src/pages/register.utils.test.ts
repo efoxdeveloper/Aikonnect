@@ -22,17 +22,24 @@ describe("registration request mapping", () => {
       firstName: " Test ",
       lastName: " User ",
       phone: " +910000000000 ",
+      channel: "whatsapp",
       companyName: " Example Ltd ",
-      industry: "technology",
       companyWebsite: "",
       companyLocation: " Delhi ",
+      country: "India",
+      state: " Delhi ",
       annualRevenue: "under-50-lakh",
+      whatsappUpdatesConsent: true,
+      termsAccepted: true,
+      captchaToken: "turnstile-test-token",
     });
 
     expect(request.email).toBe("user@example.com");
     expect(request.password).toBe("Password123");
     expect(request.companyWebsite).toBeUndefined();
-    expect(request.industry).toBe("technology");
+    expect(request.channel).toBe("whatsapp");
+    expect(request.state).toBe("Delhi");
+    expect(request.termsAccepted).toBe(true);
     expect(request).not.toHaveProperty("confirmPassword");
   });
 });

@@ -42,19 +42,22 @@ export async function verifyEmailTransport(): Promise<boolean> {
   return transporter.verify();
 }
 
-function actionEmailHtml(options: {
+export function actionEmailHtml(options: {
   heading: string;
   message: string;
   buttonLabel: string;
   actionUrl: string;
   expiry: string;
 }): string {
+  const logoUrl = new URL("/brand-logo-icon-oly.png", env.APP_URL).toString();
   return `<!doctype html>
 <html lang="en">
   <body style="margin:0;background:#f3f8f8;font-family:Arial,sans-serif;color:#27343a">
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:32px 16px">
       <tr><td align="center">
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:520px;background:#fff;border:1px solid #dfe8e9;border-radius:8px;padding:32px">
+          <tr><td align="center" style="padding-bottom:20px"><img src="${logoUrl}" alt="Marento" width="56" height="56" style="display:block;width:56px;height:56px;border-radius:12px"></td></tr>
+          <tr><td align="center" style="padding-bottom:24px"><div style="color:#145f64;font-size:20px;font-weight:700">Marento</div></td></tr>
           <tr><td><h1 style="margin:0 0 16px;color:#145f64;font-size:24px">${options.heading}</h1></td></tr>
           <tr><td><p style="margin:0 0 24px;line-height:1.6">${options.message}</p></td></tr>
           <tr><td><a href="${options.actionUrl}" style="display:inline-block;background:#116b6f;color:#fff;text-decoration:none;padding:12px 20px;border-radius:6px;font-weight:600">${options.buttonLabel}</a></td></tr>

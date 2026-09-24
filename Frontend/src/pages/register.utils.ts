@@ -5,11 +5,16 @@ export type RegistrationFormData = {
   firstName: string;
   lastName: string;
   phone: string;
+  channel: "whatsapp" | "instagram" | "both" | "";
   companyName: string;
-  industry: string;
   companyWebsite: string;
   companyLocation: string;
+  country: string;
+  state: string;
   annualRevenue: string;
+  whatsappUpdatesConsent: boolean;
+  termsAccepted: boolean;
+  captchaToken: string;
 };
 
 export function getPasswordValidationError(password: string, confirmation: string): string | null {
@@ -29,10 +34,15 @@ export function toRegistrationRequest(data: RegistrationFormData, invitationToke
     firstName: data.firstName.trim(),
     lastName: data.lastName.trim(),
     phone: data.phone.trim(),
+    channel: data.channel as "whatsapp" | "instagram" | "both",
     companyName: data.companyName.trim(),
-    ...(data.industry ? { industry: data.industry } : {}),
     companyWebsite: data.companyWebsite.trim() || undefined,
     companyLocation: data.companyLocation.trim(),
+    country: data.country,
+    state: data.state.trim(),
     annualRevenue: data.annualRevenue,
+    whatsappUpdatesConsent: data.whatsappUpdatesConsent,
+    termsAccepted: data.termsAccepted,
+    captchaToken: data.captchaToken,
   };
 }

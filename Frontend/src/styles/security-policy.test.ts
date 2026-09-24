@@ -15,4 +15,10 @@ describe("frontend content security policy", () => {
     expect(webConfig).toMatch(/frame-src[^;]*https:\/\/accounts\.google\.com/);
     expect(webConfig).toMatch(/img-src[^;]*https:\/\/\*\.gstatic\.com[^;]*https:\/\/\*\.googleusercontent\.com/);
   });
+
+  it("allows Cloudflare Turnstile", () => {
+    expect(webConfig).toMatch(/script-src[^;]*https:\/\/challenges\.cloudflare\.com/);
+    expect(webConfig).toMatch(/connect-src[^;]*https:\/\/challenges\.cloudflare\.com/);
+    expect(webConfig).toMatch(/frame-src[^;]*https:\/\/challenges\.cloudflare\.com/);
+  });
 });

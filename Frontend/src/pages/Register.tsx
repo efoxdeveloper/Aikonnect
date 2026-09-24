@@ -2,8 +2,10 @@ import { useState, type FormEvent } from "react";
 import { ArrowRightIcon as ArrowRight, CheckIcon as Check, ChevronLeftIcon as ChevronLeft, EyeIcon as Eye, EyeOffIcon as EyeOff, IndianRupeeIcon as IndianRupee } from "@animateicons/react/lucide";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
+import { siInstagram, siWhatsapp, type SimpleIcon } from "simple-icons";
 import { useAnimatedIcon } from "@/hooks/use-animated-icon";
 import { Button } from "@/components/ui/button";
+import { CloudflareTurnstile } from "@/components/auth/CloudflareTurnstile";
 import { InternationalPhoneInput } from "@/components/ui/international-phone-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,18 +17,31 @@ import { authTextFieldSx } from "@/components/auth/auth-text-field";
 
 type RegistrationData = RegistrationFormData;
 
-const industryOptions = [
-  ["ecommerce", "E-commerce"],
-  ["education", "Education"],
-  ["financial-services", "Financial services"],
-  ["healthcare", "Healthcare"],
-  ["real-estate", "Real estate"],
-  ["retail", "Retail"],
-  ["technology", "Technology"],
-  ["travel-hospitality", "Travel & hospitality"],
-  ["professional-services", "Professional services"],
-  ["other", "Other"],
+const channelOptions = [
+  ["whatsapp", "WhatsApp"],
+  ["instagram", "Instagram"],
+  ["both", "WhatsApp + Instagram"],
 ] as const;
+
+type Channel = (typeof channelOptions)[number][0];
+
+function BrandIcon({ icon, size = 19 }: { icon: SimpleIcon; size?: number }) {
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill={`#${icon.hex}`} aria-hidden="true" focusable="false"><path d={icon.path} /></svg>;
+}
+
+function ChannelIcon({ channel }: { channel: Channel }) {
+  if (channel === "instagram") {
+    return <BrandIcon icon={siInstagram} />;
+  }
+
+  if (channel === "both") {
+    return <span className="flex items-center gap-0.5"><BrandIcon icon={siWhatsapp} size={17} /><BrandIcon icon={siInstagram} size={17} /></span>;
+  }
+
+  return <BrandIcon icon={siWhatsapp} />;
+}
+
+const countryOptions = ["India", "United Arab Emirates", "Singapore", "United Kingdom", "United States", "Australia", "Canada", "Germany", "Indonesia", "Malaysia"] as const;
 
 type RegistrationFieldProps = {
   id: keyof RegistrationData;
@@ -34,12 +49,13 @@ type RegistrationFieldProps = {
   value: string;
   type?: string;
   autoComplete?: string;
+  required?: boolean;
   onChange: (field: keyof RegistrationData, value: string) => void;
 };
 
-function RegistrationField({ id, label, value, type = "text", autoComplete, onChange }: RegistrationFieldProps) {
+function RegistrationField({ id, label, value, type = "text", autoComplete, required = true, onChange }: RegistrationFieldProps) {
   return (
-    <TextField id={id} name={id} type={type} autoComplete={autoComplete} label={label} required value={value} onChange={(event) => onChange(id, event.target.value)} fullWidth size="small" variant="outlined" sx={authTextFieldSx} slotProps={{ htmlInput: { "aria-label": label } }} />
+    <TextField id={id} name={id} type={type} autoComplete={autoComplete} label={label} required={required} value={value} onChange={(event) => onChange(id, event.target.value)} fullWidth size="small" variant="outlined" sx={authTextFieldSx} slotProps={{ htmlInput: { "aria-label": label } }} />
   );
 }
 
@@ -68,11 +84,16 @@ const initialData: RegistrationData = {
   firstName: "",
   lastName: "",
   phone: "",
+  channel: "whatsapp",
   companyName: "",
-  industry: "",
   companyWebsite: "",
   companyLocation: "",
+  country: "India",
+  state: "",
   annualRevenue: "",
+  whatsappUpdatesConsent: false,
+  termsAccepted: false,
+  captchaToken: "",
 };
 
 export function Register() {
@@ -95,6 +116,11 @@ export function Register() {
     setData((current) => ({ ...current, [field]: value }));
   };
 
+  const updateConsent = (field: "whatsappUpdatesConsent" | "termsAccepted", value: boolean) => {
+    setError(null);
+    setData((current) => ({ ...current, [field]: value }));
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
@@ -105,6 +131,11 @@ export function Register() {
         return;
       }
       setStep(2);
+      return;
+    }
+
+    if (!data.channel || !data.phone || !data.companyName.trim() || !data.country || !data.state.trim() || !data.annualRevenue || !data.termsAccepted || !data.captchaToken) {
+      setError("Complete the required business details and accept the terms before creating your account.");
       return;
     }
 
@@ -126,7 +157,7 @@ export function Register() {
         <div className="text-center">
           <AuthMark className="mx-auto" />
           <h1 id="register-title" className="mt-4 text-[23px] font-semibold leading-tight tracking-[-0.035em] text-[var(--text-primary)]">Create your account</h1>
-          <div className="mt-2 text-[13px] text-[var(--text-secondary)]">{step === 1 ? "Tell us who you are to get started." : "Now tell us a little about your business."}</div>
+          <div className="mt-2 text-[13px] text-[var(--text-secondary)]">{step === 1 ? "Tell us who you are to get started." : "Set up your business profile before we send the verification email."}</div>
         </div>
 
         {step === 1 && <div className="mt-5"><GoogleButton label="Sign up with Google" /><div className="my-5 flex items-center gap-3" aria-hidden="true"><span className="h-px flex-1 bg-[var(--border-soft)]" /><span className="text-[10px] text-[var(--text-muted)]">Or continue with email</span><span className="h-px flex-1 bg-[var(--border-soft)]" /></div></div>}
@@ -163,25 +194,23 @@ export function Register() {
             </div>
           ) : (
             <div className="space-y-4">
+              <fieldset>
+                <legend className="mb-2 text-sm font-semibold text-[var(--text-primary)]">Which channels do you want to use?</legend>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                  {channelOptions.map(([value, label]) => { const enabled = value === "whatsapp"; return <button key={value} type="button" aria-label={label} aria-pressed={data.channel === value} disabled={!enabled} onClick={() => updateField("channel", value)} className={`flex h-12 items-center justify-between gap-2 rounded-md border px-3 py-2 text-left text-sm transition-colors ${data.channel === value ? "border-[var(--brand)] bg-[var(--brand-soft)] font-semibold text-[var(--brand)]" : enabled ? "border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[var(--brand)]/40" : "cursor-not-allowed border-[var(--border-soft)] bg-[var(--surface-subtle)] text-[var(--text-muted)] opacity-60"}`}><span className="flex items-center gap-2.5"><span className={`flex size-8 items-center justify-center rounded-md ${data.channel === value ? "bg-white/80" : "bg-white"}`}><ChannelIcon channel={value} /></span><span>{label}</span></span>{data.channel === value && <Check size={16} aria-hidden="true" />}</button>; })}
+                </div>
+              </fieldset>
               <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                 <InternationalPhoneInput id="phone" required value={data.phone} onChange={(value) => updateField("phone", value)} />
                 <RegistrationField id="companyName" label="Company name" value={data.companyName} onChange={updateField} autoComplete="organization" />
               </div>
               <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
-                <RegistrationField id="companyWebsite" label="Company website" value={data.companyWebsite} onChange={updateField} type="url" autoComplete="url" />
-                <RegistrationField id="companyLocation" label="Company location" value={data.companyLocation} onChange={updateField} autoComplete="address-level2" />
+                <RegistrationField id="companyWebsite" label="Company website (optional)" value={data.companyWebsite} onChange={updateField} type="url" autoComplete="url" required={false} />
+                <RegistrationField id="state" label="State / region" value={data.state} onChange={updateField} autoComplete="address-level1" />
               </div>
               <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="industry" className="mb-2 block text-sm font-semibold text-[var(--text-primary)]">Industry</label>
-                  <Select value={data.industry} onValueChange={(value) => updateField("industry", value)}>
-                    <SelectTrigger id="industry" aria-label="Industry" className="h-12 border-[var(--border-strong)] px-3.5 shadow-[0_1px_2px_rgba(4,45,29,.03)] focus:shadow-[0_0_0_3px_rgba(21,150,106,.12)]">
-                      <SelectValue placeholder="Select your industry" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {industryOptions.map(([value, label]) => <SelectItem key={value} value={value}>{label}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
+                  <label htmlFor="country" className="mb-2 block text-sm font-semibold text-[var(--text-primary)]">Country</label><Select value={data.country} onValueChange={(value) => updateField("country", value)}><SelectTrigger id="country" aria-label="Country" className="h-12 border-[var(--border-strong)] px-3.5"><SelectValue placeholder="Select country" /></SelectTrigger><SelectContent>{countryOptions.map((country) => <SelectItem key={country} value={country}>{country}</SelectItem>)}</SelectContent></Select>
                 </div>
                 <div>
                   <label htmlFor="annualRevenue" className="mb-2 block text-sm font-semibold text-[var(--text-primary)]">Annual revenue</label>
@@ -201,6 +230,11 @@ export function Register() {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+              <div className="flex justify-start pt-1"><CloudflareTurnstile onToken={(token) => setData((current) => ({ ...current, captchaToken: token }))} /></div>
+              <div className="space-y-2.5 rounded-md border border-[var(--border-soft)] bg-[var(--surface-subtle)] p-3.5 text-xs text-[var(--text-secondary)]">
+                <label className="flex cursor-pointer items-start gap-2.5"><input type="checkbox" checked={data.whatsappUpdatesConsent} onChange={(event) => updateConsent("whatsappUpdatesConsent", event.target.checked)} className="mt-0.5 size-4 accent-[var(--brand)]" /><span>I agree to receive important account updates on WhatsApp.</span></label>
+                <label className="flex cursor-pointer items-start gap-2.5"><input type="checkbox" checked={data.termsAccepted} onChange={(event) => updateConsent("termsAccepted", event.target.checked)} className="mt-0.5 size-4 accent-[var(--brand)]" required /><span>I agree to Marento&apos;s <a href="#terms" onClick={(event) => event.stopPropagation()} className="font-medium text-[var(--brand)] underline decoration-[var(--green-300)] underline-offset-2 hover:text-[var(--brand-hover)]">Terms of Service</a> and <a href="#privacy" onClick={(event) => event.stopPropagation()} className="font-medium text-[var(--brand)] underline decoration-[var(--green-300)] underline-offset-2 hover:text-[var(--brand-hover)]">Privacy Policy</a>.</span></label>
               </div>
               {error && <p role="alert" className="rounded-md bg-[var(--danger-soft)] px-3 py-2.5 text-center">{error}</p>}
               <div className="grid grid-cols-[112px_1fr] gap-3">

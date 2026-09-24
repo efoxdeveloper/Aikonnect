@@ -5,6 +5,46 @@ import { industryValues } from "./industry.js";
 const optionalText = (maximum: number) => z.string().trim().max(maximum).optional();
 const permissionValues = Object.values(PERMISSIONS) as [string, ...string[]];
 const industry = z.enum(industryValues);
+const channel = z.enum(["whatsapp", "instagram", "both"]);
+const objective = z.enum([
+  "automated-notifications",
+  "chat-support-automation",
+  "bulk-campaigns",
+  "click-to-whatsapp-ads",
+  "whatsapp-forms",
+  "other-reasons",
+]);
+const integration = z.enum([
+  "apis-webhooks",
+  "shopify",
+  "google-sheets",
+  "facebook-lead-form",
+  "whatsapp-pay",
+  "razorpay",
+  "payu",
+  "aspire",
+  "xendit",
+  "cashfree",
+]);
+const yesNo = z.enum(["yes", "no"]);
+const businessVerification = z.enum(["already-verified", "gst-certificate", "website-domain", "connect-without-verification"]);
+
+export const onboardingDataSchema = z.object({
+  channel: channel.optional(),
+  state: optionalText(100),
+  whatsappUpdatesConsent: z.boolean().optional(),
+  termsAccepted: z.boolean().optional(),
+  captchaCompleted: z.boolean().optional(),
+  industry: industry.optional(),
+  industrySubcategory: optionalText(100),
+  objectives: z.array(objective).max(3).optional(),
+  integrations: z.array(integration).optional(),
+  metaBusinessManager: yesNo.optional(),
+  usedWhatsAppApi: yesNo.optional(),
+  activationChoice: z.enum(["connected", "later"]).optional(),
+  walletOfferAccepted: z.boolean().optional(),
+  businessVerification: businessVerification.optional(),
+});
 
 export const createWorkspaceSchema = z.object({
   tenantId: z.uuid().optional(),
@@ -38,6 +78,11 @@ export const completeWorkspaceOnboardingSchema = z.object({
   name: z.string().trim().min(1).max(160),
   country: z.string().trim().min(2).max(100),
   timezone: z.string().trim().min(1).max(100).refine(validTimezone, "Select a valid time zone"),
+}).and(onboardingDataSchema.partial());
+
+export const saveWorkspaceOnboardingSchema = z.object({
+  step: z.number().int().min(0).max(4),
+  data: onboardingDataSchema,
 });
 
 export const inviteMemberSchema = z.object({
@@ -64,6 +109,8 @@ export const changeMemberStatusSchema = z.object({ status: z.enum(["ACTIVE", "SU
 export type CreateWorkspaceInput = z.infer<typeof createWorkspaceSchema>;
 export type UpdateWorkspaceInput = z.infer<typeof updateWorkspaceSchema>;
 export type CompleteWorkspaceOnboardingInput = z.infer<typeof completeWorkspaceOnboardingSchema>;
+export type SaveWorkspaceOnboardingInput = z.infer<typeof saveWorkspaceOnboardingSchema>;
+export type OnboardingData = z.infer<typeof onboardingDataSchema>;
 export type InviteMemberInput = z.infer<typeof inviteMemberSchema>;
 export type CreateRoleInput = z.infer<typeof createRoleSchema>;
 export type UpdateRoleInput = z.infer<typeof updateRoleSchema>;

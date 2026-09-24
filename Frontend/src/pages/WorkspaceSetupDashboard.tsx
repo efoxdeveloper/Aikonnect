@@ -2,15 +2,13 @@ import { useEffect, useState } from "react";
 import {
   ArrowRightIcon as ArrowRight,
   CheckIcon as Check,
-  CircleCheckIcon as CircleCheck,
   MessageSquareIcon as MessageSquare,
   PhoneIcon as Phone,
-  RocketIcon as Rocket,
   SendIcon as Send,
   StoreIcon as Store,
 } from "@animateicons/react/lucide";
 import { Link } from "react-router-dom";
-import { BarChart3, Inbox as InboxIcon, Megaphone, Users, Workflow } from "lucide-react";
+import { BarChart3, Users } from "lucide-react";
 import type { AnimatedIcon } from "@/config/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAnimatedIcon } from "@/hooks/use-animated-icon";
@@ -35,32 +33,32 @@ type StepProps = {
   last?: boolean;
 };
 
-function SetupStep({ icon: Icon, title, description, complete, available, active, to, onAction, actionDisabled, last }: StepProps) {
+function SetupStep({ icon: Icon, title, description, complete, available, active, action, to, onAction, actionDisabled, last }: StepProps) {
   const animatedIcon = useAnimatedIcon();
   return (
-    <div className={cn("group/step relative flex gap-4 rounded-md pb-6 last:pb-0", active && "bg-[var(--brand-soft)]/55 px-3 py-3 last:pb-3")} onMouseEnter={animatedIcon.onMouseEnter} onMouseLeave={animatedIcon.onMouseLeave}>
-      {!last && <span className={cn("absolute left-[19px] top-10 h-[calc(100%-24px)] w-px", complete ? "bg-[var(--brand)]/30" : "bg-[var(--border)]")} />}
-      <div className={cn("relative z-10 flex size-10 shrink-0 items-center justify-center rounded-full border transition-colors", complete ? "border-[var(--brand)] bg-[var(--brand)] text-white" : available ? "border-[var(--brand)]/25 bg-[var(--brand-soft)] text-[var(--brand)]" : "border-[var(--border)] bg-[#f7f8fa] text-[var(--text-muted)]")}>
+    <div aria-current={active ? "step" : undefined} className={cn("group/step relative flex items-start gap-3 rounded-lg px-3 py-3", active ? "bg-[#e8f8f0] shadow-[0_2px_8px_rgba(0,112,78,.08)] ring-1 ring-inset ring-[var(--brand)]/20" : "hover:bg-[var(--page-background)]", !last && "pb-5")} onMouseEnter={animatedIcon.onMouseEnter} onMouseLeave={animatedIcon.onMouseLeave}>
+      {!last && <span className={cn("absolute bottom-0 left-[31px] top-[52px] w-px", complete ? "bg-[var(--brand)]/30" : "bg-[var(--border)]")} />}
+      <div className={cn("relative z-10 flex size-[38px] shrink-0 items-center justify-center rounded-full border transition-colors", complete ? "border-[var(--brand)] bg-[var(--brand)] text-white" : active ? "border-[var(--brand)] bg-[var(--brand)] text-white shadow-[0_2px_6px_rgba(0,112,78,.2)]" : available ? "border-[var(--brand)]/25 bg-[var(--brand-soft)] text-[var(--brand)]" : "border-[var(--border)] bg-[#f7f8fa] text-[var(--text-muted)]")}>
         {complete ? <Check size={17} duration={0.55} aria-hidden="true" /> : <Icon ref={animatedIcon.ref} size={18} duration={0.7} aria-hidden="true" />}
       </div>
       <div className="min-w-0 flex-1 pt-0.5">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h3 className={cn("text-[14px] font-medium", available || complete ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]")}>{title}</h3>
-            <p className="mt-1">{description}</p>
+        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+          <div className="min-w-0 flex-1">
+            <h3 className={cn("text-[13px] font-semibold leading-5", active ? "text-[var(--brand)]" : available || complete ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]")}>{title}</h3>
+            <p className={cn("mt-0.5 text-xs leading-5", available || complete ? "text-[var(--text-secondary)]" : "text-[var(--text-muted)]")}>{description}</p>
           </div>
           {complete ? (
-            <span className="w-fit rounded-md bg-[#e9f7f1] px-2.5 py-1 text-[11px] font-medium text-[#137a57]">Complete</span>
+            <span className="mt-0.5 w-fit shrink-0 rounded-full bg-[#e9f7f1] px-2.5 py-1 text-[10px] font-semibold text-[#137a57]">Complete</span>
           ) : active ? (
             onAction ? (
-              <button type="button" aria-label={`Next: ${title}`} disabled={actionDisabled} onClick={onAction} className="w-fit shrink-0 rounded-md bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--brand)] ring-1 ring-inset ring-[var(--brand)]/15 transition-colors hover:bg-[var(--brand-soft)] disabled:cursor-wait disabled:opacity-60">Next</button>
+              <button type="button" aria-label={action ?? title} disabled={actionDisabled} onClick={onAction} className="mt-0.5 w-fit shrink-0 rounded-md bg-[var(--brand)] px-3 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-[var(--brand-hover)] disabled:cursor-wait disabled:opacity-60">{action ?? "Next"}</button>
             ) : to ? (
-              <Link to={to} aria-label={`Next: ${title}`} className="w-fit shrink-0 rounded-md bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--brand)] ring-1 ring-inset ring-[var(--brand)]/15 transition-colors hover:bg-[var(--brand-soft)]">Next</Link>
+              <Link to={to} aria-label={action ?? title} className="mt-0.5 w-fit shrink-0 rounded-md bg-[var(--brand)] px-3 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-[var(--brand-hover)]">{action ?? "Next"}</Link>
             ) : (
-              <span className="w-fit shrink-0 rounded-md bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--brand)] ring-1 ring-inset ring-[var(--brand)]/15">Next</span>
+              <span className="mt-0.5 w-fit shrink-0 rounded-md border border-[var(--brand)]/25 bg-white px-3 py-1.5 text-[11px] font-semibold text-[var(--brand)]">{action ?? "Next"}</span>
             )
           ) : (
-            <span className="w-fit rounded-md bg-[var(--gray-100)] px-2.5 py-1 text-[11px] font-medium text-[var(--text-muted)]">Locked</span>
+            <span className="mt-0.5 w-fit shrink-0 rounded-full bg-[var(--gray-100)] px-2.5 py-1 text-[10px] font-semibold text-[var(--text-muted)]">Locked</span>
           )}
         </div>
       </div>
@@ -80,8 +78,6 @@ export function WorkspaceSetupDashboard() {
     accessToken,
     membership?.workspace.onboardingCompletedAt,
   );
-  const rocketIcon = useAnimatedIcon();
-  const nextActionIcon = useAnimatedIcon();
   const { connecting, error: connectionError, pinRequired, submitRegistrationPin, cancelRegistrationPin, start } = useWhatsAppEmbeddedSignup({ workspaceId: membership?.workspace.id, accessToken, onConnected: refresh });
   const [connectionGuideOpen, setConnectionGuideOpen] = useState(false);
   const [connectionLaunching, setConnectionLaunching] = useState(false);
@@ -107,7 +103,6 @@ export function WorkspaceSetupDashboard() {
   ];
   const nextStep = steps.find((step) => !step.complete && step.available);
   const allComplete = !nextStep;
-  const NextStepIcon = nextStep?.icon;
   const connectedAccount = data.whatsapp.accounts.find((account) => account.status === "CONNECTED") ?? data.whatsapp.accounts[0];
   const connectedPhone = connectedAccount?.phoneNumbers.find((phone) => phone.status === "ACTIVE") ?? connectedAccount?.phoneNumbers[0];
   const whatsappStatusLabel = data.whatsapp.status === "CONNECTED" ? "Connected" : data.whatsapp.status === "CONNECTING" ? "Connecting" : data.whatsapp.status === "ERROR" ? "Needs attention" : "Not connected";
@@ -118,58 +113,24 @@ export function WorkspaceSetupDashboard() {
     <div className="flex h-full min-h-0 flex-col overflow-hidden bg-[var(--page-background)]">
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div className="mx-auto max-w-[1180px] px-5 py-6 sm:px-8 sm:py-8">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-[25px] font-medium tracking-[-0.025em] text-[var(--text-primary)]">{allComplete ? "Dashboard" : `Welcome, ${user?.firstName}`}</h1>
-        </div>
-        <span className="w-fit rounded-full border border-[var(--border)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)]">{allComplete ? "Connected" : progress.completedSteps + " of " + progress.totalSteps + " complete"}</span>
-      </div>
-
-      <section className="mt-5 overflow-hidden rounded-md bg-[var(--green-900)] text-white shadow-[0_8px_24px_rgba(4,63,41,.13)]">
-        <div className="flex flex-col gap-5 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
-          <div className="flex items-start gap-4">
-            <div onMouseEnter={rocketIcon.onMouseEnter} onMouseLeave={rocketIcon.onMouseLeave} className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/12 text-white ring-1 ring-white/15">
-              <Rocket ref={rocketIcon.ref} size={21} duration={0.7} aria-hidden="true" />
+      <section className="relative isolate min-h-[190px] overflow-hidden rounded-xl border border-[#d8f0e5] bg-gradient-to-br from-[#f0fcf7] via-[#e2f8ef] to-[#f8fcfa] shadow-[0_3px_12px_rgba(30,40,55,.045)]">
+        <div className="pointer-events-none absolute -left-16 -top-20 size-56 rounded-full bg-[#c9f1df]/60 blur-2xl" />
+        <div className="pointer-events-none absolute right-44 top-[-100px] size-64 rounded-full bg-[#d5f7e8]/80 blur-2xl" />
+        <div className="relative z-10 max-w-[680px] px-5 py-5 sm:px-7 sm:py-6">
+          <h1 className="text-[24px] font-semibold tracking-[-0.03em] text-[var(--text-primary)]">Welcome back, {user?.firstName}! <span aria-hidden="true">👋</span></h1>
+          <div className="mt-5 border-t border-[#ccebdd] pt-4">
+            <p className="text-[11px] font-semibold text-[var(--text-primary)]">Your setup progress</p>
+            <div className="mt-0.5 flex items-center justify-between gap-3">
+              <h2 className="text-[16px] font-semibold text-[var(--text-primary)]">{progress.completedSteps} of {progress.totalSteps} steps complete</h2>
+              <span className="text-[10px] font-semibold text-[var(--text-secondary)]">{progress.percentage}%</span>
             </div>
-            <div>
-              <h2 className="!text-white text-[17px] font-medium">{allComplete ? "WhatsApp is connected" : progress.completedSteps + " of " + progress.totalSteps + " steps complete"}</h2>
-              <div className="!text-white/70 mt-1">{allComplete ? (connectedPhone?.displayPhoneNumber ?? "Business number") : (nextStep?.title ?? "Complete your setup") + " is the next step."}</div>
-            </div>
+            <div role="progressbar" aria-label="Workspace setup progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percentage} className="mt-2 h-2 max-w-[430px] overflow-hidden rounded-full bg-[#d8e9e1]"><div className="h-full rounded-full bg-[var(--brand)] transition-[width] duration-500" style={{ width: `${progress.percentage}%` }} /></div>
           </div>
-          {allComplete ? <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white/12 px-3 py-2 text-xs font-medium text-white ring-1 ring-white/15"><CircleCheck size={15} aria-hidden="true" /> Connected</span> : <div className="flex items-center gap-4">
-            <div className="relative flex size-[64px] items-center justify-center rounded-full" role="progressbar" aria-label="Workspace setup progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress.percentage} style={{ background: "conic-gradient(#ffffff " + progress.percentage + "%, rgba(255,255,255,.18) 0)" }}>
-              <div className="flex size-[52px] items-center justify-center rounded-full bg-[var(--green-800)] text-sm font-medium">{progress.percentage}%</div>
-            </div>
-          </div>}
         </div>
-        {!allComplete && <div className="h-1.5 bg-white/15"><div className="h-full bg-white transition-[width] duration-500" style={{ width: `${progress.percentage}%` }} /></div>}
+        <img src="/marento-dashboard-hero.png" alt="" className="pointer-events-none absolute bottom-0 right-2 hidden h-[185px] w-[270px] object-contain object-right-bottom lg:block" />
       </section>
 
       {connectionError && <div role="alert" className="mt-5 rounded-md bg-[var(--danger-soft)] px-4 py-3 text-[var(--danger)]">{connectionError}</div>}
-
-      {nextStep && (
-        <section className="mt-5 flex flex-col gap-4 rounded-md border border-[var(--brand)]/15 bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:flex-row sm:items-center sm:justify-between sm:p-6" aria-labelledby="next-step-title">
-          <div className="flex min-w-0 items-start gap-3.5">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[var(--brand-soft)] text-[var(--brand)]">{NextStepIcon && <NextStepIcon size={19} duration={0.7} aria-hidden="true" />}</div>
-            <div className="min-w-0">
-              <div className="text-[10px] font-semibold uppercase tracking-[.08em] text-[var(--brand)]">Next step</div>
-              <h2 id="next-step-title" className="mt-1 text-[16px] font-medium text-[var(--text-primary)]">{nextStep.title}</h2>
-              <p className="mt-1">{nextStep.description}</p>
-            </div>
-          </div>
-          {nextStep.onAction ? (
-            <button type="button" disabled={nextStep.actionDisabled} onClick={nextStep.onAction} onMouseEnter={nextActionIcon.onMouseEnter} onMouseLeave={nextActionIcon.onMouseLeave} className="flex h-10 w-full shrink-0 items-center justify-center rounded-md bg-[var(--brand)] px-4 text-xs font-semibold text-white transition-colors hover:bg-[var(--brand-hover)] disabled:cursor-wait disabled:opacity-60 sm:w-auto">
-              {nextStep.action}
-              <ArrowRight ref={nextActionIcon.ref} size={14} duration={0.55} className="ml-1.5" aria-hidden="true" />
-            </button>
-          ) : nextStep.to ? (
-            <Link to={nextStep.to} onMouseEnter={nextActionIcon.onMouseEnter} onMouseLeave={nextActionIcon.onMouseLeave} className="flex h-10 w-full shrink-0 items-center justify-center rounded-md bg-[var(--brand)] px-4 text-xs font-semibold text-white transition-colors hover:bg-[var(--brand-hover)] sm:w-auto">
-              {nextStep.action}
-              <ArrowRight ref={nextActionIcon.ref} size={14} duration={0.55} className="ml-1.5" aria-hidden="true" />
-            </Link>
-          ) : null}
-        </section>
-      )}
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_310px]">
         {allComplete ? (
@@ -188,26 +149,17 @@ export function WorkspaceSetupDashboard() {
               <div className="rounded-md border border-[var(--border-soft)] bg-[var(--page-background)] p-4"><div className="flex items-center gap-2 text-[var(--text-muted)]"><Users size={15} /><span className="text-xs">Team members</span></div><div className="mt-3 text-sm font-semibold text-[var(--text-primary)]">{data.team.memberCount}</div></div>
             </div>
 
-            <div className="mt-6">
-              <h3 className="text-sm font-medium text-[var(--text-primary)]">Quick actions</h3>
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <Link to="/inbox" className="group flex items-center gap-3 rounded-md border border-[var(--border-soft)] p-3.5 transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-soft)]"><span className="flex size-9 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><InboxIcon size={17} /></span><span className="min-w-0 flex-1"><span className="block text-sm font-medium text-[var(--text-primary)]">Open inbox</span></span><ArrowRight size={15} className="text-[var(--text-muted)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--brand)]" /></Link>
-                <Link to="/campaigns" className="group flex items-center gap-3 rounded-md border border-[var(--border-soft)] p-3.5 transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-soft)]"><span className="flex size-9 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><Megaphone size={17} /></span><span className="min-w-0 flex-1"><span className="block text-sm font-medium text-[var(--text-primary)]">Create campaign</span></span><ArrowRight size={15} className="text-[var(--text-muted)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--brand)]" /></Link>
-                <Link to="/contacts" className="group flex items-center gap-3 rounded-md border border-[var(--border-soft)] p-3.5 transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-soft)]"><span className="flex size-9 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><Users size={17} /></span><span className="min-w-0 flex-1"><span className="block text-sm font-medium text-[var(--text-primary)]">View contacts</span></span><ArrowRight size={15} className="text-[var(--text-muted)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--brand)]" /></Link>
-                <Link to="/automations" className="group flex items-center gap-3 rounded-md border border-[var(--border-soft)] p-3.5 transition-colors hover:border-[var(--brand)]/30 hover:bg-[var(--brand-soft)]"><span className="flex size-9 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><Workflow size={17} /></span><span className="min-w-0 flex-1"><span className="block text-sm font-medium text-[var(--text-primary)]">Set up automation</span></span><ArrowRight size={15} className="text-[var(--text-muted)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--brand)]" /></Link>
-              </div>
-            </div>
           </section>
         ) : (
         <section data-testid="setup-checklist" className="rounded-md border border-[var(--border-soft)] bg-white p-5 shadow-[0_3px_12px_rgba(30,40,55,.045)] sm:p-6">
           <div className="flex items-start justify-between gap-4 border-b border-[var(--border-soft)] pb-4">
             <div>
-              <h2 className="text-[16px] font-medium text-[var(--text-primary)]">Setup checklist</h2>
-              <p className="mt-1">Your workspace setup at a glance.</p>
+              <h2 className="text-[17px] font-semibold tracking-[-0.01em] text-[var(--text-primary)]">Setup checklist</h2>
+              <p className="mt-1 text-xs leading-5 text-[var(--text-secondary)]">Your workspace setup at a glance.</p>
             </div>
-            <span className="text-xs font-medium text-[var(--text-muted)]">{progress.completedSteps}/{progress.totalSteps}</span>
+            <span className="shrink-0 rounded-full bg-[var(--brand-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--brand)]">{progress.completedSteps}/{progress.totalSteps}</span>
           </div>
-          <div className="mt-5">
+          <div className="mt-4 space-y-1">
             {steps.map((step, index) => <SetupStep key={step.title} {...step} active={step === nextStep} last={index === steps.length - 1} />)}
           </div>
         </section>

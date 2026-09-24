@@ -3360,6 +3360,8 @@ export const WorkspaceScalarFieldEnum = {
   logoData: 'logoData',
   country: 'country',
   timezone: 'timezone',
+  onboardingData: 'onboardingData',
+  onboardingStep: 'onboardingStep',
   onboardingCompletedAt: 'onboardingCompletedAt',
   ownerId: 'ownerId',
   createdAt: 'createdAt',
@@ -4098,6 +4100,20 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 
 
 /**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+
+
+
+/**
  * Reference to a field of type 'TemplateStatus'
  */
 export type EnumTemplateStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TemplateStatus'>
@@ -4157,20 +4173,6 @@ export type EnumConversationStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
  * Reference to a field of type 'ConversationStatus[]'
  */
 export type ListEnumConversationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ConversationStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -4690,4 +4692,3 @@ export type PrismaAction =
  * `PrismaClient` proxy available in interactive transactions.
  */
 export type TransactionClient = Omit<DefaultPrismaClient, runtime.ITXClientDenyList>
-

@@ -25,6 +25,21 @@ export async function update(request: Request, response: Response) {
   response.status(200).json({ success: true, data: await workspaceService.updateWorkspace(request.params.workspaceId as string, request.body) });
 }
 
+export async function onboarding(request: Request, response: Response) {
+  response.status(200).json({ success: true, data: await workspaceService.getWorkspaceOnboarding(request.params.workspaceId as string) });
+}
+
+export async function saveOnboarding(request: Request, response: Response) {
+  response.status(200).json({
+    success: true,
+    data: await workspaceService.saveWorkspaceOnboarding(
+      request.params.workspaceId as string,
+      requireAuth(request).userId,
+      request.body,
+    ),
+  });
+}
+
 export async function remove(request: Request, response: Response) {
   await workspaceService.deleteWorkspace(request.params.workspaceId as string, requireAuth(request).userId);
   response.status(204).send();

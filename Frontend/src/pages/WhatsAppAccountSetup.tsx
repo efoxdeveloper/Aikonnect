@@ -12,7 +12,7 @@ import {
   ShieldCheckIcon as ShieldCheck,
   SmartphoneIcon as Smartphone,
 } from "@animateicons/react/lucide";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAnimatedIcon } from "@/hooks/use-animated-icon";
 import { useWorkspaceSetup } from "@/hooks/use-workspace-setup";
@@ -38,6 +38,8 @@ const coexistenceSteps = [
 ];
 
 export function WhatsAppAccountSetup() {
+  const [searchParams] = useSearchParams();
+  const returnTo = searchParams.get("returnTo") === "/onboarding" ? "/onboarding" : "/dashboard";
   const { accessToken, user } = useAuth();
   const membership = getActiveMembership(user);
   const { data, loading, error, refresh } = useWorkspaceSetup(membership?.workspace.id, accessToken);
@@ -140,9 +142,9 @@ export function WhatsAppAccountSetup() {
 
       <main data-testid="whatsapp-account-scroll-region" className="min-h-0 flex-1 overflow-y-auto">
         <div className="mx-auto w-full max-w-[1400px] px-5 py-5 sm:px-8 sm:py-7">
-          <Link to="/dashboard" onMouseEnter={backIcon.onMouseEnter} onMouseLeave={backIcon.onMouseLeave} className="mb-4 inline-flex items-center text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--brand)]">
+          <Link to={returnTo} onMouseEnter={backIcon.onMouseEnter} onMouseLeave={backIcon.onMouseLeave} className="mb-4 inline-flex items-center text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--brand)]">
             <ArrowLeft ref={backIcon.ref} size={14} duration={0.55} className="mr-1.5" aria-hidden="true" />
-            Back to setup
+            Back to {returnTo === "/onboarding" ? "onboarding" : "setup"}
           </Link>
 
           {(error || connectionError) && <div role="alert" className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-[var(--danger)]">{connectionError ?? error}</div>}

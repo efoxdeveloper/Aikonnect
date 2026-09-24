@@ -65,6 +65,17 @@ describe("registration password visibility", () => {
     expect(phone).toHaveAttribute("type", "tel");
     expect(phone).toBeRequired();
     expect(screen.getByText("+91")).toBeInTheDocument();
-    expect(screen.getByRole("combobox", { name: "Industry" })).toBeInTheDocument();
+    const whatsapp = screen.getByRole("button", { name: "WhatsApp" });
+    const instagram = screen.getByRole("button", { name: "Instagram" });
+    const both = screen.getByRole("button", { name: "WhatsApp + Instagram" });
+    expect(whatsapp).toBeEnabled();
+    expect(instagram).toBeDisabled();
+    expect(both).toBeDisabled();
+    expect(whatsapp).toHaveAttribute("aria-pressed", "true");
+    expect(instagram).toHaveAttribute("aria-pressed", "false");
+    expect(both).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByRole("combobox", { name: "Country" })).toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: "Terms of Service" }).some((link) => link.getAttribute("href") === "#terms")).toBe(true);
+    expect(screen.getAllByRole("link", { name: "Privacy Policy" }).some((link) => link.getAttribute("href") === "#privacy")).toBe(true);
   });
 });

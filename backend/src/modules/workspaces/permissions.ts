@@ -162,6 +162,8 @@ type WorkspaceDetails = {
   companyWebsite?: string;
   companyLocation?: string;
   annualRevenue?: string;
+  country?: string;
+  onboardingData?: Record<string, unknown>;
 };
 
 async function createUniqueWorkspaceSlug(
@@ -236,6 +238,8 @@ export async function createWorkspaceWithDefaults(
       companyWebsite: details.companyWebsite,
       companyLocation: details.companyLocation,
       annualRevenue: details.annualRevenue,
+      country: details.country,
+      onboardingData: details.onboardingData as Prisma.InputJsonValue | undefined,
       ownerId,
     },
   });

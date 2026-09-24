@@ -10,6 +10,7 @@ import {
   changeMemberRoleSchema,
   changeMemberStatusSchema,
   completeWorkspaceOnboardingSchema,
+  saveWorkspaceOnboardingSchema,
   createRoleSchema,
   createWorkspaceSchema,
   inviteMemberSchema,
@@ -39,6 +40,8 @@ workspaceRouter.post("/invitations/accept", validateBody(acceptInvitationSchema)
 workspaceRouter.get("/:workspaceId", requireWorkspacePermission(PERMISSIONS.WORKSPACE_READ), asyncHandler(controller.get));
 workspaceRouter.get("/:workspaceId/setup", requireWorkspacePermission(PERMISSIONS.WORKSPACE_READ), asyncHandler(controller.setup));
 workspaceRouter.patch("/:workspaceId", requireWorkspacePermission(PERMISSIONS.WORKSPACE_UPDATE), validateBody(updateWorkspaceSchema), asyncHandler(controller.update));
+workspaceRouter.get("/:workspaceId/onboarding", requireWorkspacePermission(PERMISSIONS.WORKSPACE_READ), asyncHandler(controller.onboarding));
+workspaceRouter.patch("/:workspaceId/onboarding", requireWorkspacePermission(PERMISSIONS.WORKSPACE_UPDATE), validateBody(saveWorkspaceOnboardingSchema), asyncHandler(controller.saveOnboarding));
 workspaceRouter.delete("/:workspaceId", requireWorkspacePermission(PERMISSIONS.WORKSPACE_DELETE), asyncHandler(controller.remove));
 workspaceRouter.post("/:workspaceId/onboarding/complete", requireWorkspacePermission(PERMISSIONS.WORKSPACE_UPDATE), validateBody(completeWorkspaceOnboardingSchema), asyncHandler(controller.completeOnboarding));
 

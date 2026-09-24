@@ -10,6 +10,7 @@ const password = z
   .regex(/[0-9]/, "Password must contain a number");
 const optionalText = (maximum: number) => z.string().trim().max(maximum).optional();
 const industry = z.enum(industryValues);
+const channel = z.enum(["whatsapp", "instagram", "both"]);
 
 export const registerSchema = z.object({
   email,
@@ -18,11 +19,14 @@ export const registerSchema = z.object({
   firstName: z.string().trim().min(1).max(100),
   lastName: z.string().trim().min(1).max(100),
   phone: optionalText(30),
+  channel: channel.optional(),
   workspaceName: optionalText(160),
   companyName: z.string().trim().min(1).max(160),
   industry: industry.optional(),
   companyWebsite: z.union([z.url().max(500), z.literal("")]).optional(),
   companyLocation: optionalText(200),
+  country: optionalText(100),
+  state: optionalText(100),
   annualRevenue: z
     .enum([
       "under-50-lakh",
@@ -32,6 +36,9 @@ export const registerSchema = z.object({
       "25-crore-plus",
     ])
     .optional(),
+  whatsappUpdatesConsent: z.boolean().optional(),
+  termsAccepted: z.literal(true).optional(),
+  captchaToken: z.string().trim().min(1).max(2048).optional(),
 });
 
 export const loginSchema = z.object({ email, password: z.string().min(1).max(128) });

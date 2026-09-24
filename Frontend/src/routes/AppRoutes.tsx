@@ -20,6 +20,7 @@ import { ApiWebhooks } from "@/pages/ApiWebhooks";
 import { AdminDashboard } from "@/pages/AdminDashboard";
 import { PlatformAdminLayout } from "@/layouts/PlatformAdminLayout";
 import { PlatformAdminSection } from "@/pages/PlatformAdminSection";
+import { Onboarding } from "@/pages/Onboarding";
 
 const paths = ["dashboard/analytics", "dashboard/activity", "contacts", "campaigns", "templates", "createtemplate", "pipelines", "catalog", "orders", "reports", "integrations", "settings", "account-settings", "payments", "click-to-whatsapp-ads", "conversation-analytics", "campaign-analytics", "webhook-events", "whatsapp-account", "team-members", "team-members/roles", "billing"];
 export function AppRoutes() {
@@ -34,6 +35,7 @@ export function AppRoutes() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
       </Route>
       <Route element={<ProtectedRoute />}>
+        <Route path="/onboarding" element={<Onboarding />} />
         <Route element={<PlatformAdminRoute />}>
           <Route element={<PlatformAdminLayout />}>
             <Route path="/admin" element={<AdminDashboard />} />
