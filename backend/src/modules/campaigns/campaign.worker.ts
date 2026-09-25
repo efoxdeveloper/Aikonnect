@@ -4,6 +4,7 @@ import { AppError } from "../../middleware/error-handler.js";
 import { sendWhatsAppTemplateMessage, type WhatsAppTemplateParameter } from "../whatsapp/whatsapp.service.js";
 import { refreshCampaignMetrics } from "./campaign.metrics.js";
 import { templateVariableCount } from "./campaign.service.js";
+import { messagePricingSnapshot, resolveMessagePricing } from "../whatsapp-pricing/pricing.service.js";
 
 const MAX_ATTEMPTS = 3;
 const BATCH_SIZE = 25;
@@ -70,7 +71,7 @@ async function markFailed(campaignId: string, recipientId: string, reason: strin
 async function sendRecipient(campaignId: string, recipientId: string) {
   const campaign = await prisma.campaign.findUnique({
     where: { id: campaignId },
-    select: { id: true, workspaceId: true, templateBody: true, metaTemplateName: true, templateLanguageCode: true, templateVariables: true },
+    select: { id: true, workspaceId: true, category: true, templateBody: true, metaTemplateName: true, templateLanguageCode: true, templateVariables: true },
   });
   const recipient = await prisma.campaignRecipient.findUnique({
     where: { id: recipientId },
@@ -80,6 +81,8 @@ async function sendRecipient(campaignId: string, recipientId: string) {
   if (!recipient.contactId || !recipient.contact) throw new AppError(422, "The campaign recipient no longer has an eligible contact", "CAMPAIGN_CONTACT_NOT_ELIGIBLE");
   if (recipient.contact.deletedAt || !recipient.contact.whatsappOpted || recipient.contact.marketingBlocked) throw new AppError(422, "The recipient is no longer eligible for WhatsApp marketing", "CAMPAIGN_CONSENT_REVOKED");
   if (!campaign.metaTemplateName || !campaign.templateLanguageCode || !campaign.templateBody) throw new AppError(422, "The campaign template snapshot is incomplete", "CAMPAIGN_TEMPLATE_IDENTITY_INVALID");
+
+  const pricing = await resolveMessagePricing({ phoneNumber: recipient.phoneE164, category: campaign.category, pricingType: "REGULAR" });
 
   const sent = await sendWhatsAppTemplateMessage(
     campaign.workspaceId,
@@ -98,7 +101,7 @@ async function sendRecipient(campaignId: string, recipientId: string) {
       select: { id: true },
     });
     await transaction.message.create({
-      data: { workspaceId: campaign.workspaceId, conversationId: conversation.id, contactId: recipient.contact!.id, metaMessageId: sent.metaMessageId, direction: "OUTGOING", type: "TEXT", status: "SENT", text: campaign.templateBody, payload: { source: "campaign", campaignId: campaign.id, ...(sent.walletCharge ? { walletCharge: { entryId: sent.walletCharge.entryId, amountMinorUnits: sent.walletCharge.amountMinorUnits.toString() } } : {}) }, sentAt },
+      data: { workspaceId: campaign.workspaceId, conversationId: conversation.id, contactId: recipient.contact!.id, metaMessageId: sent.metaMessageId, direction: "OUTGOING", type: "TEXT", status: "SENT", text: campaign.templateBody, ...messagePricingSnapshot(pricing), payload: { source: "campaign", campaignId: campaign.id, ...(sent.walletCharge ? { walletCharge: { entryId: sent.walletCharge.entryId, amountMinorUnits: sent.walletCharge.amountMinorUnits.toString() } } : {}) }, sentAt },
     });
     await transaction.campaignRecipient.updateMany({ where: { id: recipient.id, status: "ATTEMPTED" }, data: { status: "SENT", metaMessageId: sent.metaMessageId, sentAt, failedAt: null, failureReason: null } });
     await transaction.conversation.update({ where: { id: conversation.id }, data: { lastMessagePreview: `You: ${campaign.templateBody}`, lastMessageAt: sentAt } });

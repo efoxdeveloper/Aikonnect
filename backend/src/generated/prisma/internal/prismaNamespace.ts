@@ -408,6 +408,7 @@ export const ModelName = {
   ContactConsentEvent: 'ContactConsentEvent',
   Conversation: 'Conversation',
   Message: 'Message',
+  WhatsAppRateCard: 'WhatsAppRateCard',
   ContactCustomField: 'ContactCustomField',
   ContactCustomFieldValue: 'ContactCustomFieldValue',
   ContactSegment: 'ContactSegment',
@@ -450,7 +451,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "oAuthAccount" | "tenant" | "workspace" | "template" | "publicApiKey" | "webhookEndpoint" | "contact" | "contactConsentEvent" | "conversation" | "message" | "contactCustomField" | "contactCustomFieldValue" | "contactSegment" | "contactTask" | "contactNote" | "contactTag" | "contactTagAssignment" | "workspaceSetupProgress" | "whatsAppBusinessAccount" | "whatsAppPhoneNumber" | "automation" | "automationLog" | "workflow" | "workflowRun" | "campaign" | "campaignRecipient" | "workspaceMember" | "role" | "permission" | "rolePermission" | "workspaceInvitation" | "session" | "wallet" | "walletLedgerEntry" | "platformAuditLog" | "emailVerificationToken" | "passwordResetToken"
+    modelProps: "user" | "oAuthAccount" | "tenant" | "workspace" | "template" | "publicApiKey" | "webhookEndpoint" | "contact" | "contactConsentEvent" | "conversation" | "message" | "whatsAppRateCard" | "contactCustomField" | "contactCustomFieldValue" | "contactSegment" | "contactTask" | "contactNote" | "contactTag" | "contactTagAssignment" | "workspaceSetupProgress" | "whatsAppBusinessAccount" | "whatsAppPhoneNumber" | "automation" | "automationLog" | "workflow" | "workflowRun" | "campaign" | "campaignRecipient" | "workspaceMember" | "role" | "permission" | "rolePermission" | "workspaceInvitation" | "session" | "wallet" | "walletLedgerEntry" | "platformAuditLog" | "emailVerificationToken" | "passwordResetToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1265,6 +1266,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.MessageCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.MessageCountAggregateOutputType> | number
+        }
+      }
+    }
+    WhatsAppRateCard: {
+      payload: Prisma.$WhatsAppRateCardPayload<ExtArgs>
+      fields: Prisma.WhatsAppRateCardFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WhatsAppRateCardFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppRateCardPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WhatsAppRateCardFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppRateCardPayload>
+        }
+        findFirst: {
+          args: Prisma.WhatsAppRateCardFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppRateCardPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WhatsAppRateCardFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppRateCardPayload>
+        }
+        findMany: {
+          args: Prisma.WhatsAppRateCardFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppRateCardPayload>[]
+        }
+        create: {
+          args: Prisma.WhatsAppRateCardCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppRateCardPayload>
+        }
+        createMany: {
+          args: Prisma.WhatsAppRateCardCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WhatsAppRateCardCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppRateCardPayload>[]
+        }
+        delete: {
+          args: Prisma.WhatsAppRateCardDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppRateCardPayload>
+        }
+        update: {
+          args: Prisma.WhatsAppRateCardUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppRateCardPayload>
+        }
+        deleteMany: {
+          args: Prisma.WhatsAppRateCardDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WhatsAppRateCardUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WhatsAppRateCardUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppRateCardPayload>[]
+        }
+        upsert: {
+          args: Prisma.WhatsAppRateCardUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppRateCardPayload>
+        }
+        aggregate: {
+          args: Prisma.WhatsAppRateCardAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWhatsAppRateCard>
+        }
+        groupBy: {
+          args: Prisma.WhatsAppRateCardGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WhatsAppRateCardGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WhatsAppRateCardCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WhatsAppRateCardCountAggregateOutputType> | number
         }
       }
     }
@@ -3530,6 +3605,16 @@ export const MessageScalarFieldEnum = {
   readAt: 'readAt',
   failedAt: 'failedAt',
   failureReason: 'failureReason',
+  rateCardId: 'rateCardId',
+  pricingCountry: 'pricingCountry',
+  pricingCategory: 'pricingCategory',
+  pricingType: 'pricingType',
+  metaCost: 'metaCost',
+  platformFee: 'platformFee',
+  customerCost: 'customerCost',
+  pricingCurrency: 'pricingCurrency',
+  pricingEffectiveDate: 'pricingEffectiveDate',
+  billingStatus: 'billingStatus',
   deletedAt: 'deletedAt',
   createdById: 'createdById',
   createdAt: 'createdAt',
@@ -3537,6 +3622,32 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const WhatsAppRateCardScalarFieldEnum = {
+  id: 'id',
+  countryCode: 'countryCode',
+  countryName: 'countryName',
+  currency: 'currency',
+  category: 'category',
+  pricingType: 'pricingType',
+  metaRate: 'metaRate',
+  platformFee: 'platformFee',
+  customerRate: 'customerRate',
+  volumeTierFrom: 'volumeTierFrom',
+  volumeTierTo: 'volumeTierTo',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  status: 'status',
+  source: 'source',
+  notes: 'notes',
+  createdById: 'createdById',
+  updatedById: 'updatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WhatsAppRateCardScalarFieldEnum = (typeof WhatsAppRateCardScalarFieldEnum)[keyof typeof WhatsAppRateCardScalarFieldEnum]
 
 
 export const ContactCustomFieldScalarFieldEnum = {
@@ -4223,6 +4334,20 @@ export type ListEnumMessageStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
+ * Reference to a field of type 'BigInt'
+ */
+export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
+    
+
+
+/**
+ * Reference to a field of type 'BigInt[]'
+ */
+export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+    
+
+
+/**
  * Reference to a field of type 'ContactCustomFieldType'
  */
 export type EnumContactCustomFieldTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ContactCustomFieldType'>
@@ -4419,20 +4544,6 @@ export type ListEnumInvitationStatusFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
- * Reference to a field of type 'BigInt'
- */
-export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
-    
-
-
-/**
- * Reference to a field of type 'BigInt[]'
- */
-export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
-    
-
-
-/**
  * Reference to a field of type 'WalletEntryDirection'
  */
 export type EnumWalletEntryDirectionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WalletEntryDirection'>
@@ -4607,6 +4718,7 @@ export type GlobalOmitConfig = {
   contactConsentEvent?: Prisma.ContactConsentEventOmit
   conversation?: Prisma.ConversationOmit
   message?: Prisma.MessageOmit
+  whatsAppRateCard?: Prisma.WhatsAppRateCardOmit
   contactCustomField?: Prisma.ContactCustomFieldOmit
   contactCustomFieldValue?: Prisma.ContactCustomFieldValueOmit
   contactSegment?: Prisma.ContactSegmentOmit

@@ -13,7 +13,9 @@ const conversationSelect = {
 const messageSelect = {
   id: true, workspaceId: true, conversationId: true, contactId: true, metaMessageId: true, direction: true,
   type: true, status: true, text: true, mediaId: true, mediaUrl: true, payload: true, sentAt: true,
-  deliveredAt: true, readAt: true, failedAt: true, failureReason: true, deletedAt: true, createdById: true, createdAt: true, updatedAt: true,
+  deliveredAt: true, readAt: true, failedAt: true, failureReason: true, rateCardId: true, pricingCountry: true, pricingCategory: true,
+  pricingType: true, metaCost: true, platformFee: true, customerCost: true, pricingCurrency: true, pricingEffectiveDate: true,
+  billingStatus: true, deletedAt: true, createdById: true, createdAt: true, updatedAt: true,
 } satisfies Prisma.MessageSelect;
 
 const inboxConversationSelect = {

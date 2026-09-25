@@ -6,6 +6,8 @@ import * as controller from "./admin.controller.js";
 import * as service from "./admin.service.js";
 import { validateBody, validateParams, validateQuery } from "../../middleware/validate.js";
 import { adminAuditQuerySchema, adminListQuerySchema, adminUserActionSchema, adminUserParamsSchema, adminWalletAdjustmentSchema } from "./admin.schemas.js";
+import * as rateCardController from "../whatsapp-pricing/pricing.controller.js";
+import { rateCardIdParamsSchema, rateCardInputSchema, rateCardListQuerySchema, rateCardStatusSchema, ratePreviewSchema } from "../whatsapp-pricing/pricing.schemas.js";
 
 export const adminRouter = Router();
 
@@ -37,3 +39,9 @@ adminRouter.get("/webhooks", ...access(...operationsRoles), validateQuery(adminL
 adminRouter.get("/audit-logs", ...access(...auditRoles), validateQuery(adminAuditQuerySchema), asyncHandler(controller.auditLogs));
 adminRouter.get("/settings", ...access(...administratorRoles), asyncHandler(controller.settings));
 adminRouter.get("/feature-flags", ...access(...administratorRoles), asyncHandler(controller.featureFlags));
+adminRouter.get("/whatsapp-rate-cards", ...access(...administratorRoles), validateQuery(rateCardListQuerySchema), asyncHandler(rateCardController.list));
+adminRouter.get("/whatsapp-rate-cards/:id", ...access(...administratorRoles), validateParams(rateCardIdParamsSchema), asyncHandler(rateCardController.get));
+adminRouter.post("/whatsapp-rate-cards", ...access(...administratorRoles), validateBody(rateCardInputSchema), asyncHandler(rateCardController.create));
+adminRouter.put("/whatsapp-rate-cards/:id", ...access(...administratorRoles), validateParams(rateCardIdParamsSchema), validateBody(rateCardInputSchema), asyncHandler(rateCardController.update));
+adminRouter.patch("/whatsapp-rate-cards/:id/status", ...access(...administratorRoles), validateParams(rateCardIdParamsSchema), validateBody(rateCardStatusSchema), asyncHandler(rateCardController.updateStatus));
+adminRouter.post("/whatsapp-rate-cards/preview", ...access(...administratorRoles), validateBody(ratePreviewSchema), asyncHandler(rateCardController.preview));

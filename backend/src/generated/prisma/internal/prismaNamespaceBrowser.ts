@@ -62,6 +62,7 @@ export const ModelName = {
   ContactConsentEvent: 'ContactConsentEvent',
   Conversation: 'Conversation',
   Message: 'Message',
+  WhatsAppRateCard: 'WhatsAppRateCard',
   ContactCustomField: 'ContactCustomField',
   ContactCustomFieldValue: 'ContactCustomFieldValue',
   ContactSegment: 'ContactSegment',
@@ -332,6 +333,16 @@ export const MessageScalarFieldEnum = {
   readAt: 'readAt',
   failedAt: 'failedAt',
   failureReason: 'failureReason',
+  rateCardId: 'rateCardId',
+  pricingCountry: 'pricingCountry',
+  pricingCategory: 'pricingCategory',
+  pricingType: 'pricingType',
+  metaCost: 'metaCost',
+  platformFee: 'platformFee',
+  customerCost: 'customerCost',
+  pricingCurrency: 'pricingCurrency',
+  pricingEffectiveDate: 'pricingEffectiveDate',
+  billingStatus: 'billingStatus',
   deletedAt: 'deletedAt',
   createdById: 'createdById',
   createdAt: 'createdAt',
@@ -339,6 +350,32 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const WhatsAppRateCardScalarFieldEnum = {
+  id: 'id',
+  countryCode: 'countryCode',
+  countryName: 'countryName',
+  currency: 'currency',
+  category: 'category',
+  pricingType: 'pricingType',
+  metaRate: 'metaRate',
+  platformFee: 'platformFee',
+  customerRate: 'customerRate',
+  volumeTierFrom: 'volumeTierFrom',
+  volumeTierTo: 'volumeTierTo',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  status: 'status',
+  source: 'source',
+  notes: 'notes',
+  createdById: 'createdById',
+  updatedById: 'updatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WhatsAppRateCardScalarFieldEnum = (typeof WhatsAppRateCardScalarFieldEnum)[keyof typeof WhatsAppRateCardScalarFieldEnum]
 
 
 export const ContactCustomFieldScalarFieldEnum = {

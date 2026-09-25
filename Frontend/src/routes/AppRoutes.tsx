@@ -21,6 +21,7 @@ import { AdminDashboard } from "@/pages/AdminDashboard";
 import { PlatformAdminLayout } from "@/layouts/PlatformAdminLayout";
 import { PlatformAdminSection } from "@/pages/PlatformAdminSection";
 import { Onboarding } from "@/pages/Onboarding";
+import { WhatsAppRateCards } from "@/pages/WhatsAppRateCards";
 
 const paths = ["dashboard/analytics", "dashboard/activity", "contacts", "campaigns", "templates", "createtemplate", "pipelines", "catalog", "orders", "reports", "integrations", "settings", "account-settings", "payments", "click-to-whatsapp-ads", "conversation-analytics", "campaign-analytics", "webhook-events", "whatsapp-account", "team-members", "team-members/roles", "billing"];
 export function AppRoutes() {
@@ -50,6 +51,7 @@ export function AppRoutes() {
             <Route path="/admin/audit-logs" element={<PlatformAdminSection />} />
             <Route path="/admin/feature-flags" element={<PlatformAdminSection />} />
             <Route path="/admin/settings" element={<PlatformAdminSection />} />
+            <Route path="/admin/whatsapp-rate-cards" element={<WhatsAppRateCards />} />
           </Route>
         </Route>
         <Route element={<DashboardLayout />}>

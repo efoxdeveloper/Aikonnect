@@ -20,8 +20,22 @@ export type MessageModel = runtime.Types.Result.DefaultSelection<Prisma.$Message
 
 export type AggregateMessage = {
   _count: MessageCountAggregateOutputType | null
+  _avg: MessageAvgAggregateOutputType | null
+  _sum: MessageSumAggregateOutputType | null
   _min: MessageMinAggregateOutputType | null
   _max: MessageMaxAggregateOutputType | null
+}
+
+export type MessageAvgAggregateOutputType = {
+  metaCost: runtime.Decimal | null
+  platformFee: runtime.Decimal | null
+  customerCost: runtime.Decimal | null
+}
+
+export type MessageSumAggregateOutputType = {
+  metaCost: runtime.Decimal | null
+  platformFee: runtime.Decimal | null
+  customerCost: runtime.Decimal | null
 }
 
 export type MessageMinAggregateOutputType = {
@@ -41,6 +55,16 @@ export type MessageMinAggregateOutputType = {
   readAt: Date | null
   failedAt: Date | null
   failureReason: string | null
+  rateCardId: string | null
+  pricingCountry: string | null
+  pricingCategory: string | null
+  pricingType: string | null
+  metaCost: runtime.Decimal | null
+  platformFee: runtime.Decimal | null
+  customerCost: runtime.Decimal | null
+  pricingCurrency: string | null
+  pricingEffectiveDate: Date | null
+  billingStatus: string | null
   deletedAt: Date | null
   createdById: string | null
   createdAt: Date | null
@@ -64,6 +88,16 @@ export type MessageMaxAggregateOutputType = {
   readAt: Date | null
   failedAt: Date | null
   failureReason: string | null
+  rateCardId: string | null
+  pricingCountry: string | null
+  pricingCategory: string | null
+  pricingType: string | null
+  metaCost: runtime.Decimal | null
+  platformFee: runtime.Decimal | null
+  customerCost: runtime.Decimal | null
+  pricingCurrency: string | null
+  pricingEffectiveDate: Date | null
+  billingStatus: string | null
   deletedAt: Date | null
   createdById: string | null
   createdAt: Date | null
@@ -88,6 +122,16 @@ export type MessageCountAggregateOutputType = {
   readAt: number
   failedAt: number
   failureReason: number
+  rateCardId: number
+  pricingCountry: number
+  pricingCategory: number
+  pricingType: number
+  metaCost: number
+  platformFee: number
+  customerCost: number
+  pricingCurrency: number
+  pricingEffectiveDate: number
+  billingStatus: number
   deletedAt: number
   createdById: number
   createdAt: number
@@ -95,6 +139,18 @@ export type MessageCountAggregateOutputType = {
   _all: number
 }
 
+
+export type MessageAvgAggregateInputType = {
+  metaCost?: true
+  platformFee?: true
+  customerCost?: true
+}
+
+export type MessageSumAggregateInputType = {
+  metaCost?: true
+  platformFee?: true
+  customerCost?: true
+}
 
 export type MessageMinAggregateInputType = {
   id?: true
@@ -113,6 +169,16 @@ export type MessageMinAggregateInputType = {
   readAt?: true
   failedAt?: true
   failureReason?: true
+  rateCardId?: true
+  pricingCountry?: true
+  pricingCategory?: true
+  pricingType?: true
+  metaCost?: true
+  platformFee?: true
+  customerCost?: true
+  pricingCurrency?: true
+  pricingEffectiveDate?: true
+  billingStatus?: true
   deletedAt?: true
   createdById?: true
   createdAt?: true
@@ -136,6 +202,16 @@ export type MessageMaxAggregateInputType = {
   readAt?: true
   failedAt?: true
   failureReason?: true
+  rateCardId?: true
+  pricingCountry?: true
+  pricingCategory?: true
+  pricingType?: true
+  metaCost?: true
+  platformFee?: true
+  customerCost?: true
+  pricingCurrency?: true
+  pricingEffectiveDate?: true
+  billingStatus?: true
   deletedAt?: true
   createdById?: true
   createdAt?: true
@@ -160,6 +236,16 @@ export type MessageCountAggregateInputType = {
   readAt?: true
   failedAt?: true
   failureReason?: true
+  rateCardId?: true
+  pricingCountry?: true
+  pricingCategory?: true
+  pricingType?: true
+  metaCost?: true
+  platformFee?: true
+  customerCost?: true
+  pricingCurrency?: true
+  pricingEffectiveDate?: true
+  billingStatus?: true
   deletedAt?: true
   createdById?: true
   createdAt?: true
@@ -205,6 +291,18 @@ export type MessageAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: MessageAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: MessageSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: MessageMinAggregateInputType
@@ -235,6 +333,8 @@ export type MessageGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: MessageCountAggregateInputType | true
+  _avg?: MessageAvgAggregateInputType
+  _sum?: MessageSumAggregateInputType
   _min?: MessageMinAggregateInputType
   _max?: MessageMaxAggregateInputType
 }
@@ -257,11 +357,23 @@ export type MessageGroupByOutputType = {
   readAt: Date | null
   failedAt: Date | null
   failureReason: string | null
+  rateCardId: string | null
+  pricingCountry: string | null
+  pricingCategory: string | null
+  pricingType: string | null
+  metaCost: runtime.Decimal | null
+  platformFee: runtime.Decimal | null
+  customerCost: runtime.Decimal | null
+  pricingCurrency: string | null
+  pricingEffectiveDate: Date | null
+  billingStatus: string
   deletedAt: Date | null
   createdById: string | null
   createdAt: Date
   updatedAt: Date
   _count: MessageCountAggregateOutputType | null
+  _avg: MessageAvgAggregateOutputType | null
+  _sum: MessageSumAggregateOutputType | null
   _min: MessageMinAggregateOutputType | null
   _max: MessageMaxAggregateOutputType | null
 }
@@ -302,6 +414,16 @@ export type MessageWhereInput = {
   readAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   failedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   failureReason?: Prisma.StringNullableFilter<"Message"> | string | null
+  rateCardId?: Prisma.UuidNullableFilter<"Message"> | string | null
+  pricingCountry?: Prisma.StringNullableFilter<"Message"> | string | null
+  pricingCategory?: Prisma.StringNullableFilter<"Message"> | string | null
+  pricingType?: Prisma.StringNullableFilter<"Message"> | string | null
+  metaCost?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.StringNullableFilter<"Message"> | string | null
+  pricingEffectiveDate?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
+  billingStatus?: Prisma.StringFilter<"Message"> | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   createdById?: Prisma.UuidNullableFilter<"Message"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
@@ -310,6 +432,7 @@ export type MessageWhereInput = {
   conversation?: Prisma.XOR<Prisma.ConversationScalarRelationFilter, Prisma.ConversationWhereInput>
   contact?: Prisma.XOR<Prisma.ContactScalarRelationFilter, Prisma.ContactWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  rateCard?: Prisma.XOR<Prisma.WhatsAppRateCardNullableScalarRelationFilter, Prisma.WhatsAppRateCardWhereInput> | null
 }
 
 export type MessageOrderByWithRelationInput = {
@@ -330,6 +453,16 @@ export type MessageOrderByWithRelationInput = {
   readAt?: Prisma.SortOrderInput | Prisma.SortOrder
   failedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   failureReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  rateCardId?: Prisma.SortOrderInput | Prisma.SortOrder
+  pricingCountry?: Prisma.SortOrderInput | Prisma.SortOrder
+  pricingCategory?: Prisma.SortOrderInput | Prisma.SortOrder
+  pricingType?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  platformFee?: Prisma.SortOrderInput | Prisma.SortOrder
+  customerCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  pricingCurrency?: Prisma.SortOrderInput | Prisma.SortOrder
+  pricingEffectiveDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  billingStatus?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -338,6 +471,7 @@ export type MessageOrderByWithRelationInput = {
   conversation?: Prisma.ConversationOrderByWithRelationInput
   contact?: Prisma.ContactOrderByWithRelationInput
   createdBy?: Prisma.UserOrderByWithRelationInput
+  rateCard?: Prisma.WhatsAppRateCardOrderByWithRelationInput
 }
 
 export type MessageWhereUniqueInput = Prisma.AtLeast<{
@@ -362,6 +496,16 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   readAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   failedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   failureReason?: Prisma.StringNullableFilter<"Message"> | string | null
+  rateCardId?: Prisma.UuidNullableFilter<"Message"> | string | null
+  pricingCountry?: Prisma.StringNullableFilter<"Message"> | string | null
+  pricingCategory?: Prisma.StringNullableFilter<"Message"> | string | null
+  pricingType?: Prisma.StringNullableFilter<"Message"> | string | null
+  metaCost?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.StringNullableFilter<"Message"> | string | null
+  pricingEffectiveDate?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
+  billingStatus?: Prisma.StringFilter<"Message"> | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   createdById?: Prisma.UuidNullableFilter<"Message"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
@@ -370,6 +514,7 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   conversation?: Prisma.XOR<Prisma.ConversationScalarRelationFilter, Prisma.ConversationWhereInput>
   contact?: Prisma.XOR<Prisma.ContactScalarRelationFilter, Prisma.ContactWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  rateCard?: Prisma.XOR<Prisma.WhatsAppRateCardNullableScalarRelationFilter, Prisma.WhatsAppRateCardWhereInput> | null
 }, "id" | "workspaceId_metaMessageId">
 
 export type MessageOrderByWithAggregationInput = {
@@ -390,13 +535,25 @@ export type MessageOrderByWithAggregationInput = {
   readAt?: Prisma.SortOrderInput | Prisma.SortOrder
   failedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   failureReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  rateCardId?: Prisma.SortOrderInput | Prisma.SortOrder
+  pricingCountry?: Prisma.SortOrderInput | Prisma.SortOrder
+  pricingCategory?: Prisma.SortOrderInput | Prisma.SortOrder
+  pricingType?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  platformFee?: Prisma.SortOrderInput | Prisma.SortOrder
+  customerCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  pricingCurrency?: Prisma.SortOrderInput | Prisma.SortOrder
+  pricingEffectiveDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  billingStatus?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.MessageCountOrderByAggregateInput
+  _avg?: Prisma.MessageAvgOrderByAggregateInput
   _max?: Prisma.MessageMaxOrderByAggregateInput
   _min?: Prisma.MessageMinOrderByAggregateInput
+  _sum?: Prisma.MessageSumOrderByAggregateInput
 }
 
 export type MessageScalarWhereWithAggregatesInput = {
@@ -420,6 +577,16 @@ export type MessageScalarWhereWithAggregatesInput = {
   readAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
   failedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
   failureReason?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
+  rateCardId?: Prisma.UuidNullableWithAggregatesFilter<"Message"> | string | null
+  pricingCountry?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
+  pricingCategory?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
+  pricingType?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
+  metaCost?: Prisma.DecimalNullableWithAggregatesFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.DecimalNullableWithAggregatesFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.DecimalNullableWithAggregatesFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
+  pricingEffectiveDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
+  billingStatus?: Prisma.StringWithAggregatesFilter<"Message"> | string
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
   createdById?: Prisma.UuidNullableWithAggregatesFilter<"Message"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Message"> | Date | string
@@ -441,6 +608,15 @@ export type MessageCreateInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -448,6 +624,7 @@ export type MessageCreateInput = {
   conversation: Prisma.ConversationCreateNestedOneWithoutMessagesInput
   contact: Prisma.ContactCreateNestedOneWithoutMessagesInput
   createdBy?: Prisma.UserCreateNestedOneWithoutMessagesCreatedInput
+  rateCard?: Prisma.WhatsAppRateCardCreateNestedOneWithoutMessagesInput
 }
 
 export type MessageUncheckedCreateInput = {
@@ -468,6 +645,16 @@ export type MessageUncheckedCreateInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  rateCardId?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
   deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -489,6 +676,15 @@ export type MessageUpdateInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -496,6 +692,7 @@ export type MessageUpdateInput = {
   conversation?: Prisma.ConversationUpdateOneRequiredWithoutMessagesNestedInput
   contact?: Prisma.ContactUpdateOneRequiredWithoutMessagesNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutMessagesCreatedNestedInput
+  rateCard?: Prisma.WhatsAppRateCardUpdateOneWithoutMessagesNestedInput
 }
 
 export type MessageUncheckedUpdateInput = {
@@ -516,6 +713,16 @@ export type MessageUncheckedUpdateInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rateCardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -540,6 +747,16 @@ export type MessageCreateManyInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  rateCardId?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
   deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -561,6 +778,15 @@ export type MessageUpdateManyMutationInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -584,6 +810,16 @@ export type MessageUncheckedUpdateManyInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rateCardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -623,10 +859,26 @@ export type MessageCountOrderByAggregateInput = {
   readAt?: Prisma.SortOrder
   failedAt?: Prisma.SortOrder
   failureReason?: Prisma.SortOrder
+  rateCardId?: Prisma.SortOrder
+  pricingCountry?: Prisma.SortOrder
+  pricingCategory?: Prisma.SortOrder
+  pricingType?: Prisma.SortOrder
+  metaCost?: Prisma.SortOrder
+  platformFee?: Prisma.SortOrder
+  customerCost?: Prisma.SortOrder
+  pricingCurrency?: Prisma.SortOrder
+  pricingEffectiveDate?: Prisma.SortOrder
+  billingStatus?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type MessageAvgOrderByAggregateInput = {
+  metaCost?: Prisma.SortOrder
+  platformFee?: Prisma.SortOrder
+  customerCost?: Prisma.SortOrder
 }
 
 export type MessageMaxOrderByAggregateInput = {
@@ -646,6 +898,16 @@ export type MessageMaxOrderByAggregateInput = {
   readAt?: Prisma.SortOrder
   failedAt?: Prisma.SortOrder
   failureReason?: Prisma.SortOrder
+  rateCardId?: Prisma.SortOrder
+  pricingCountry?: Prisma.SortOrder
+  pricingCategory?: Prisma.SortOrder
+  pricingType?: Prisma.SortOrder
+  metaCost?: Prisma.SortOrder
+  platformFee?: Prisma.SortOrder
+  customerCost?: Prisma.SortOrder
+  pricingCurrency?: Prisma.SortOrder
+  pricingEffectiveDate?: Prisma.SortOrder
+  billingStatus?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -669,10 +931,26 @@ export type MessageMinOrderByAggregateInput = {
   readAt?: Prisma.SortOrder
   failedAt?: Prisma.SortOrder
   failureReason?: Prisma.SortOrder
+  rateCardId?: Prisma.SortOrder
+  pricingCountry?: Prisma.SortOrder
+  pricingCategory?: Prisma.SortOrder
+  pricingType?: Prisma.SortOrder
+  metaCost?: Prisma.SortOrder
+  platformFee?: Prisma.SortOrder
+  customerCost?: Prisma.SortOrder
+  pricingCurrency?: Prisma.SortOrder
+  pricingEffectiveDate?: Prisma.SortOrder
+  billingStatus?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type MessageSumOrderByAggregateInput = {
+  metaCost?: Prisma.SortOrder
+  platformFee?: Prisma.SortOrder
+  customerCost?: Prisma.SortOrder
 }
 
 export type MessageCreateNestedManyWithoutCreatedByInput = {
@@ -855,6 +1133,48 @@ export type EnumMessageStatusFieldUpdateOperationsInput = {
   set?: $Enums.MessageStatus
 }
 
+export type MessageCreateNestedManyWithoutRateCardInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutRateCardInput, Prisma.MessageUncheckedCreateWithoutRateCardInput> | Prisma.MessageCreateWithoutRateCardInput[] | Prisma.MessageUncheckedCreateWithoutRateCardInput[]
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutRateCardInput | Prisma.MessageCreateOrConnectWithoutRateCardInput[]
+  createMany?: Prisma.MessageCreateManyRateCardInputEnvelope
+  connect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+}
+
+export type MessageUncheckedCreateNestedManyWithoutRateCardInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutRateCardInput, Prisma.MessageUncheckedCreateWithoutRateCardInput> | Prisma.MessageCreateWithoutRateCardInput[] | Prisma.MessageUncheckedCreateWithoutRateCardInput[]
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutRateCardInput | Prisma.MessageCreateOrConnectWithoutRateCardInput[]
+  createMany?: Prisma.MessageCreateManyRateCardInputEnvelope
+  connect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+}
+
+export type MessageUpdateManyWithoutRateCardNestedInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutRateCardInput, Prisma.MessageUncheckedCreateWithoutRateCardInput> | Prisma.MessageCreateWithoutRateCardInput[] | Prisma.MessageUncheckedCreateWithoutRateCardInput[]
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutRateCardInput | Prisma.MessageCreateOrConnectWithoutRateCardInput[]
+  upsert?: Prisma.MessageUpsertWithWhereUniqueWithoutRateCardInput | Prisma.MessageUpsertWithWhereUniqueWithoutRateCardInput[]
+  createMany?: Prisma.MessageCreateManyRateCardInputEnvelope
+  set?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  disconnect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  delete?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  connect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  update?: Prisma.MessageUpdateWithWhereUniqueWithoutRateCardInput | Prisma.MessageUpdateWithWhereUniqueWithoutRateCardInput[]
+  updateMany?: Prisma.MessageUpdateManyWithWhereWithoutRateCardInput | Prisma.MessageUpdateManyWithWhereWithoutRateCardInput[]
+  deleteMany?: Prisma.MessageScalarWhereInput | Prisma.MessageScalarWhereInput[]
+}
+
+export type MessageUncheckedUpdateManyWithoutRateCardNestedInput = {
+  create?: Prisma.XOR<Prisma.MessageCreateWithoutRateCardInput, Prisma.MessageUncheckedCreateWithoutRateCardInput> | Prisma.MessageCreateWithoutRateCardInput[] | Prisma.MessageUncheckedCreateWithoutRateCardInput[]
+  connectOrCreate?: Prisma.MessageCreateOrConnectWithoutRateCardInput | Prisma.MessageCreateOrConnectWithoutRateCardInput[]
+  upsert?: Prisma.MessageUpsertWithWhereUniqueWithoutRateCardInput | Prisma.MessageUpsertWithWhereUniqueWithoutRateCardInput[]
+  createMany?: Prisma.MessageCreateManyRateCardInputEnvelope
+  set?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  disconnect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  delete?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  connect?: Prisma.MessageWhereUniqueInput | Prisma.MessageWhereUniqueInput[]
+  update?: Prisma.MessageUpdateWithWhereUniqueWithoutRateCardInput | Prisma.MessageUpdateWithWhereUniqueWithoutRateCardInput[]
+  updateMany?: Prisma.MessageUpdateManyWithWhereWithoutRateCardInput | Prisma.MessageUpdateManyWithWhereWithoutRateCardInput[]
+  deleteMany?: Prisma.MessageScalarWhereInput | Prisma.MessageScalarWhereInput[]
+}
+
 export type MessageCreateWithoutCreatedByInput = {
   id?: string
   metaMessageId?: string | null
@@ -870,12 +1190,22 @@ export type MessageCreateWithoutCreatedByInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutMessagesInput
   conversation: Prisma.ConversationCreateNestedOneWithoutMessagesInput
   contact: Prisma.ContactCreateNestedOneWithoutMessagesInput
+  rateCard?: Prisma.WhatsAppRateCardCreateNestedOneWithoutMessagesInput
 }
 
 export type MessageUncheckedCreateWithoutCreatedByInput = {
@@ -896,6 +1226,16 @@ export type MessageUncheckedCreateWithoutCreatedByInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  rateCardId?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -948,6 +1288,16 @@ export type MessageScalarWhereInput = {
   readAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   failedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   failureReason?: Prisma.StringNullableFilter<"Message"> | string | null
+  rateCardId?: Prisma.UuidNullableFilter<"Message"> | string | null
+  pricingCountry?: Prisma.StringNullableFilter<"Message"> | string | null
+  pricingCategory?: Prisma.StringNullableFilter<"Message"> | string | null
+  pricingType?: Prisma.StringNullableFilter<"Message"> | string | null
+  metaCost?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.StringNullableFilter<"Message"> | string | null
+  pricingEffectiveDate?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
+  billingStatus?: Prisma.StringFilter<"Message"> | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   createdById?: Prisma.UuidNullableFilter<"Message"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string
@@ -969,12 +1319,22 @@ export type MessageCreateWithoutWorkspaceInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   conversation: Prisma.ConversationCreateNestedOneWithoutMessagesInput
   contact: Prisma.ContactCreateNestedOneWithoutMessagesInput
   createdBy?: Prisma.UserCreateNestedOneWithoutMessagesCreatedInput
+  rateCard?: Prisma.WhatsAppRateCardCreateNestedOneWithoutMessagesInput
 }
 
 export type MessageUncheckedCreateWithoutWorkspaceInput = {
@@ -994,6 +1354,16 @@ export type MessageUncheckedCreateWithoutWorkspaceInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  rateCardId?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
   deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -1041,12 +1411,22 @@ export type MessageCreateWithoutContactInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutMessagesInput
   conversation: Prisma.ConversationCreateNestedOneWithoutMessagesInput
   createdBy?: Prisma.UserCreateNestedOneWithoutMessagesCreatedInput
+  rateCard?: Prisma.WhatsAppRateCardCreateNestedOneWithoutMessagesInput
 }
 
 export type MessageUncheckedCreateWithoutContactInput = {
@@ -1066,6 +1446,16 @@ export type MessageUncheckedCreateWithoutContactInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  rateCardId?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
   deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -1113,12 +1503,22 @@ export type MessageCreateWithoutConversationInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutMessagesInput
   contact: Prisma.ContactCreateNestedOneWithoutMessagesInput
   createdBy?: Prisma.UserCreateNestedOneWithoutMessagesCreatedInput
+  rateCard?: Prisma.WhatsAppRateCardCreateNestedOneWithoutMessagesInput
 }
 
 export type MessageUncheckedCreateWithoutConversationInput = {
@@ -1138,6 +1538,16 @@ export type MessageUncheckedCreateWithoutConversationInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  rateCardId?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
   deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -1170,6 +1580,98 @@ export type MessageUpdateManyWithWhereWithoutConversationInput = {
   data: Prisma.XOR<Prisma.MessageUpdateManyMutationInput, Prisma.MessageUncheckedUpdateManyWithoutConversationInput>
 }
 
+export type MessageCreateWithoutRateCardInput = {
+  id?: string
+  metaMessageId?: string | null
+  direction: $Enums.MessageDirection
+  type: $Enums.MessageType
+  status?: $Enums.MessageStatus
+  text?: string | null
+  mediaId?: string | null
+  mediaUrl?: string | null
+  payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  sentAt: Date | string
+  deliveredAt?: Date | string | null
+  readAt?: Date | string | null
+  failedAt?: Date | string | null
+  failureReason?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutMessagesInput
+  conversation: Prisma.ConversationCreateNestedOneWithoutMessagesInput
+  contact: Prisma.ContactCreateNestedOneWithoutMessagesInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutMessagesCreatedInput
+}
+
+export type MessageUncheckedCreateWithoutRateCardInput = {
+  id?: string
+  workspaceId: string
+  conversationId: string
+  contactId: string
+  metaMessageId?: string | null
+  direction: $Enums.MessageDirection
+  type: $Enums.MessageType
+  status?: $Enums.MessageStatus
+  text?: string | null
+  mediaId?: string | null
+  mediaUrl?: string | null
+  payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  sentAt: Date | string
+  deliveredAt?: Date | string | null
+  readAt?: Date | string | null
+  failedAt?: Date | string | null
+  failureReason?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
+  deletedAt?: Date | string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type MessageCreateOrConnectWithoutRateCardInput = {
+  where: Prisma.MessageWhereUniqueInput
+  create: Prisma.XOR<Prisma.MessageCreateWithoutRateCardInput, Prisma.MessageUncheckedCreateWithoutRateCardInput>
+}
+
+export type MessageCreateManyRateCardInputEnvelope = {
+  data: Prisma.MessageCreateManyRateCardInput | Prisma.MessageCreateManyRateCardInput[]
+  skipDuplicates?: boolean
+}
+
+export type MessageUpsertWithWhereUniqueWithoutRateCardInput = {
+  where: Prisma.MessageWhereUniqueInput
+  update: Prisma.XOR<Prisma.MessageUpdateWithoutRateCardInput, Prisma.MessageUncheckedUpdateWithoutRateCardInput>
+  create: Prisma.XOR<Prisma.MessageCreateWithoutRateCardInput, Prisma.MessageUncheckedCreateWithoutRateCardInput>
+}
+
+export type MessageUpdateWithWhereUniqueWithoutRateCardInput = {
+  where: Prisma.MessageWhereUniqueInput
+  data: Prisma.XOR<Prisma.MessageUpdateWithoutRateCardInput, Prisma.MessageUncheckedUpdateWithoutRateCardInput>
+}
+
+export type MessageUpdateManyWithWhereWithoutRateCardInput = {
+  where: Prisma.MessageScalarWhereInput
+  data: Prisma.XOR<Prisma.MessageUpdateManyMutationInput, Prisma.MessageUncheckedUpdateManyWithoutRateCardInput>
+}
+
 export type MessageCreateManyCreatedByInput = {
   id?: string
   workspaceId: string
@@ -1188,6 +1690,16 @@ export type MessageCreateManyCreatedByInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  rateCardId?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1208,12 +1720,22 @@ export type MessageUpdateWithoutCreatedByInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMessagesNestedInput
   conversation?: Prisma.ConversationUpdateOneRequiredWithoutMessagesNestedInput
   contact?: Prisma.ContactUpdateOneRequiredWithoutMessagesNestedInput
+  rateCard?: Prisma.WhatsAppRateCardUpdateOneWithoutMessagesNestedInput
 }
 
 export type MessageUncheckedUpdateWithoutCreatedByInput = {
@@ -1234,6 +1756,16 @@ export type MessageUncheckedUpdateWithoutCreatedByInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rateCardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1257,6 +1789,16 @@ export type MessageUncheckedUpdateManyWithoutCreatedByInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rateCardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1279,6 +1821,16 @@ export type MessageCreateManyWorkspaceInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  rateCardId?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
   deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -1300,12 +1852,22 @@ export type MessageUpdateWithoutWorkspaceInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   conversation?: Prisma.ConversationUpdateOneRequiredWithoutMessagesNestedInput
   contact?: Prisma.ContactUpdateOneRequiredWithoutMessagesNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutMessagesCreatedNestedInput
+  rateCard?: Prisma.WhatsAppRateCardUpdateOneWithoutMessagesNestedInput
 }
 
 export type MessageUncheckedUpdateWithoutWorkspaceInput = {
@@ -1325,6 +1887,16 @@ export type MessageUncheckedUpdateWithoutWorkspaceInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rateCardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1348,6 +1920,16 @@ export type MessageUncheckedUpdateManyWithoutWorkspaceInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rateCardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1371,6 +1953,16 @@ export type MessageCreateManyContactInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  rateCardId?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
   deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -1392,12 +1984,22 @@ export type MessageUpdateWithoutContactInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMessagesNestedInput
   conversation?: Prisma.ConversationUpdateOneRequiredWithoutMessagesNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutMessagesCreatedNestedInput
+  rateCard?: Prisma.WhatsAppRateCardUpdateOneWithoutMessagesNestedInput
 }
 
 export type MessageUncheckedUpdateWithoutContactInput = {
@@ -1417,6 +2019,16 @@ export type MessageUncheckedUpdateWithoutContactInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rateCardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1440,6 +2052,16 @@ export type MessageUncheckedUpdateManyWithoutContactInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rateCardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1463,6 +2085,16 @@ export type MessageCreateManyConversationInput = {
   readAt?: Date | string | null
   failedAt?: Date | string | null
   failureReason?: string | null
+  rateCardId?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
   deletedAt?: Date | string | null
   createdById?: string | null
   createdAt?: Date | string
@@ -1484,12 +2116,22 @@ export type MessageUpdateWithoutConversationInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMessagesNestedInput
   contact?: Prisma.ContactUpdateOneRequiredWithoutMessagesNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutMessagesCreatedNestedInput
+  rateCard?: Prisma.WhatsAppRateCardUpdateOneWithoutMessagesNestedInput
 }
 
 export type MessageUncheckedUpdateWithoutConversationInput = {
@@ -1509,6 +2151,16 @@ export type MessageUncheckedUpdateWithoutConversationInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rateCardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1532,6 +2184,148 @@ export type MessageUncheckedUpdateManyWithoutConversationInput = {
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rateCardId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type MessageCreateManyRateCardInput = {
+  id?: string
+  workspaceId: string
+  conversationId: string
+  contactId: string
+  metaMessageId?: string | null
+  direction: $Enums.MessageDirection
+  type: $Enums.MessageType
+  status?: $Enums.MessageStatus
+  text?: string | null
+  mediaId?: string | null
+  mediaUrl?: string | null
+  payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  sentAt: Date | string
+  deliveredAt?: Date | string | null
+  readAt?: Date | string | null
+  failedAt?: Date | string | null
+  failureReason?: string | null
+  pricingCountry?: string | null
+  pricingCategory?: string | null
+  pricingType?: string | null
+  metaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: string | null
+  pricingEffectiveDate?: Date | string | null
+  billingStatus?: string
+  deletedAt?: Date | string | null
+  createdById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type MessageUpdateWithoutRateCardInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  text?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  sentAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutMessagesNestedInput
+  conversation?: Prisma.ConversationUpdateOneRequiredWithoutMessagesNestedInput
+  contact?: Prisma.ContactUpdateOneRequiredWithoutMessagesNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutMessagesCreatedNestedInput
+}
+
+export type MessageUncheckedUpdateWithoutRateCardInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  conversationId?: Prisma.StringFieldUpdateOperationsInput | string
+  contactId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  text?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  sentAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type MessageUncheckedUpdateManyWithoutRateCardInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  conversationId?: Prisma.StringFieldUpdateOperationsInput | string
+  contactId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
+  type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
+  status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
+  text?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  mediaUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payload?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  sentAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  platformFee?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  customerCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pricingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pricingEffectiveDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  billingStatus?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1558,6 +2352,16 @@ export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   readAt?: boolean
   failedAt?: boolean
   failureReason?: boolean
+  rateCardId?: boolean
+  pricingCountry?: boolean
+  pricingCategory?: boolean
+  pricingType?: boolean
+  metaCost?: boolean
+  platformFee?: boolean
+  customerCost?: boolean
+  pricingCurrency?: boolean
+  pricingEffectiveDate?: boolean
+  billingStatus?: boolean
   deletedAt?: boolean
   createdById?: boolean
   createdAt?: boolean
@@ -1566,6 +2370,7 @@ export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Message$createdByArgs<ExtArgs>
+  rateCard?: boolean | Prisma.Message$rateCardArgs<ExtArgs>
 }, ExtArgs["result"]["message"]>
 
 export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1586,6 +2391,16 @@ export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   readAt?: boolean
   failedAt?: boolean
   failureReason?: boolean
+  rateCardId?: boolean
+  pricingCountry?: boolean
+  pricingCategory?: boolean
+  pricingType?: boolean
+  metaCost?: boolean
+  platformFee?: boolean
+  customerCost?: boolean
+  pricingCurrency?: boolean
+  pricingEffectiveDate?: boolean
+  billingStatus?: boolean
   deletedAt?: boolean
   createdById?: boolean
   createdAt?: boolean
@@ -1594,6 +2409,7 @@ export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Message$createdByArgs<ExtArgs>
+  rateCard?: boolean | Prisma.Message$rateCardArgs<ExtArgs>
 }, ExtArgs["result"]["message"]>
 
 export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1614,6 +2430,16 @@ export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   readAt?: boolean
   failedAt?: boolean
   failureReason?: boolean
+  rateCardId?: boolean
+  pricingCountry?: boolean
+  pricingCategory?: boolean
+  pricingType?: boolean
+  metaCost?: boolean
+  platformFee?: boolean
+  customerCost?: boolean
+  pricingCurrency?: boolean
+  pricingEffectiveDate?: boolean
+  billingStatus?: boolean
   deletedAt?: boolean
   createdById?: boolean
   createdAt?: boolean
@@ -1622,6 +2448,7 @@ export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Message$createdByArgs<ExtArgs>
+  rateCard?: boolean | Prisma.Message$rateCardArgs<ExtArgs>
 }, ExtArgs["result"]["message"]>
 
 export type MessageSelectScalar = {
@@ -1642,30 +2469,43 @@ export type MessageSelectScalar = {
   readAt?: boolean
   failedAt?: boolean
   failureReason?: boolean
+  rateCardId?: boolean
+  pricingCountry?: boolean
+  pricingCategory?: boolean
+  pricingType?: boolean
+  metaCost?: boolean
+  platformFee?: boolean
+  customerCost?: boolean
+  pricingCurrency?: boolean
+  pricingEffectiveDate?: boolean
+  billingStatus?: boolean
   deletedAt?: boolean
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "conversationId" | "contactId" | "metaMessageId" | "direction" | "type" | "status" | "text" | "mediaId" | "mediaUrl" | "payload" | "sentAt" | "deliveredAt" | "readAt" | "failedAt" | "failureReason" | "deletedAt" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["message"]>
+export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "conversationId" | "contactId" | "metaMessageId" | "direction" | "type" | "status" | "text" | "mediaId" | "mediaUrl" | "payload" | "sentAt" | "deliveredAt" | "readAt" | "failedAt" | "failureReason" | "rateCardId" | "pricingCountry" | "pricingCategory" | "pricingType" | "metaCost" | "platformFee" | "customerCost" | "pricingCurrency" | "pricingEffectiveDate" | "billingStatus" | "deletedAt" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["message"]>
 export type MessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Message$createdByArgs<ExtArgs>
+  rateCard?: boolean | Prisma.Message$rateCardArgs<ExtArgs>
 }
 export type MessageIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Message$createdByArgs<ExtArgs>
+  rateCard?: boolean | Prisma.Message$rateCardArgs<ExtArgs>
 }
 export type MessageIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
   contact?: boolean | Prisma.ContactDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Message$createdByArgs<ExtArgs>
+  rateCard?: boolean | Prisma.Message$rateCardArgs<ExtArgs>
 }
 
 export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1675,6 +2515,7 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     conversation: Prisma.$ConversationPayload<ExtArgs>
     contact: Prisma.$ContactPayload<ExtArgs>
     createdBy: Prisma.$UserPayload<ExtArgs> | null
+    rateCard: Prisma.$WhatsAppRateCardPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1694,6 +2535,16 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     readAt: Date | null
     failedAt: Date | null
     failureReason: string | null
+    rateCardId: string | null
+    pricingCountry: string | null
+    pricingCategory: string | null
+    pricingType: string | null
+    metaCost: runtime.Decimal | null
+    platformFee: runtime.Decimal | null
+    customerCost: runtime.Decimal | null
+    pricingCurrency: string | null
+    pricingEffectiveDate: Date | null
+    billingStatus: string
     deletedAt: Date | null
     createdById: string | null
     createdAt: Date
@@ -2096,6 +2947,7 @@ export interface Prisma__MessageClient<T, Null = never, ExtArgs extends runtime.
   conversation<T extends Prisma.ConversationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ConversationDefaultArgs<ExtArgs>>): Prisma.Prisma__ConversationClient<runtime.Types.Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   contact<T extends Prisma.ContactDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ContactDefaultArgs<ExtArgs>>): Prisma.Prisma__ContactClient<runtime.Types.Result.GetResult<Prisma.$ContactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   createdBy<T extends Prisma.Message$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Message$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  rateCard<T extends Prisma.Message$rateCardArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Message$rateCardArgs<ExtArgs>>): Prisma.Prisma__WhatsAppRateCardClient<runtime.Types.Result.GetResult<Prisma.$WhatsAppRateCardPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2142,6 +2994,16 @@ export interface MessageFieldRefs {
   readonly readAt: Prisma.FieldRef<"Message", 'DateTime'>
   readonly failedAt: Prisma.FieldRef<"Message", 'DateTime'>
   readonly failureReason: Prisma.FieldRef<"Message", 'String'>
+  readonly rateCardId: Prisma.FieldRef<"Message", 'String'>
+  readonly pricingCountry: Prisma.FieldRef<"Message", 'String'>
+  readonly pricingCategory: Prisma.FieldRef<"Message", 'String'>
+  readonly pricingType: Prisma.FieldRef<"Message", 'String'>
+  readonly metaCost: Prisma.FieldRef<"Message", 'Decimal'>
+  readonly platformFee: Prisma.FieldRef<"Message", 'Decimal'>
+  readonly customerCost: Prisma.FieldRef<"Message", 'Decimal'>
+  readonly pricingCurrency: Prisma.FieldRef<"Message", 'String'>
+  readonly pricingEffectiveDate: Prisma.FieldRef<"Message", 'DateTime'>
+  readonly billingStatus: Prisma.FieldRef<"Message", 'String'>
   readonly deletedAt: Prisma.FieldRef<"Message", 'DateTime'>
   readonly createdById: Prisma.FieldRef<"Message", 'String'>
   readonly createdAt: Prisma.FieldRef<"Message", 'DateTime'>
@@ -2563,6 +3425,25 @@ export type Message$createdByArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * Message.rateCard
+ */
+export type Message$rateCardArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WhatsAppRateCard
+   */
+  select?: Prisma.WhatsAppRateCardSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WhatsAppRateCard
+   */
+  omit?: Prisma.WhatsAppRateCardOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WhatsAppRateCardInclude<ExtArgs> | null
+  where?: Prisma.WhatsAppRateCardWhereInput
 }
 
 /**

@@ -210,6 +210,8 @@ model User {
   webhookEndpointsCreated    WebhookEndpoint[]        @relation("WebhookEndpointCreator")
   walletLedgerEntries         WalletLedgerEntry[]      @relation("WalletLedgerActor")
   platformAuditLogs          PlatformAuditLog[]       @relation("PlatformAuditActor")
+  whatsappRateCardsCreated   WhatsAppRateCard[]       @relation("WhatsAppRateCardCreator")
+  whatsappRateCardsUpdated   WhatsAppRateCard[]       @relation("WhatsAppRateCardUpdater")
 
   @@index([status])
   @@map("users")
@@ -518,6 +520,16 @@ model Message {
   readAt         DateTime?        @map("read_at") @db.Timestamptz(3)
   failedAt       DateTime?        @map("failed_at") @db.Timestamptz(3)
   failureReason  String?          @map("failure_reason") @db.Text
+  rateCardId     String?          @map("rate_card_id") @db.Uuid
+  pricingCountry String?          @map("pricing_country") @db.Char(2)
+  pricingCategory String?         @map("pricing_category") @db.VarChar(40)
+  pricingType    String?          @map("pricing_type") @db.VarChar(60)
+  metaCost       Decimal?         @map("meta_cost") @db.Decimal(18, 6)
+  platformFee    Decimal?         @map("platform_fee") @db.Decimal(18, 6)
+  customerCost   Decimal?         @map("customer_cost") @db.Decimal(18, 6)
+  pricingCurrency String?         @map("pricing_currency") @db.Char(3)
+  pricingEffectiveDate DateTime?  @map("pricing_effective_date") @db.Timestamptz(3)
+  billingStatus  String           @default("NOT_APPLICABLE") @map("billing_status") @db.VarChar(20)
   deletedAt      DateTime?        @map("deleted_at") @db.Timestamptz(3)
   createdById    String?          @map("created_by_id") @db.Uuid
   createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
@@ -526,13 +538,50 @@ model Message {
   conversation   Conversation     @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   contact        Contact          @relation(fields: [contactId], references: [id], onDelete: Cascade)
   createdBy      User?            @relation("MessageCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  rateCard       WhatsAppRateCard? @relation(fields: [rateCardId], references: [id], onDelete: SetNull)
 
   @@unique([workspaceId, metaMessageId])
   @@index([workspaceId, conversationId, sentAt, id])
   @@index([workspaceId, contactId, sentAt, id])
   @@index([workspaceId, conversationId, deletedAt])
   @@index([createdById])
+  @@index([workspaceId, billingStatus, sentAt])
+  @@index([rateCardId])
   @@map("messages")
+}
+
+model WhatsAppRateCard {
+  id              String    @id @default(uuid()) @db.Uuid
+  countryCode     String    @map("country_code") @db.Char(2)
+  countryName     String    @map("country_name") @db.VarChar(100)
+  currency        String    @db.Char(3)
+  category        String    @db.VarChar(40)
+  pricingType     String    @map("pricing_type") @db.VarChar(60)
+  metaRate        Decimal   @map("meta_rate") @db.Decimal(18, 6)
+  platformFee     Decimal   @map("platform_fee") @db.Decimal(18, 6)
+  customerRate    Decimal   @map("customer_rate") @db.Decimal(18, 6)
+  volumeTierFrom  BigInt?   @map("volume_tier_from")
+  volumeTierTo    BigInt?   @map("volume_tier_to")
+  effectiveFrom   DateTime  @map("effective_from") @db.Timestamptz(3)
+  effectiveTo     DateTime? @map("effective_to") @db.Timestamptz(3)
+  status          String    @default("ACTIVE") @db.VarChar(20)
+  source          String    @default("MANUAL") @db.VarChar(40)
+  notes           String?   @db.Text
+  createdById     String?   @map("created_by") @db.Uuid
+  updatedById     String?   @map("updated_by") @db.Uuid
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdBy       User?     @relation("WhatsAppRateCardCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy       User?     @relation("WhatsAppRateCardUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+  messages        Message[]
+
+  @@index([countryCode, category, pricingType, status])
+  @@index([effectiveFrom, effectiveTo])
+  @@index([countryCode, category, pricingType, volumeTierFrom, volumeTierTo])
+  @@index([status, effectiveFrom, effectiveTo])
+  @@index([createdById])
+  @@index([updatedById])
+  @@map("whatsapp_rate_cards")
 }
 
 model ContactCustomField {

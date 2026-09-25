@@ -83,6 +83,7 @@ export const platformNavigationGroups: NavigationGroup[] = [
     { title: "Audit log", url: "/admin/audit-logs", icon: FileText, platformRoles: ["SUPPORT", "ADMIN", "SUPER_ADMIN"] },
   ] },
   { title: "Administration", items: [
+    { title: "WhatsApp rate cards", url: "/admin/whatsapp-rate-cards", icon: CreditCard, platformRoles: ["ADMIN", "SUPER_ADMIN"] },
     { title: "Platform admins", url: "/admin/platform-admins", icon: UsersRound, platformRoles: ["ADMIN", "SUPER_ADMIN"] },
     { title: "Feature flags", url: "/admin/feature-flags", icon: Blocks, platformRoles: ["ADMIN", "SUPER_ADMIN"] },
     { title: "Platform settings", url: "/admin/settings", icon: UserRound, platformRoles: ["ADMIN", "SUPER_ADMIN"] },
