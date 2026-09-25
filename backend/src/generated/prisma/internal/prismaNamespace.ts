@@ -3743,6 +3743,7 @@ export const MessageScalarFieldEnum = {
   conversationId: 'conversationId',
   contactId: 'contactId',
   metaMessageId: 'metaMessageId',
+  apiIdempotencyKey: 'apiIdempotencyKey',
   direction: 'direction',
   type: 'type',
   status: 'status',

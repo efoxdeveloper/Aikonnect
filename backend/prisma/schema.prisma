@@ -514,6 +514,7 @@ model Message {
   conversationId String           @map("conversation_id") @db.Uuid
   contactId      String           @map("contact_id") @db.Uuid
   metaMessageId  String?          @map("meta_message_id") @db.VarChar(200)
+  apiIdempotencyKey String?       @map("api_idempotency_key") @db.VarChar(255)
   direction      MessageDirection
   type           MessageType
   status         MessageStatus    @default(SENT)
@@ -557,6 +558,7 @@ model Message {
   walletLedgerEntries WalletLedgerEntry[]
 
   @@unique([workspaceId, metaMessageId])
+  @@unique([workspaceId, apiIdempotencyKey])
   @@index([workspaceId, conversationId, sentAt, id])
   @@index([workspaceId, contactId, sentAt, id])
   @@index([workspaceId, conversationId, deletedAt])

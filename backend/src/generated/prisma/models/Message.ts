@@ -52,6 +52,7 @@ export type MessageMinAggregateOutputType = {
   conversationId: string | null
   contactId: string | null
   metaMessageId: string | null
+  apiIdempotencyKey: string | null
   direction: $Enums.MessageDirection | null
   type: $Enums.MessageType | null
   status: $Enums.MessageStatus | null
@@ -93,6 +94,7 @@ export type MessageMaxAggregateOutputType = {
   conversationId: string | null
   contactId: string | null
   metaMessageId: string | null
+  apiIdempotencyKey: string | null
   direction: $Enums.MessageDirection | null
   type: $Enums.MessageType | null
   status: $Enums.MessageStatus | null
@@ -134,6 +136,7 @@ export type MessageCountAggregateOutputType = {
   conversationId: number
   contactId: number
   metaMessageId: number
+  apiIdempotencyKey: number
   direction: number
   type: number
   status: number
@@ -198,6 +201,7 @@ export type MessageMinAggregateInputType = {
   conversationId?: true
   contactId?: true
   metaMessageId?: true
+  apiIdempotencyKey?: true
   direction?: true
   type?: true
   status?: true
@@ -239,6 +243,7 @@ export type MessageMaxAggregateInputType = {
   conversationId?: true
   contactId?: true
   metaMessageId?: true
+  apiIdempotencyKey?: true
   direction?: true
   type?: true
   status?: true
@@ -280,6 +285,7 @@ export type MessageCountAggregateInputType = {
   conversationId?: true
   contactId?: true
   metaMessageId?: true
+  apiIdempotencyKey?: true
   direction?: true
   type?: true
   status?: true
@@ -409,6 +415,7 @@ export type MessageGroupByOutputType = {
   conversationId: string
   contactId: string
   metaMessageId: string | null
+  apiIdempotencyKey: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status: $Enums.MessageStatus
@@ -474,6 +481,7 @@ export type MessageWhereInput = {
   conversationId?: Prisma.UuidFilter<"Message"> | string
   contactId?: Prisma.UuidFilter<"Message"> | string
   metaMessageId?: Prisma.StringNullableFilter<"Message"> | string | null
+  apiIdempotencyKey?: Prisma.StringNullableFilter<"Message"> | string | null
   direction?: Prisma.EnumMessageDirectionFilter<"Message"> | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFilter<"Message"> | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFilter<"Message"> | $Enums.MessageStatus
@@ -523,6 +531,7 @@ export type MessageOrderByWithRelationInput = {
   conversationId?: Prisma.SortOrder
   contactId?: Prisma.SortOrder
   metaMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   direction?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -569,6 +578,7 @@ export type MessageOrderByWithRelationInput = {
 export type MessageWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   workspaceId_metaMessageId?: Prisma.MessageWorkspaceIdMetaMessageIdCompoundUniqueInput
+  workspaceId_apiIdempotencyKey?: Prisma.MessageWorkspaceIdApiIdempotencyKeyCompoundUniqueInput
   AND?: Prisma.MessageWhereInput | Prisma.MessageWhereInput[]
   OR?: Prisma.MessageWhereInput[]
   NOT?: Prisma.MessageWhereInput | Prisma.MessageWhereInput[]
@@ -576,6 +586,7 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   conversationId?: Prisma.UuidFilter<"Message"> | string
   contactId?: Prisma.UuidFilter<"Message"> | string
   metaMessageId?: Prisma.StringNullableFilter<"Message"> | string | null
+  apiIdempotencyKey?: Prisma.StringNullableFilter<"Message"> | string | null
   direction?: Prisma.EnumMessageDirectionFilter<"Message"> | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFilter<"Message"> | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFilter<"Message"> | $Enums.MessageStatus
@@ -617,7 +628,7 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   rateCard?: Prisma.XOR<Prisma.WhatsAppRateCardNullableScalarRelationFilter, Prisma.WhatsAppRateCardWhereInput> | null
   walletReservations?: Prisma.WalletReservationListRelationFilter
   walletLedgerEntries?: Prisma.WalletLedgerEntryListRelationFilter
-}, "id" | "workspaceId_metaMessageId">
+}, "id" | "workspaceId_metaMessageId" | "workspaceId_apiIdempotencyKey">
 
 export type MessageOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -625,6 +636,7 @@ export type MessageOrderByWithAggregationInput = {
   conversationId?: Prisma.SortOrder
   contactId?: Prisma.SortOrder
   metaMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiIdempotencyKey?: Prisma.SortOrderInput | Prisma.SortOrder
   direction?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -675,6 +687,7 @@ export type MessageScalarWhereWithAggregatesInput = {
   conversationId?: Prisma.UuidWithAggregatesFilter<"Message"> | string
   contactId?: Prisma.UuidWithAggregatesFilter<"Message"> | string
   metaMessageId?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
+  apiIdempotencyKey?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
   direction?: Prisma.EnumMessageDirectionWithAggregatesFilter<"Message"> | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeWithAggregatesFilter<"Message"> | $Enums.MessageType
   status?: Prisma.EnumMessageStatusWithAggregatesFilter<"Message"> | $Enums.MessageStatus
@@ -714,6 +727,7 @@ export type MessageScalarWhereWithAggregatesInput = {
 export type MessageCreateInput = {
   id?: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -761,6 +775,7 @@ export type MessageUncheckedCreateInput = {
   conversationId: string
   contactId: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -802,6 +817,7 @@ export type MessageUncheckedCreateInput = {
 export type MessageUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -849,6 +865,7 @@ export type MessageUncheckedUpdateInput = {
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -893,6 +910,7 @@ export type MessageCreateManyInput = {
   conversationId: string
   contactId: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -932,6 +950,7 @@ export type MessageCreateManyInput = {
 export type MessageUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -972,6 +991,7 @@ export type MessageUncheckedUpdateManyInput = {
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -1023,12 +1043,18 @@ export type MessageWorkspaceIdMetaMessageIdCompoundUniqueInput = {
   metaMessageId: string
 }
 
+export type MessageWorkspaceIdApiIdempotencyKeyCompoundUniqueInput = {
+  workspaceId: string
+  apiIdempotencyKey: string
+}
+
 export type MessageCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
   conversationId?: Prisma.SortOrder
   contactId?: Prisma.SortOrder
   metaMessageId?: Prisma.SortOrder
+  apiIdempotencyKey?: Prisma.SortOrder
   direction?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -1081,6 +1107,7 @@ export type MessageMaxOrderByAggregateInput = {
   conversationId?: Prisma.SortOrder
   contactId?: Prisma.SortOrder
   metaMessageId?: Prisma.SortOrder
+  apiIdempotencyKey?: Prisma.SortOrder
   direction?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -1122,6 +1149,7 @@ export type MessageMinOrderByAggregateInput = {
   conversationId?: Prisma.SortOrder
   contactId?: Prisma.SortOrder
   metaMessageId?: Prisma.SortOrder
+  apiIdempotencyKey?: Prisma.SortOrder
   direction?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -1432,6 +1460,7 @@ export type MessageUpdateOneRequiredWithoutWalletReservationsNestedInput = {
 export type MessageCreateWithoutCreatedByInput = {
   id?: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -1478,6 +1507,7 @@ export type MessageUncheckedCreateWithoutCreatedByInput = {
   conversationId: string
   contactId: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -1550,6 +1580,7 @@ export type MessageScalarWhereInput = {
   conversationId?: Prisma.UuidFilter<"Message"> | string
   contactId?: Prisma.UuidFilter<"Message"> | string
   metaMessageId?: Prisma.StringNullableFilter<"Message"> | string | null
+  apiIdempotencyKey?: Prisma.StringNullableFilter<"Message"> | string | null
   direction?: Prisma.EnumMessageDirectionFilter<"Message"> | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFilter<"Message"> | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFilter<"Message"> | $Enums.MessageStatus
@@ -1589,6 +1620,7 @@ export type MessageScalarWhereInput = {
 export type MessageCreateWithoutWorkspaceInput = {
   id?: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -1634,6 +1666,7 @@ export type MessageUncheckedCreateWithoutWorkspaceInput = {
   conversationId: string
   contactId: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -1701,6 +1734,7 @@ export type MessageUpdateManyWithWhereWithoutWorkspaceInput = {
 export type MessageCreateWithoutContactInput = {
   id?: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -1746,6 +1780,7 @@ export type MessageUncheckedCreateWithoutContactInput = {
   workspaceId: string
   conversationId: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -1813,6 +1848,7 @@ export type MessageUpdateManyWithWhereWithoutContactInput = {
 export type MessageCreateWithoutConversationInput = {
   id?: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -1858,6 +1894,7 @@ export type MessageUncheckedCreateWithoutConversationInput = {
   workspaceId: string
   contactId: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -1925,6 +1962,7 @@ export type MessageUpdateManyWithWhereWithoutConversationInput = {
 export type MessageCreateWithoutRateCardInput = {
   id?: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -1971,6 +2009,7 @@ export type MessageUncheckedCreateWithoutRateCardInput = {
   conversationId: string
   contactId: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -2037,6 +2076,7 @@ export type MessageUpdateManyWithWhereWithoutRateCardInput = {
 export type MessageCreateWithoutWalletLedgerEntriesInput = {
   id?: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -2083,6 +2123,7 @@ export type MessageUncheckedCreateWithoutWalletLedgerEntriesInput = {
   conversationId: string
   contactId: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -2139,6 +2180,7 @@ export type MessageUpdateToOneWithWhereWithoutWalletLedgerEntriesInput = {
 export type MessageUpdateWithoutWalletLedgerEntriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -2185,6 +2227,7 @@ export type MessageUncheckedUpdateWithoutWalletLedgerEntriesInput = {
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -2225,6 +2268,7 @@ export type MessageUncheckedUpdateWithoutWalletLedgerEntriesInput = {
 export type MessageCreateWithoutWalletReservationsInput = {
   id?: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -2271,6 +2315,7 @@ export type MessageUncheckedCreateWithoutWalletReservationsInput = {
   conversationId: string
   contactId: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -2327,6 +2372,7 @@ export type MessageUpdateToOneWithWhereWithoutWalletReservationsInput = {
 export type MessageUpdateWithoutWalletReservationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -2373,6 +2419,7 @@ export type MessageUncheckedUpdateWithoutWalletReservationsInput = {
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -2416,6 +2463,7 @@ export type MessageCreateManyCreatedByInput = {
   conversationId: string
   contactId: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -2454,6 +2502,7 @@ export type MessageCreateManyCreatedByInput = {
 export type MessageUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -2500,6 +2549,7 @@ export type MessageUncheckedUpdateWithoutCreatedByInput = {
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -2543,6 +2593,7 @@ export type MessageUncheckedUpdateManyWithoutCreatedByInput = {
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -2583,6 +2634,7 @@ export type MessageCreateManyWorkspaceInput = {
   conversationId: string
   contactId: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -2622,6 +2674,7 @@ export type MessageCreateManyWorkspaceInput = {
 export type MessageUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -2667,6 +2720,7 @@ export type MessageUncheckedUpdateWithoutWorkspaceInput = {
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -2710,6 +2764,7 @@ export type MessageUncheckedUpdateManyWithoutWorkspaceInput = {
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -2751,6 +2806,7 @@ export type MessageCreateManyContactInput = {
   workspaceId: string
   conversationId: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -2790,6 +2846,7 @@ export type MessageCreateManyContactInput = {
 export type MessageUpdateWithoutContactInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -2835,6 +2892,7 @@ export type MessageUncheckedUpdateWithoutContactInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -2878,6 +2936,7 @@ export type MessageUncheckedUpdateManyWithoutContactInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -2919,6 +2978,7 @@ export type MessageCreateManyConversationInput = {
   workspaceId: string
   contactId: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -2958,6 +3018,7 @@ export type MessageCreateManyConversationInput = {
 export type MessageUpdateWithoutConversationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -3003,6 +3064,7 @@ export type MessageUncheckedUpdateWithoutConversationInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -3046,6 +3108,7 @@ export type MessageUncheckedUpdateManyWithoutConversationInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -3088,6 +3151,7 @@ export type MessageCreateManyRateCardInput = {
   conversationId: string
   contactId: string
   metaMessageId?: string | null
+  apiIdempotencyKey?: string | null
   direction: $Enums.MessageDirection
   type: $Enums.MessageType
   status?: $Enums.MessageStatus
@@ -3126,6 +3190,7 @@ export type MessageCreateManyRateCardInput = {
 export type MessageUpdateWithoutRateCardInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -3172,6 +3237,7 @@ export type MessageUncheckedUpdateWithoutRateCardInput = {
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -3215,6 +3281,7 @@ export type MessageUncheckedUpdateManyWithoutRateCardInput = {
   conversationId?: Prisma.StringFieldUpdateOperationsInput | string
   contactId?: Prisma.StringFieldUpdateOperationsInput | string
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiIdempotencyKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumMessageDirectionFieldUpdateOperationsInput | $Enums.MessageDirection
   type?: Prisma.EnumMessageTypeFieldUpdateOperationsInput | $Enums.MessageType
   status?: Prisma.EnumMessageStatusFieldUpdateOperationsInput | $Enums.MessageStatus
@@ -3296,6 +3363,7 @@ export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   conversationId?: boolean
   contactId?: boolean
   metaMessageId?: boolean
+  apiIdempotencyKey?: boolean
   direction?: boolean
   type?: boolean
   status?: boolean
@@ -3346,6 +3414,7 @@ export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   conversationId?: boolean
   contactId?: boolean
   metaMessageId?: boolean
+  apiIdempotencyKey?: boolean
   direction?: boolean
   type?: boolean
   status?: boolean
@@ -3393,6 +3462,7 @@ export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   conversationId?: boolean
   contactId?: boolean
   metaMessageId?: boolean
+  apiIdempotencyKey?: boolean
   direction?: boolean
   type?: boolean
   status?: boolean
@@ -3440,6 +3510,7 @@ export type MessageSelectScalar = {
   conversationId?: boolean
   contactId?: boolean
   metaMessageId?: boolean
+  apiIdempotencyKey?: boolean
   direction?: boolean
   type?: boolean
   status?: boolean
@@ -3476,7 +3547,7 @@ export type MessageSelectScalar = {
   updatedAt?: boolean
 }
 
-export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "conversationId" | "contactId" | "metaMessageId" | "direction" | "type" | "status" | "text" | "mediaId" | "mediaUrl" | "payload" | "sentAt" | "deliveredAt" | "readAt" | "failedAt" | "failureReason" | "rateCardId" | "pricingCountry" | "pricingCategory" | "pricingType" | "metaCost" | "platformFee" | "customerCost" | "pricingCurrency" | "pricingEffectiveDate" | "billingStatus" | "billingMode" | "walletChargeAmount" | "billingCurrency" | "billingError" | "estimatedMetaCost" | "actualMetaCost" | "costDifference" | "reconciledAt" | "deletedAt" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["message"]>
+export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "conversationId" | "contactId" | "metaMessageId" | "apiIdempotencyKey" | "direction" | "type" | "status" | "text" | "mediaId" | "mediaUrl" | "payload" | "sentAt" | "deliveredAt" | "readAt" | "failedAt" | "failureReason" | "rateCardId" | "pricingCountry" | "pricingCategory" | "pricingType" | "metaCost" | "platformFee" | "customerCost" | "pricingCurrency" | "pricingEffectiveDate" | "billingStatus" | "billingMode" | "walletChargeAmount" | "billingCurrency" | "billingError" | "estimatedMetaCost" | "actualMetaCost" | "costDifference" | "reconciledAt" | "deletedAt" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["message"]>
 export type MessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
@@ -3519,6 +3590,7 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     conversationId: string
     contactId: string
     metaMessageId: string | null
+    apiIdempotencyKey: string | null
     direction: $Enums.MessageDirection
     type: $Enums.MessageType
     status: $Enums.MessageStatus
@@ -3988,6 +4060,7 @@ export interface MessageFieldRefs {
   readonly conversationId: Prisma.FieldRef<"Message", 'String'>
   readonly contactId: Prisma.FieldRef<"Message", 'String'>
   readonly metaMessageId: Prisma.FieldRef<"Message", 'String'>
+  readonly apiIdempotencyKey: Prisma.FieldRef<"Message", 'String'>
   readonly direction: Prisma.FieldRef<"Message", 'MessageDirection'>
   readonly type: Prisma.FieldRef<"Message", 'MessageType'>
   readonly status: Prisma.FieldRef<"Message", 'MessageStatus'>

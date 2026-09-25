@@ -7,6 +7,11 @@ declare global {
         email: string;
         emailVerifiedAt: Date | null;
       };
+      developerApiKey?: {
+        id: string;
+        workspaceId: string;
+        scopes: string[];
+      };
       platformAccess?: {
         role: "SUPPORT" | "OPERATIONS" | "BILLING" | "ADMIN" | "SUPER_ADMIN";
       };
