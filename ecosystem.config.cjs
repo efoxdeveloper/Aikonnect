@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "interakt-api",
+      name: "marento",
       cwd: "./backend",
       script: "dist/server.js",
       interpreter: "node",

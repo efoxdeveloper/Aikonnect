@@ -4,7 +4,7 @@ import { env } from "./env.js";
 export const logger = pino({
   level: process.env.NODE_TEST_CONTEXT ? "silent" : env.LOG_LEVEL,
   base: {
-    service: "interakt-api",
+    service: "marento-api",
     environment: env.NODE_ENV,
   },
   redact: {
