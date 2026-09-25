@@ -18,6 +18,14 @@ describe("WhatsApp rate cards", () => {
     expect(await screen.findByText("0.150000")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Deactivate" }));
     await waitFor(() => expect(apiRequest).toHaveBeenCalledWith("/admin/whatsapp-rate-cards/rate-1/status", expect.objectContaining({ method: "PATCH" })));
-    expect(await screen.findByText("Inactive")).toBeInTheDocument();
+    expect((await screen.findAllByText("Inactive")).length).toBeGreaterThan(1);
+  });
+
+  it("opens the add form in a right-side drawer", async () => {
+    render(<MemoryRouter><WhatsAppRateCards /></MemoryRouter>);
+    await screen.findByText("0.150000");
+    fireEvent.click(screen.getByRole("button", { name: "Add rate" }));
+    expect(await screen.findByRole("dialog", { name: "Add rate card" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Meta rate")).toBeInTheDocument();
   });
 });
