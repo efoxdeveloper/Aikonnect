@@ -1,7 +1,7 @@
 import { env } from "../../config/env.js";
 import { checkDatabaseConnection, prisma } from "../../database/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
-import type { Prisma } from "../../generated/prisma/client.js";
+import { Prisma, type Prisma as PrismaTypes } from "../../generated/prisma/client.js";
 import type { Request } from "express";
 import type { AdminAuditQuery, AdminListQuery, AdminUserAction } from "./admin.schemas.js";
 import type { PlatformRole } from "../../middleware/platform-access.js";
@@ -29,7 +29,7 @@ export async function getOverview() {
 }
 
 export async function listWorkspaces(query: AdminListQuery) {
-  const where: Prisma.WorkspaceWhereInput = query.search ? { OR: [{ name: { contains: query.search, mode: "insensitive" } }, { slug: { contains: query.search, mode: "insensitive" } }, { companyName: { contains: query.search, mode: "insensitive" } }, { owner: { email: { contains: query.search, mode: "insensitive" } } }] } : {};
+  const where: PrismaTypes.WorkspaceWhereInput = query.search ? { OR: [{ name: { contains: query.search, mode: "insensitive" } }, { slug: { contains: query.search, mode: "insensitive" } }, { companyName: { contains: query.search, mode: "insensitive" } }, { owner: { email: { contains: query.search, mode: "insensitive" } } }] } : {};
   const [total, items] = await Promise.all([
     prisma.workspace.count({ where }),
     prisma.workspace.findMany({ where, orderBy: { createdAt: "desc" }, skip: (query.page - 1) * query.pageSize, take: query.pageSize, select: { id: true, name: true, slug: true, companyName: true, industry: true, country: true, timezone: true, createdAt: true, updatedAt: true, onboardingCompletedAt: true, owner: { select: { id: true, email: true, firstName: true, lastName: true, status: true } }, setupProgress: { select: { completedAt: true, whatsappConnectedAt: true, phoneNumberConnectedAt: true, testMessageSentAt: true } }, _count: { select: { memberships: true, contacts: true, messages: true, conversations: true, templates: true, whatsappBusinessAccounts: true, webhookEndpoints: true } } } }),
@@ -37,8 +37,8 @@ export async function listWorkspaces(query: AdminListQuery) {
   return { items: items.map((workspace) => ({ ...workspace, createdAt: workspace.createdAt.toISOString(), updatedAt: workspace.updatedAt.toISOString(), onboardingCompletedAt: workspace.onboardingCompletedAt?.toISOString() ?? null, status: workspace.onboardingCompletedAt ? "ACTIVE" : "ONBOARDING" })), pagination: pagination(total, query) };
 }
 
-export async function listUsers(query: AdminListQuery, baseWhere: Prisma.UserWhereInput = {}) {
-  const where: Prisma.UserWhereInput = { AND: [baseWhere, query.search ? { OR: [{ email: { contains: query.search, mode: "insensitive" } }, { firstName: { contains: query.search, mode: "insensitive" } }, { lastName: { contains: query.search, mode: "insensitive" } }] } : {}] };
+export async function listUsers(query: AdminListQuery, baseWhere: PrismaTypes.UserWhereInput = {}) {
+  const where: PrismaTypes.UserWhereInput = { AND: [baseWhere, query.search ? { OR: [{ email: { contains: query.search, mode: "insensitive" } }, { firstName: { contains: query.search, mode: "insensitive" } }, { lastName: { contains: query.search, mode: "insensitive" } }] } : {}] };
   const [total, active, verified, googleSignups, items] = await Promise.all([
     prisma.user.count({ where }),
     prisma.user.count({ where: { AND: [where, { status: "ACTIVE" }] } }),
@@ -87,7 +87,7 @@ export async function performUserAction(userId: string, actorUserId: string, act
 }
 
 export async function listWhatsAppConnections(query: AdminListQuery) {
-  const where: Prisma.WhatsAppBusinessAccountWhereInput = query.search ? { OR: [{ displayName: { contains: query.search, mode: "insensitive" } }, { metaBusinessId: { contains: query.search, mode: "insensitive" } }, { metaWabaId: { contains: query.search, mode: "insensitive" } }, { workspace: { name: { contains: query.search, mode: "insensitive" } } }] } : {};
+  const where: PrismaTypes.WhatsAppBusinessAccountWhereInput = query.search ? { OR: [{ displayName: { contains: query.search, mode: "insensitive" } }, { metaBusinessId: { contains: query.search, mode: "insensitive" } }, { metaWabaId: { contains: query.search, mode: "insensitive" } }, { workspace: { name: { contains: query.search, mode: "insensitive" } } }] } : {};
   const [total, items] = await Promise.all([
     prisma.whatsAppBusinessAccount.count({ where }),
     prisma.whatsAppBusinessAccount.findMany({ where, orderBy: { updatedAt: "desc" }, skip: (query.page - 1) * query.pageSize, take: query.pageSize, select: { id: true, displayName: true, metaBusinessId: true, metaWabaId: true, status: true, connectedAt: true, lastSyncedAt: true, lastError: true, sharedBillingStatus: true, sharedBillingAllocationId: true, workspace: { select: { id: true, name: true, slug: true } }, phoneNumbers: { select: { id: true, displayPhoneNumber: true, verifiedName: true, status: true, qualityRating: true, messagingLimit: true, isOnBusinessApp: true, platformType: true, lastSyncedAt: true } } } }),
@@ -101,11 +101,13 @@ export async function getBillingOverview() {
     prisma.whatsAppBusinessAccount.count(),
     prisma.whatsAppBusinessAccount.count({ where: { sharedBillingAllocationId: { not: null } } }),
     prisma.workspace.count(),
-    prisma.wallet.aggregate({ _count: { _all: true }, _sum: { balanceMinorUnits: true } }),
-    prisma.wallet.findMany({ orderBy: { tenant: { name: "asc" } }, select: { tenantId: true, currency: true, balanceMinorUnits: true, tenant: { select: { name: true, slug: true, _count: { select: { workspaces: true } } } } } }),
+    prisma.wallet.aggregate({ _count: { _all: true }, _sum: { balanceMinorUnits: true, totalBalance: true, reservedBalance: true } }),
+    prisma.wallet.findMany({ orderBy: { tenant: { name: "asc" } }, select: { tenantId: true, currency: true, balanceMinorUnits: true, totalBalance: true, reservedBalance: true, status: true, tenant: { select: { name: true, slug: true, _count: { select: { workspaces: true } } } } } }),
   ]);
   const totalBalanceMinorUnits = walletSummary._sum.balanceMinorUnits ?? 0n;
-  return { subscriptions: { configured: false, message: "Subscription and invoice models are not configured yet." }, wallet: { configured: true, currency: env.WALLET_CURRENCY, walletCount: walletSummary._count._all, balanceMinorUnits: totalBalanceMinorUnits.toString(), balance: minorUnitsToAmount(totalBalanceMinorUnits) }, wallets: wallets.map((wallet) => ({ tenantId: wallet.tenantId, tenantName: wallet.tenant.name, tenantSlug: wallet.tenant.slug, workspaceCount: wallet.tenant._count.workspaces, currency: wallet.currency, balanceMinorUnits: wallet.balanceMinorUnits.toString(), balance: minorUnitsToAmount(wallet.balanceMinorUnits) })), sharedWhatsAppBilling: { totalAccounts, allocatedAccounts, unallocatedAccounts: totalAccounts - allocatedAccounts, statuses: Object.fromEntries(accountsByBillingStatus.map(({ sharedBillingStatus, _count }) => [sharedBillingStatus.toLowerCase(), _count._all])) }, workspaceCount: workspaces };
+  const totalBalance = walletSummary._sum.totalBalance?.toFixed(6) ?? "0.000000";
+  const reservedBalance = walletSummary._sum.reservedBalance?.toFixed(6) ?? "0.000000";
+  return { subscriptions: { configured: false, message: "Subscription and invoice models are not configured yet." }, wallet: { configured: true, currency: env.WALLET_CURRENCY, walletCount: walletSummary._count._all, balanceMinorUnits: totalBalanceMinorUnits.toString(), balance: minorUnitsToAmount(totalBalanceMinorUnits), totalBalance, reservedBalance, availableBalance: new Prisma.Decimal(totalBalance).sub(new Prisma.Decimal(reservedBalance)).toFixed(6) }, wallets: wallets.map((wallet) => ({ tenantId: wallet.tenantId, tenantName: wallet.tenant.name, tenantSlug: wallet.tenant.slug, workspaceCount: wallet.tenant._count.workspaces, currency: wallet.currency, balanceMinorUnits: wallet.balanceMinorUnits.toString(), balance: minorUnitsToAmount(wallet.balanceMinorUnits), totalBalance: wallet.totalBalance.toFixed(6), reservedBalance: wallet.reservedBalance.toFixed(6), availableBalance: wallet.totalBalance.sub(wallet.reservedBalance).toFixed(6), status: wallet.status })), sharedWhatsAppBilling: { totalAccounts, allocatedAccounts, unallocatedAccounts: totalAccounts - allocatedAccounts, statuses: Object.fromEntries(accountsByBillingStatus.map(({ sharedBillingStatus, _count }) => [sharedBillingStatus.toLowerCase(), _count._all])) }, workspaceCount: workspaces };
 }
 
 export async function getUsageOverview() {
@@ -123,7 +125,7 @@ export async function getSystemHealth() {
 }
 
 export async function listWebhooks(query: AdminListQuery) {
-  const where: Prisma.WebhookEndpointWhereInput = query.search ? { OR: [{ name: { contains: query.search, mode: "insensitive" } }, { url: { contains: query.search, mode: "insensitive" } }, { workspace: { name: { contains: query.search, mode: "insensitive" } } }] } : {};
+  const where: PrismaTypes.WebhookEndpointWhereInput = query.search ? { OR: [{ name: { contains: query.search, mode: "insensitive" } }, { url: { contains: query.search, mode: "insensitive" } }, { workspace: { name: { contains: query.search, mode: "insensitive" } } }] } : {};
   const [total, items] = await Promise.all([
     prisma.webhookEndpoint.count({ where }),
     prisma.webhookEndpoint.findMany({ where, orderBy: { updatedAt: "desc" }, skip: (query.page - 1) * query.pageSize, take: query.pageSize, select: { id: true, name: true, url: true, events: true, active: true, lastDeliveredAt: true, createdAt: true, updatedAt: true, workspace: { select: { id: true, name: true, slug: true } }, createdBy: { select: { email: true, firstName: true, lastName: true } } } }),
@@ -132,7 +134,7 @@ export async function listWebhooks(query: AdminListQuery) {
 }
 
 export async function listAuditLogs(query: AdminAuditQuery) {
-  const where: Prisma.PlatformAuditLogWhereInput = { ...(query.resourceType ? { resourceType: query.resourceType } : {}), ...(query.action ? { action: { contains: query.action, mode: "insensitive" } } : {}), ...(query.search ? { OR: [{ action: { contains: query.search, mode: "insensitive" } }, { resourceType: { contains: query.search, mode: "insensitive" } }, { actorUser: { email: { contains: query.search, mode: "insensitive" } } }] } : {}) };
+  const where: PrismaTypes.PlatformAuditLogWhereInput = { ...(query.resourceType ? { resourceType: query.resourceType } : {}), ...(query.action ? { action: { contains: query.action, mode: "insensitive" } } : {}), ...(query.search ? { OR: [{ action: { contains: query.search, mode: "insensitive" } }, { resourceType: { contains: query.search, mode: "insensitive" } }, { actorUser: { email: { contains: query.search, mode: "insensitive" } } }] } : {}) };
   const [total, items] = await Promise.all([
     prisma.platformAuditLog.count({ where }),
     prisma.platformAuditLog.findMany({ where, orderBy: { createdAt: "desc" }, skip: (query.page - 1) * query.pageSize, take: query.pageSize, select: { id: true, action: true, resourceType: true, resourceId: true, workspaceId: true, metadata: true, ipAddress: true, userAgent: true, createdAt: true, actorUser: { select: { id: true, email: true, firstName: true, lastName: true, platformRole: true } } } }),

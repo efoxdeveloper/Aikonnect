@@ -83,6 +83,7 @@ enum MessageDirection {
 }
 
 enum MessageStatus {
+  QUEUED
   SENT
   DELIVERED
   READ
@@ -162,6 +163,8 @@ enum CampaignRecipientStatus {
 enum WalletEntryDirection {
   CREDIT
   DEBIT
+  HOLD
+  RELEASE
 }
 
 model User {
@@ -243,6 +246,7 @@ model Tenant {
   workspaces  Workspace[]
   wallet      Wallet?
   ledgerEntries WalletLedgerEntry[]
+  walletReservations WalletReservation[]
 
   @@index([ownerId])
   @@map("tenants")
@@ -293,6 +297,8 @@ model Workspace {
   apiKeys                  PublicApiKey[]
   webhookEndpoints         WebhookEndpoint[]
   walletLedgerEntries      WalletLedgerEntry[]
+  walletReservations       WalletReservation[]
+  billingSettings          WorkspaceBillingSettings?
 
   @@index([ownerId])
   @@index([tenantId])
@@ -530,6 +536,14 @@ model Message {
   pricingCurrency String?         @map("pricing_currency") @db.Char(3)
   pricingEffectiveDate DateTime?  @map("pricing_effective_date") @db.Timestamptz(3)
   billingStatus  String           @default("NOT_APPLICABLE") @map("billing_status") @db.VarChar(20)
+  billingMode    String?          @map("billing_mode") @db.VarChar(40)
+  walletChargeAmount Decimal?      @map("wallet_charge_amount") @db.Decimal(18, 6)
+  billingCurrency String?         @map("billing_currency") @db.Char(3)
+  billingError    String?          @map("billing_error") @db.Text
+  estimatedMetaCost Decimal?       @map("estimated_meta_cost") @db.Decimal(18, 6)
+  actualMetaCost Decimal?          @map("actual_meta_cost") @db.Decimal(18, 6)
+  costDifference Decimal?          @map("cost_difference") @db.Decimal(18, 6)
+  reconciledAt   DateTime?         @map("reconciled_at") @db.Timestamptz(3)
   deletedAt      DateTime?        @map("deleted_at") @db.Timestamptz(3)
   createdById    String?          @map("created_by_id") @db.Uuid
   createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
@@ -539,6 +553,8 @@ model Message {
   contact        Contact          @relation(fields: [contactId], references: [id], onDelete: Cascade)
   createdBy      User?            @relation("MessageCreator", fields: [createdById], references: [id], onDelete: SetNull)
   rateCard       WhatsAppRateCard? @relation(fields: [rateCardId], references: [id], onDelete: SetNull)
+  walletReservations WalletReservation[]
+  walletLedgerEntries WalletLedgerEntry[]
 
   @@unique([workspaceId, metaMessageId])
   @@index([workspaceId, conversationId, sentAt, id])
@@ -574,6 +590,7 @@ model WhatsAppRateCard {
   createdBy       User?     @relation("WhatsAppRateCardCreator", fields: [createdById], references: [id], onDelete: SetNull)
   updatedBy       User?     @relation("WhatsAppRateCardUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
   messages        Message[]
+  walletReservations WalletReservation[]
 
   @@index([countryCode, category, pricingType, status])
   @@index([effectiveFrom, effectiveTo])
@@ -1061,10 +1078,16 @@ model Wallet {
   tenantId           String              @unique @map("tenant_id") @db.Uuid
   currency           String              @db.Char(3)
   balanceMinorUnits  BigInt              @default(0) @map("balance_minor_units")
+  totalBalance       Decimal             @default(0) @map("total_balance") @db.Decimal(18, 6)
+  reservedBalance    Decimal             @default(0) @map("reserved_balance") @db.Decimal(18, 6)
+  status             String              @default("ACTIVE") @db.VarChar(20)
+  lowBalanceThreshold Decimal            @default(0) @map("low_balance_threshold") @db.Decimal(18, 6)
+  autoRechargeEnabled Boolean            @default(false) @map("auto_recharge_enabled")
   createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt          DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
   tenant             Tenant              @relation(fields: [tenantId], references: [id], onDelete: Restrict)
   entries            WalletLedgerEntry[]
+  reservations       WalletReservation[]
 
   @@map("wallets")
 }
@@ -1075,8 +1098,23 @@ model WalletLedgerEntry {
   tenantId            String              @map("tenant_id") @db.Uuid
   workspaceId         String?             @map("workspace_id") @db.Uuid
   direction           WalletEntryDirection
-  amountMinorUnits    BigInt              @map("amount_minor_units")
-  balanceAfterMinorUnits BigInt           @map("balance_after_minor_units")
+  amountMinorUnits    BigInt?             @map("amount_minor_units")
+  balanceAfterMinorUnits BigInt?          @map("balance_after_minor_units")
+  transactionReference String             @unique @default(uuid()) @map("transaction_reference") @db.VarChar(100)
+  transactionType     String              @default("ADJUSTMENT") @map("transaction_type") @db.VarChar(40)
+  amount              Decimal             @default(0) @db.Decimal(18, 6)
+  currency            String              @default("INR") @db.Char(3)
+  openingTotalBalance Decimal            @default(0) @map("opening_total_balance") @db.Decimal(18, 6)
+  closingTotalBalance Decimal            @default(0) @map("closing_total_balance") @db.Decimal(18, 6)
+  openingReservedBalance Decimal         @default(0) @map("opening_reserved_balance") @db.Decimal(18, 6)
+  closingReservedBalance Decimal         @default(0) @map("closing_reserved_balance") @db.Decimal(18, 6)
+  openingAvailableBalance Decimal        @default(0) @map("opening_available_balance") @db.Decimal(18, 6)
+  closingAvailableBalance Decimal        @default(0) @map("closing_available_balance") @db.Decimal(18, 6)
+  messageId           String?             @map("message_id") @db.Uuid
+  reservationId       String?             @map("reservation_id") @db.Uuid
+  externalReference   String?             @map("external_reference") @db.VarChar(255)
+  clientReference     String?             @map("client_reference") @db.VarChar(255)
+  status              String              @default("COMPLETED") @db.VarChar(30)
   idempotencyKey      String              @map("idempotency_key") @db.VarChar(255)
   reason              String              @db.VarChar(80)
   description         String?             @db.Text
@@ -1087,12 +1125,68 @@ model WalletLedgerEntry {
   tenant             Tenant              @relation(fields: [tenantId], references: [id], onDelete: Restrict)
   workspace           Workspace?          @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
   createdBy           User?               @relation("WalletLedgerActor", fields: [createdById], references: [id], onDelete: SetNull)
+  message             Message?            @relation(fields: [messageId], references: [id], onDelete: SetNull)
+  reservation         WalletReservation?  @relation(fields: [reservationId], references: [id], onDelete: SetNull)
 
   @@unique([walletId, idempotencyKey])
   @@index([tenantId, createdAt])
   @@index([workspaceId, createdAt])
   @@index([walletId, createdAt])
+  @@index([messageId])
+  @@index([reservationId])
+  @@index([transactionType, createdAt])
   @@map("wallet_ledger_entries")
+}
+
+model WalletReservation {
+  id                 String    @id @default(uuid()) @db.Uuid
+  walletId           String    @map("wallet_id") @db.Uuid
+  tenantId           String    @map("tenant_id") @db.Uuid
+  workspaceId        String    @map("workspace_id") @db.Uuid
+  messageId          String    @unique @map("message_id") @db.Uuid
+  rateCardId         String?   @map("rate_card_id") @db.Uuid
+  metaAmount         Decimal   @map("meta_amount") @db.Decimal(18, 6)
+  platformFee        Decimal   @map("platform_fee") @db.Decimal(18, 6)
+  customerAmount     Decimal   @map("customer_amount") @db.Decimal(18, 6)
+  walletChargeAmount Decimal   @map("wallet_charge_amount") @db.Decimal(18, 6)
+  currency           String    @db.Char(3)
+  status             String    @default("ACTIVE") @db.VarChar(20)
+  idempotencyKey     String    @unique @map("idempotency_key") @db.VarChar(255)
+  clientReference    String?   @map("client_reference") @db.VarChar(255)
+  expiresAt          DateTime? @map("expires_at") @db.Timestamptz(3)
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  completedAt        DateTime? @map("completed_at") @db.Timestamptz(3)
+  releasedAt         DateTime? @map("released_at") @db.Timestamptz(3)
+  wallet             Wallet    @relation(fields: [walletId], references: [id], onDelete: Restrict)
+  tenant             Tenant    @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  workspace          Workspace @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  message            Message   @relation(fields: [messageId], references: [id], onDelete: Restrict)
+  rateCard           WhatsAppRateCard? @relation(fields: [rateCardId], references: [id], onDelete: SetNull)
+  ledgerEntries      WalletLedgerEntry[]
+
+  @@index([walletId, status])
+  @@index([workspaceId, status, createdAt])
+  @@index([status, expiresAt])
+  @@map("wallet_reservations")
+}
+
+model WorkspaceBillingSettings {
+  id                   String    @id @default(uuid()) @db.Uuid
+  workspaceId          String    @unique @map("workspace_id") @db.Uuid
+  billingMode          String    @default("CUSTOMER_META_BILLING") @map("billing_mode") @db.VarChar(40)
+  billingType          String    @default("PREPAID") @map("billing_type") @db.VarChar(30)
+  currency             String    @default("INR") @db.Char(3)
+  walletRequired       Boolean   @default(true) @map("wallet_required")
+  allowNegativeBalance Boolean   @default(false) @map("allow_negative_balance")
+  creditLimit          Decimal   @default(0) @map("credit_limit") @db.Decimal(18, 6)
+  status               String    @default("ACTIVE") @db.VarChar(20)
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace            Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([billingMode, status])
+  @@map("workspace_billing_settings")
 }
 
 model PlatformAuditLog {

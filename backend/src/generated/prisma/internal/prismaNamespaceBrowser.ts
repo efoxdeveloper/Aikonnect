@@ -87,6 +87,8 @@ export const ModelName = {
   Session: 'Session',
   Wallet: 'Wallet',
   WalletLedgerEntry: 'WalletLedgerEntry',
+  WalletReservation: 'WalletReservation',
+  WorkspaceBillingSettings: 'WorkspaceBillingSettings',
   PlatformAuditLog: 'PlatformAuditLog',
   EmailVerificationToken: 'EmailVerificationToken',
   PasswordResetToken: 'PasswordResetToken'
@@ -343,6 +345,14 @@ export const MessageScalarFieldEnum = {
   pricingCurrency: 'pricingCurrency',
   pricingEffectiveDate: 'pricingEffectiveDate',
   billingStatus: 'billingStatus',
+  billingMode: 'billingMode',
+  walletChargeAmount: 'walletChargeAmount',
+  billingCurrency: 'billingCurrency',
+  billingError: 'billingError',
+  estimatedMetaCost: 'estimatedMetaCost',
+  actualMetaCost: 'actualMetaCost',
+  costDifference: 'costDifference',
+  reconciledAt: 'reconciledAt',
   deletedAt: 'deletedAt',
   createdById: 'createdById',
   createdAt: 'createdAt',
@@ -760,6 +770,11 @@ export const WalletScalarFieldEnum = {
   tenantId: 'tenantId',
   currency: 'currency',
   balanceMinorUnits: 'balanceMinorUnits',
+  totalBalance: 'totalBalance',
+  reservedBalance: 'reservedBalance',
+  status: 'status',
+  lowBalanceThreshold: 'lowBalanceThreshold',
+  autoRechargeEnabled: 'autoRechargeEnabled',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -775,6 +790,21 @@ export const WalletLedgerEntryScalarFieldEnum = {
   direction: 'direction',
   amountMinorUnits: 'amountMinorUnits',
   balanceAfterMinorUnits: 'balanceAfterMinorUnits',
+  transactionReference: 'transactionReference',
+  transactionType: 'transactionType',
+  amount: 'amount',
+  currency: 'currency',
+  openingTotalBalance: 'openingTotalBalance',
+  closingTotalBalance: 'closingTotalBalance',
+  openingReservedBalance: 'openingReservedBalance',
+  closingReservedBalance: 'closingReservedBalance',
+  openingAvailableBalance: 'openingAvailableBalance',
+  closingAvailableBalance: 'closingAvailableBalance',
+  messageId: 'messageId',
+  reservationId: 'reservationId',
+  externalReference: 'externalReference',
+  clientReference: 'clientReference',
+  status: 'status',
   idempotencyKey: 'idempotencyKey',
   reason: 'reason',
   description: 'description',
@@ -784,6 +814,48 @@ export const WalletLedgerEntryScalarFieldEnum = {
 } as const
 
 export type WalletLedgerEntryScalarFieldEnum = (typeof WalletLedgerEntryScalarFieldEnum)[keyof typeof WalletLedgerEntryScalarFieldEnum]
+
+
+export const WalletReservationScalarFieldEnum = {
+  id: 'id',
+  walletId: 'walletId',
+  tenantId: 'tenantId',
+  workspaceId: 'workspaceId',
+  messageId: 'messageId',
+  rateCardId: 'rateCardId',
+  metaAmount: 'metaAmount',
+  platformFee: 'platformFee',
+  customerAmount: 'customerAmount',
+  walletChargeAmount: 'walletChargeAmount',
+  currency: 'currency',
+  status: 'status',
+  idempotencyKey: 'idempotencyKey',
+  clientReference: 'clientReference',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  completedAt: 'completedAt',
+  releasedAt: 'releasedAt'
+} as const
+
+export type WalletReservationScalarFieldEnum = (typeof WalletReservationScalarFieldEnum)[keyof typeof WalletReservationScalarFieldEnum]
+
+
+export const WorkspaceBillingSettingsScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  billingMode: 'billingMode',
+  billingType: 'billingType',
+  currency: 'currency',
+  walletRequired: 'walletRequired',
+  allowNegativeBalance: 'allowNegativeBalance',
+  creditLimit: 'creditLimit',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkspaceBillingSettingsScalarFieldEnum = (typeof WorkspaceBillingSettingsScalarFieldEnum)[keyof typeof WorkspaceBillingSettingsScalarFieldEnum]
 
 
 export const PlatformAuditLogScalarFieldEnum = {

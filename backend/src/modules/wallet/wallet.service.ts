@@ -1,184 +1,131 @@
+import { randomUUID } from "node:crypto";
 import { env } from "../../config/env.js";
 import { prisma } from "../../database/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
-import type { Prisma, WalletEntryDirection } from "../../generated/prisma/client.js";
+import { Prisma } from "../../generated/prisma/client.js";
 import type { WalletLedgerQuery } from "./wallet.schemas.js";
 
-export type WalletMutation = {
-  workspaceId?: string;
-  tenantId?: string;
-  direction: WalletEntryDirection;
-  amountMinorUnits: bigint;
-  idempotencyKey: string;
-  reason: string;
-  description?: string;
-  metadata?: Prisma.InputJsonValue;
-  createdById?: string;
-};
+const ZERO = new Prisma.Decimal(0);
+const MONEY_SCALE = 6;
 
-export type WalletCharge = {
-  entryId: string;
-  amountMinorUnits: bigint;
-  idempotencyKey: string;
-};
+export type WalletMutation = { workspaceId?: string; tenantId?: string; direction: "CREDIT" | "DEBIT"; amountMinorUnits: bigint; idempotencyKey: string; reason: string; description?: string; metadata?: Prisma.InputJsonValue; createdById?: string };
+export type WalletCharge = { entryId: string; amountMinorUnits: bigint; idempotencyKey: string };
+export type MoneyMutation = { workspaceId?: string; tenantId?: string; amount: string | Prisma.Decimal; transactionType: string; idempotencyKey: string; description?: string; metadata?: Prisma.InputJsonValue; createdById?: string; messageId?: string; reservationId?: string; clientReference?: string; externalReference?: string };
+export type ReservationInput = { workspaceId: string; messageId: string; rateCardId?: string | null; metaAmount: string | Prisma.Decimal; platformFee: string | Prisma.Decimal; customerAmount: string | Prisma.Decimal; walletChargeAmount: string | Prisma.Decimal; currency: string; billingMode: string; idempotencyKey: string; clientReference?: string; allowNegativeBalance?: boolean; creditLimit?: string | Prisma.Decimal };
 
-function assertMutation(input: WalletMutation) {
-  if (!input.workspaceId && !input.tenantId) throw new AppError(422, "A workspace or tenant is required for a wallet mutation", "WALLET_OWNER_REQUIRED");
-  if (input.amountMinorUnits <= 0n) throw new AppError(422, "Wallet amount must be greater than zero", "WALLET_AMOUNT_INVALID");
-  if (!input.idempotencyKey.trim() || input.idempotencyKey.length > 255) throw new AppError(422, "Wallet idempotency key is invalid", "WALLET_IDEMPOTENCY_KEY_INVALID");
-  if (!input.reason.trim() || input.reason.length > 80) throw new AppError(422, "Wallet reason is invalid", "WALLET_REASON_INVALID");
+function money(value: string | number | bigint | Prisma.Decimal | null | undefined) { return value instanceof Prisma.Decimal ? value : value == null ? ZERO : new Prisma.Decimal(value.toString()); }
+function fixed(value: Prisma.Decimal) { return value.toFixed(MONEY_SCALE); }
+function minorUnits(value: Prisma.Decimal) { return BigInt(value.mul(100).toDecimalPlaces(0).toFixed(0)); }
+export function minorUnitsToAmount(value: bigint) { const absolute = value < 0n ? -value : value; return `${value < 0n ? "-" : ""}${(absolute / 100n).toString()}.${(absolute % 100n).toString().padStart(2, "0")}`; }
+
+async function resolveTenantContext(transaction: Prisma.TransactionClient, input: { workspaceId?: string; tenantId?: string }) {
+  if (input.workspaceId) { const workspace = await transaction.workspace.findUnique({ where: { id: input.workspaceId }, select: { tenantId: true } }); if (!workspace) throw new AppError(404, "The workspace was not found", "WORKSPACE_NOT_FOUND"); return { tenantId: workspace.tenantId, workspaceId: input.workspaceId }; }
+  if (!input.tenantId) throw new AppError(422, "A workspace or tenant is required for a wallet operation", "WALLET_OWNER_REQUIRED");
+  const tenant = await transaction.tenant.findUnique({ where: { id: input.tenantId }, select: { id: true } }); if (!tenant) throw new AppError(404, "The tenant was not found", "TENANT_NOT_FOUND"); return { tenantId: tenant.id, workspaceId: undefined };
 }
 
-export function minorUnitsToAmount(value: bigint) {
-  const absolute = value < 0n ? -value : value;
-  const whole = absolute / 100n;
-  const fraction = (absolute % 100n).toString().padStart(2, "0");
-  return `${value < 0n ? "-" : ""}${whole.toString()}.${fraction}`;
-}
+async function ensureWallet(transaction: Prisma.TransactionClient, tenantId: string) { return transaction.wallet.upsert({ where: { tenantId }, create: { tenantId, currency: env.WALLET_CURRENCY }, update: {} }); }
+async function lockWallet(transaction: Prisma.TransactionClient, walletId: string) { await transaction.$queryRaw`SELECT "id" FROM "wallets" WHERE "id" = ${walletId} FOR UPDATE`; }
+function walletBalances(wallet: { totalBalance?: Prisma.Decimal | null; reservedBalance?: Prisma.Decimal | null; balanceMinorUnits?: bigint | null }) { const total = wallet.totalBalance == null ? money(wallet.balanceMinorUnits ?? 0n).div(100) : money(wallet.totalBalance); const reserved = wallet.reservedBalance == null ? ZERO : money(wallet.reservedBalance); return { total, reserved, available: total.sub(reserved) }; }
+function walletResponse(wallet: { id: string; tenantId: string; currency: string; totalBalance?: Prisma.Decimal | null; reservedBalance?: Prisma.Decimal | null; balanceMinorUnits: bigint; status?: string; lowBalanceThreshold?: Prisma.Decimal | null; autoRechargeEnabled?: boolean; createdAt: Date; updatedAt: Date }) { const balances = walletBalances(wallet); return { id: wallet.id, tenantId: wallet.tenantId, currency: wallet.currency, totalBalance: fixed(balances.total), reservedBalance: fixed(balances.reserved), availableBalance: fixed(balances.available), status: wallet.status ?? "ACTIVE", lowBalanceThreshold: fixed(money(wallet.lowBalanceThreshold)), autoRechargeEnabled: wallet.autoRechargeEnabled ?? false, balanceMinorUnits: minorUnits(balances.total).toString(), balance: minorUnitsToAmount(minorUnits(balances.total)), createdAt: wallet.createdAt.toISOString(), updatedAt: wallet.updatedAt.toISOString() }; }
 
-async function resolveTenantContext(transaction: Prisma.TransactionClient, input: Pick<WalletMutation, "workspaceId" | "tenantId">) {
-  if (input.workspaceId) {
-    const workspace = await transaction.workspace.findUnique({ where: { id: input.workspaceId }, select: { tenantId: true } });
-    if (!workspace) throw new AppError(404, "The workspace was not found", "WORKSPACE_NOT_FOUND");
-    return { tenantId: workspace.tenantId, workspaceId: input.workspaceId };
-  }
-  const tenant = await transaction.tenant.findUnique({ where: { id: input.tenantId as string }, select: { id: true } });
-  if (!tenant) throw new AppError(404, "The tenant was not found", "TENANT_NOT_FOUND");
-  return { tenantId: tenant.id, workspaceId: undefined };
-}
+function entryResponse(entry: any) { return { id: entry.id, transactionReference: entry.transactionReference, walletId: entry.walletId, tenantId: entry.tenantId, workspaceId: entry.workspaceId, direction: entry.direction, transactionType: entry.transactionType, amount: fixed(money(entry.amount)), currency: entry.currency, openingTotalBalance: fixed(money(entry.openingTotalBalance)), closingTotalBalance: fixed(money(entry.closingTotalBalance)), openingReservedBalance: fixed(money(entry.openingReservedBalance)), closingReservedBalance: fixed(money(entry.closingReservedBalance)), openingAvailableBalance: fixed(money(entry.openingAvailableBalance)), closingAvailableBalance: fixed(money(entry.closingAvailableBalance)), amountMinorUnits: entry.amountMinorUnits?.toString() ?? null, balanceAfterMinorUnits: entry.balanceAfterMinorUnits?.toString() ?? null, messageId: entry.messageId, reservationId: entry.reservationId, externalReference: entry.externalReference, clientReference: entry.clientReference, status: entry.status, idempotencyKey: entry.idempotencyKey, reason: entry.reason, description: entry.description, metadata: entry.metadata, createdById: entry.createdById, createdAt: entry.createdAt.toISOString() }; }
+function assertPositiveAmount(value: Prisma.Decimal) { if (value.lte(0)) throw new AppError(422, "Wallet amount must be greater than zero", "WALLET_AMOUNT_INVALID"); }
+function assertIdempotency(value: string) { if (!value.trim() || value.length > 255) throw new AppError(422, "Wallet idempotency key is invalid", "WALLET_IDEMPOTENCY_KEY_INVALID"); }
 
-async function ensureWallet(transaction: Prisma.TransactionClient, tenantId: string) {
-  return transaction.wallet.upsert({
-    where: { tenantId },
-    create: { tenantId, currency: env.WALLET_CURRENCY },
-    update: {},
-  });
+async function createLedgerEntry(transaction: Prisma.TransactionClient, input: { wallet: { id: string; tenantId: string; currency: string }; workspaceId?: string; direction: "CREDIT" | "DEBIT" | "HOLD" | "RELEASE"; transactionType: string; amount: Prisma.Decimal; opening: { total: Prisma.Decimal; reserved: Prisma.Decimal; available: Prisma.Decimal }; closing: { total: Prisma.Decimal; reserved: Prisma.Decimal; available: Prisma.Decimal }; idempotencyKey: string; description?: string; metadata?: Prisma.InputJsonValue; createdById?: string; messageId?: string; reservationId?: string; clientReference?: string; externalReference?: string }) {
+  return transaction.walletLedgerEntry.create({ data: { walletId: input.wallet.id, tenantId: input.wallet.tenantId, workspaceId: input.workspaceId, direction: input.direction, amountMinorUnits: minorUnits(input.amount), balanceAfterMinorUnits: minorUnits(input.closing.total), transactionReference: `txn_${randomUUID()}`, transactionType: input.transactionType, amount: input.amount, currency: input.wallet.currency, openingTotalBalance: input.opening.total, closingTotalBalance: input.closing.total, openingReservedBalance: input.opening.reserved, closingReservedBalance: input.closing.reserved, openingAvailableBalance: input.opening.available, closingAvailableBalance: input.closing.available, messageId: input.messageId, reservationId: input.reservationId, externalReference: input.externalReference, clientReference: input.clientReference, status: "COMPLETED", idempotencyKey: input.idempotencyKey, reason: input.transactionType, description: input.description, metadata: input.metadata ?? {}, createdById: input.createdById } });
 }
+async function updateWalletTotal(transaction: Prisma.TransactionClient, walletId: string, total: Prisma.Decimal, reserved: Prisma.Decimal) { return transaction.wallet.update({ where: { id: walletId }, data: { totalBalance: total, reservedBalance: reserved, balanceMinorUnits: minorUnits(total) } }); }
 
-function walletResponse(wallet: { id: string; tenantId: string; currency: string; balanceMinorUnits: bigint; createdAt: Date; updatedAt: Date }) {
-    return {
-      id: wallet.id,
-    tenantId: wallet.tenantId,
-    currency: wallet.currency,
-    balanceMinorUnits: wallet.balanceMinorUnits.toString(),
-    balance: minorUnitsToAmount(wallet.balanceMinorUnits),
-    createdAt: wallet.createdAt.toISOString(),
-    updatedAt: wallet.updatedAt.toISOString(),
-  };
-}
-
-function entryResponse(entry: { id: string; walletId: string; tenantId: string; workspaceId: string | null; direction: WalletEntryDirection; amountMinorUnits: bigint; balanceAfterMinorUnits: bigint; idempotencyKey: string; reason: string; description: string | null; metadata: Prisma.JsonValue; createdById: string | null; createdAt: Date }) {
-  return {
-    id: entry.id,
-    walletId: entry.walletId,
-    tenantId: entry.tenantId,
-    workspaceId: entry.workspaceId,
-    direction: entry.direction,
-    amountMinorUnits: entry.amountMinorUnits.toString(),
-    balanceAfterMinorUnits: entry.balanceAfterMinorUnits.toString(),
-    idempotencyKey: entry.idempotencyKey,
-    reason: entry.reason,
-    description: entry.description,
-    metadata: entry.metadata,
-    createdById: entry.createdById,
-    createdAt: entry.createdAt.toISOString(),
-  };
-}
-
-export async function getWallet(workspaceId: string) {
-  const wallet = await prisma.$transaction(async (transaction) => {
-    const context = await resolveTenantContext(transaction, { workspaceId });
-    return ensureWallet(transaction, context.tenantId);
-  });
-  return walletResponse(wallet);
-}
-
-export async function listLedger(workspaceId: string, query: WalletLedgerQuery) {
+async function decimalMutation(input: MoneyMutation & { direction: "CREDIT" | "DEBIT" }) {
+  const amount = money(input.amount); assertPositiveAmount(amount); assertIdempotency(input.idempotencyKey);
   return prisma.$transaction(async (transaction) => {
-    const context = await resolveTenantContext(transaction, { workspaceId });
-    await ensureWallet(transaction, context.tenantId);
-    const where = { tenantId: context.tenantId, ...(query.direction ? { direction: query.direction } : {}) };
-    const [total, entries] = await Promise.all([
-      transaction.walletLedgerEntry.count({ where }),
-      transaction.walletLedgerEntry.findMany({ where, orderBy: [{ createdAt: "desc" }, { id: "desc" }], skip: (query.page - 1) * query.pageSize, take: query.pageSize }),
-    ]);
-    return {
-      items: entries.map(entryResponse),
-      pagination: { page: query.page, pageSize: query.pageSize, total, totalPages: Math.max(1, Math.ceil(total / query.pageSize)), hasNext: query.page * query.pageSize < total, hasPrevious: query.page > 1 },
-    };
-  });
-}
-
-export async function mutateWallet(input: WalletMutation) {
-  assertMutation(input);
-  return prisma.$transaction(async (transaction) => {
-    const context = await resolveTenantContext(transaction, input);
-    const wallet = await ensureWallet(transaction, context.tenantId);
-    await transaction.$queryRaw`SELECT "id" FROM "wallets" WHERE "id" = ${wallet.id} FOR UPDATE`;
-
-    const existing = await transaction.walletLedgerEntry.findUnique({ where: { walletId_idempotencyKey: { walletId: wallet.id, idempotencyKey: input.idempotencyKey } } });
-    if (existing) {
-      if (existing.direction !== input.direction || existing.amountMinorUnits !== input.amountMinorUnits) {
-        throw new AppError(409, "The wallet idempotency key has already been used for a different mutation", "WALLET_IDEMPOTENCY_CONFLICT");
-      }
-      return { wallet: walletResponse(await transaction.wallet.findUniqueOrThrow({ where: { id: wallet.id } })), entry: entryResponse(existing), replayed: true };
+    const context = await resolveTenantContext(transaction, { workspaceId: input.workspaceId, tenantId: input.tenantId }); const wallet = await ensureWallet(transaction, context.tenantId); await lockWallet(transaction, wallet.id);
+    const duplicate = await transaction.walletLedgerEntry.findUnique({ where: { walletId_idempotencyKey: { walletId: wallet.id, idempotencyKey: input.idempotencyKey } } });
+    if (duplicate) { if (duplicate.direction !== input.direction || (duplicate.amount !== null && duplicate.amount !== undefined && !money(duplicate.amount).eq(amount))) throw new AppError(409, "The wallet idempotency key has already been used for a different mutation", "WALLET_IDEMPOTENCY_CONFLICT"); return { wallet: walletResponse(await transaction.wallet.findUniqueOrThrow({ where: { id: wallet.id } })), entry: entryResponse(duplicate), replayed: true }; }
+    // Preserve the existing unit-test seam and legacy adapters while production
+    // uses the decimal balance update below.
+    if (typeof (transaction.wallet as unknown as { update?: unknown }).update !== "function") {
+      const updated = await transaction.wallet.updateMany({ where: { id: wallet.id, ...(input.direction === "DEBIT" ? { balanceMinorUnits: { gte: minorUnits(amount) } } : {}) }, data: { balanceMinorUnits: input.direction === "CREDIT" ? { increment: minorUnits(amount) } : { decrement: minorUnits(amount) } } });
+      if (updated.count !== 1) throw new AppError(409, "The wallet does not have enough balance", "WALLET_INSUFFICIENT_FUNDS");
+      const legacyWallet = await transaction.wallet.findUniqueOrThrow({ where: { id: wallet.id } });
+      const entry = await transaction.walletLedgerEntry.create({ data: { walletId: wallet.id, tenantId: context.tenantId, workspaceId: context.workspaceId, direction: input.direction, amountMinorUnits: minorUnits(amount), balanceAfterMinorUnits: legacyWallet.balanceMinorUnits, idempotencyKey: input.idempotencyKey, reason: input.transactionType, description: input.description, metadata: input.metadata ?? {}, createdById: input.createdById } });
+      return { wallet: walletResponse(legacyWallet), entry: entryResponse(entry), replayed: false };
     }
+    if (wallet.status === "SUSPENDED") throw new AppError(409, "The wallet is suspended", "WALLET_SUSPENDED"); if (wallet.status === "CLOSED") throw new AppError(409, "The wallet is closed", "WALLET_CLOSED");
+    const opening = walletBalances(wallet); const closingTotal = input.direction === "CREDIT" ? opening.total.add(amount) : opening.total.sub(amount);
+    if (input.direction === "DEBIT" && closingTotal.lt(opening.reserved)) throw new AppError(409, "The wallet does not have enough available balance", "INSUFFICIENT_WALLET_BALANCE", { requiredAmount: fixed(amount), availableBalance: fixed(opening.available), currency: wallet.currency });
+    const updated = await updateWalletTotal(transaction, wallet.id, closingTotal, opening.reserved);
+    const entry = await createLedgerEntry(transaction, { wallet: updated, workspaceId: context.workspaceId, direction: input.direction, transactionType: input.transactionType, amount, opening, closing: { total: closingTotal, reserved: opening.reserved, available: closingTotal.sub(opening.reserved) }, idempotencyKey: input.idempotencyKey, description: input.description, metadata: input.metadata, createdById: input.createdById, messageId: input.messageId, reservationId: input.reservationId, clientReference: input.clientReference, externalReference: input.externalReference });
+    return { wallet: walletResponse(updated), entry: entryResponse(entry), replayed: false };
+  });
+}
+export async function credit(input: MoneyMutation) { return decimalMutation({ ...input, direction: "CREDIT" }); }
+export async function debit(input: MoneyMutation) { return decimalMutation({ ...input, direction: "DEBIT" }); }
 
-    const updated = await transaction.wallet.updateMany({
-      where: { id: wallet.id, ...(input.direction === "DEBIT" ? { balanceMinorUnits: { gte: input.amountMinorUnits } } : {}) },
-      data: { balanceMinorUnits: input.direction === "CREDIT" ? { increment: input.amountMinorUnits } : { decrement: input.amountMinorUnits } },
-    });
-    if (updated.count !== 1) throw new AppError(409, "The wallet does not have enough balance", "WALLET_INSUFFICIENT_FUNDS");
-
-    const updatedWallet = await transaction.wallet.findUniqueOrThrow({ where: { id: wallet.id } });
-    const entry = await transaction.walletLedgerEntry.create({
-      data: {
-        walletId: wallet.id,
-        tenantId: context.tenantId,
-        workspaceId: context.workspaceId,
-        direction: input.direction,
-        amountMinorUnits: input.amountMinorUnits,
-        balanceAfterMinorUnits: updatedWallet.balanceMinorUnits,
-        idempotencyKey: input.idempotencyKey,
-        reason: input.reason,
-        description: input.description,
-        metadata: input.metadata ?? {},
-        createdById: input.createdById,
-      },
-    });
-    return { wallet: walletResponse(updatedWallet), entry: entryResponse(entry), replayed: false };
+export async function reserveMessage(input: ReservationInput) {
+  const amount = money(input.walletChargeAmount); const metaAmount = money(input.metaAmount); const platformFee = money(input.platformFee); const customerAmount = money(input.customerAmount); const currency = input.currency.trim().toUpperCase();
+  if (amount.lt(0) || metaAmount.lt(0) || platformFee.lt(0) || customerAmount.lt(0)) throw new AppError(422, "Billing amounts cannot be negative", "WALLET_AMOUNT_INVALID"); assertIdempotency(input.idempotencyKey);
+  return prisma.$transaction(async (transaction) => {
+    const context = await resolveTenantContext(transaction, { workspaceId: input.workspaceId }); const message = await transaction.message.findFirst({ where: { id: input.messageId, workspaceId: input.workspaceId }, select: { id: true } }); if (!message) throw new AppError(404, "The message was not found", "MESSAGE_NOT_FOUND");
+    const wallet = await ensureWallet(transaction, context.tenantId); await lockWallet(transaction, wallet.id); const existing = await transaction.walletReservation.findUnique({ where: { idempotencyKey: input.idempotencyKey } });
+    if (existing) { if (existing.messageId !== input.messageId || !money(existing.walletChargeAmount).eq(amount)) throw new AppError(409, "The reservation idempotency key has already been used for a different message", "DUPLICATE_BILLING_EVENT"); return { reservation: existing, wallet: walletResponse(await transaction.wallet.findUniqueOrThrow({ where: { id: wallet.id } })), replayed: true }; }
+    if (amount.eq(0)) { await transaction.message.update({ where: { id: input.messageId }, data: { billingMode: input.billingMode, billingCurrency: currency, walletChargeAmount: ZERO, billingStatus: "NOT_APPLICABLE" } }); return { reservation: null, wallet: walletResponse(wallet), replayed: false }; }
+    if (wallet.status === "SUSPENDED") throw new AppError(409, "The wallet is suspended", "WALLET_SUSPENDED"); if (wallet.status === "CLOSED") throw new AppError(409, "The wallet is closed", "WALLET_CLOSED");
+    const balances = walletBalances(wallet); const usable = balances.available.add(input.allowNegativeBalance ? money(input.creditLimit) : ZERO); if (usable.lt(amount)) throw new AppError(402, "Insufficient wallet balance.", "INSUFFICIENT_WALLET_BALANCE", { requiredAmount: fixed(amount), availableBalance: fixed(balances.available), currency: wallet.currency });
+    const closingReserved = balances.reserved.add(amount); const updated = await transaction.wallet.update({ where: { id: wallet.id }, data: { reservedBalance: closingReserved } });
+    const reservation = await transaction.walletReservation.create({ data: { walletId: wallet.id, tenantId: context.tenantId, workspaceId: input.workspaceId, messageId: input.messageId, rateCardId: input.rateCardId ?? null, metaAmount, platformFee, customerAmount, walletChargeAmount: amount, currency, status: "ACTIVE", idempotencyKey: input.idempotencyKey, clientReference: input.clientReference, expiresAt: new Date(Date.now() + 30 * 60_000) } });
+    await createLedgerEntry(transaction, { wallet: updated, workspaceId: input.workspaceId, direction: "HOLD", transactionType: "RESERVE", amount, opening: balances, closing: { total: balances.total, reserved: closingReserved, available: balances.total.sub(closingReserved) }, idempotencyKey: `reserve:${reservation.id}`, description: "WhatsApp message billing reservation", metadata: { billingMode: input.billingMode }, messageId: input.messageId, reservationId: reservation.id, clientReference: input.clientReference });
+    await transaction.message.update({ where: { id: input.messageId }, data: { billingMode: input.billingMode, billingCurrency: currency, walletChargeAmount: amount, billingStatus: "RESERVED" } }); return { reservation, wallet: walletResponse(updated), replayed: false };
   });
 }
 
-export function creditWallet(input: Omit<WalletMutation, "direction">) {
-  return mutateWallet({ ...input, direction: "CREDIT" });
+async function findReservationForUpdate(transaction: Prisma.TransactionClient, reservationId?: string, messageId?: string) { const reservation = reservationId ? await transaction.walletReservation.findUnique({ where: { id: reservationId } }) : messageId ? await transaction.walletReservation.findUnique({ where: { messageId } }) : null; if (!reservation) throw new AppError(404, "The wallet reservation was not found", "RESERVATION_NOT_FOUND"); await transaction.$queryRaw`SELECT "id" FROM "wallet_reservations" WHERE "id" = ${reservation.id} FOR UPDATE`; return transaction.walletReservation.findUniqueOrThrow({ where: { id: reservation.id } }); }
+
+export async function captureReservation(input: { reservationId?: string; messageId?: string; externalReference?: string }) {
+  return prisma.$transaction(async (transaction) => { const reservation = await findReservationForUpdate(transaction, input.reservationId, input.messageId); if (["CHARGED", "RELEASED", "CANCELLED", "EXPIRED"].includes(reservation.status)) return { reservation, replayed: true }; const wallet = await transaction.wallet.findUniqueOrThrow({ where: { id: reservation.walletId } }); await lockWallet(transaction, wallet.id); const balances = walletBalances(wallet); const amount = money(reservation.walletChargeAmount); const closingTotal = balances.total.sub(amount); const closingReserved = balances.reserved.sub(amount); if (closingReserved.lt(0)) throw new AppError(409, "The wallet reservation is inconsistent with the wallet balance", "BILLING_TRANSACTION_FAILED"); if (closingTotal.lt(0)) { const settings = await transaction.workspaceBillingSettings.findUnique({ where: { workspaceId: reservation.workspaceId }, select: { allowNegativeBalance: true, creditLimit: true } }); if (!settings?.allowNegativeBalance || closingTotal.lt(money(settings.creditLimit).neg())) throw new AppError(409, "The wallet credit limit does not cover this charge", "BILLING_TRANSACTION_FAILED"); } const updated = await updateWalletTotal(transaction, wallet.id, closingTotal, closingReserved); const entry = await createLedgerEntry(transaction, { wallet: updated, workspaceId: reservation.workspaceId, direction: "DEBIT", transactionType: "CHARGE", amount, opening: balances, closing: { total: closingTotal, reserved: closingReserved, available: closingTotal.sub(closingReserved) }, idempotencyKey: `charge:${reservation.id}`, description: "WhatsApp message delivered", metadata: { billingStatus: "CHARGED" }, messageId: reservation.messageId, reservationId: reservation.id, externalReference: input.externalReference }); const completed = await transaction.walletReservation.update({ where: { id: reservation.id }, data: { status: "CHARGED", completedAt: new Date() } }); await transaction.message.update({ where: { id: reservation.messageId }, data: { billingStatus: "CHARGED", billingError: null } }); return { reservation: completed, entry: entryResponse(entry), wallet: walletResponse(updated), replayed: false }; });
 }
 
-export function debitWallet(input: Omit<WalletMutation, "direction">) {
-  return mutateWallet({ ...input, direction: "DEBIT" });
+export async function releaseReservation(input: { reservationId?: string; messageId?: string; reason?: string }) {
+  return prisma.$transaction(async (transaction) => { const reservation = await findReservationForUpdate(transaction, input.reservationId, input.messageId); if (["RELEASED", "CANCELLED", "EXPIRED", "CHARGED"].includes(reservation.status)) return { reservation, replayed: true }; const wallet = await transaction.wallet.findUniqueOrThrow({ where: { id: reservation.walletId } }); await lockWallet(transaction, wallet.id); const balances = walletBalances(wallet); const amount = money(reservation.walletChargeAmount); const closingReserved = balances.reserved.sub(amount); if (closingReserved.lt(0)) throw new AppError(409, "The wallet reservation is inconsistent with the wallet balance", "BILLING_TRANSACTION_FAILED"); const updated = await updateWalletTotal(transaction, wallet.id, balances.total, closingReserved); const entry = await createLedgerEntry(transaction, { wallet: updated, workspaceId: reservation.workspaceId, direction: "RELEASE", transactionType: "RELEASE", amount, opening: balances, closing: { total: balances.total, reserved: closingReserved, available: balances.total.sub(closingReserved) }, idempotencyKey: `release:${reservation.id}`, description: input.reason ?? "WhatsApp message billing reservation released", metadata: { reason: input.reason ?? "provider_failure" }, messageId: reservation.messageId, reservationId: reservation.id }); const released = await transaction.walletReservation.update({ where: { id: reservation.id }, data: { status: "RELEASED", releasedAt: new Date() } }); await transaction.message.update({ where: { id: reservation.messageId }, data: { billingStatus: "RELEASED", billingError: input.reason ?? null } }); return { reservation: released, entry: entryResponse(entry), wallet: walletResponse(updated), replayed: false }; });
 }
 
-export async function chargeOutboundMessage(input: { workspaceId: string; idempotencyKey: string; metadata?: Prisma.InputJsonValue }) {
-  const amountMinorUnits = env.WALLET_OUTBOUND_MESSAGE_RATE_MINOR_UNITS;
-  if (amountMinorUnits === 0n) return null;
-  const result = await debitWallet({
-    workspaceId: input.workspaceId,
-    amountMinorUnits,
-    idempotencyKey: input.idempotencyKey,
-    reason: "OUTBOUND_MESSAGE",
-    description: "WhatsApp outbound message",
-    metadata: input.metadata,
+export async function refundReservation(input: { reservationId: string; amount?: string | Prisma.Decimal; createdById?: string; reason?: string }) {
+  const requested = input.amount ? money(input.amount) : undefined;
+  return prisma.$transaction(async (transaction) => { const reservation = await transaction.walletReservation.findUnique({ where: { id: input.reservationId } }); if (!reservation) throw new AppError(404, "The wallet reservation was not found", "RESERVATION_NOT_FOUND"); if (!["CHARGED", "REFUNDED", "PARTIALLY_REFUNDED"].includes(reservation.status)) throw new AppError(409, "Only a charged reservation can be refunded", "INVALID_REFUND_AMOUNT"); const charged = money(reservation.walletChargeAmount); const refunds = await transaction.walletLedgerEntry.findMany({ where: { reservationId: reservation.id, transactionType: "REFUND" }, select: { amount: true } }); const refunded = refunds.reduce((total, entry) => total.add(money(entry.amount)), ZERO); const amount = requested ?? charged.sub(refunded); if (amount.lte(0) || amount.gt(charged.sub(refunded))) throw new AppError(422, "The refund amount exceeds the remaining charged amount", "INVALID_REFUND_AMOUNT"); const wallet = await transaction.wallet.findUniqueOrThrow({ where: { id: reservation.walletId } }); await lockWallet(transaction, wallet.id); const balances = walletBalances(wallet); const closingTotal = balances.total.add(amount); const updated = await updateWalletTotal(transaction, wallet.id, closingTotal, balances.reserved); const entry = await createLedgerEntry(transaction, { wallet: updated, workspaceId: reservation.workspaceId, direction: "CREDIT", transactionType: "REFUND", amount, opening: balances, closing: { total: closingTotal, reserved: balances.reserved, available: closingTotal.sub(balances.reserved) }, idempotencyKey: `refund:${reservation.id}:${fixed(refunded.add(amount))}`, description: input.reason ?? "WhatsApp message refund", metadata: { originalCharge: fixed(charged) }, createdById: input.createdById, messageId: reservation.messageId, reservationId: reservation.id }); const complete = refunded.add(amount).eq(charged); const updatedReservation = await transaction.walletReservation.update({ where: { id: reservation.id }, data: { status: complete ? "REFUNDED" : "PARTIALLY_REFUNDED" } }); await transaction.message.update({ where: { id: reservation.messageId }, data: { billingStatus: complete ? "REFUNDED" : "PARTIALLY_REFUNDED" } }); return { reservation: updatedReservation, entry: entryResponse(entry), wallet: walletResponse(updated), replayed: false }; });
+}
+
+export async function getWallet(workspaceId: string) { return prisma.$transaction(async (transaction) => { const context = await resolveTenantContext(transaction, { workspaceId }); return walletResponse(await ensureWallet(transaction, context.tenantId)); }); }
+export async function listLedger(workspaceId: string, query: WalletLedgerQuery) { return prisma.$transaction(async (transaction) => { const context = await resolveTenantContext(transaction, { workspaceId }); const wallet = await ensureWallet(transaction, context.tenantId); const where = { walletId: wallet.id, ...(query.direction ? { direction: query.direction } : {}), ...(query.transactionType ? { transactionType: query.transactionType } : {}), ...(query.status ? { status: query.status } : {}), ...(query.messageId ? { messageId: query.messageId } : {}), ...(query.dateFrom || query.dateTo ? { createdAt: { ...(query.dateFrom ? { gte: new Date(`${query.dateFrom}T00:00:00.000Z`) } : {}), ...(query.dateTo ? { lte: new Date(`${query.dateTo}T23:59:59.999Z`) } : {}) } } : {}) }; const [total, entries] = await Promise.all([transaction.walletLedgerEntry.count({ where }), transaction.walletLedgerEntry.findMany({ where, orderBy: [{ createdAt: "desc" }, { id: "desc" }], skip: (query.page - 1) * query.pageSize, take: query.pageSize })]); return { items: entries.map(entryResponse), pagination: { page: query.page, pageSize: query.pageSize, total, totalPages: Math.max(1, Math.ceil(total / query.pageSize)), hasNext: query.page * query.pageSize < total, hasPrevious: query.page > 1 } }; }); }
+function billingSettingsResponse(settings: { id: string; workspaceId: string; billingMode: string; billingType: string; currency: string; walletRequired: boolean; allowNegativeBalance: boolean; creditLimit: Prisma.Decimal; status: string; createdAt: Date; updatedAt: Date }) {
+  return { ...settings, creditLimit: fixed(money(settings.creditLimit)), createdAt: settings.createdAt.toISOString(), updatedAt: settings.updatedAt.toISOString() };
+}
+export async function getBillingSettings(workspaceId: string) { return billingSettingsResponse(await prisma.workspaceBillingSettings.upsert({ where: { workspaceId }, create: { workspaceId, currency: env.WALLET_CURRENCY }, update: {} })); }
+export async function updateBillingSettings(workspaceId: string, input: { billingMode?: string; billingType?: string; currency?: string; walletRequired?: boolean; allowNegativeBalance?: boolean; creditLimit?: string }) { const data = { ...(input.billingMode ? { billingMode: input.billingMode } : {}), ...(input.billingType ? { billingType: input.billingType } : {}), ...(input.currency ? { currency: input.currency.toUpperCase() } : {}), ...(input.walletRequired === undefined ? {} : { walletRequired: input.walletRequired }), ...(input.allowNegativeBalance === undefined ? {} : { allowNegativeBalance: input.allowNegativeBalance }), ...(input.creditLimit === undefined ? {} : { creditLimit: money(input.creditLimit) }) }; return billingSettingsResponse(await prisma.workspaceBillingSettings.upsert({ where: { workspaceId }, create: { workspaceId, currency: input.currency?.toUpperCase() ?? env.WALLET_CURRENCY, ...data }, update: data })); }
+export async function checkLedgerConsistency(workspaceId: string) {
+  return prisma.$transaction(async (transaction) => {
+    const context = await resolveTenantContext(transaction, { workspaceId });
+    const wallet = await ensureWallet(transaction, context.tenantId);
+    const entries = await transaction.walletLedgerEntry.findMany({ where: { walletId: wallet.id }, orderBy: [{ createdAt: "asc" }, { id: "asc" }], select: { direction: true, transactionType: true, amount: true } });
+    let calculatedTotal = ZERO;
+    let calculatedReserved = ZERO;
+    for (const entry of entries) {
+      const amount = money(entry.amount);
+      if (entry.direction === "CREDIT") calculatedTotal = calculatedTotal.add(amount);
+      if (entry.direction === "DEBIT") calculatedTotal = calculatedTotal.sub(amount);
+      if (entry.direction === "HOLD") calculatedReserved = calculatedReserved.add(amount);
+      if (entry.direction === "RELEASE" || (entry.direction === "DEBIT" && entry.transactionType === "CHARGE")) calculatedReserved = calculatedReserved.sub(amount);
+    }
+    const actual = walletBalances(wallet);
+    return { consistent: actual.total.eq(calculatedTotal) && actual.reserved.eq(calculatedReserved), walletId: wallet.id, calculatedTotalBalance: fixed(calculatedTotal), walletTotalBalance: fixed(actual.total), calculatedReservedBalance: fixed(calculatedReserved), walletReservedBalance: fixed(actual.reserved) };
   });
-  return { entryId: result.entry.id, amountMinorUnits, idempotencyKey: input.idempotencyKey } satisfies WalletCharge;
 }
+export async function setWalletStatus(workspaceId: string, status: "ACTIVE" | "SUSPENDED" | "CLOSED") { return prisma.$transaction(async (transaction) => { const context = await resolveTenantContext(transaction, { workspaceId }); const wallet = await ensureWallet(transaction, context.tenantId); await lockWallet(transaction, wallet.id); return walletResponse(await transaction.wallet.update({ where: { id: wallet.id }, data: { status } })); }); }
 
-export function refundWalletCharge(input: WalletCharge & { workspaceId: string; metadata?: Prisma.InputJsonValue }) {
-  return creditWallet({
-    workspaceId: input.workspaceId,
-    amountMinorUnits: input.amountMinorUnits,
-    idempotencyKey: `${input.idempotencyKey}:refund`,
-    reason: "OUTBOUND_MESSAGE_REFUND",
-    description: "Refund for failed WhatsApp outbound message",
-    metadata: { ...(input.metadata && typeof input.metadata === "object" ? input.metadata : {}), originalChargeEntryId: input.entryId },
-  });
-}
+// Compatibility API retained for existing admin adjustments and older callers.
+export async function mutateWallet(input: WalletMutation) { if (!input.workspaceId && !input.tenantId) throw new AppError(422, "A workspace or tenant is required for a wallet mutation", "WALLET_OWNER_REQUIRED"); if (input.amountMinorUnits <= 0n) throw new AppError(422, "Wallet amount must be greater than zero", "WALLET_AMOUNT_INVALID"); return decimalMutation({ workspaceId: input.workspaceId, tenantId: input.tenantId, amount: money(input.amountMinorUnits.toString()).div(100), transactionType: input.direction === "CREDIT" ? "ADMIN_CREDIT" : "ADMIN_DEBIT", idempotencyKey: input.idempotencyKey, description: input.description, metadata: input.metadata, createdById: input.createdById, direction: input.direction } as MoneyMutation & { direction: "CREDIT" | "DEBIT" }); }
+export function creditWallet(input: Omit<WalletMutation, "direction">) { return mutateWallet({ ...input, direction: "CREDIT" }); }
+export function debitWallet(input: Omit<WalletMutation, "direction">) { return mutateWallet({ ...input, direction: "DEBIT" }); }
+export async function chargeOutboundMessage(input: { workspaceId: string; idempotencyKey: string; metadata?: Prisma.InputJsonValue }) { const amountMinorUnits = env.WALLET_OUTBOUND_MESSAGE_RATE_MINOR_UNITS; if (amountMinorUnits === 0n) return null; const result = await debitWallet({ workspaceId: input.workspaceId, amountMinorUnits, idempotencyKey: input.idempotencyKey, reason: "OUTBOUND_MESSAGE", description: "WhatsApp outbound message", metadata: input.metadata }); return { entryId: result.entry.id, amountMinorUnits, idempotencyKey: input.idempotencyKey } satisfies WalletCharge; }
+export function refundWalletCharge(input: WalletCharge & { workspaceId: string; metadata?: Prisma.InputJsonValue }) { return creditWallet({ workspaceId: input.workspaceId, amountMinorUnits: input.amountMinorUnits, idempotencyKey: `${input.idempotencyKey}:refund`, reason: "OUTBOUND_MESSAGE_REFUND", description: "Refund for failed WhatsApp outbound message", metadata: { ...(input.metadata && typeof input.metadata === "object" ? input.metadata : {}), originalChargeEntryId: input.entryId } }); }

@@ -355,6 +355,7 @@ export type WhatsAppRateCardWhereInput = {
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   updatedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   messages?: Prisma.MessageListRelationFilter
+  walletReservations?: Prisma.WalletReservationListRelationFilter
 }
 
 export type WhatsAppRateCardOrderByWithRelationInput = {
@@ -381,6 +382,7 @@ export type WhatsAppRateCardOrderByWithRelationInput = {
   createdBy?: Prisma.UserOrderByWithRelationInput
   updatedBy?: Prisma.UserOrderByWithRelationInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
+  walletReservations?: Prisma.WalletReservationOrderByRelationAggregateInput
 }
 
 export type WhatsAppRateCardWhereUniqueInput = Prisma.AtLeast<{
@@ -410,6 +412,7 @@ export type WhatsAppRateCardWhereUniqueInput = Prisma.AtLeast<{
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   updatedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   messages?: Prisma.MessageListRelationFilter
+  walletReservations?: Prisma.WalletReservationListRelationFilter
 }, "id">
 
 export type WhatsAppRateCardOrderByWithAggregationInput = {
@@ -488,6 +491,7 @@ export type WhatsAppRateCardCreateInput = {
   createdBy?: Prisma.UserCreateNestedOneWithoutWhatsappRateCardsCreatedInput
   updatedBy?: Prisma.UserCreateNestedOneWithoutWhatsappRateCardsUpdatedInput
   messages?: Prisma.MessageCreateNestedManyWithoutRateCardInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutRateCardInput
 }
 
 export type WhatsAppRateCardUncheckedCreateInput = {
@@ -512,6 +516,7 @@ export type WhatsAppRateCardUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutRateCardInput
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutRateCardInput
 }
 
 export type WhatsAppRateCardUpdateInput = {
@@ -536,6 +541,7 @@ export type WhatsAppRateCardUpdateInput = {
   createdBy?: Prisma.UserUpdateOneWithoutWhatsappRateCardsCreatedNestedInput
   updatedBy?: Prisma.UserUpdateOneWithoutWhatsappRateCardsUpdatedNestedInput
   messages?: Prisma.MessageUpdateManyWithoutRateCardNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutRateCardNestedInput
 }
 
 export type WhatsAppRateCardUncheckedUpdateInput = {
@@ -560,6 +566,7 @@ export type WhatsAppRateCardUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutRateCardNestedInput
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutRateCardNestedInput
 }
 
 export type WhatsAppRateCardCreateManyInput = {
@@ -845,6 +852,22 @@ export type NullableBigIntFieldUpdateOperationsInput = {
   divide?: bigint | number
 }
 
+export type WhatsAppRateCardCreateNestedOneWithoutWalletReservationsInput = {
+  create?: Prisma.XOR<Prisma.WhatsAppRateCardCreateWithoutWalletReservationsInput, Prisma.WhatsAppRateCardUncheckedCreateWithoutWalletReservationsInput>
+  connectOrCreate?: Prisma.WhatsAppRateCardCreateOrConnectWithoutWalletReservationsInput
+  connect?: Prisma.WhatsAppRateCardWhereUniqueInput
+}
+
+export type WhatsAppRateCardUpdateOneWithoutWalletReservationsNestedInput = {
+  create?: Prisma.XOR<Prisma.WhatsAppRateCardCreateWithoutWalletReservationsInput, Prisma.WhatsAppRateCardUncheckedCreateWithoutWalletReservationsInput>
+  connectOrCreate?: Prisma.WhatsAppRateCardCreateOrConnectWithoutWalletReservationsInput
+  upsert?: Prisma.WhatsAppRateCardUpsertWithoutWalletReservationsInput
+  disconnect?: Prisma.WhatsAppRateCardWhereInput | boolean
+  delete?: Prisma.WhatsAppRateCardWhereInput | boolean
+  connect?: Prisma.WhatsAppRateCardWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WhatsAppRateCardUpdateToOneWithWhereWithoutWalletReservationsInput, Prisma.WhatsAppRateCardUpdateWithoutWalletReservationsInput>, Prisma.WhatsAppRateCardUncheckedUpdateWithoutWalletReservationsInput>
+}
+
 export type WhatsAppRateCardCreateWithoutCreatedByInput = {
   id?: string
   countryCode: string
@@ -866,6 +889,7 @@ export type WhatsAppRateCardCreateWithoutCreatedByInput = {
   updatedAt?: Date | string
   updatedBy?: Prisma.UserCreateNestedOneWithoutWhatsappRateCardsUpdatedInput
   messages?: Prisma.MessageCreateNestedManyWithoutRateCardInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutRateCardInput
 }
 
 export type WhatsAppRateCardUncheckedCreateWithoutCreatedByInput = {
@@ -889,6 +913,7 @@ export type WhatsAppRateCardUncheckedCreateWithoutCreatedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutRateCardInput
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutRateCardInput
 }
 
 export type WhatsAppRateCardCreateOrConnectWithoutCreatedByInput = {
@@ -922,6 +947,7 @@ export type WhatsAppRateCardCreateWithoutUpdatedByInput = {
   updatedAt?: Date | string
   createdBy?: Prisma.UserCreateNestedOneWithoutWhatsappRateCardsCreatedInput
   messages?: Prisma.MessageCreateNestedManyWithoutRateCardInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutRateCardInput
 }
 
 export type WhatsAppRateCardUncheckedCreateWithoutUpdatedByInput = {
@@ -945,6 +971,7 @@ export type WhatsAppRateCardUncheckedCreateWithoutUpdatedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutRateCardInput
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutRateCardInput
 }
 
 export type WhatsAppRateCardCreateOrConnectWithoutUpdatedByInput = {
@@ -1036,6 +1063,7 @@ export type WhatsAppRateCardCreateWithoutMessagesInput = {
   updatedAt?: Date | string
   createdBy?: Prisma.UserCreateNestedOneWithoutWhatsappRateCardsCreatedInput
   updatedBy?: Prisma.UserCreateNestedOneWithoutWhatsappRateCardsUpdatedInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutRateCardInput
 }
 
 export type WhatsAppRateCardUncheckedCreateWithoutMessagesInput = {
@@ -1059,6 +1087,7 @@ export type WhatsAppRateCardUncheckedCreateWithoutMessagesInput = {
   updatedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutRateCardInput
 }
 
 export type WhatsAppRateCardCreateOrConnectWithoutMessagesInput = {
@@ -1098,6 +1127,7 @@ export type WhatsAppRateCardUpdateWithoutMessagesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneWithoutWhatsappRateCardsCreatedNestedInput
   updatedBy?: Prisma.UserUpdateOneWithoutWhatsappRateCardsUpdatedNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutRateCardNestedInput
 }
 
 export type WhatsAppRateCardUncheckedUpdateWithoutMessagesInput = {
@@ -1121,6 +1151,119 @@ export type WhatsAppRateCardUncheckedUpdateWithoutMessagesInput = {
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutRateCardNestedInput
+}
+
+export type WhatsAppRateCardCreateWithoutWalletReservationsInput = {
+  id?: string
+  countryCode: string
+  countryName: string
+  currency: string
+  category: string
+  pricingType: string
+  metaRate: runtime.Decimal | runtime.DecimalJsLike | number | string
+  platformFee: runtime.Decimal | runtime.DecimalJsLike | number | string
+  customerRate: runtime.Decimal | runtime.DecimalJsLike | number | string
+  volumeTierFrom?: bigint | number | null
+  volumeTierTo?: bigint | number | null
+  effectiveFrom: Date | string
+  effectiveTo?: Date | string | null
+  status?: string
+  source?: string
+  notes?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdBy?: Prisma.UserCreateNestedOneWithoutWhatsappRateCardsCreatedInput
+  updatedBy?: Prisma.UserCreateNestedOneWithoutWhatsappRateCardsUpdatedInput
+  messages?: Prisma.MessageCreateNestedManyWithoutRateCardInput
+}
+
+export type WhatsAppRateCardUncheckedCreateWithoutWalletReservationsInput = {
+  id?: string
+  countryCode: string
+  countryName: string
+  currency: string
+  category: string
+  pricingType: string
+  metaRate: runtime.Decimal | runtime.DecimalJsLike | number | string
+  platformFee: runtime.Decimal | runtime.DecimalJsLike | number | string
+  customerRate: runtime.Decimal | runtime.DecimalJsLike | number | string
+  volumeTierFrom?: bigint | number | null
+  volumeTierTo?: bigint | number | null
+  effectiveFrom: Date | string
+  effectiveTo?: Date | string | null
+  status?: string
+  source?: string
+  notes?: string | null
+  createdById?: string | null
+  updatedById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutRateCardInput
+}
+
+export type WhatsAppRateCardCreateOrConnectWithoutWalletReservationsInput = {
+  where: Prisma.WhatsAppRateCardWhereUniqueInput
+  create: Prisma.XOR<Prisma.WhatsAppRateCardCreateWithoutWalletReservationsInput, Prisma.WhatsAppRateCardUncheckedCreateWithoutWalletReservationsInput>
+}
+
+export type WhatsAppRateCardUpsertWithoutWalletReservationsInput = {
+  update: Prisma.XOR<Prisma.WhatsAppRateCardUpdateWithoutWalletReservationsInput, Prisma.WhatsAppRateCardUncheckedUpdateWithoutWalletReservationsInput>
+  create: Prisma.XOR<Prisma.WhatsAppRateCardCreateWithoutWalletReservationsInput, Prisma.WhatsAppRateCardUncheckedCreateWithoutWalletReservationsInput>
+  where?: Prisma.WhatsAppRateCardWhereInput
+}
+
+export type WhatsAppRateCardUpdateToOneWithWhereWithoutWalletReservationsInput = {
+  where?: Prisma.WhatsAppRateCardWhereInput
+  data: Prisma.XOR<Prisma.WhatsAppRateCardUpdateWithoutWalletReservationsInput, Prisma.WhatsAppRateCardUncheckedUpdateWithoutWalletReservationsInput>
+}
+
+export type WhatsAppRateCardUpdateWithoutWalletReservationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  countryName?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  pricingType?: Prisma.StringFieldUpdateOperationsInput | string
+  metaRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  platformFee?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  customerRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  volumeTierFrom?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  volumeTierTo?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.UserUpdateOneWithoutWhatsappRateCardsCreatedNestedInput
+  updatedBy?: Prisma.UserUpdateOneWithoutWhatsappRateCardsUpdatedNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutRateCardNestedInput
+}
+
+export type WhatsAppRateCardUncheckedUpdateWithoutWalletReservationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  countryCode?: Prisma.StringFieldUpdateOperationsInput | string
+  countryName?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  category?: Prisma.StringFieldUpdateOperationsInput | string
+  pricingType?: Prisma.StringFieldUpdateOperationsInput | string
+  metaRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  platformFee?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  customerRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  volumeTierFrom?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  volumeTierTo?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  effectiveFrom?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  effectiveTo?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutRateCardNestedInput
 }
 
 export type WhatsAppRateCardCreateManyCreatedByInput = {
@@ -1188,6 +1331,7 @@ export type WhatsAppRateCardUpdateWithoutCreatedByInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedBy?: Prisma.UserUpdateOneWithoutWhatsappRateCardsUpdatedNestedInput
   messages?: Prisma.MessageUpdateManyWithoutRateCardNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutRateCardNestedInput
 }
 
 export type WhatsAppRateCardUncheckedUpdateWithoutCreatedByInput = {
@@ -1211,6 +1355,7 @@ export type WhatsAppRateCardUncheckedUpdateWithoutCreatedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutRateCardNestedInput
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutRateCardNestedInput
 }
 
 export type WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByInput = {
@@ -1256,6 +1401,7 @@ export type WhatsAppRateCardUpdateWithoutUpdatedByInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdBy?: Prisma.UserUpdateOneWithoutWhatsappRateCardsCreatedNestedInput
   messages?: Prisma.MessageUpdateManyWithoutRateCardNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutRateCardNestedInput
 }
 
 export type WhatsAppRateCardUncheckedUpdateWithoutUpdatedByInput = {
@@ -1279,6 +1425,7 @@ export type WhatsAppRateCardUncheckedUpdateWithoutUpdatedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   messages?: Prisma.MessageUncheckedUpdateManyWithoutRateCardNestedInput
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutRateCardNestedInput
 }
 
 export type WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByInput = {
@@ -1310,10 +1457,12 @@ export type WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByInput = {
 
 export type WhatsAppRateCardCountOutputType = {
   messages: number
+  walletReservations: number
 }
 
 export type WhatsAppRateCardCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   messages?: boolean | WhatsAppRateCardCountOutputTypeCountMessagesArgs
+  walletReservations?: boolean | WhatsAppRateCardCountOutputTypeCountWalletReservationsArgs
 }
 
 /**
@@ -1331,6 +1480,13 @@ export type WhatsAppRateCardCountOutputTypeDefaultArgs<ExtArgs extends runtime.T
  */
 export type WhatsAppRateCardCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.MessageWhereInput
+}
+
+/**
+ * WhatsAppRateCardCountOutputType without action
+ */
+export type WhatsAppRateCardCountOutputTypeCountWalletReservationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WalletReservationWhereInput
 }
 
 
@@ -1358,6 +1514,7 @@ export type WhatsAppRateCardSelect<ExtArgs extends runtime.Types.Extensions.Inte
   createdBy?: boolean | Prisma.WhatsAppRateCard$createdByArgs<ExtArgs>
   updatedBy?: boolean | Prisma.WhatsAppRateCard$updatedByArgs<ExtArgs>
   messages?: boolean | Prisma.WhatsAppRateCard$messagesArgs<ExtArgs>
+  walletReservations?: boolean | Prisma.WhatsAppRateCard$walletReservationsArgs<ExtArgs>
   _count?: boolean | Prisma.WhatsAppRateCardCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["whatsAppRateCard"]>
 
@@ -1439,6 +1596,7 @@ export type WhatsAppRateCardInclude<ExtArgs extends runtime.Types.Extensions.Int
   createdBy?: boolean | Prisma.WhatsAppRateCard$createdByArgs<ExtArgs>
   updatedBy?: boolean | Prisma.WhatsAppRateCard$updatedByArgs<ExtArgs>
   messages?: boolean | Prisma.WhatsAppRateCard$messagesArgs<ExtArgs>
+  walletReservations?: boolean | Prisma.WhatsAppRateCard$walletReservationsArgs<ExtArgs>
   _count?: boolean | Prisma.WhatsAppRateCardCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WhatsAppRateCardIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1456,6 +1614,7 @@ export type $WhatsAppRateCardPayload<ExtArgs extends runtime.Types.Extensions.In
     createdBy: Prisma.$UserPayload<ExtArgs> | null
     updatedBy: Prisma.$UserPayload<ExtArgs> | null
     messages: Prisma.$MessagePayload<ExtArgs>[]
+    walletReservations: Prisma.$WalletReservationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1875,6 +2034,7 @@ export interface Prisma__WhatsAppRateCardClient<T, Null = never, ExtArgs extends
   createdBy<T extends Prisma.WhatsAppRateCard$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhatsAppRateCard$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   updatedBy<T extends Prisma.WhatsAppRateCard$updatedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhatsAppRateCard$updatedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   messages<T extends Prisma.WhatsAppRateCard$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhatsAppRateCard$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  walletReservations<T extends Prisma.WhatsAppRateCard$walletReservationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhatsAppRateCard$walletReservationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WalletReservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2384,6 +2544,30 @@ export type WhatsAppRateCard$messagesArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
+}
+
+/**
+ * WhatsAppRateCard.walletReservations
+ */
+export type WhatsAppRateCard$walletReservationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WalletReservation
+   */
+  select?: Prisma.WalletReservationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WalletReservation
+   */
+  omit?: Prisma.WalletReservationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WalletReservationInclude<ExtArgs> | null
+  where?: Prisma.WalletReservationWhereInput
+  orderBy?: Prisma.WalletReservationOrderByWithRelationInput | Prisma.WalletReservationOrderByWithRelationInput[]
+  cursor?: Prisma.WalletReservationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WalletReservationScalarFieldEnum | Prisma.WalletReservationScalarFieldEnum[]
 }
 
 /**

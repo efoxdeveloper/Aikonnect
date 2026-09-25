@@ -249,6 +249,11 @@ export async function createWorkspaceWithDefaults(
     create: { tenantId: tenant.id, currency: env.WALLET_CURRENCY },
     update: {},
   });
+  await transaction.workspaceBillingSettings.upsert({
+    where: { workspaceId: workspace.id },
+    create: { workspaceId: workspace.id, currency: env.WALLET_CURRENCY },
+    update: {},
+  });
 
   await transaction.workspaceSetupProgress.create({
     data: { workspaceId: workspace.id },

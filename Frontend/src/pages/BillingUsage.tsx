@@ -5,7 +5,7 @@ import { apiRequest } from "@/lib/api";
 import { getActiveMembership } from "@/lib/workspace";
 
 type UsageData = {
-  wallet?: { currency: string; balanceMinorUnits: string; balance: string; configuredFromBackend: boolean };
+  wallet?: { currency: string; totalBalance: string; reservedBalance: string; availableBalance: string; lowBalanceThreshold: string; status: string; balanceMinorUnits: string; balance: string; configuredFromBackend: boolean };
   filters: { from: string; to: string };
   summary: {
     totalMessages: number;
@@ -22,7 +22,7 @@ type UsageData = {
   daily: Array<{ date: string; total: number; incoming: number; outgoing: number; delivered: number }>;
 };
 
-type LedgerEntry = { id: string; direction: "CREDIT" | "DEBIT"; amountMinorUnits: string; balanceAfterMinorUnits: string; reason: string; description: string | null; createdAt: string };
+type LedgerEntry = { id: string; direction: "CREDIT" | "DEBIT" | "HOLD" | "RELEASE"; amount?: string | null; amountMinorUnits?: string | null; closingTotalBalance?: string | null; balanceAfterMinorUnits?: string | null; transactionType?: string; reason?: string | null; description: string | null; createdAt: string };
 type LedgerData = { items: LedgerEntry[]; pagination: { page: number; pageSize: number; total: number; totalPages: number; hasNext: boolean; hasPrevious: boolean } };
 
 const numberFormat = new Intl.NumberFormat("en-IN");
@@ -41,7 +41,7 @@ function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-IN", { day: "2-digit", month: "short" }).format(new Date(value));
 }
 
-function formatMinorUnits(currency: string, value: string, signed = false, direction?: "CREDIT" | "DEBIT") {
+function formatMinorUnits(currency: string, value: string, signed = false, direction?: LedgerEntry["direction"]) {
   try {
     const minor = BigInt(value);
     const absolute = minor < 0n ? -minor : minor;
@@ -51,6 +51,13 @@ function formatMinorUnits(currency: string, value: string, signed = false, direc
   } catch {
     return "—";
   }
+}
+
+function formatMoney(currency: string, value: string | null | undefined, signed = false, direction?: LedgerEntry["direction"]) {
+  if (value === null || value === undefined) return "—";
+  const prefix = currency === "INR" ? "₹" : currency;
+  const sign = signed ? direction === "DEBIT" ? "−" : direction === "CREDIT" ? "+" : "" : "";
+  return `${sign}${prefix} ${value}`;
 }
 
 export function BillingUsage() {
@@ -138,7 +145,8 @@ export function BillingUsage() {
       {error && <div role="alert" className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-[var(--danger)]">{error}</div>}
       {loading && !data ? <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><div className="h-28 animate-pulse rounded-lg bg-slate-200" /><div className="h-28 animate-pulse rounded-lg bg-slate-200" /><div className="h-28 animate-pulse rounded-lg bg-slate-200" /><div className="h-28 animate-pulse rounded-lg bg-slate-200" /></div> : data && <>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-          <MetricCard icon={<WalletCards size={17} />} label="Wallet balance" value={data.wallet ? `${data.wallet.currency === "INR" ? "₹" : data.wallet.currency} ${data.wallet.balance}` : "--"} detail={data.wallet?.configuredFromBackend ? "Configured by backend" : "Persisted wallet balance"} />
+          <MetricCard icon={<WalletCards size={17} />} label="Available balance" value={data.wallet ? formatMoney(data.wallet.currency, data.wallet.availableBalance ?? data.wallet.balance) : "--"} detail={data.wallet?.status === "ACTIVE" ? `Total ${formatMoney(data.wallet.currency, data.wallet.totalBalance ?? data.wallet.balance)}` : `Wallet ${data.wallet?.status?.toLowerCase() ?? "unavailable"}`} />
+          <MetricCard icon={<WalletCards size={17} />} label="Reserved balance" value={data.wallet ? formatMoney(data.wallet.currency, data.wallet.reservedBalance ?? "0.000000") : "--"} detail="Held for pending messages" />
           <MetricCard icon={<MessageSquare size={17} />} label="Total messages" value={data.summary.totalMessages} detail={`${numberFormat.format(data.summary.incomingMessages)} incoming`} />
           <MetricCard icon={<BarChart3 size={17} />} label="Outbound messages" value={data.summary.outgoingMessages} detail={`${numberFormat.format(data.summary.deliveredMessages)} delivered`} />
           <MetricCard icon={<CheckCircle2 size={17} />} label="Read messages" value={data.summary.readMessages} detail={`${numberFormat.format(data.summary.failedMessages)} failed`} />
@@ -159,8 +167,9 @@ export function BillingUsage() {
           </section>
         </div>
 
+        {data.wallet && data.wallet.availableBalance < data.wallet.lowBalanceThreshold && <section className="mt-4 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-900"><Info size={16} className="mt-0.5 shrink-0" /><div><div className="font-medium">Low wallet balance</div><div className="mt-0.5">Available balance is below your configured threshold of {formatMoney(data.wallet.currency, data.wallet.lowBalanceThreshold)}.</div></div></section>}
         <section className="mt-4 flex items-start gap-3 rounded-lg border border-[var(--border-soft)] bg-white p-4 text-xs leading-5 text-[var(--text-secondary)] shadow-[0_2px_8px_rgba(30,40,55,.04)]"><Info size={16} className="mt-0.5 shrink-0 text-[var(--brand)]" /><div><div className="font-medium text-[var(--text-primary)]">Meta billing is separate</div><div className="mt-0.5">This page tracks internal usage. Meta charges the connected WhatsApp Business Account according to its message pricing and delivery rules.</div></div></section>
-        <section className="mt-4 overflow-hidden rounded-lg border border-[var(--border-soft)] bg-white shadow-[0_2px_8px_rgba(30,40,55,.04)]"><div className="flex items-center justify-between gap-3 border-b border-[var(--border-soft)] px-5 py-4 sm:px-6"><div><h2 className="text-sm font-medium text-[var(--text-primary)]">Wallet activity</h2><div className="mt-0.5 text-xs text-[var(--text-muted)]">Manual credits and debits recorded in the immutable ledger</div></div><WalletCards size={18} className="text-[var(--brand)]" /></div>{ledger === null ? <div className="p-5 text-xs text-[var(--text-muted)]">Loading wallet activity…</div> : ledger.items.length ? <div className="overflow-x-auto"><table className="w-full min-w-[680px] text-left text-xs"><thead className="border-b border-[var(--border-soft)] bg-[var(--page-background)] text-[10px] font-semibold uppercase tracking-wide text-[var(--text-muted)]"><tr><th className="px-5 py-3">Date</th><th className="px-5 py-3">Type</th><th className="px-5 py-3">Reason</th><th className="px-5 py-3 text-right">Amount</th><th className="px-5 py-3 text-right">Balance after</th></tr></thead><tbody className="divide-y divide-[var(--border-soft)]">{ledger.items.map((entry) => <tr key={entry.id}><td className="whitespace-nowrap px-5 py-3 text-[var(--text-muted)]">{new Date(entry.createdAt).toLocaleString()}</td><td className={`px-5 py-3 font-medium ${entry.direction === "CREDIT" ? "text-emerald-700" : "text-amber-700"}`}>{entry.direction === "CREDIT" ? "Credit" : "Debit"}</td><td className="px-5 py-3"><div className="font-medium text-[var(--text-primary)]">{entry.reason}</div>{entry.description && <div className="mt-0.5 text-[11px] text-[var(--text-muted)]">{entry.description}</div>}</td><td className={`px-5 py-3 text-right font-medium ${entry.direction === "CREDIT" ? "text-emerald-700" : "text-amber-700"}`}>{formatMinorUnits(data.wallet?.currency ?? "INR", entry.amountMinorUnits, true, entry.direction)}</td><td className="px-5 py-3 text-right text-[var(--text-secondary)]">{formatMinorUnits(data.wallet?.currency ?? "INR", entry.balanceAfterMinorUnits)}</td></tr>)}</tbody></table></div> : <div className="p-5 text-xs text-[var(--text-muted)]">No wallet activity has been recorded yet.</div>}</section>
+        <section className="mt-4 overflow-hidden rounded-lg border border-[var(--border-soft)] bg-white shadow-[0_2px_8px_rgba(30,40,55,.04)]"><div className="flex items-center justify-between gap-3 border-b border-[var(--border-soft)] px-5 py-4 sm:px-6"><div><h2 className="text-sm font-medium text-[var(--text-primary)]">Wallet activity</h2><div className="mt-0.5 text-xs text-[var(--text-muted)]">Immutable credits, holds, charges, and releases</div></div><WalletCards size={18} className="text-[var(--brand)]" /></div>{ledger === null ? <div className="p-5 text-xs text-[var(--text-muted)]">Loading wallet activity…</div> : ledger.items.length ? <div className="overflow-x-auto"><table className="w-full min-w-[680px] text-left text-xs"><thead className="border-b border-[var(--border-soft)] bg-[var(--page-background)] text-[10px] font-semibold uppercase tracking-wide text-[var(--text-muted)]"><tr><th className="px-5 py-3">Date</th><th className="px-5 py-3">Type</th><th className="px-5 py-3">Description</th><th className="px-5 py-3 text-right">Amount</th><th className="px-5 py-3 text-right">Balance after</th></tr></thead><tbody className="divide-y divide-[var(--border-soft)]">{ledger.items.map((entry) => <tr key={entry.id}><td className="whitespace-nowrap px-5 py-3 text-[var(--text-muted)]">{new Date(entry.createdAt).toLocaleString()}</td><td className={`px-5 py-3 font-medium ${entry.direction === "CREDIT" ? "text-emerald-700" : entry.direction === "DEBIT" ? "text-amber-700" : "text-[var(--text-secondary)]"}`}>{entry.transactionType ?? entry.direction}</td><td className="px-5 py-3"><div className="font-medium text-[var(--text-primary)]">{entry.description ?? entry.reason ?? "Wallet transaction"}</div></td><td className={`px-5 py-3 text-right font-medium ${entry.direction === "CREDIT" ? "text-emerald-700" : "text-amber-700"}`}>{entry.amount ? formatMoney(data.wallet?.currency ?? "INR", entry.amount, true, entry.direction) : formatMinorUnits(data.wallet?.currency ?? "INR", entry.amountMinorUnits ?? "0", true, entry.direction)}</td><td className="px-5 py-3 text-right text-[var(--text-secondary)]">{entry.closingTotalBalance ? formatMoney(data.wallet?.currency ?? "INR", entry.closingTotalBalance) : formatMinorUnits(data.wallet?.currency ?? "INR", entry.balanceAfterMinorUnits ?? "0")}</td></tr>)}</tbody></table></div> : <div className="p-5 text-xs text-[var(--text-muted)]">No wallet activity has been recorded yet.</div>}</section>
       </>}
     </PageFrame>
   );

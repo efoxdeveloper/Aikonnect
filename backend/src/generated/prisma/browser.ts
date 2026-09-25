@@ -198,6 +198,16 @@ export type Wallet = Prisma.WalletModel
  */
 export type WalletLedgerEntry = Prisma.WalletLedgerEntryModel
 /**
+ * Model WalletReservation
+ * 
+ */
+export type WalletReservation = Prisma.WalletReservationModel
+/**
+ * Model WorkspaceBillingSettings
+ * 
+ */
+export type WorkspaceBillingSettings = Prisma.WorkspaceBillingSettingsModel
+/**
  * Model PlatformAuditLog
  * 
  */

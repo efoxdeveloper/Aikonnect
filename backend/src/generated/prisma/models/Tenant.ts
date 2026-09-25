@@ -194,6 +194,7 @@ export type TenantWhereInput = {
   workspaces?: Prisma.WorkspaceListRelationFilter
   wallet?: Prisma.XOR<Prisma.WalletNullableScalarRelationFilter, Prisma.WalletWhereInput> | null
   ledgerEntries?: Prisma.WalletLedgerEntryListRelationFilter
+  walletReservations?: Prisma.WalletReservationListRelationFilter
 }
 
 export type TenantOrderByWithRelationInput = {
@@ -207,6 +208,7 @@ export type TenantOrderByWithRelationInput = {
   workspaces?: Prisma.WorkspaceOrderByRelationAggregateInput
   wallet?: Prisma.WalletOrderByWithRelationInput
   ledgerEntries?: Prisma.WalletLedgerEntryOrderByRelationAggregateInput
+  walletReservations?: Prisma.WalletReservationOrderByRelationAggregateInput
 }
 
 export type TenantWhereUniqueInput = Prisma.AtLeast<{
@@ -223,6 +225,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   workspaces?: Prisma.WorkspaceListRelationFilter
   wallet?: Prisma.XOR<Prisma.WalletNullableScalarRelationFilter, Prisma.WalletWhereInput> | null
   ledgerEntries?: Prisma.WalletLedgerEntryListRelationFilter
+  walletReservations?: Prisma.WalletReservationListRelationFilter
 }, "id" | "slug">
 
 export type TenantOrderByWithAggregationInput = {
@@ -259,6 +262,7 @@ export type TenantCreateInput = {
   workspaces?: Prisma.WorkspaceCreateNestedManyWithoutTenantInput
   wallet?: Prisma.WalletCreateNestedOneWithoutTenantInput
   ledgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutTenantInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateInput = {
@@ -271,6 +275,7 @@ export type TenantUncheckedCreateInput = {
   workspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutTenantInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutTenantInput
   ledgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutTenantInput
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUpdateInput = {
@@ -283,6 +288,7 @@ export type TenantUpdateInput = {
   workspaces?: Prisma.WorkspaceUpdateManyWithoutTenantNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutTenantNestedInput
   ledgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutTenantNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateInput = {
@@ -295,6 +301,7 @@ export type TenantUncheckedUpdateInput = {
   workspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutTenantNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutTenantNestedInput
   ledgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutTenantNestedInput
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateManyInput = {
@@ -449,6 +456,20 @@ export type TenantUpdateOneRequiredWithoutLedgerEntriesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutLedgerEntriesInput, Prisma.TenantUpdateWithoutLedgerEntriesInput>, Prisma.TenantUncheckedUpdateWithoutLedgerEntriesInput>
 }
 
+export type TenantCreateNestedOneWithoutWalletReservationsInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutWalletReservationsInput, Prisma.TenantUncheckedCreateWithoutWalletReservationsInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutWalletReservationsInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneRequiredWithoutWalletReservationsNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutWalletReservationsInput, Prisma.TenantUncheckedCreateWithoutWalletReservationsInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutWalletReservationsInput
+  upsert?: Prisma.TenantUpsertWithoutWalletReservationsInput
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutWalletReservationsInput, Prisma.TenantUpdateWithoutWalletReservationsInput>, Prisma.TenantUncheckedUpdateWithoutWalletReservationsInput>
+}
+
 export type TenantCreateWithoutOwnerInput = {
   id?: string
   name: string
@@ -458,6 +479,7 @@ export type TenantCreateWithoutOwnerInput = {
   workspaces?: Prisma.WorkspaceCreateNestedManyWithoutTenantInput
   wallet?: Prisma.WalletCreateNestedOneWithoutTenantInput
   ledgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutTenantInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutOwnerInput = {
@@ -469,6 +491,7 @@ export type TenantUncheckedCreateWithoutOwnerInput = {
   workspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutTenantInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutTenantInput
   ledgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutTenantInput
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutOwnerInput = {
@@ -518,6 +541,7 @@ export type TenantCreateWithoutWorkspacesInput = {
   owner: Prisma.UserCreateNestedOneWithoutOwnedTenantsInput
   wallet?: Prisma.WalletCreateNestedOneWithoutTenantInput
   ledgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutTenantInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutWorkspacesInput = {
@@ -529,6 +553,7 @@ export type TenantUncheckedCreateWithoutWorkspacesInput = {
   updatedAt?: Date | string
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutTenantInput
   ledgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutTenantInput
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutWorkspacesInput = {
@@ -556,6 +581,7 @@ export type TenantUpdateWithoutWorkspacesInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedTenantsNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutTenantNestedInput
   ledgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutTenantNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutWorkspacesInput = {
@@ -567,6 +593,7 @@ export type TenantUncheckedUpdateWithoutWorkspacesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutTenantNestedInput
   ledgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutTenantNestedInput
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutWalletInput = {
@@ -578,6 +605,7 @@ export type TenantCreateWithoutWalletInput = {
   owner: Prisma.UserCreateNestedOneWithoutOwnedTenantsInput
   workspaces?: Prisma.WorkspaceCreateNestedManyWithoutTenantInput
   ledgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutTenantInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutWalletInput = {
@@ -589,6 +617,7 @@ export type TenantUncheckedCreateWithoutWalletInput = {
   updatedAt?: Date | string
   workspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutTenantInput
   ledgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutTenantInput
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutWalletInput = {
@@ -616,6 +645,7 @@ export type TenantUpdateWithoutWalletInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedTenantsNestedInput
   workspaces?: Prisma.WorkspaceUpdateManyWithoutTenantNestedInput
   ledgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutTenantNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutWalletInput = {
@@ -627,6 +657,7 @@ export type TenantUncheckedUpdateWithoutWalletInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutTenantNestedInput
   ledgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutTenantNestedInput
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutLedgerEntriesInput = {
@@ -638,6 +669,7 @@ export type TenantCreateWithoutLedgerEntriesInput = {
   owner: Prisma.UserCreateNestedOneWithoutOwnedTenantsInput
   workspaces?: Prisma.WorkspaceCreateNestedManyWithoutTenantInput
   wallet?: Prisma.WalletCreateNestedOneWithoutTenantInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutLedgerEntriesInput = {
@@ -649,6 +681,7 @@ export type TenantUncheckedCreateWithoutLedgerEntriesInput = {
   updatedAt?: Date | string
   workspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutTenantInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutTenantInput
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutLedgerEntriesInput = {
@@ -676,6 +709,7 @@ export type TenantUpdateWithoutLedgerEntriesInput = {
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedTenantsNestedInput
   workspaces?: Prisma.WorkspaceUpdateManyWithoutTenantNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutTenantNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutLedgerEntriesInput = {
@@ -687,6 +721,71 @@ export type TenantUncheckedUpdateWithoutLedgerEntriesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutTenantNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutTenantNestedInput
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantCreateWithoutWalletReservationsInput = {
+  id?: string
+  name: string
+  slug: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedTenantsInput
+  workspaces?: Prisma.WorkspaceCreateNestedManyWithoutTenantInput
+  wallet?: Prisma.WalletCreateNestedOneWithoutTenantInput
+  ledgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutTenantInput
+}
+
+export type TenantUncheckedCreateWithoutWalletReservationsInput = {
+  id?: string
+  name: string
+  slug: string
+  ownerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  workspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutTenantInput
+  wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutTenantInput
+  ledgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutTenantInput
+}
+
+export type TenantCreateOrConnectWithoutWalletReservationsInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutWalletReservationsInput, Prisma.TenantUncheckedCreateWithoutWalletReservationsInput>
+}
+
+export type TenantUpsertWithoutWalletReservationsInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutWalletReservationsInput, Prisma.TenantUncheckedUpdateWithoutWalletReservationsInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutWalletReservationsInput, Prisma.TenantUncheckedCreateWithoutWalletReservationsInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutWalletReservationsInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutWalletReservationsInput, Prisma.TenantUncheckedUpdateWithoutWalletReservationsInput>
+}
+
+export type TenantUpdateWithoutWalletReservationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedTenantsNestedInput
+  workspaces?: Prisma.WorkspaceUpdateManyWithoutTenantNestedInput
+  wallet?: Prisma.WalletUpdateOneWithoutTenantNestedInput
+  ledgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantUncheckedUpdateWithoutWalletReservationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutTenantNestedInput
+  wallet?: Prisma.WalletUncheckedUpdateOneWithoutTenantNestedInput
+  ledgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateManyOwnerInput = {
@@ -706,6 +805,7 @@ export type TenantUpdateWithoutOwnerInput = {
   workspaces?: Prisma.WorkspaceUpdateManyWithoutTenantNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutTenantNestedInput
   ledgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutTenantNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutOwnerInput = {
@@ -717,6 +817,7 @@ export type TenantUncheckedUpdateWithoutOwnerInput = {
   workspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutTenantNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutTenantNestedInput
   ledgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutTenantNestedInput
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateManyWithoutOwnerInput = {
@@ -735,11 +836,13 @@ export type TenantUncheckedUpdateManyWithoutOwnerInput = {
 export type TenantCountOutputType = {
   workspaces: number
   ledgerEntries: number
+  walletReservations: number
 }
 
 export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspaces?: boolean | TenantCountOutputTypeCountWorkspacesArgs
   ledgerEntries?: boolean | TenantCountOutputTypeCountLedgerEntriesArgs
+  walletReservations?: boolean | TenantCountOutputTypeCountWalletReservationsArgs
 }
 
 /**
@@ -766,6 +869,13 @@ export type TenantCountOutputTypeCountLedgerEntriesArgs<ExtArgs extends runtime.
   where?: Prisma.WalletLedgerEntryWhereInput
 }
 
+/**
+ * TenantCountOutputType without action
+ */
+export type TenantCountOutputTypeCountWalletReservationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WalletReservationWhereInput
+}
+
 
 export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -778,6 +888,7 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   workspaces?: boolean | Prisma.Tenant$workspacesArgs<ExtArgs>
   wallet?: boolean | Prisma.Tenant$walletArgs<ExtArgs>
   ledgerEntries?: boolean | Prisma.Tenant$ledgerEntriesArgs<ExtArgs>
+  walletReservations?: boolean | Prisma.Tenant$walletReservationsArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tenant"]>
 
@@ -816,6 +927,7 @@ export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   workspaces?: boolean | Prisma.Tenant$workspacesArgs<ExtArgs>
   wallet?: boolean | Prisma.Tenant$walletArgs<ExtArgs>
   ledgerEntries?: boolean | Prisma.Tenant$ledgerEntriesArgs<ExtArgs>
+  walletReservations?: boolean | Prisma.Tenant$walletReservationsArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TenantIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -832,6 +944,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     workspaces: Prisma.$WorkspacePayload<ExtArgs>[]
     wallet: Prisma.$WalletPayload<ExtArgs> | null
     ledgerEntries: Prisma.$WalletLedgerEntryPayload<ExtArgs>[]
+    walletReservations: Prisma.$WalletReservationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1238,6 +1351,7 @@ export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.T
   workspaces<T extends Prisma.Tenant$workspacesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$workspacesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   wallet<T extends Prisma.Tenant$walletArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$walletArgs<ExtArgs>>): Prisma.Prisma__WalletClient<runtime.Types.Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   ledgerEntries<T extends Prisma.Tenant$ledgerEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$ledgerEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WalletLedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  walletReservations<T extends Prisma.Tenant$walletReservationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$walletReservationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WalletReservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1738,6 +1852,30 @@ export type Tenant$ledgerEntriesArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.WalletLedgerEntryScalarFieldEnum | Prisma.WalletLedgerEntryScalarFieldEnum[]
+}
+
+/**
+ * Tenant.walletReservations
+ */
+export type Tenant$walletReservationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WalletReservation
+   */
+  select?: Prisma.WalletReservationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WalletReservation
+   */
+  omit?: Prisma.WalletReservationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WalletReservationInclude<ExtArgs> | null
+  where?: Prisma.WalletReservationWhereInput
+  orderBy?: Prisma.WalletReservationOrderByWithRelationInput | Prisma.WalletReservationOrderByWithRelationInput[]
+  cursor?: Prisma.WalletReservationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WalletReservationScalarFieldEnum | Prisma.WalletReservationScalarFieldEnum[]
 }
 
 /**

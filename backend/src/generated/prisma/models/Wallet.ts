@@ -28,10 +28,16 @@ export type AggregateWallet = {
 
 export type WalletAvgAggregateOutputType = {
   balanceMinorUnits: number | null
+  totalBalance: runtime.Decimal | null
+  reservedBalance: runtime.Decimal | null
+  lowBalanceThreshold: runtime.Decimal | null
 }
 
 export type WalletSumAggregateOutputType = {
   balanceMinorUnits: bigint | null
+  totalBalance: runtime.Decimal | null
+  reservedBalance: runtime.Decimal | null
+  lowBalanceThreshold: runtime.Decimal | null
 }
 
 export type WalletMinAggregateOutputType = {
@@ -39,6 +45,11 @@ export type WalletMinAggregateOutputType = {
   tenantId: string | null
   currency: string | null
   balanceMinorUnits: bigint | null
+  totalBalance: runtime.Decimal | null
+  reservedBalance: runtime.Decimal | null
+  status: string | null
+  lowBalanceThreshold: runtime.Decimal | null
+  autoRechargeEnabled: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -48,6 +59,11 @@ export type WalletMaxAggregateOutputType = {
   tenantId: string | null
   currency: string | null
   balanceMinorUnits: bigint | null
+  totalBalance: runtime.Decimal | null
+  reservedBalance: runtime.Decimal | null
+  status: string | null
+  lowBalanceThreshold: runtime.Decimal | null
+  autoRechargeEnabled: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -57,6 +73,11 @@ export type WalletCountAggregateOutputType = {
   tenantId: number
   currency: number
   balanceMinorUnits: number
+  totalBalance: number
+  reservedBalance: number
+  status: number
+  lowBalanceThreshold: number
+  autoRechargeEnabled: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -65,10 +86,16 @@ export type WalletCountAggregateOutputType = {
 
 export type WalletAvgAggregateInputType = {
   balanceMinorUnits?: true
+  totalBalance?: true
+  reservedBalance?: true
+  lowBalanceThreshold?: true
 }
 
 export type WalletSumAggregateInputType = {
   balanceMinorUnits?: true
+  totalBalance?: true
+  reservedBalance?: true
+  lowBalanceThreshold?: true
 }
 
 export type WalletMinAggregateInputType = {
@@ -76,6 +103,11 @@ export type WalletMinAggregateInputType = {
   tenantId?: true
   currency?: true
   balanceMinorUnits?: true
+  totalBalance?: true
+  reservedBalance?: true
+  status?: true
+  lowBalanceThreshold?: true
+  autoRechargeEnabled?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -85,6 +117,11 @@ export type WalletMaxAggregateInputType = {
   tenantId?: true
   currency?: true
   balanceMinorUnits?: true
+  totalBalance?: true
+  reservedBalance?: true
+  status?: true
+  lowBalanceThreshold?: true
+  autoRechargeEnabled?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -94,6 +131,11 @@ export type WalletCountAggregateInputType = {
   tenantId?: true
   currency?: true
   balanceMinorUnits?: true
+  totalBalance?: true
+  reservedBalance?: true
+  status?: true
+  lowBalanceThreshold?: true
+  autoRechargeEnabled?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -190,6 +232,11 @@ export type WalletGroupByOutputType = {
   tenantId: string
   currency: string
   balanceMinorUnits: bigint
+  totalBalance: runtime.Decimal
+  reservedBalance: runtime.Decimal
+  status: string
+  lowBalanceThreshold: runtime.Decimal
+  autoRechargeEnabled: boolean
   createdAt: Date
   updatedAt: Date
   _count: WalletCountAggregateOutputType | null
@@ -222,10 +269,16 @@ export type WalletWhereInput = {
   tenantId?: Prisma.UuidFilter<"Wallet"> | string
   currency?: Prisma.StringFilter<"Wallet"> | string
   balanceMinorUnits?: Prisma.BigIntFilter<"Wallet"> | bigint | number
+  totalBalance?: Prisma.DecimalFilter<"Wallet"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: Prisma.DecimalFilter<"Wallet"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFilter<"Wallet"> | string
+  lowBalanceThreshold?: Prisma.DecimalFilter<"Wallet"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: Prisma.BoolFilter<"Wallet"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Wallet"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Wallet"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   entries?: Prisma.WalletLedgerEntryListRelationFilter
+  reservations?: Prisma.WalletReservationListRelationFilter
 }
 
 export type WalletOrderByWithRelationInput = {
@@ -233,10 +286,16 @@ export type WalletOrderByWithRelationInput = {
   tenantId?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   balanceMinorUnits?: Prisma.SortOrder
+  totalBalance?: Prisma.SortOrder
+  reservedBalance?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  lowBalanceThreshold?: Prisma.SortOrder
+  autoRechargeEnabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   tenant?: Prisma.TenantOrderByWithRelationInput
   entries?: Prisma.WalletLedgerEntryOrderByRelationAggregateInput
+  reservations?: Prisma.WalletReservationOrderByRelationAggregateInput
 }
 
 export type WalletWhereUniqueInput = Prisma.AtLeast<{
@@ -247,10 +306,16 @@ export type WalletWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.WalletWhereInput | Prisma.WalletWhereInput[]
   currency?: Prisma.StringFilter<"Wallet"> | string
   balanceMinorUnits?: Prisma.BigIntFilter<"Wallet"> | bigint | number
+  totalBalance?: Prisma.DecimalFilter<"Wallet"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: Prisma.DecimalFilter<"Wallet"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFilter<"Wallet"> | string
+  lowBalanceThreshold?: Prisma.DecimalFilter<"Wallet"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: Prisma.BoolFilter<"Wallet"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Wallet"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Wallet"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   entries?: Prisma.WalletLedgerEntryListRelationFilter
+  reservations?: Prisma.WalletReservationListRelationFilter
 }, "id" | "tenantId">
 
 export type WalletOrderByWithAggregationInput = {
@@ -258,6 +323,11 @@ export type WalletOrderByWithAggregationInput = {
   tenantId?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   balanceMinorUnits?: Prisma.SortOrder
+  totalBalance?: Prisma.SortOrder
+  reservedBalance?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  lowBalanceThreshold?: Prisma.SortOrder
+  autoRechargeEnabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.WalletCountOrderByAggregateInput
@@ -275,6 +345,11 @@ export type WalletScalarWhereWithAggregatesInput = {
   tenantId?: Prisma.UuidWithAggregatesFilter<"Wallet"> | string
   currency?: Prisma.StringWithAggregatesFilter<"Wallet"> | string
   balanceMinorUnits?: Prisma.BigIntWithAggregatesFilter<"Wallet"> | bigint | number
+  totalBalance?: Prisma.DecimalWithAggregatesFilter<"Wallet"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: Prisma.DecimalWithAggregatesFilter<"Wallet"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringWithAggregatesFilter<"Wallet"> | string
+  lowBalanceThreshold?: Prisma.DecimalWithAggregatesFilter<"Wallet"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: Prisma.BoolWithAggregatesFilter<"Wallet"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Wallet"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Wallet"> | Date | string
 }
@@ -283,10 +358,16 @@ export type WalletCreateInput = {
   id?: string
   currency: string
   balanceMinorUnits?: bigint | number
+  totalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: string
+  lowBalanceThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutWalletInput
   entries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWalletInput
+  reservations?: Prisma.WalletReservationCreateNestedManyWithoutWalletInput
 }
 
 export type WalletUncheckedCreateInput = {
@@ -294,19 +375,31 @@ export type WalletUncheckedCreateInput = {
   tenantId: string
   currency: string
   balanceMinorUnits?: bigint | number
+  totalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: string
+  lowBalanceThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   entries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWalletInput
+  reservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWalletInput
 }
 
 export type WalletUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   balanceMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  lowBalanceThreshold?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWalletNestedInput
   entries?: Prisma.WalletLedgerEntryUpdateManyWithoutWalletNestedInput
+  reservations?: Prisma.WalletReservationUpdateManyWithoutWalletNestedInput
 }
 
 export type WalletUncheckedUpdateInput = {
@@ -314,9 +407,15 @@ export type WalletUncheckedUpdateInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   balanceMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  lowBalanceThreshold?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWalletNestedInput
+  reservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWalletNestedInput
 }
 
 export type WalletCreateManyInput = {
@@ -324,6 +423,11 @@ export type WalletCreateManyInput = {
   tenantId: string
   currency: string
   balanceMinorUnits?: bigint | number
+  totalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: string
+  lowBalanceThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -332,6 +436,11 @@ export type WalletUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   balanceMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  lowBalanceThreshold?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -341,6 +450,11 @@ export type WalletUncheckedUpdateManyInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   balanceMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  lowBalanceThreshold?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -355,12 +469,20 @@ export type WalletCountOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   balanceMinorUnits?: Prisma.SortOrder
+  totalBalance?: Prisma.SortOrder
+  reservedBalance?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  lowBalanceThreshold?: Prisma.SortOrder
+  autoRechargeEnabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type WalletAvgOrderByAggregateInput = {
   balanceMinorUnits?: Prisma.SortOrder
+  totalBalance?: Prisma.SortOrder
+  reservedBalance?: Prisma.SortOrder
+  lowBalanceThreshold?: Prisma.SortOrder
 }
 
 export type WalletMaxOrderByAggregateInput = {
@@ -368,6 +490,11 @@ export type WalletMaxOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   balanceMinorUnits?: Prisma.SortOrder
+  totalBalance?: Prisma.SortOrder
+  reservedBalance?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  lowBalanceThreshold?: Prisma.SortOrder
+  autoRechargeEnabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -377,12 +504,20 @@ export type WalletMinOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   currency?: Prisma.SortOrder
   balanceMinorUnits?: Prisma.SortOrder
+  totalBalance?: Prisma.SortOrder
+  reservedBalance?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  lowBalanceThreshold?: Prisma.SortOrder
+  autoRechargeEnabled?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type WalletSumOrderByAggregateInput = {
   balanceMinorUnits?: Prisma.SortOrder
+  totalBalance?: Prisma.SortOrder
+  reservedBalance?: Prisma.SortOrder
+  lowBalanceThreshold?: Prisma.SortOrder
 }
 
 export type WalletScalarRelationFilter = {
@@ -444,22 +579,48 @@ export type WalletUpdateOneRequiredWithoutEntriesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WalletUpdateToOneWithWhereWithoutEntriesInput, Prisma.WalletUpdateWithoutEntriesInput>, Prisma.WalletUncheckedUpdateWithoutEntriesInput>
 }
 
+export type WalletCreateNestedOneWithoutReservationsInput = {
+  create?: Prisma.XOR<Prisma.WalletCreateWithoutReservationsInput, Prisma.WalletUncheckedCreateWithoutReservationsInput>
+  connectOrCreate?: Prisma.WalletCreateOrConnectWithoutReservationsInput
+  connect?: Prisma.WalletWhereUniqueInput
+}
+
+export type WalletUpdateOneRequiredWithoutReservationsNestedInput = {
+  create?: Prisma.XOR<Prisma.WalletCreateWithoutReservationsInput, Prisma.WalletUncheckedCreateWithoutReservationsInput>
+  connectOrCreate?: Prisma.WalletCreateOrConnectWithoutReservationsInput
+  upsert?: Prisma.WalletUpsertWithoutReservationsInput
+  connect?: Prisma.WalletWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WalletUpdateToOneWithWhereWithoutReservationsInput, Prisma.WalletUpdateWithoutReservationsInput>, Prisma.WalletUncheckedUpdateWithoutReservationsInput>
+}
+
 export type WalletCreateWithoutTenantInput = {
   id?: string
   currency: string
   balanceMinorUnits?: bigint | number
+  totalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: string
+  lowBalanceThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   entries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWalletInput
+  reservations?: Prisma.WalletReservationCreateNestedManyWithoutWalletInput
 }
 
 export type WalletUncheckedCreateWithoutTenantInput = {
   id?: string
   currency: string
   balanceMinorUnits?: bigint | number
+  totalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: string
+  lowBalanceThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   entries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWalletInput
+  reservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWalletInput
 }
 
 export type WalletCreateOrConnectWithoutTenantInput = {
@@ -482,27 +643,45 @@ export type WalletUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   balanceMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  lowBalanceThreshold?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entries?: Prisma.WalletLedgerEntryUpdateManyWithoutWalletNestedInput
+  reservations?: Prisma.WalletReservationUpdateManyWithoutWalletNestedInput
 }
 
 export type WalletUncheckedUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   balanceMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  lowBalanceThreshold?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   entries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWalletNestedInput
+  reservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWalletNestedInput
 }
 
 export type WalletCreateWithoutEntriesInput = {
   id?: string
   currency: string
   balanceMinorUnits?: bigint | number
+  totalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: string
+  lowBalanceThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutWalletInput
+  reservations?: Prisma.WalletReservationCreateNestedManyWithoutWalletInput
 }
 
 export type WalletUncheckedCreateWithoutEntriesInput = {
@@ -510,8 +689,14 @@ export type WalletUncheckedCreateWithoutEntriesInput = {
   tenantId: string
   currency: string
   balanceMinorUnits?: bigint | number
+  totalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: string
+  lowBalanceThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  reservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWalletInput
 }
 
 export type WalletCreateOrConnectWithoutEntriesInput = {
@@ -534,9 +719,15 @@ export type WalletUpdateWithoutEntriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   balanceMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  lowBalanceThreshold?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWalletNestedInput
+  reservations?: Prisma.WalletReservationUpdateManyWithoutWalletNestedInput
 }
 
 export type WalletUncheckedUpdateWithoutEntriesInput = {
@@ -544,8 +735,90 @@ export type WalletUncheckedUpdateWithoutEntriesInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   currency?: Prisma.StringFieldUpdateOperationsInput | string
   balanceMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  lowBalanceThreshold?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWalletNestedInput
+}
+
+export type WalletCreateWithoutReservationsInput = {
+  id?: string
+  currency: string
+  balanceMinorUnits?: bigint | number
+  totalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: string
+  lowBalanceThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutWalletInput
+  entries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWalletInput
+}
+
+export type WalletUncheckedCreateWithoutReservationsInput = {
+  id?: string
+  tenantId: string
+  currency: string
+  balanceMinorUnits?: bigint | number
+  totalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: string
+  lowBalanceThreshold?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  entries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWalletInput
+}
+
+export type WalletCreateOrConnectWithoutReservationsInput = {
+  where: Prisma.WalletWhereUniqueInput
+  create: Prisma.XOR<Prisma.WalletCreateWithoutReservationsInput, Prisma.WalletUncheckedCreateWithoutReservationsInput>
+}
+
+export type WalletUpsertWithoutReservationsInput = {
+  update: Prisma.XOR<Prisma.WalletUpdateWithoutReservationsInput, Prisma.WalletUncheckedUpdateWithoutReservationsInput>
+  create: Prisma.XOR<Prisma.WalletCreateWithoutReservationsInput, Prisma.WalletUncheckedCreateWithoutReservationsInput>
+  where?: Prisma.WalletWhereInput
+}
+
+export type WalletUpdateToOneWithWhereWithoutReservationsInput = {
+  where?: Prisma.WalletWhereInput
+  data: Prisma.XOR<Prisma.WalletUpdateWithoutReservationsInput, Prisma.WalletUncheckedUpdateWithoutReservationsInput>
+}
+
+export type WalletUpdateWithoutReservationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  balanceMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  lowBalanceThreshold?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutWalletNestedInput
+  entries?: Prisma.WalletLedgerEntryUpdateManyWithoutWalletNestedInput
+}
+
+export type WalletUncheckedUpdateWithoutReservationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  balanceMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  totalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  lowBalanceThreshold?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  autoRechargeEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  entries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWalletNestedInput
 }
 
 
@@ -555,10 +828,12 @@ export type WalletUncheckedUpdateWithoutEntriesInput = {
 
 export type WalletCountOutputType = {
   entries: number
+  reservations: number
 }
 
 export type WalletCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   entries?: boolean | WalletCountOutputTypeCountEntriesArgs
+  reservations?: boolean | WalletCountOutputTypeCountReservationsArgs
 }
 
 /**
@@ -578,16 +853,29 @@ export type WalletCountOutputTypeCountEntriesArgs<ExtArgs extends runtime.Types.
   where?: Prisma.WalletLedgerEntryWhereInput
 }
 
+/**
+ * WalletCountOutputType without action
+ */
+export type WalletCountOutputTypeCountReservationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WalletReservationWhereInput
+}
+
 
 export type WalletSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   tenantId?: boolean
   currency?: boolean
   balanceMinorUnits?: boolean
+  totalBalance?: boolean
+  reservedBalance?: boolean
+  status?: boolean
+  lowBalanceThreshold?: boolean
+  autoRechargeEnabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   entries?: boolean | Prisma.Wallet$entriesArgs<ExtArgs>
+  reservations?: boolean | Prisma.Wallet$reservationsArgs<ExtArgs>
   _count?: boolean | Prisma.WalletCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["wallet"]>
 
@@ -596,6 +884,11 @@ export type WalletSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   tenantId?: boolean
   currency?: boolean
   balanceMinorUnits?: boolean
+  totalBalance?: boolean
+  reservedBalance?: boolean
+  status?: boolean
+  lowBalanceThreshold?: boolean
+  autoRechargeEnabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -606,6 +899,11 @@ export type WalletSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   tenantId?: boolean
   currency?: boolean
   balanceMinorUnits?: boolean
+  totalBalance?: boolean
+  reservedBalance?: boolean
+  status?: boolean
+  lowBalanceThreshold?: boolean
+  autoRechargeEnabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -616,14 +914,20 @@ export type WalletSelectScalar = {
   tenantId?: boolean
   currency?: boolean
   balanceMinorUnits?: boolean
+  totalBalance?: boolean
+  reservedBalance?: boolean
+  status?: boolean
+  lowBalanceThreshold?: boolean
+  autoRechargeEnabled?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type WalletOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "currency" | "balanceMinorUnits" | "createdAt" | "updatedAt", ExtArgs["result"]["wallet"]>
+export type WalletOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "currency" | "balanceMinorUnits" | "totalBalance" | "reservedBalance" | "status" | "lowBalanceThreshold" | "autoRechargeEnabled" | "createdAt" | "updatedAt", ExtArgs["result"]["wallet"]>
 export type WalletInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   entries?: boolean | Prisma.Wallet$entriesArgs<ExtArgs>
+  reservations?: boolean | Prisma.Wallet$reservationsArgs<ExtArgs>
   _count?: boolean | Prisma.WalletCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WalletIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -638,12 +942,18 @@ export type $WalletPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     tenant: Prisma.$TenantPayload<ExtArgs>
     entries: Prisma.$WalletLedgerEntryPayload<ExtArgs>[]
+    reservations: Prisma.$WalletReservationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     tenantId: string
     currency: string
     balanceMinorUnits: bigint
+    totalBalance: runtime.Decimal
+    reservedBalance: runtime.Decimal
+    status: string
+    lowBalanceThreshold: runtime.Decimal
+    autoRechargeEnabled: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["wallet"]>
@@ -1042,6 +1352,7 @@ export interface Prisma__WalletClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   entries<T extends Prisma.Wallet$entriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Wallet$entriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WalletLedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reservations<T extends Prisma.Wallet$reservationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Wallet$reservationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WalletReservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1075,6 +1386,11 @@ export interface WalletFieldRefs {
   readonly tenantId: Prisma.FieldRef<"Wallet", 'String'>
   readonly currency: Prisma.FieldRef<"Wallet", 'String'>
   readonly balanceMinorUnits: Prisma.FieldRef<"Wallet", 'BigInt'>
+  readonly totalBalance: Prisma.FieldRef<"Wallet", 'Decimal'>
+  readonly reservedBalance: Prisma.FieldRef<"Wallet", 'Decimal'>
+  readonly status: Prisma.FieldRef<"Wallet", 'String'>
+  readonly lowBalanceThreshold: Prisma.FieldRef<"Wallet", 'Decimal'>
+  readonly autoRechargeEnabled: Prisma.FieldRef<"Wallet", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Wallet", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Wallet", 'DateTime'>
 }
@@ -1499,6 +1815,30 @@ export type Wallet$entriesArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.WalletLedgerEntryScalarFieldEnum | Prisma.WalletLedgerEntryScalarFieldEnum[]
+}
+
+/**
+ * Wallet.reservations
+ */
+export type Wallet$reservationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WalletReservation
+   */
+  select?: Prisma.WalletReservationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WalletReservation
+   */
+  omit?: Prisma.WalletReservationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WalletReservationInclude<ExtArgs> | null
+  where?: Prisma.WalletReservationWhereInput
+  orderBy?: Prisma.WalletReservationOrderByWithRelationInput | Prisma.WalletReservationOrderByWithRelationInput[]
+  cursor?: Prisma.WalletReservationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WalletReservationScalarFieldEnum | Prisma.WalletReservationScalarFieldEnum[]
 }
 
 /**

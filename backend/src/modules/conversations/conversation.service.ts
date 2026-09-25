@@ -241,21 +241,18 @@ export async function createMessage(workspaceId: string, contactId: string, conv
   let mediaId = input.mediaId;
   let mediaUrl = input.mediaUrl;
   let routedPhoneNumberId: string | undefined;
-  let walletCharge: { entryId: string; amountMinorUnits: bigint } | undefined;
   if (input.direction === "OUTGOING" && input.type === "TEXT" && conversation.channelKey === "whatsapp") {
     if (typeof input.text !== "string" || !input.text.trim()) throw new AppError(422, "Message text cannot be empty", "MESSAGE_TEXT_REQUIRED");
     const sent = await sendWhatsAppConversationText(workspaceId, conversationId, input.text);
     metaMessageId = sent.metaMessageId;
     routedPhoneNumberId = sent.phoneNumberId;
     sentAt = sent.sentAt;
-    walletCharge = sent.walletCharge ?? undefined;
   }
   if (input.direction === "OUTGOING" && ["IMAGE", "VIDEO", "AUDIO", "DOCUMENT"].includes(input.type) && conversation.channelKey === "whatsapp") {
     const sent = await sendWhatsAppConversationMedia(workspaceId, conversationId, input.type as "IMAGE" | "VIDEO" | "AUDIO" | "DOCUMENT", input.mediaData, input.mediaId ?? undefined, input.text?.trim() || undefined, input.mediaFileName);
     metaMessageId = sent.metaMessageId;
     routedPhoneNumberId = sent.phoneNumberId;
     mediaId = sent.mediaId;
-    walletCharge = sent.walletCharge ?? undefined;
     // Keep the provider media ID as the durable reference. The upload data URL is
     // only used for the immediate browser preview and must not bloat message rows.
     mediaUrl = input.mediaUrl;
@@ -263,7 +260,6 @@ export async function createMessage(workspaceId: string, contactId: string, conv
   }
   const payload = {
     ...(input.payload && typeof input.payload === "object" && !Array.isArray(input.payload) ? input.payload as Record<string, unknown> : {}),
-    ...(walletCharge ? { walletCharge: { entryId: walletCharge.entryId, amountMinorUnits: walletCharge.amountMinorUnits.toString() } } : {}),
   } as Prisma.InputJsonValue;
   const result = await prisma.$transaction(async (transaction) => {
     if (metaMessageId) {

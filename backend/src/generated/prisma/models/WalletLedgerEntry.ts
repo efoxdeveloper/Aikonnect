@@ -29,11 +29,25 @@ export type AggregateWalletLedgerEntry = {
 export type WalletLedgerEntryAvgAggregateOutputType = {
   amountMinorUnits: number | null
   balanceAfterMinorUnits: number | null
+  amount: runtime.Decimal | null
+  openingTotalBalance: runtime.Decimal | null
+  closingTotalBalance: runtime.Decimal | null
+  openingReservedBalance: runtime.Decimal | null
+  closingReservedBalance: runtime.Decimal | null
+  openingAvailableBalance: runtime.Decimal | null
+  closingAvailableBalance: runtime.Decimal | null
 }
 
 export type WalletLedgerEntrySumAggregateOutputType = {
   amountMinorUnits: bigint | null
   balanceAfterMinorUnits: bigint | null
+  amount: runtime.Decimal | null
+  openingTotalBalance: runtime.Decimal | null
+  closingTotalBalance: runtime.Decimal | null
+  openingReservedBalance: runtime.Decimal | null
+  closingReservedBalance: runtime.Decimal | null
+  openingAvailableBalance: runtime.Decimal | null
+  closingAvailableBalance: runtime.Decimal | null
 }
 
 export type WalletLedgerEntryMinAggregateOutputType = {
@@ -44,6 +58,21 @@ export type WalletLedgerEntryMinAggregateOutputType = {
   direction: $Enums.WalletEntryDirection | null
   amountMinorUnits: bigint | null
   balanceAfterMinorUnits: bigint | null
+  transactionReference: string | null
+  transactionType: string | null
+  amount: runtime.Decimal | null
+  currency: string | null
+  openingTotalBalance: runtime.Decimal | null
+  closingTotalBalance: runtime.Decimal | null
+  openingReservedBalance: runtime.Decimal | null
+  closingReservedBalance: runtime.Decimal | null
+  openingAvailableBalance: runtime.Decimal | null
+  closingAvailableBalance: runtime.Decimal | null
+  messageId: string | null
+  reservationId: string | null
+  externalReference: string | null
+  clientReference: string | null
+  status: string | null
   idempotencyKey: string | null
   reason: string | null
   description: string | null
@@ -59,6 +88,21 @@ export type WalletLedgerEntryMaxAggregateOutputType = {
   direction: $Enums.WalletEntryDirection | null
   amountMinorUnits: bigint | null
   balanceAfterMinorUnits: bigint | null
+  transactionReference: string | null
+  transactionType: string | null
+  amount: runtime.Decimal | null
+  currency: string | null
+  openingTotalBalance: runtime.Decimal | null
+  closingTotalBalance: runtime.Decimal | null
+  openingReservedBalance: runtime.Decimal | null
+  closingReservedBalance: runtime.Decimal | null
+  openingAvailableBalance: runtime.Decimal | null
+  closingAvailableBalance: runtime.Decimal | null
+  messageId: string | null
+  reservationId: string | null
+  externalReference: string | null
+  clientReference: string | null
+  status: string | null
   idempotencyKey: string | null
   reason: string | null
   description: string | null
@@ -74,6 +118,21 @@ export type WalletLedgerEntryCountAggregateOutputType = {
   direction: number
   amountMinorUnits: number
   balanceAfterMinorUnits: number
+  transactionReference: number
+  transactionType: number
+  amount: number
+  currency: number
+  openingTotalBalance: number
+  closingTotalBalance: number
+  openingReservedBalance: number
+  closingReservedBalance: number
+  openingAvailableBalance: number
+  closingAvailableBalance: number
+  messageId: number
+  reservationId: number
+  externalReference: number
+  clientReference: number
+  status: number
   idempotencyKey: number
   reason: number
   description: number
@@ -87,11 +146,25 @@ export type WalletLedgerEntryCountAggregateOutputType = {
 export type WalletLedgerEntryAvgAggregateInputType = {
   amountMinorUnits?: true
   balanceAfterMinorUnits?: true
+  amount?: true
+  openingTotalBalance?: true
+  closingTotalBalance?: true
+  openingReservedBalance?: true
+  closingReservedBalance?: true
+  openingAvailableBalance?: true
+  closingAvailableBalance?: true
 }
 
 export type WalletLedgerEntrySumAggregateInputType = {
   amountMinorUnits?: true
   balanceAfterMinorUnits?: true
+  amount?: true
+  openingTotalBalance?: true
+  closingTotalBalance?: true
+  openingReservedBalance?: true
+  closingReservedBalance?: true
+  openingAvailableBalance?: true
+  closingAvailableBalance?: true
 }
 
 export type WalletLedgerEntryMinAggregateInputType = {
@@ -102,6 +175,21 @@ export type WalletLedgerEntryMinAggregateInputType = {
   direction?: true
   amountMinorUnits?: true
   balanceAfterMinorUnits?: true
+  transactionReference?: true
+  transactionType?: true
+  amount?: true
+  currency?: true
+  openingTotalBalance?: true
+  closingTotalBalance?: true
+  openingReservedBalance?: true
+  closingReservedBalance?: true
+  openingAvailableBalance?: true
+  closingAvailableBalance?: true
+  messageId?: true
+  reservationId?: true
+  externalReference?: true
+  clientReference?: true
+  status?: true
   idempotencyKey?: true
   reason?: true
   description?: true
@@ -117,6 +205,21 @@ export type WalletLedgerEntryMaxAggregateInputType = {
   direction?: true
   amountMinorUnits?: true
   balanceAfterMinorUnits?: true
+  transactionReference?: true
+  transactionType?: true
+  amount?: true
+  currency?: true
+  openingTotalBalance?: true
+  closingTotalBalance?: true
+  openingReservedBalance?: true
+  closingReservedBalance?: true
+  openingAvailableBalance?: true
+  closingAvailableBalance?: true
+  messageId?: true
+  reservationId?: true
+  externalReference?: true
+  clientReference?: true
+  status?: true
   idempotencyKey?: true
   reason?: true
   description?: true
@@ -132,6 +235,21 @@ export type WalletLedgerEntryCountAggregateInputType = {
   direction?: true
   amountMinorUnits?: true
   balanceAfterMinorUnits?: true
+  transactionReference?: true
+  transactionType?: true
+  amount?: true
+  currency?: true
+  openingTotalBalance?: true
+  closingTotalBalance?: true
+  openingReservedBalance?: true
+  closingReservedBalance?: true
+  openingAvailableBalance?: true
+  closingAvailableBalance?: true
+  messageId?: true
+  reservationId?: true
+  externalReference?: true
+  clientReference?: true
+  status?: true
   idempotencyKey?: true
   reason?: true
   description?: true
@@ -233,8 +351,23 @@ export type WalletLedgerEntryGroupByOutputType = {
   tenantId: string
   workspaceId: string | null
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint
-  balanceAfterMinorUnits: bigint
+  amountMinorUnits: bigint | null
+  balanceAfterMinorUnits: bigint | null
+  transactionReference: string
+  transactionType: string
+  amount: runtime.Decimal
+  currency: string
+  openingTotalBalance: runtime.Decimal
+  closingTotalBalance: runtime.Decimal
+  openingReservedBalance: runtime.Decimal
+  closingReservedBalance: runtime.Decimal
+  openingAvailableBalance: runtime.Decimal
+  closingAvailableBalance: runtime.Decimal
+  messageId: string | null
+  reservationId: string | null
+  externalReference: string | null
+  clientReference: string | null
+  status: string
   idempotencyKey: string
   reason: string
   description: string | null
@@ -272,8 +405,23 @@ export type WalletLedgerEntryWhereInput = {
   tenantId?: Prisma.UuidFilter<"WalletLedgerEntry"> | string
   workspaceId?: Prisma.UuidNullableFilter<"WalletLedgerEntry"> | string | null
   direction?: Prisma.EnumWalletEntryDirectionFilter<"WalletLedgerEntry"> | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFilter<"WalletLedgerEntry"> | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFilter<"WalletLedgerEntry"> | bigint | number
+  amountMinorUnits?: Prisma.BigIntNullableFilter<"WalletLedgerEntry"> | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.BigIntNullableFilter<"WalletLedgerEntry"> | bigint | number | null
+  transactionReference?: Prisma.StringFilter<"WalletLedgerEntry"> | string
+  transactionType?: Prisma.StringFilter<"WalletLedgerEntry"> | string
+  amount?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFilter<"WalletLedgerEntry"> | string
+  openingTotalBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.UuidNullableFilter<"WalletLedgerEntry"> | string | null
+  reservationId?: Prisma.UuidNullableFilter<"WalletLedgerEntry"> | string | null
+  externalReference?: Prisma.StringNullableFilter<"WalletLedgerEntry"> | string | null
+  clientReference?: Prisma.StringNullableFilter<"WalletLedgerEntry"> | string | null
+  status?: Prisma.StringFilter<"WalletLedgerEntry"> | string
   idempotencyKey?: Prisma.StringFilter<"WalletLedgerEntry"> | string
   reason?: Prisma.StringFilter<"WalletLedgerEntry"> | string
   description?: Prisma.StringNullableFilter<"WalletLedgerEntry"> | string | null
@@ -284,6 +432,8 @@ export type WalletLedgerEntryWhereInput = {
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   workspace?: Prisma.XOR<Prisma.WorkspaceNullableScalarRelationFilter, Prisma.WorkspaceWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  message?: Prisma.XOR<Prisma.MessageNullableScalarRelationFilter, Prisma.MessageWhereInput> | null
+  reservation?: Prisma.XOR<Prisma.WalletReservationNullableScalarRelationFilter, Prisma.WalletReservationWhereInput> | null
 }
 
 export type WalletLedgerEntryOrderByWithRelationInput = {
@@ -292,8 +442,23 @@ export type WalletLedgerEntryOrderByWithRelationInput = {
   tenantId?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrderInput | Prisma.SortOrder
   direction?: Prisma.SortOrder
-  amountMinorUnits?: Prisma.SortOrder
-  balanceAfterMinorUnits?: Prisma.SortOrder
+  amountMinorUnits?: Prisma.SortOrderInput | Prisma.SortOrder
+  balanceAfterMinorUnits?: Prisma.SortOrderInput | Prisma.SortOrder
+  transactionReference?: Prisma.SortOrder
+  transactionType?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
+  openingTotalBalance?: Prisma.SortOrder
+  closingTotalBalance?: Prisma.SortOrder
+  openingReservedBalance?: Prisma.SortOrder
+  closingReservedBalance?: Prisma.SortOrder
+  openingAvailableBalance?: Prisma.SortOrder
+  closingAvailableBalance?: Prisma.SortOrder
+  messageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  reservationId?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalReference?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientReference?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -304,10 +469,13 @@ export type WalletLedgerEntryOrderByWithRelationInput = {
   tenant?: Prisma.TenantOrderByWithRelationInput
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
   createdBy?: Prisma.UserOrderByWithRelationInput
+  message?: Prisma.MessageOrderByWithRelationInput
+  reservation?: Prisma.WalletReservationOrderByWithRelationInput
 }
 
 export type WalletLedgerEntryWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  transactionReference?: string
   walletId_idempotencyKey?: Prisma.WalletLedgerEntryWalletIdIdempotencyKeyCompoundUniqueInput
   AND?: Prisma.WalletLedgerEntryWhereInput | Prisma.WalletLedgerEntryWhereInput[]
   OR?: Prisma.WalletLedgerEntryWhereInput[]
@@ -316,8 +484,22 @@ export type WalletLedgerEntryWhereUniqueInput = Prisma.AtLeast<{
   tenantId?: Prisma.UuidFilter<"WalletLedgerEntry"> | string
   workspaceId?: Prisma.UuidNullableFilter<"WalletLedgerEntry"> | string | null
   direction?: Prisma.EnumWalletEntryDirectionFilter<"WalletLedgerEntry"> | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFilter<"WalletLedgerEntry"> | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFilter<"WalletLedgerEntry"> | bigint | number
+  amountMinorUnits?: Prisma.BigIntNullableFilter<"WalletLedgerEntry"> | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.BigIntNullableFilter<"WalletLedgerEntry"> | bigint | number | null
+  transactionType?: Prisma.StringFilter<"WalletLedgerEntry"> | string
+  amount?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFilter<"WalletLedgerEntry"> | string
+  openingTotalBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.UuidNullableFilter<"WalletLedgerEntry"> | string | null
+  reservationId?: Prisma.UuidNullableFilter<"WalletLedgerEntry"> | string | null
+  externalReference?: Prisma.StringNullableFilter<"WalletLedgerEntry"> | string | null
+  clientReference?: Prisma.StringNullableFilter<"WalletLedgerEntry"> | string | null
+  status?: Prisma.StringFilter<"WalletLedgerEntry"> | string
   idempotencyKey?: Prisma.StringFilter<"WalletLedgerEntry"> | string
   reason?: Prisma.StringFilter<"WalletLedgerEntry"> | string
   description?: Prisma.StringNullableFilter<"WalletLedgerEntry"> | string | null
@@ -328,7 +510,9 @@ export type WalletLedgerEntryWhereUniqueInput = Prisma.AtLeast<{
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   workspace?: Prisma.XOR<Prisma.WorkspaceNullableScalarRelationFilter, Prisma.WorkspaceWhereInput> | null
   createdBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-}, "id" | "walletId_idempotencyKey">
+  message?: Prisma.XOR<Prisma.MessageNullableScalarRelationFilter, Prisma.MessageWhereInput> | null
+  reservation?: Prisma.XOR<Prisma.WalletReservationNullableScalarRelationFilter, Prisma.WalletReservationWhereInput> | null
+}, "id" | "transactionReference" | "walletId_idempotencyKey">
 
 export type WalletLedgerEntryOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -336,8 +520,23 @@ export type WalletLedgerEntryOrderByWithAggregationInput = {
   tenantId?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrderInput | Prisma.SortOrder
   direction?: Prisma.SortOrder
-  amountMinorUnits?: Prisma.SortOrder
-  balanceAfterMinorUnits?: Prisma.SortOrder
+  amountMinorUnits?: Prisma.SortOrderInput | Prisma.SortOrder
+  balanceAfterMinorUnits?: Prisma.SortOrderInput | Prisma.SortOrder
+  transactionReference?: Prisma.SortOrder
+  transactionType?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
+  openingTotalBalance?: Prisma.SortOrder
+  closingTotalBalance?: Prisma.SortOrder
+  openingReservedBalance?: Prisma.SortOrder
+  closingReservedBalance?: Prisma.SortOrder
+  openingAvailableBalance?: Prisma.SortOrder
+  closingAvailableBalance?: Prisma.SortOrder
+  messageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  reservationId?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalReference?: Prisma.SortOrderInput | Prisma.SortOrder
+  clientReference?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -360,8 +559,23 @@ export type WalletLedgerEntryScalarWhereWithAggregatesInput = {
   tenantId?: Prisma.UuidWithAggregatesFilter<"WalletLedgerEntry"> | string
   workspaceId?: Prisma.UuidNullableWithAggregatesFilter<"WalletLedgerEntry"> | string | null
   direction?: Prisma.EnumWalletEntryDirectionWithAggregatesFilter<"WalletLedgerEntry"> | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntWithAggregatesFilter<"WalletLedgerEntry"> | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntWithAggregatesFilter<"WalletLedgerEntry"> | bigint | number
+  amountMinorUnits?: Prisma.BigIntNullableWithAggregatesFilter<"WalletLedgerEntry"> | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.BigIntNullableWithAggregatesFilter<"WalletLedgerEntry"> | bigint | number | null
+  transactionReference?: Prisma.StringWithAggregatesFilter<"WalletLedgerEntry"> | string
+  transactionType?: Prisma.StringWithAggregatesFilter<"WalletLedgerEntry"> | string
+  amount?: Prisma.DecimalWithAggregatesFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringWithAggregatesFilter<"WalletLedgerEntry"> | string
+  openingTotalBalance?: Prisma.DecimalWithAggregatesFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalWithAggregatesFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalWithAggregatesFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalWithAggregatesFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalWithAggregatesFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalWithAggregatesFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.UuidNullableWithAggregatesFilter<"WalletLedgerEntry"> | string | null
+  reservationId?: Prisma.UuidNullableWithAggregatesFilter<"WalletLedgerEntry"> | string | null
+  externalReference?: Prisma.StringNullableWithAggregatesFilter<"WalletLedgerEntry"> | string | null
+  clientReference?: Prisma.StringNullableWithAggregatesFilter<"WalletLedgerEntry"> | string | null
+  status?: Prisma.StringWithAggregatesFilter<"WalletLedgerEntry"> | string
   idempotencyKey?: Prisma.StringWithAggregatesFilter<"WalletLedgerEntry"> | string
   reason?: Prisma.StringWithAggregatesFilter<"WalletLedgerEntry"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"WalletLedgerEntry"> | string | null
@@ -373,8 +587,21 @@ export type WalletLedgerEntryScalarWhereWithAggregatesInput = {
 export type WalletLedgerEntryCreateInput = {
   id?: string
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint | number
-  balanceAfterMinorUnits: bigint | number
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
   idempotencyKey: string
   reason: string
   description?: string | null
@@ -384,6 +611,8 @@ export type WalletLedgerEntryCreateInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutLedgerEntriesInput
   workspace?: Prisma.WorkspaceCreateNestedOneWithoutWalletLedgerEntriesInput
   createdBy?: Prisma.UserCreateNestedOneWithoutWalletLedgerEntriesInput
+  message?: Prisma.MessageCreateNestedOneWithoutWalletLedgerEntriesInput
+  reservation?: Prisma.WalletReservationCreateNestedOneWithoutLedgerEntriesInput
 }
 
 export type WalletLedgerEntryUncheckedCreateInput = {
@@ -392,8 +621,23 @@ export type WalletLedgerEntryUncheckedCreateInput = {
   tenantId: string
   workspaceId?: string | null
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint | number
-  balanceAfterMinorUnits: bigint | number
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: string | null
+  reservationId?: string | null
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
   idempotencyKey: string
   reason: string
   description?: string | null
@@ -405,8 +649,21 @@ export type WalletLedgerEntryUncheckedCreateInput = {
 export type WalletLedgerEntryUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -416,6 +673,8 @@ export type WalletLedgerEntryUpdateInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutLedgerEntriesNestedInput
   workspace?: Prisma.WorkspaceUpdateOneWithoutWalletLedgerEntriesNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutWalletLedgerEntriesNestedInput
+  message?: Prisma.MessageUpdateOneWithoutWalletLedgerEntriesNestedInput
+  reservation?: Prisma.WalletReservationUpdateOneWithoutLedgerEntriesNestedInput
 }
 
 export type WalletLedgerEntryUncheckedUpdateInput = {
@@ -424,8 +683,23 @@ export type WalletLedgerEntryUncheckedUpdateInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reservationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -440,8 +714,23 @@ export type WalletLedgerEntryCreateManyInput = {
   tenantId: string
   workspaceId?: string | null
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint | number
-  balanceAfterMinorUnits: bigint | number
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: string | null
+  reservationId?: string | null
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
   idempotencyKey: string
   reason: string
   description?: string | null
@@ -453,8 +742,21 @@ export type WalletLedgerEntryCreateManyInput = {
 export type WalletLedgerEntryUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -468,8 +770,23 @@ export type WalletLedgerEntryUncheckedUpdateManyInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reservationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -501,6 +818,21 @@ export type WalletLedgerEntryCountOrderByAggregateInput = {
   direction?: Prisma.SortOrder
   amountMinorUnits?: Prisma.SortOrder
   balanceAfterMinorUnits?: Prisma.SortOrder
+  transactionReference?: Prisma.SortOrder
+  transactionType?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
+  openingTotalBalance?: Prisma.SortOrder
+  closingTotalBalance?: Prisma.SortOrder
+  openingReservedBalance?: Prisma.SortOrder
+  closingReservedBalance?: Prisma.SortOrder
+  openingAvailableBalance?: Prisma.SortOrder
+  closingAvailableBalance?: Prisma.SortOrder
+  messageId?: Prisma.SortOrder
+  reservationId?: Prisma.SortOrder
+  externalReference?: Prisma.SortOrder
+  clientReference?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -512,6 +844,13 @@ export type WalletLedgerEntryCountOrderByAggregateInput = {
 export type WalletLedgerEntryAvgOrderByAggregateInput = {
   amountMinorUnits?: Prisma.SortOrder
   balanceAfterMinorUnits?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
+  openingTotalBalance?: Prisma.SortOrder
+  closingTotalBalance?: Prisma.SortOrder
+  openingReservedBalance?: Prisma.SortOrder
+  closingReservedBalance?: Prisma.SortOrder
+  openingAvailableBalance?: Prisma.SortOrder
+  closingAvailableBalance?: Prisma.SortOrder
 }
 
 export type WalletLedgerEntryMaxOrderByAggregateInput = {
@@ -522,6 +861,21 @@ export type WalletLedgerEntryMaxOrderByAggregateInput = {
   direction?: Prisma.SortOrder
   amountMinorUnits?: Prisma.SortOrder
   balanceAfterMinorUnits?: Prisma.SortOrder
+  transactionReference?: Prisma.SortOrder
+  transactionType?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
+  openingTotalBalance?: Prisma.SortOrder
+  closingTotalBalance?: Prisma.SortOrder
+  openingReservedBalance?: Prisma.SortOrder
+  closingReservedBalance?: Prisma.SortOrder
+  openingAvailableBalance?: Prisma.SortOrder
+  closingAvailableBalance?: Prisma.SortOrder
+  messageId?: Prisma.SortOrder
+  reservationId?: Prisma.SortOrder
+  externalReference?: Prisma.SortOrder
+  clientReference?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -537,6 +891,21 @@ export type WalletLedgerEntryMinOrderByAggregateInput = {
   direction?: Prisma.SortOrder
   amountMinorUnits?: Prisma.SortOrder
   balanceAfterMinorUnits?: Prisma.SortOrder
+  transactionReference?: Prisma.SortOrder
+  transactionType?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
+  currency?: Prisma.SortOrder
+  openingTotalBalance?: Prisma.SortOrder
+  closingTotalBalance?: Prisma.SortOrder
+  openingReservedBalance?: Prisma.SortOrder
+  closingReservedBalance?: Prisma.SortOrder
+  openingAvailableBalance?: Prisma.SortOrder
+  closingAvailableBalance?: Prisma.SortOrder
+  messageId?: Prisma.SortOrder
+  reservationId?: Prisma.SortOrder
+  externalReference?: Prisma.SortOrder
+  clientReference?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   idempotencyKey?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   description?: Prisma.SortOrder
@@ -547,6 +916,13 @@ export type WalletLedgerEntryMinOrderByAggregateInput = {
 export type WalletLedgerEntrySumOrderByAggregateInput = {
   amountMinorUnits?: Prisma.SortOrder
   balanceAfterMinorUnits?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
+  openingTotalBalance?: Prisma.SortOrder
+  closingTotalBalance?: Prisma.SortOrder
+  openingReservedBalance?: Prisma.SortOrder
+  closingReservedBalance?: Prisma.SortOrder
+  openingAvailableBalance?: Prisma.SortOrder
+  closingAvailableBalance?: Prisma.SortOrder
 }
 
 export type WalletLedgerEntryCreateNestedManyWithoutCreatedByInput = {
@@ -675,6 +1051,48 @@ export type WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput = {
   deleteMany?: Prisma.WalletLedgerEntryScalarWhereInput | Prisma.WalletLedgerEntryScalarWhereInput[]
 }
 
+export type WalletLedgerEntryCreateNestedManyWithoutMessageInput = {
+  create?: Prisma.XOR<Prisma.WalletLedgerEntryCreateWithoutMessageInput, Prisma.WalletLedgerEntryUncheckedCreateWithoutMessageInput> | Prisma.WalletLedgerEntryCreateWithoutMessageInput[] | Prisma.WalletLedgerEntryUncheckedCreateWithoutMessageInput[]
+  connectOrCreate?: Prisma.WalletLedgerEntryCreateOrConnectWithoutMessageInput | Prisma.WalletLedgerEntryCreateOrConnectWithoutMessageInput[]
+  createMany?: Prisma.WalletLedgerEntryCreateManyMessageInputEnvelope
+  connect?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+}
+
+export type WalletLedgerEntryUncheckedCreateNestedManyWithoutMessageInput = {
+  create?: Prisma.XOR<Prisma.WalletLedgerEntryCreateWithoutMessageInput, Prisma.WalletLedgerEntryUncheckedCreateWithoutMessageInput> | Prisma.WalletLedgerEntryCreateWithoutMessageInput[] | Prisma.WalletLedgerEntryUncheckedCreateWithoutMessageInput[]
+  connectOrCreate?: Prisma.WalletLedgerEntryCreateOrConnectWithoutMessageInput | Prisma.WalletLedgerEntryCreateOrConnectWithoutMessageInput[]
+  createMany?: Prisma.WalletLedgerEntryCreateManyMessageInputEnvelope
+  connect?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+}
+
+export type WalletLedgerEntryUpdateManyWithoutMessageNestedInput = {
+  create?: Prisma.XOR<Prisma.WalletLedgerEntryCreateWithoutMessageInput, Prisma.WalletLedgerEntryUncheckedCreateWithoutMessageInput> | Prisma.WalletLedgerEntryCreateWithoutMessageInput[] | Prisma.WalletLedgerEntryUncheckedCreateWithoutMessageInput[]
+  connectOrCreate?: Prisma.WalletLedgerEntryCreateOrConnectWithoutMessageInput | Prisma.WalletLedgerEntryCreateOrConnectWithoutMessageInput[]
+  upsert?: Prisma.WalletLedgerEntryUpsertWithWhereUniqueWithoutMessageInput | Prisma.WalletLedgerEntryUpsertWithWhereUniqueWithoutMessageInput[]
+  createMany?: Prisma.WalletLedgerEntryCreateManyMessageInputEnvelope
+  set?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  disconnect?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  delete?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  connect?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  update?: Prisma.WalletLedgerEntryUpdateWithWhereUniqueWithoutMessageInput | Prisma.WalletLedgerEntryUpdateWithWhereUniqueWithoutMessageInput[]
+  updateMany?: Prisma.WalletLedgerEntryUpdateManyWithWhereWithoutMessageInput | Prisma.WalletLedgerEntryUpdateManyWithWhereWithoutMessageInput[]
+  deleteMany?: Prisma.WalletLedgerEntryScalarWhereInput | Prisma.WalletLedgerEntryScalarWhereInput[]
+}
+
+export type WalletLedgerEntryUncheckedUpdateManyWithoutMessageNestedInput = {
+  create?: Prisma.XOR<Prisma.WalletLedgerEntryCreateWithoutMessageInput, Prisma.WalletLedgerEntryUncheckedCreateWithoutMessageInput> | Prisma.WalletLedgerEntryCreateWithoutMessageInput[] | Prisma.WalletLedgerEntryUncheckedCreateWithoutMessageInput[]
+  connectOrCreate?: Prisma.WalletLedgerEntryCreateOrConnectWithoutMessageInput | Prisma.WalletLedgerEntryCreateOrConnectWithoutMessageInput[]
+  upsert?: Prisma.WalletLedgerEntryUpsertWithWhereUniqueWithoutMessageInput | Prisma.WalletLedgerEntryUpsertWithWhereUniqueWithoutMessageInput[]
+  createMany?: Prisma.WalletLedgerEntryCreateManyMessageInputEnvelope
+  set?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  disconnect?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  delete?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  connect?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  update?: Prisma.WalletLedgerEntryUpdateWithWhereUniqueWithoutMessageInput | Prisma.WalletLedgerEntryUpdateWithWhereUniqueWithoutMessageInput[]
+  updateMany?: Prisma.WalletLedgerEntryUpdateManyWithWhereWithoutMessageInput | Prisma.WalletLedgerEntryUpdateManyWithWhereWithoutMessageInput[]
+  deleteMany?: Prisma.WalletLedgerEntryScalarWhereInput | Prisma.WalletLedgerEntryScalarWhereInput[]
+}
+
 export type WalletLedgerEntryCreateNestedManyWithoutWalletInput = {
   create?: Prisma.XOR<Prisma.WalletLedgerEntryCreateWithoutWalletInput, Prisma.WalletLedgerEntryUncheckedCreateWithoutWalletInput> | Prisma.WalletLedgerEntryCreateWithoutWalletInput[] | Prisma.WalletLedgerEntryUncheckedCreateWithoutWalletInput[]
   connectOrCreate?: Prisma.WalletLedgerEntryCreateOrConnectWithoutWalletInput | Prisma.WalletLedgerEntryCreateOrConnectWithoutWalletInput[]
@@ -721,11 +1139,66 @@ export type EnumWalletEntryDirectionFieldUpdateOperationsInput = {
   set?: $Enums.WalletEntryDirection
 }
 
+export type WalletLedgerEntryCreateNestedManyWithoutReservationInput = {
+  create?: Prisma.XOR<Prisma.WalletLedgerEntryCreateWithoutReservationInput, Prisma.WalletLedgerEntryUncheckedCreateWithoutReservationInput> | Prisma.WalletLedgerEntryCreateWithoutReservationInput[] | Prisma.WalletLedgerEntryUncheckedCreateWithoutReservationInput[]
+  connectOrCreate?: Prisma.WalletLedgerEntryCreateOrConnectWithoutReservationInput | Prisma.WalletLedgerEntryCreateOrConnectWithoutReservationInput[]
+  createMany?: Prisma.WalletLedgerEntryCreateManyReservationInputEnvelope
+  connect?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+}
+
+export type WalletLedgerEntryUncheckedCreateNestedManyWithoutReservationInput = {
+  create?: Prisma.XOR<Prisma.WalletLedgerEntryCreateWithoutReservationInput, Prisma.WalletLedgerEntryUncheckedCreateWithoutReservationInput> | Prisma.WalletLedgerEntryCreateWithoutReservationInput[] | Prisma.WalletLedgerEntryUncheckedCreateWithoutReservationInput[]
+  connectOrCreate?: Prisma.WalletLedgerEntryCreateOrConnectWithoutReservationInput | Prisma.WalletLedgerEntryCreateOrConnectWithoutReservationInput[]
+  createMany?: Prisma.WalletLedgerEntryCreateManyReservationInputEnvelope
+  connect?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+}
+
+export type WalletLedgerEntryUpdateManyWithoutReservationNestedInput = {
+  create?: Prisma.XOR<Prisma.WalletLedgerEntryCreateWithoutReservationInput, Prisma.WalletLedgerEntryUncheckedCreateWithoutReservationInput> | Prisma.WalletLedgerEntryCreateWithoutReservationInput[] | Prisma.WalletLedgerEntryUncheckedCreateWithoutReservationInput[]
+  connectOrCreate?: Prisma.WalletLedgerEntryCreateOrConnectWithoutReservationInput | Prisma.WalletLedgerEntryCreateOrConnectWithoutReservationInput[]
+  upsert?: Prisma.WalletLedgerEntryUpsertWithWhereUniqueWithoutReservationInput | Prisma.WalletLedgerEntryUpsertWithWhereUniqueWithoutReservationInput[]
+  createMany?: Prisma.WalletLedgerEntryCreateManyReservationInputEnvelope
+  set?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  disconnect?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  delete?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  connect?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  update?: Prisma.WalletLedgerEntryUpdateWithWhereUniqueWithoutReservationInput | Prisma.WalletLedgerEntryUpdateWithWhereUniqueWithoutReservationInput[]
+  updateMany?: Prisma.WalletLedgerEntryUpdateManyWithWhereWithoutReservationInput | Prisma.WalletLedgerEntryUpdateManyWithWhereWithoutReservationInput[]
+  deleteMany?: Prisma.WalletLedgerEntryScalarWhereInput | Prisma.WalletLedgerEntryScalarWhereInput[]
+}
+
+export type WalletLedgerEntryUncheckedUpdateManyWithoutReservationNestedInput = {
+  create?: Prisma.XOR<Prisma.WalletLedgerEntryCreateWithoutReservationInput, Prisma.WalletLedgerEntryUncheckedCreateWithoutReservationInput> | Prisma.WalletLedgerEntryCreateWithoutReservationInput[] | Prisma.WalletLedgerEntryUncheckedCreateWithoutReservationInput[]
+  connectOrCreate?: Prisma.WalletLedgerEntryCreateOrConnectWithoutReservationInput | Prisma.WalletLedgerEntryCreateOrConnectWithoutReservationInput[]
+  upsert?: Prisma.WalletLedgerEntryUpsertWithWhereUniqueWithoutReservationInput | Prisma.WalletLedgerEntryUpsertWithWhereUniqueWithoutReservationInput[]
+  createMany?: Prisma.WalletLedgerEntryCreateManyReservationInputEnvelope
+  set?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  disconnect?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  delete?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  connect?: Prisma.WalletLedgerEntryWhereUniqueInput | Prisma.WalletLedgerEntryWhereUniqueInput[]
+  update?: Prisma.WalletLedgerEntryUpdateWithWhereUniqueWithoutReservationInput | Prisma.WalletLedgerEntryUpdateWithWhereUniqueWithoutReservationInput[]
+  updateMany?: Prisma.WalletLedgerEntryUpdateManyWithWhereWithoutReservationInput | Prisma.WalletLedgerEntryUpdateManyWithWhereWithoutReservationInput[]
+  deleteMany?: Prisma.WalletLedgerEntryScalarWhereInput | Prisma.WalletLedgerEntryScalarWhereInput[]
+}
+
 export type WalletLedgerEntryCreateWithoutCreatedByInput = {
   id?: string
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint | number
-  balanceAfterMinorUnits: bigint | number
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
   idempotencyKey: string
   reason: string
   description?: string | null
@@ -734,6 +1207,8 @@ export type WalletLedgerEntryCreateWithoutCreatedByInput = {
   wallet: Prisma.WalletCreateNestedOneWithoutEntriesInput
   tenant: Prisma.TenantCreateNestedOneWithoutLedgerEntriesInput
   workspace?: Prisma.WorkspaceCreateNestedOneWithoutWalletLedgerEntriesInput
+  message?: Prisma.MessageCreateNestedOneWithoutWalletLedgerEntriesInput
+  reservation?: Prisma.WalletReservationCreateNestedOneWithoutLedgerEntriesInput
 }
 
 export type WalletLedgerEntryUncheckedCreateWithoutCreatedByInput = {
@@ -742,8 +1217,23 @@ export type WalletLedgerEntryUncheckedCreateWithoutCreatedByInput = {
   tenantId: string
   workspaceId?: string | null
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint | number
-  balanceAfterMinorUnits: bigint | number
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: string | null
+  reservationId?: string | null
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
   idempotencyKey: string
   reason: string
   description?: string | null
@@ -786,8 +1276,23 @@ export type WalletLedgerEntryScalarWhereInput = {
   tenantId?: Prisma.UuidFilter<"WalletLedgerEntry"> | string
   workspaceId?: Prisma.UuidNullableFilter<"WalletLedgerEntry"> | string | null
   direction?: Prisma.EnumWalletEntryDirectionFilter<"WalletLedgerEntry"> | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFilter<"WalletLedgerEntry"> | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFilter<"WalletLedgerEntry"> | bigint | number
+  amountMinorUnits?: Prisma.BigIntNullableFilter<"WalletLedgerEntry"> | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.BigIntNullableFilter<"WalletLedgerEntry"> | bigint | number | null
+  transactionReference?: Prisma.StringFilter<"WalletLedgerEntry"> | string
+  transactionType?: Prisma.StringFilter<"WalletLedgerEntry"> | string
+  amount?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFilter<"WalletLedgerEntry"> | string
+  openingTotalBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFilter<"WalletLedgerEntry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.UuidNullableFilter<"WalletLedgerEntry"> | string | null
+  reservationId?: Prisma.UuidNullableFilter<"WalletLedgerEntry"> | string | null
+  externalReference?: Prisma.StringNullableFilter<"WalletLedgerEntry"> | string | null
+  clientReference?: Prisma.StringNullableFilter<"WalletLedgerEntry"> | string | null
+  status?: Prisma.StringFilter<"WalletLedgerEntry"> | string
   idempotencyKey?: Prisma.StringFilter<"WalletLedgerEntry"> | string
   reason?: Prisma.StringFilter<"WalletLedgerEntry"> | string
   description?: Prisma.StringNullableFilter<"WalletLedgerEntry"> | string | null
@@ -799,8 +1304,21 @@ export type WalletLedgerEntryScalarWhereInput = {
 export type WalletLedgerEntryCreateWithoutTenantInput = {
   id?: string
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint | number
-  balanceAfterMinorUnits: bigint | number
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
   idempotencyKey: string
   reason: string
   description?: string | null
@@ -809,6 +1327,8 @@ export type WalletLedgerEntryCreateWithoutTenantInput = {
   wallet: Prisma.WalletCreateNestedOneWithoutEntriesInput
   workspace?: Prisma.WorkspaceCreateNestedOneWithoutWalletLedgerEntriesInput
   createdBy?: Prisma.UserCreateNestedOneWithoutWalletLedgerEntriesInput
+  message?: Prisma.MessageCreateNestedOneWithoutWalletLedgerEntriesInput
+  reservation?: Prisma.WalletReservationCreateNestedOneWithoutLedgerEntriesInput
 }
 
 export type WalletLedgerEntryUncheckedCreateWithoutTenantInput = {
@@ -816,8 +1336,23 @@ export type WalletLedgerEntryUncheckedCreateWithoutTenantInput = {
   walletId: string
   workspaceId?: string | null
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint | number
-  balanceAfterMinorUnits: bigint | number
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: string | null
+  reservationId?: string | null
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
   idempotencyKey: string
   reason: string
   description?: string | null
@@ -855,8 +1390,21 @@ export type WalletLedgerEntryUpdateManyWithWhereWithoutTenantInput = {
 export type WalletLedgerEntryCreateWithoutWorkspaceInput = {
   id?: string
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint | number
-  balanceAfterMinorUnits: bigint | number
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
   idempotencyKey: string
   reason: string
   description?: string | null
@@ -865,6 +1413,8 @@ export type WalletLedgerEntryCreateWithoutWorkspaceInput = {
   wallet: Prisma.WalletCreateNestedOneWithoutEntriesInput
   tenant: Prisma.TenantCreateNestedOneWithoutLedgerEntriesInput
   createdBy?: Prisma.UserCreateNestedOneWithoutWalletLedgerEntriesInput
+  message?: Prisma.MessageCreateNestedOneWithoutWalletLedgerEntriesInput
+  reservation?: Prisma.WalletReservationCreateNestedOneWithoutLedgerEntriesInput
 }
 
 export type WalletLedgerEntryUncheckedCreateWithoutWorkspaceInput = {
@@ -872,8 +1422,23 @@ export type WalletLedgerEntryUncheckedCreateWithoutWorkspaceInput = {
   walletId: string
   tenantId: string
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint | number
-  balanceAfterMinorUnits: bigint | number
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: string | null
+  reservationId?: string | null
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
   idempotencyKey: string
   reason: string
   description?: string | null
@@ -908,11 +1473,110 @@ export type WalletLedgerEntryUpdateManyWithWhereWithoutWorkspaceInput = {
   data: Prisma.XOR<Prisma.WalletLedgerEntryUpdateManyMutationInput, Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceInput>
 }
 
+export type WalletLedgerEntryCreateWithoutMessageInput = {
+  id?: string
+  direction: $Enums.WalletEntryDirection
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
+  idempotencyKey: string
+  reason: string
+  description?: string | null
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  wallet: Prisma.WalletCreateNestedOneWithoutEntriesInput
+  tenant: Prisma.TenantCreateNestedOneWithoutLedgerEntriesInput
+  workspace?: Prisma.WorkspaceCreateNestedOneWithoutWalletLedgerEntriesInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutWalletLedgerEntriesInput
+  reservation?: Prisma.WalletReservationCreateNestedOneWithoutLedgerEntriesInput
+}
+
+export type WalletLedgerEntryUncheckedCreateWithoutMessageInput = {
+  id?: string
+  walletId: string
+  tenantId: string
+  workspaceId?: string | null
+  direction: $Enums.WalletEntryDirection
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservationId?: string | null
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
+  idempotencyKey: string
+  reason: string
+  description?: string | null
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: string | null
+  createdAt?: Date | string
+}
+
+export type WalletLedgerEntryCreateOrConnectWithoutMessageInput = {
+  where: Prisma.WalletLedgerEntryWhereUniqueInput
+  create: Prisma.XOR<Prisma.WalletLedgerEntryCreateWithoutMessageInput, Prisma.WalletLedgerEntryUncheckedCreateWithoutMessageInput>
+}
+
+export type WalletLedgerEntryCreateManyMessageInputEnvelope = {
+  data: Prisma.WalletLedgerEntryCreateManyMessageInput | Prisma.WalletLedgerEntryCreateManyMessageInput[]
+  skipDuplicates?: boolean
+}
+
+export type WalletLedgerEntryUpsertWithWhereUniqueWithoutMessageInput = {
+  where: Prisma.WalletLedgerEntryWhereUniqueInput
+  update: Prisma.XOR<Prisma.WalletLedgerEntryUpdateWithoutMessageInput, Prisma.WalletLedgerEntryUncheckedUpdateWithoutMessageInput>
+  create: Prisma.XOR<Prisma.WalletLedgerEntryCreateWithoutMessageInput, Prisma.WalletLedgerEntryUncheckedCreateWithoutMessageInput>
+}
+
+export type WalletLedgerEntryUpdateWithWhereUniqueWithoutMessageInput = {
+  where: Prisma.WalletLedgerEntryWhereUniqueInput
+  data: Prisma.XOR<Prisma.WalletLedgerEntryUpdateWithoutMessageInput, Prisma.WalletLedgerEntryUncheckedUpdateWithoutMessageInput>
+}
+
+export type WalletLedgerEntryUpdateManyWithWhereWithoutMessageInput = {
+  where: Prisma.WalletLedgerEntryScalarWhereInput
+  data: Prisma.XOR<Prisma.WalletLedgerEntryUpdateManyMutationInput, Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutMessageInput>
+}
+
 export type WalletLedgerEntryCreateWithoutWalletInput = {
   id?: string
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint | number
-  balanceAfterMinorUnits: bigint | number
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
   idempotencyKey: string
   reason: string
   description?: string | null
@@ -921,6 +1585,8 @@ export type WalletLedgerEntryCreateWithoutWalletInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutLedgerEntriesInput
   workspace?: Prisma.WorkspaceCreateNestedOneWithoutWalletLedgerEntriesInput
   createdBy?: Prisma.UserCreateNestedOneWithoutWalletLedgerEntriesInput
+  message?: Prisma.MessageCreateNestedOneWithoutWalletLedgerEntriesInput
+  reservation?: Prisma.WalletReservationCreateNestedOneWithoutLedgerEntriesInput
 }
 
 export type WalletLedgerEntryUncheckedCreateWithoutWalletInput = {
@@ -928,8 +1594,23 @@ export type WalletLedgerEntryUncheckedCreateWithoutWalletInput = {
   tenantId: string
   workspaceId?: string | null
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint | number
-  balanceAfterMinorUnits: bigint | number
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: string | null
+  reservationId?: string | null
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
   idempotencyKey: string
   reason: string
   description?: string | null
@@ -964,14 +1645,115 @@ export type WalletLedgerEntryUpdateManyWithWhereWithoutWalletInput = {
   data: Prisma.XOR<Prisma.WalletLedgerEntryUpdateManyMutationInput, Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWalletInput>
 }
 
+export type WalletLedgerEntryCreateWithoutReservationInput = {
+  id?: string
+  direction: $Enums.WalletEntryDirection
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
+  idempotencyKey: string
+  reason: string
+  description?: string | null
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  wallet: Prisma.WalletCreateNestedOneWithoutEntriesInput
+  tenant: Prisma.TenantCreateNestedOneWithoutLedgerEntriesInput
+  workspace?: Prisma.WorkspaceCreateNestedOneWithoutWalletLedgerEntriesInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutWalletLedgerEntriesInput
+  message?: Prisma.MessageCreateNestedOneWithoutWalletLedgerEntriesInput
+}
+
+export type WalletLedgerEntryUncheckedCreateWithoutReservationInput = {
+  id?: string
+  walletId: string
+  tenantId: string
+  workspaceId?: string | null
+  direction: $Enums.WalletEntryDirection
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: string | null
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
+  idempotencyKey: string
+  reason: string
+  description?: string | null
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: string | null
+  createdAt?: Date | string
+}
+
+export type WalletLedgerEntryCreateOrConnectWithoutReservationInput = {
+  where: Prisma.WalletLedgerEntryWhereUniqueInput
+  create: Prisma.XOR<Prisma.WalletLedgerEntryCreateWithoutReservationInput, Prisma.WalletLedgerEntryUncheckedCreateWithoutReservationInput>
+}
+
+export type WalletLedgerEntryCreateManyReservationInputEnvelope = {
+  data: Prisma.WalletLedgerEntryCreateManyReservationInput | Prisma.WalletLedgerEntryCreateManyReservationInput[]
+  skipDuplicates?: boolean
+}
+
+export type WalletLedgerEntryUpsertWithWhereUniqueWithoutReservationInput = {
+  where: Prisma.WalletLedgerEntryWhereUniqueInput
+  update: Prisma.XOR<Prisma.WalletLedgerEntryUpdateWithoutReservationInput, Prisma.WalletLedgerEntryUncheckedUpdateWithoutReservationInput>
+  create: Prisma.XOR<Prisma.WalletLedgerEntryCreateWithoutReservationInput, Prisma.WalletLedgerEntryUncheckedCreateWithoutReservationInput>
+}
+
+export type WalletLedgerEntryUpdateWithWhereUniqueWithoutReservationInput = {
+  where: Prisma.WalletLedgerEntryWhereUniqueInput
+  data: Prisma.XOR<Prisma.WalletLedgerEntryUpdateWithoutReservationInput, Prisma.WalletLedgerEntryUncheckedUpdateWithoutReservationInput>
+}
+
+export type WalletLedgerEntryUpdateManyWithWhereWithoutReservationInput = {
+  where: Prisma.WalletLedgerEntryScalarWhereInput
+  data: Prisma.XOR<Prisma.WalletLedgerEntryUpdateManyMutationInput, Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutReservationInput>
+}
+
 export type WalletLedgerEntryCreateManyCreatedByInput = {
   id?: string
   walletId: string
   tenantId: string
   workspaceId?: string | null
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint | number
-  balanceAfterMinorUnits: bigint | number
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: string | null
+  reservationId?: string | null
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
   idempotencyKey: string
   reason: string
   description?: string | null
@@ -982,8 +1764,21 @@ export type WalletLedgerEntryCreateManyCreatedByInput = {
 export type WalletLedgerEntryUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -992,6 +1787,8 @@ export type WalletLedgerEntryUpdateWithoutCreatedByInput = {
   wallet?: Prisma.WalletUpdateOneRequiredWithoutEntriesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutLedgerEntriesNestedInput
   workspace?: Prisma.WorkspaceUpdateOneWithoutWalletLedgerEntriesNestedInput
+  message?: Prisma.MessageUpdateOneWithoutWalletLedgerEntriesNestedInput
+  reservation?: Prisma.WalletReservationUpdateOneWithoutLedgerEntriesNestedInput
 }
 
 export type WalletLedgerEntryUncheckedUpdateWithoutCreatedByInput = {
@@ -1000,8 +1797,23 @@ export type WalletLedgerEntryUncheckedUpdateWithoutCreatedByInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reservationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1015,8 +1827,23 @@ export type WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reservationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1029,8 +1856,23 @@ export type WalletLedgerEntryCreateManyTenantInput = {
   walletId: string
   workspaceId?: string | null
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint | number
-  balanceAfterMinorUnits: bigint | number
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: string | null
+  reservationId?: string | null
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
   idempotencyKey: string
   reason: string
   description?: string | null
@@ -1042,8 +1884,21 @@ export type WalletLedgerEntryCreateManyTenantInput = {
 export type WalletLedgerEntryUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1052,6 +1907,8 @@ export type WalletLedgerEntryUpdateWithoutTenantInput = {
   wallet?: Prisma.WalletUpdateOneRequiredWithoutEntriesNestedInput
   workspace?: Prisma.WorkspaceUpdateOneWithoutWalletLedgerEntriesNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutWalletLedgerEntriesNestedInput
+  message?: Prisma.MessageUpdateOneWithoutWalletLedgerEntriesNestedInput
+  reservation?: Prisma.WalletReservationUpdateOneWithoutLedgerEntriesNestedInput
 }
 
 export type WalletLedgerEntryUncheckedUpdateWithoutTenantInput = {
@@ -1059,8 +1916,23 @@ export type WalletLedgerEntryUncheckedUpdateWithoutTenantInput = {
   walletId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reservationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1074,8 +1946,23 @@ export type WalletLedgerEntryUncheckedUpdateManyWithoutTenantInput = {
   walletId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reservationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1089,8 +1976,23 @@ export type WalletLedgerEntryCreateManyWorkspaceInput = {
   walletId: string
   tenantId: string
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint | number
-  balanceAfterMinorUnits: bigint | number
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: string | null
+  reservationId?: string | null
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
   idempotencyKey: string
   reason: string
   description?: string | null
@@ -1102,8 +2004,21 @@ export type WalletLedgerEntryCreateManyWorkspaceInput = {
 export type WalletLedgerEntryUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1112,6 +2027,8 @@ export type WalletLedgerEntryUpdateWithoutWorkspaceInput = {
   wallet?: Prisma.WalletUpdateOneRequiredWithoutEntriesNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutLedgerEntriesNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutWalletLedgerEntriesNestedInput
+  message?: Prisma.MessageUpdateOneWithoutWalletLedgerEntriesNestedInput
+  reservation?: Prisma.WalletReservationUpdateOneWithoutLedgerEntriesNestedInput
 }
 
 export type WalletLedgerEntryUncheckedUpdateWithoutWorkspaceInput = {
@@ -1119,8 +2036,23 @@ export type WalletLedgerEntryUncheckedUpdateWithoutWorkspaceInput = {
   walletId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reservationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1134,8 +2066,143 @@ export type WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceInput = {
   walletId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reservationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type WalletLedgerEntryCreateManyMessageInput = {
+  id?: string
+  walletId: string
+  tenantId: string
+  workspaceId?: string | null
+  direction: $Enums.WalletEntryDirection
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservationId?: string | null
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
+  idempotencyKey: string
+  reason: string
+  description?: string | null
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: string | null
+  createdAt?: Date | string
+}
+
+export type WalletLedgerEntryUpdateWithoutMessageInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wallet?: Prisma.WalletUpdateOneRequiredWithoutEntriesNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutLedgerEntriesNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneWithoutWalletLedgerEntriesNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutWalletLedgerEntriesNestedInput
+  reservation?: Prisma.WalletReservationUpdateOneWithoutLedgerEntriesNestedInput
+}
+
+export type WalletLedgerEntryUncheckedUpdateWithoutMessageInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  walletId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type WalletLedgerEntryUncheckedUpdateManyWithoutMessageInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  walletId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  reservationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1149,8 +2216,23 @@ export type WalletLedgerEntryCreateManyWalletInput = {
   tenantId: string
   workspaceId?: string | null
   direction: $Enums.WalletEntryDirection
-  amountMinorUnits: bigint | number
-  balanceAfterMinorUnits: bigint | number
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: string | null
+  reservationId?: string | null
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
   idempotencyKey: string
   reason: string
   description?: string | null
@@ -1162,8 +2244,21 @@ export type WalletLedgerEntryCreateManyWalletInput = {
 export type WalletLedgerEntryUpdateWithoutWalletInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1172,6 +2267,8 @@ export type WalletLedgerEntryUpdateWithoutWalletInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutLedgerEntriesNestedInput
   workspace?: Prisma.WorkspaceUpdateOneWithoutWalletLedgerEntriesNestedInput
   createdBy?: Prisma.UserUpdateOneWithoutWalletLedgerEntriesNestedInput
+  message?: Prisma.MessageUpdateOneWithoutWalletLedgerEntriesNestedInput
+  reservation?: Prisma.WalletReservationUpdateOneWithoutLedgerEntriesNestedInput
 }
 
 export type WalletLedgerEntryUncheckedUpdateWithoutWalletInput = {
@@ -1179,8 +2276,23 @@ export type WalletLedgerEntryUncheckedUpdateWithoutWalletInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reservationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1194,8 +2306,143 @@ export type WalletLedgerEntryUncheckedUpdateManyWithoutWalletInput = {
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
-  amountMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
-  balanceAfterMinorUnits?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reservationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type WalletLedgerEntryCreateManyReservationInput = {
+  id?: string
+  walletId: string
+  tenantId: string
+  workspaceId?: string | null
+  direction: $Enums.WalletEntryDirection
+  amountMinorUnits?: bigint | number | null
+  balanceAfterMinorUnits?: bigint | number | null
+  transactionReference?: string
+  transactionType?: string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: string
+  openingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: string | null
+  externalReference?: string | null
+  clientReference?: string | null
+  status?: string
+  idempotencyKey: string
+  reason: string
+  description?: string | null
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: string | null
+  createdAt?: Date | string
+}
+
+export type WalletLedgerEntryUpdateWithoutReservationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wallet?: Prisma.WalletUpdateOneRequiredWithoutEntriesNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutLedgerEntriesNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneWithoutWalletLedgerEntriesNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutWalletLedgerEntriesNestedInput
+  message?: Prisma.MessageUpdateOneWithoutWalletLedgerEntriesNestedInput
+}
+
+export type WalletLedgerEntryUncheckedUpdateWithoutReservationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  walletId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
+  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type WalletLedgerEntryUncheckedUpdateManyWithoutReservationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  walletId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  direction?: Prisma.EnumWalletEntryDirectionFieldUpdateOperationsInput | $Enums.WalletEntryDirection
+  amountMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  balanceAfterMinorUnits?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  transactionReference?: Prisma.StringFieldUpdateOperationsInput | string
+  transactionType?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  openingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingTotalBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingReservedBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  openingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  closingAvailableBalance?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clientReference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   idempotencyKey?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1214,6 +2461,21 @@ export type WalletLedgerEntrySelect<ExtArgs extends runtime.Types.Extensions.Int
   direction?: boolean
   amountMinorUnits?: boolean
   balanceAfterMinorUnits?: boolean
+  transactionReference?: boolean
+  transactionType?: boolean
+  amount?: boolean
+  currency?: boolean
+  openingTotalBalance?: boolean
+  closingTotalBalance?: boolean
+  openingReservedBalance?: boolean
+  closingReservedBalance?: boolean
+  openingAvailableBalance?: boolean
+  closingAvailableBalance?: boolean
+  messageId?: boolean
+  reservationId?: boolean
+  externalReference?: boolean
+  clientReference?: boolean
+  status?: boolean
   idempotencyKey?: boolean
   reason?: boolean
   description?: boolean
@@ -1224,6 +2486,8 @@ export type WalletLedgerEntrySelect<ExtArgs extends runtime.Types.Extensions.Int
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WalletLedgerEntry$workspaceArgs<ExtArgs>
   createdBy?: boolean | Prisma.WalletLedgerEntry$createdByArgs<ExtArgs>
+  message?: boolean | Prisma.WalletLedgerEntry$messageArgs<ExtArgs>
+  reservation?: boolean | Prisma.WalletLedgerEntry$reservationArgs<ExtArgs>
 }, ExtArgs["result"]["walletLedgerEntry"]>
 
 export type WalletLedgerEntrySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1234,6 +2498,21 @@ export type WalletLedgerEntrySelectCreateManyAndReturn<ExtArgs extends runtime.T
   direction?: boolean
   amountMinorUnits?: boolean
   balanceAfterMinorUnits?: boolean
+  transactionReference?: boolean
+  transactionType?: boolean
+  amount?: boolean
+  currency?: boolean
+  openingTotalBalance?: boolean
+  closingTotalBalance?: boolean
+  openingReservedBalance?: boolean
+  closingReservedBalance?: boolean
+  openingAvailableBalance?: boolean
+  closingAvailableBalance?: boolean
+  messageId?: boolean
+  reservationId?: boolean
+  externalReference?: boolean
+  clientReference?: boolean
+  status?: boolean
   idempotencyKey?: boolean
   reason?: boolean
   description?: boolean
@@ -1244,6 +2523,8 @@ export type WalletLedgerEntrySelectCreateManyAndReturn<ExtArgs extends runtime.T
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WalletLedgerEntry$workspaceArgs<ExtArgs>
   createdBy?: boolean | Prisma.WalletLedgerEntry$createdByArgs<ExtArgs>
+  message?: boolean | Prisma.WalletLedgerEntry$messageArgs<ExtArgs>
+  reservation?: boolean | Prisma.WalletLedgerEntry$reservationArgs<ExtArgs>
 }, ExtArgs["result"]["walletLedgerEntry"]>
 
 export type WalletLedgerEntrySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1254,6 +2535,21 @@ export type WalletLedgerEntrySelectUpdateManyAndReturn<ExtArgs extends runtime.T
   direction?: boolean
   amountMinorUnits?: boolean
   balanceAfterMinorUnits?: boolean
+  transactionReference?: boolean
+  transactionType?: boolean
+  amount?: boolean
+  currency?: boolean
+  openingTotalBalance?: boolean
+  closingTotalBalance?: boolean
+  openingReservedBalance?: boolean
+  closingReservedBalance?: boolean
+  openingAvailableBalance?: boolean
+  closingAvailableBalance?: boolean
+  messageId?: boolean
+  reservationId?: boolean
+  externalReference?: boolean
+  clientReference?: boolean
+  status?: boolean
   idempotencyKey?: boolean
   reason?: boolean
   description?: boolean
@@ -1264,6 +2560,8 @@ export type WalletLedgerEntrySelectUpdateManyAndReturn<ExtArgs extends runtime.T
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WalletLedgerEntry$workspaceArgs<ExtArgs>
   createdBy?: boolean | Prisma.WalletLedgerEntry$createdByArgs<ExtArgs>
+  message?: boolean | Prisma.WalletLedgerEntry$messageArgs<ExtArgs>
+  reservation?: boolean | Prisma.WalletLedgerEntry$reservationArgs<ExtArgs>
 }, ExtArgs["result"]["walletLedgerEntry"]>
 
 export type WalletLedgerEntrySelectScalar = {
@@ -1274,6 +2572,21 @@ export type WalletLedgerEntrySelectScalar = {
   direction?: boolean
   amountMinorUnits?: boolean
   balanceAfterMinorUnits?: boolean
+  transactionReference?: boolean
+  transactionType?: boolean
+  amount?: boolean
+  currency?: boolean
+  openingTotalBalance?: boolean
+  closingTotalBalance?: boolean
+  openingReservedBalance?: boolean
+  closingReservedBalance?: boolean
+  openingAvailableBalance?: boolean
+  closingAvailableBalance?: boolean
+  messageId?: boolean
+  reservationId?: boolean
+  externalReference?: boolean
+  clientReference?: boolean
+  status?: boolean
   idempotencyKey?: boolean
   reason?: boolean
   description?: boolean
@@ -1282,24 +2595,30 @@ export type WalletLedgerEntrySelectScalar = {
   createdAt?: boolean
 }
 
-export type WalletLedgerEntryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "walletId" | "tenantId" | "workspaceId" | "direction" | "amountMinorUnits" | "balanceAfterMinorUnits" | "idempotencyKey" | "reason" | "description" | "metadata" | "createdById" | "createdAt", ExtArgs["result"]["walletLedgerEntry"]>
+export type WalletLedgerEntryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "walletId" | "tenantId" | "workspaceId" | "direction" | "amountMinorUnits" | "balanceAfterMinorUnits" | "transactionReference" | "transactionType" | "amount" | "currency" | "openingTotalBalance" | "closingTotalBalance" | "openingReservedBalance" | "closingReservedBalance" | "openingAvailableBalance" | "closingAvailableBalance" | "messageId" | "reservationId" | "externalReference" | "clientReference" | "status" | "idempotencyKey" | "reason" | "description" | "metadata" | "createdById" | "createdAt", ExtArgs["result"]["walletLedgerEntry"]>
 export type WalletLedgerEntryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   wallet?: boolean | Prisma.WalletDefaultArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WalletLedgerEntry$workspaceArgs<ExtArgs>
   createdBy?: boolean | Prisma.WalletLedgerEntry$createdByArgs<ExtArgs>
+  message?: boolean | Prisma.WalletLedgerEntry$messageArgs<ExtArgs>
+  reservation?: boolean | Prisma.WalletLedgerEntry$reservationArgs<ExtArgs>
 }
 export type WalletLedgerEntryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   wallet?: boolean | Prisma.WalletDefaultArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WalletLedgerEntry$workspaceArgs<ExtArgs>
   createdBy?: boolean | Prisma.WalletLedgerEntry$createdByArgs<ExtArgs>
+  message?: boolean | Prisma.WalletLedgerEntry$messageArgs<ExtArgs>
+  reservation?: boolean | Prisma.WalletLedgerEntry$reservationArgs<ExtArgs>
 }
 export type WalletLedgerEntryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   wallet?: boolean | Prisma.WalletDefaultArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WalletLedgerEntry$workspaceArgs<ExtArgs>
   createdBy?: boolean | Prisma.WalletLedgerEntry$createdByArgs<ExtArgs>
+  message?: boolean | Prisma.WalletLedgerEntry$messageArgs<ExtArgs>
+  reservation?: boolean | Prisma.WalletLedgerEntry$reservationArgs<ExtArgs>
 }
 
 export type $WalletLedgerEntryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1309,6 +2628,8 @@ export type $WalletLedgerEntryPayload<ExtArgs extends runtime.Types.Extensions.I
     tenant: Prisma.$TenantPayload<ExtArgs>
     workspace: Prisma.$WorkspacePayload<ExtArgs> | null
     createdBy: Prisma.$UserPayload<ExtArgs> | null
+    message: Prisma.$MessagePayload<ExtArgs> | null
+    reservation: Prisma.$WalletReservationPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1316,8 +2637,23 @@ export type $WalletLedgerEntryPayload<ExtArgs extends runtime.Types.Extensions.I
     tenantId: string
     workspaceId: string | null
     direction: $Enums.WalletEntryDirection
-    amountMinorUnits: bigint
-    balanceAfterMinorUnits: bigint
+    amountMinorUnits: bigint | null
+    balanceAfterMinorUnits: bigint | null
+    transactionReference: string
+    transactionType: string
+    amount: runtime.Decimal
+    currency: string
+    openingTotalBalance: runtime.Decimal
+    closingTotalBalance: runtime.Decimal
+    openingReservedBalance: runtime.Decimal
+    closingReservedBalance: runtime.Decimal
+    openingAvailableBalance: runtime.Decimal
+    closingAvailableBalance: runtime.Decimal
+    messageId: string | null
+    reservationId: string | null
+    externalReference: string | null
+    clientReference: string | null
+    status: string
     idempotencyKey: string
     reason: string
     description: string | null
@@ -1722,6 +3058,8 @@ export interface Prisma__WalletLedgerEntryClient<T, Null = never, ExtArgs extend
   tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   workspace<T extends Prisma.WalletLedgerEntry$workspaceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WalletLedgerEntry$workspaceArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   createdBy<T extends Prisma.WalletLedgerEntry$createdByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WalletLedgerEntry$createdByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  message<T extends Prisma.WalletLedgerEntry$messageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WalletLedgerEntry$messageArgs<ExtArgs>>): Prisma.Prisma__MessageClient<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  reservation<T extends Prisma.WalletLedgerEntry$reservationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WalletLedgerEntry$reservationArgs<ExtArgs>>): Prisma.Prisma__WalletReservationClient<runtime.Types.Result.GetResult<Prisma.$WalletReservationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1758,6 +3096,21 @@ export interface WalletLedgerEntryFieldRefs {
   readonly direction: Prisma.FieldRef<"WalletLedgerEntry", 'WalletEntryDirection'>
   readonly amountMinorUnits: Prisma.FieldRef<"WalletLedgerEntry", 'BigInt'>
   readonly balanceAfterMinorUnits: Prisma.FieldRef<"WalletLedgerEntry", 'BigInt'>
+  readonly transactionReference: Prisma.FieldRef<"WalletLedgerEntry", 'String'>
+  readonly transactionType: Prisma.FieldRef<"WalletLedgerEntry", 'String'>
+  readonly amount: Prisma.FieldRef<"WalletLedgerEntry", 'Decimal'>
+  readonly currency: Prisma.FieldRef<"WalletLedgerEntry", 'String'>
+  readonly openingTotalBalance: Prisma.FieldRef<"WalletLedgerEntry", 'Decimal'>
+  readonly closingTotalBalance: Prisma.FieldRef<"WalletLedgerEntry", 'Decimal'>
+  readonly openingReservedBalance: Prisma.FieldRef<"WalletLedgerEntry", 'Decimal'>
+  readonly closingReservedBalance: Prisma.FieldRef<"WalletLedgerEntry", 'Decimal'>
+  readonly openingAvailableBalance: Prisma.FieldRef<"WalletLedgerEntry", 'Decimal'>
+  readonly closingAvailableBalance: Prisma.FieldRef<"WalletLedgerEntry", 'Decimal'>
+  readonly messageId: Prisma.FieldRef<"WalletLedgerEntry", 'String'>
+  readonly reservationId: Prisma.FieldRef<"WalletLedgerEntry", 'String'>
+  readonly externalReference: Prisma.FieldRef<"WalletLedgerEntry", 'String'>
+  readonly clientReference: Prisma.FieldRef<"WalletLedgerEntry", 'String'>
+  readonly status: Prisma.FieldRef<"WalletLedgerEntry", 'String'>
   readonly idempotencyKey: Prisma.FieldRef<"WalletLedgerEntry", 'String'>
   readonly reason: Prisma.FieldRef<"WalletLedgerEntry", 'String'>
   readonly description: Prisma.FieldRef<"WalletLedgerEntry", 'String'>
@@ -2200,6 +3553,44 @@ export type WalletLedgerEntry$createdByArgs<ExtArgs extends runtime.Types.Extens
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * WalletLedgerEntry.message
+ */
+export type WalletLedgerEntry$messageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Message
+   */
+  select?: Prisma.MessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Message
+   */
+  omit?: Prisma.MessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MessageInclude<ExtArgs> | null
+  where?: Prisma.MessageWhereInput
+}
+
+/**
+ * WalletLedgerEntry.reservation
+ */
+export type WalletLedgerEntry$reservationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WalletReservation
+   */
+  select?: Prisma.WalletReservationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WalletReservation
+   */
+  omit?: Prisma.WalletReservationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WalletReservationInclude<ExtArgs> | null
+  where?: Prisma.WalletReservationWhereInput
 }
 
 /**

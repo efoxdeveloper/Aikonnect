@@ -5,6 +5,7 @@ import { sendWhatsAppTemplateMessage, type WhatsAppTemplateParameter } from "../
 import { refreshCampaignMetrics } from "./campaign.metrics.js";
 import { templateVariableCount } from "./campaign.service.js";
 import { messagePricingSnapshot, resolveMessagePricing } from "../whatsapp-pricing/pricing.service.js";
+import { reserveMessageBilling, releaseMessageBilling } from "../billing/billing.service.js";
 
 const MAX_ATTEMPTS = 3;
 const BATCH_SIZE = 25;
@@ -84,28 +85,35 @@ async function sendRecipient(campaignId: string, recipientId: string) {
 
   const pricing = await resolveMessagePricing({ phoneNumber: recipient.phoneE164, category: campaign.category, pricingType: "REGULAR" });
 
-  const sent = await sendWhatsAppTemplateMessage(
-    campaign.workspaceId,
-    recipient.phoneE164,
-    campaign.metaTemplateName,
-    campaign.templateLanguageCode,
-    templateParameters(campaign.templateBody, variables(campaign.templateVariables), recipient.contact),
-    `campaign:${campaign.id}:recipient:${recipient.id}`,
-  );
-  const sentAt = sent.sentAt;
-  await prisma.$transaction(async (transaction) => {
+  const sentAt = new Date();
+  const conversation = await prisma.$transaction(async (transaction) => {
     const conversation = await transaction.conversation.upsert({
       where: { workspaceId_contactId_channelKey: { workspaceId: campaign.workspaceId, contactId: recipient.contact!.id, channelKey: "whatsapp" } },
-      create: { workspaceId: campaign.workspaceId, contactId: recipient.contact!.id, phoneNumberId: sent.phoneNumberId, channelKey: "whatsapp", status: "OPEN" },
-      update: { phoneNumberId: sent.phoneNumberId, deletedAt: null },
+      create: { workspaceId: campaign.workspaceId, contactId: recipient.contact!.id, channelKey: "whatsapp", status: "OPEN" },
+      update: { deletedAt: null },
       select: { id: true },
     });
-    await transaction.message.create({
-      data: { workspaceId: campaign.workspaceId, conversationId: conversation.id, contactId: recipient.contact!.id, metaMessageId: sent.metaMessageId, direction: "OUTGOING", type: "TEXT", status: "SENT", text: campaign.templateBody, ...messagePricingSnapshot(pricing), payload: { source: "campaign", campaignId: campaign.id, ...(sent.walletCharge ? { walletCharge: { entryId: sent.walletCharge.entryId, amountMinorUnits: sent.walletCharge.amountMinorUnits.toString() } } : {}) }, sentAt },
+    const message = await transaction.message.create({
+      data: { workspaceId: campaign.workspaceId, conversationId: conversation.id, contactId: recipient.contact!.id, direction: "OUTGOING", type: "TEXT", status: "QUEUED", text: campaign.templateBody, ...messagePricingSnapshot(pricing), payload: { source: "campaign", campaignId: campaign.id }, sentAt },
+      select: { id: true },
     });
-    await transaction.campaignRecipient.updateMany({ where: { id: recipient.id, status: "ATTEMPTED" }, data: { status: "SENT", metaMessageId: sent.metaMessageId, sentAt, failedAt: null, failureReason: null } });
-    await transaction.conversation.update({ where: { id: conversation.id }, data: { lastMessagePreview: `You: ${campaign.templateBody}`, lastMessageAt: sentAt } });
+    return { id: conversation.id, messageId: message.id };
   });
+  let reservation: { id: string } | null = null;
+  try {
+    const billing = await reserveMessageBilling({ workspaceId: campaign.workspaceId, messageId: conversation.messageId, pricing, clientReference: `campaign:${campaign.id}:recipient:${recipient.id}`, idempotencyKey: `campaign:${campaign.id}:recipient:${recipient.id}` });
+    reservation = billing.reservation;
+    const sent = await sendWhatsAppTemplateMessage(campaign.workspaceId, recipient.phoneE164, campaign.metaTemplateName, campaign.templateLanguageCode, templateParameters(campaign.templateBody, variables(campaign.templateVariables), recipient.contact), `campaign:${campaign.id}:recipient:${recipient.id}`);
+    await prisma.$transaction(async (transaction) => {
+      await transaction.message.update({ where: { id: conversation.messageId }, data: { metaMessageId: sent.metaMessageId, status: "SENT" } });
+      await transaction.campaignRecipient.updateMany({ where: { id: recipient.id, status: "ATTEMPTED" }, data: { status: "SENT", metaMessageId: sent.metaMessageId, sentAt: sent.sentAt, failedAt: null, failureReason: null } });
+      await transaction.conversation.update({ where: { id: conversation.id }, data: { lastMessagePreview: `You: ${campaign.templateBody}`, lastMessageAt: sent.sentAt } });
+    });
+  } catch (error) {
+    if (reservation) await releaseMessageBilling(conversation.messageId, error instanceof Error ? error.message : "Meta rejected the message");
+    await prisma.message.update({ where: { id: conversation.messageId }, data: { status: "FAILED", failedAt: new Date(), failureReason: failureMessage(error) } }).catch(() => undefined);
+    throw error;
+  }
   await refreshCampaignMetrics(campaign.workspaceId, campaignId);
 }
 

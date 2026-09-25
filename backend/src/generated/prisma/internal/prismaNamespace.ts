@@ -433,6 +433,8 @@ export const ModelName = {
   Session: 'Session',
   Wallet: 'Wallet',
   WalletLedgerEntry: 'WalletLedgerEntry',
+  WalletReservation: 'WalletReservation',
+  WorkspaceBillingSettings: 'WorkspaceBillingSettings',
   PlatformAuditLog: 'PlatformAuditLog',
   EmailVerificationToken: 'EmailVerificationToken',
   PasswordResetToken: 'PasswordResetToken'
@@ -451,7 +453,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "oAuthAccount" | "tenant" | "workspace" | "template" | "publicApiKey" | "webhookEndpoint" | "contact" | "contactConsentEvent" | "conversation" | "message" | "whatsAppRateCard" | "contactCustomField" | "contactCustomFieldValue" | "contactSegment" | "contactTask" | "contactNote" | "contactTag" | "contactTagAssignment" | "workspaceSetupProgress" | "whatsAppBusinessAccount" | "whatsAppPhoneNumber" | "automation" | "automationLog" | "workflow" | "workflowRun" | "campaign" | "campaignRecipient" | "workspaceMember" | "role" | "permission" | "rolePermission" | "workspaceInvitation" | "session" | "wallet" | "walletLedgerEntry" | "platformAuditLog" | "emailVerificationToken" | "passwordResetToken"
+    modelProps: "user" | "oAuthAccount" | "tenant" | "workspace" | "template" | "publicApiKey" | "webhookEndpoint" | "contact" | "contactConsentEvent" | "conversation" | "message" | "whatsAppRateCard" | "contactCustomField" | "contactCustomFieldValue" | "contactSegment" | "contactTask" | "contactNote" | "contactTag" | "contactTagAssignment" | "workspaceSetupProgress" | "whatsAppBusinessAccount" | "whatsAppPhoneNumber" | "automation" | "automationLog" | "workflow" | "workflowRun" | "campaign" | "campaignRecipient" | "workspaceMember" | "role" | "permission" | "rolePermission" | "workspaceInvitation" | "session" | "wallet" | "walletLedgerEntry" | "walletReservation" | "workspaceBillingSettings" | "platformAuditLog" | "emailVerificationToken" | "passwordResetToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3119,6 +3121,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    WalletReservation: {
+      payload: Prisma.$WalletReservationPayload<ExtArgs>
+      fields: Prisma.WalletReservationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WalletReservationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletReservationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WalletReservationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletReservationPayload>
+        }
+        findFirst: {
+          args: Prisma.WalletReservationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletReservationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WalletReservationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletReservationPayload>
+        }
+        findMany: {
+          args: Prisma.WalletReservationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletReservationPayload>[]
+        }
+        create: {
+          args: Prisma.WalletReservationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletReservationPayload>
+        }
+        createMany: {
+          args: Prisma.WalletReservationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WalletReservationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletReservationPayload>[]
+        }
+        delete: {
+          args: Prisma.WalletReservationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletReservationPayload>
+        }
+        update: {
+          args: Prisma.WalletReservationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletReservationPayload>
+        }
+        deleteMany: {
+          args: Prisma.WalletReservationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WalletReservationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WalletReservationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletReservationPayload>[]
+        }
+        upsert: {
+          args: Prisma.WalletReservationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletReservationPayload>
+        }
+        aggregate: {
+          args: Prisma.WalletReservationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWalletReservation>
+        }
+        groupBy: {
+          args: Prisma.WalletReservationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WalletReservationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WalletReservationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WalletReservationCountAggregateOutputType> | number
+        }
+      }
+    }
+    WorkspaceBillingSettings: {
+      payload: Prisma.$WorkspaceBillingSettingsPayload<ExtArgs>
+      fields: Prisma.WorkspaceBillingSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkspaceBillingSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkspaceBillingSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkspaceBillingSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkspaceBillingSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.WorkspaceBillingSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkspaceBillingSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkspaceBillingSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkspaceBillingSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.WorkspaceBillingSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkspaceBillingSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.WorkspaceBillingSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkspaceBillingSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.WorkspaceBillingSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkspaceBillingSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkspaceBillingSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.WorkspaceBillingSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkspaceBillingSettingsPayload>
+        }
+        update: {
+          args: Prisma.WorkspaceBillingSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkspaceBillingSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkspaceBillingSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkspaceBillingSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkspaceBillingSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkspaceBillingSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkspaceBillingSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkspaceBillingSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.WorkspaceBillingSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkspaceBillingSettings>
+        }
+        groupBy: {
+          args: Prisma.WorkspaceBillingSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkspaceBillingSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkspaceBillingSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkspaceBillingSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
     PlatformAuditLog: {
       payload: Prisma.$PlatformAuditLogPayload<ExtArgs>
       fields: Prisma.PlatformAuditLogFieldRefs
@@ -3615,6 +3765,14 @@ export const MessageScalarFieldEnum = {
   pricingCurrency: 'pricingCurrency',
   pricingEffectiveDate: 'pricingEffectiveDate',
   billingStatus: 'billingStatus',
+  billingMode: 'billingMode',
+  walletChargeAmount: 'walletChargeAmount',
+  billingCurrency: 'billingCurrency',
+  billingError: 'billingError',
+  estimatedMetaCost: 'estimatedMetaCost',
+  actualMetaCost: 'actualMetaCost',
+  costDifference: 'costDifference',
+  reconciledAt: 'reconciledAt',
   deletedAt: 'deletedAt',
   createdById: 'createdById',
   createdAt: 'createdAt',
@@ -4032,6 +4190,11 @@ export const WalletScalarFieldEnum = {
   tenantId: 'tenantId',
   currency: 'currency',
   balanceMinorUnits: 'balanceMinorUnits',
+  totalBalance: 'totalBalance',
+  reservedBalance: 'reservedBalance',
+  status: 'status',
+  lowBalanceThreshold: 'lowBalanceThreshold',
+  autoRechargeEnabled: 'autoRechargeEnabled',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -4047,6 +4210,21 @@ export const WalletLedgerEntryScalarFieldEnum = {
   direction: 'direction',
   amountMinorUnits: 'amountMinorUnits',
   balanceAfterMinorUnits: 'balanceAfterMinorUnits',
+  transactionReference: 'transactionReference',
+  transactionType: 'transactionType',
+  amount: 'amount',
+  currency: 'currency',
+  openingTotalBalance: 'openingTotalBalance',
+  closingTotalBalance: 'closingTotalBalance',
+  openingReservedBalance: 'openingReservedBalance',
+  closingReservedBalance: 'closingReservedBalance',
+  openingAvailableBalance: 'openingAvailableBalance',
+  closingAvailableBalance: 'closingAvailableBalance',
+  messageId: 'messageId',
+  reservationId: 'reservationId',
+  externalReference: 'externalReference',
+  clientReference: 'clientReference',
+  status: 'status',
   idempotencyKey: 'idempotencyKey',
   reason: 'reason',
   description: 'description',
@@ -4056,6 +4234,48 @@ export const WalletLedgerEntryScalarFieldEnum = {
 } as const
 
 export type WalletLedgerEntryScalarFieldEnum = (typeof WalletLedgerEntryScalarFieldEnum)[keyof typeof WalletLedgerEntryScalarFieldEnum]
+
+
+export const WalletReservationScalarFieldEnum = {
+  id: 'id',
+  walletId: 'walletId',
+  tenantId: 'tenantId',
+  workspaceId: 'workspaceId',
+  messageId: 'messageId',
+  rateCardId: 'rateCardId',
+  metaAmount: 'metaAmount',
+  platformFee: 'platformFee',
+  customerAmount: 'customerAmount',
+  walletChargeAmount: 'walletChargeAmount',
+  currency: 'currency',
+  status: 'status',
+  idempotencyKey: 'idempotencyKey',
+  clientReference: 'clientReference',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  completedAt: 'completedAt',
+  releasedAt: 'releasedAt'
+} as const
+
+export type WalletReservationScalarFieldEnum = (typeof WalletReservationScalarFieldEnum)[keyof typeof WalletReservationScalarFieldEnum]
+
+
+export const WorkspaceBillingSettingsScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  billingMode: 'billingMode',
+  billingType: 'billingType',
+  currency: 'currency',
+  walletRequired: 'walletRequired',
+  allowNegativeBalance: 'allowNegativeBalance',
+  creditLimit: 'creditLimit',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkspaceBillingSettingsScalarFieldEnum = (typeof WorkspaceBillingSettingsScalarFieldEnum)[keyof typeof WorkspaceBillingSettingsScalarFieldEnum]
 
 
 export const PlatformAuditLogScalarFieldEnum = {
@@ -4743,6 +4963,8 @@ export type GlobalOmitConfig = {
   session?: Prisma.SessionOmit
   wallet?: Prisma.WalletOmit
   walletLedgerEntry?: Prisma.WalletLedgerEntryOmit
+  walletReservation?: Prisma.WalletReservationOmit
+  workspaceBillingSettings?: Prisma.WorkspaceBillingSettingsOmit
   platformAuditLog?: Prisma.PlatformAuditLogOmit
   emailVerificationToken?: Prisma.EmailVerificationTokenOmit
   passwordResetToken?: Prisma.PasswordResetTokenOmit

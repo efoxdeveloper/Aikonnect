@@ -55,9 +55,14 @@ export async function getUsage(workspaceId: string, query: UsageQuery) {
   return {
     wallet: {
       currency: wallet.currency,
+      totalBalance: wallet.totalBalance,
+      reservedBalance: wallet.reservedBalance,
+      availableBalance: wallet.availableBalance,
+      lowBalanceThreshold: wallet.lowBalanceThreshold,
+      status: wallet.status,
       balanceMinorUnits: wallet.balanceMinorUnits,
       balance: wallet.balance,
-      configuredFromBackend: false,
+      configuredFromBackend: true,
     },
     filters: { from: dates.from.toISOString(), to: dates.to.toISOString() },
     summary: {

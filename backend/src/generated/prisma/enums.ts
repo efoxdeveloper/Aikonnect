@@ -117,6 +117,7 @@ export type MessageDirection = (typeof MessageDirection)[keyof typeof MessageDir
 
 
 export const MessageStatus = {
+  QUEUED: 'QUEUED',
   SENT: 'SENT',
   DELIVERED: 'DELIVERED',
   READ: 'READ',
@@ -225,7 +226,9 @@ export type CampaignRecipientStatus = (typeof CampaignRecipientStatus)[keyof typ
 
 export const WalletEntryDirection = {
   CREDIT: 'CREDIT',
-  DEBIT: 'DEBIT'
+  DEBIT: 'DEBIT',
+  HOLD: 'HOLD',
+  RELEASE: 'RELEASE'
 } as const
 
 export type WalletEntryDirection = (typeof WalletEntryDirection)[keyof typeof WalletEntryDirection]

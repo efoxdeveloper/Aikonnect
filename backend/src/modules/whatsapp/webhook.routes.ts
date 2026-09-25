@@ -3,6 +3,7 @@ import { Router, type Request, type Response } from "express";
 import type { Prisma } from "../../generated/prisma/client.js";
 import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
+import { captureMessageBilling, releaseMessageBilling } from "../billing/billing.service.js";
 import { publishInboxMessageStatus, publishInboxRefresh } from "../../realtime/inbox.js";
 import { prisma } from "../../database/prisma.js";
 import { runAutomationsForEvent } from "../automations/automation.executor.js";
@@ -323,7 +324,7 @@ async function ingestMessageStatuses(workspaceId: string, statuses: WhatsAppStat
     const failureReason = errors[0] ? asString(errors[0].title) ?? asString(errors[0].message) : undefined;
     const existing = await prisma.message.findFirst({
       where: { workspaceId, metaMessageId },
-      select: { id: true, conversationId: true, status: true },
+      select: { id: true, conversationId: true, status: true, billingStatus: true },
     });
     let updated = { count: 0 };
     if (existing && existing.status !== "FAILED") {
@@ -338,6 +339,15 @@ async function ingestMessageStatuses(workspaceId: string, statuses: WhatsAppStat
             ...(state === "FAILED" ? { failedAt: occurredAt, failureReason } : {}),
           },
         });
+      }
+    }
+    if (existing && existing.billingStatus === "RESERVED") {
+      try {
+        if (messageStatus === "DELIVERED") await captureMessageBilling(existing.id, metaMessageId);
+        if (messageStatus === "FAILED") await releaseMessageBilling(existing.id, failureReason ?? "Meta reported message delivery failure");
+      } catch (error) {
+        logger.error({ workspaceId, messageId: existing.id, metaMessageId, messageStatus, error }, "WhatsApp billing settlement failed");
+        await prisma.message.update({ where: { id: existing.id }, data: { billingStatus: "BILLING_ERROR", billingError: error instanceof Error ? error.message : "Billing settlement failed" } }).catch(() => undefined);
       }
     }
     const campaignRecipient = await prisma.campaignRecipient.findFirst({ where: { workspaceId, metaMessageId }, select: { id: true, campaignId: true, status: true } });

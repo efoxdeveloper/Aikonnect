@@ -8,6 +8,8 @@ import { validateBody, validateParams, validateQuery } from "../../middleware/va
 import { adminAuditQuerySchema, adminListQuerySchema, adminUserActionSchema, adminUserParamsSchema, adminWalletAdjustmentSchema } from "./admin.schemas.js";
 import * as rateCardController from "../whatsapp-pricing/pricing.controller.js";
 import { rateCardIdParamsSchema, rateCardInputSchema, rateCardListQuerySchema, rateCardStatusSchema, ratePreviewSchema } from "../whatsapp-pricing/pricing.schemas.js";
+import * as walletController from "../wallet/wallet.controller.js";
+import { billingSettingsSchema, walletCreditSchema, walletDebitSchema, walletLedgerQuerySchema, walletParamsSchema, walletRefundSchema, walletReservationParamsSchema, walletStatusSchema } from "../wallet/wallet.schemas.js";
 
 export const adminRouter = Router();
 
@@ -33,15 +35,24 @@ adminRouter.get("/platform-admins", ...access(...administratorRoles), validateQu
 adminRouter.get("/whatsapp", ...access(...customerRoles), validateQuery(adminListQuerySchema), asyncHandler(controller.whatsapp));
 adminRouter.get("/billing", ...access(...billingRoles), asyncHandler(controller.billing));
 adminRouter.post("/billing/wallet-adjustments", ...access(...billingRoles), validateBody(adminWalletAdjustmentSchema), asyncHandler(controller.walletAdjustment));
+adminRouter.get("/workspaces/:workspaceId/wallet", ...access(...billingRoles), validateParams(walletParamsSchema), asyncHandler(walletController.get));
+adminRouter.get("/workspaces/:workspaceId/wallet/transactions", ...access(...billingRoles), validateParams(walletParamsSchema), validateQuery(walletLedgerQuerySchema), asyncHandler(walletController.ledger));
+adminRouter.post("/workspaces/:workspaceId/wallet/credit", ...access(...billingRoles), validateParams(walletParamsSchema), validateBody(walletCreditSchema), asyncHandler(walletController.adminCredit));
+adminRouter.post("/workspaces/:workspaceId/wallet/recharge", ...access(...billingRoles), validateParams(walletParamsSchema), validateBody(walletCreditSchema), asyncHandler(walletController.adminCredit));
+adminRouter.post("/workspaces/:workspaceId/wallet/debit", ...access(...billingRoles), validateParams(walletParamsSchema), validateBody(walletDebitSchema), asyncHandler(walletController.adminDebit));
+adminRouter.get("/workspaces/:workspaceId/wallet/settings", ...access(...billingRoles), validateParams(walletParamsSchema), asyncHandler(walletController.adminSettings));
+adminRouter.patch("/workspaces/:workspaceId/wallet/settings", ...access(...billingRoles), validateParams(walletParamsSchema), validateBody(billingSettingsSchema), asyncHandler(walletController.adminUpdateSettings));
+adminRouter.patch("/workspaces/:workspaceId/wallet/status", ...access(...billingRoles), validateParams(walletParamsSchema), validateBody(walletStatusSchema), asyncHandler(walletController.adminStatus));
+adminRouter.post("/wallet-reservations/:reservationId/refund", ...access(...billingRoles), validateParams(walletReservationParamsSchema), validateBody(walletRefundSchema), asyncHandler(walletController.adminRefund));
 adminRouter.get("/usage", ...access(...billingRoles, "OPERATIONS"), asyncHandler(controller.usage));
 adminRouter.get("/health", ...access(...operationsRoles), asyncHandler(controller.health));
 adminRouter.get("/webhooks", ...access(...operationsRoles), validateQuery(adminListQuerySchema), asyncHandler(controller.webhooks));
 adminRouter.get("/audit-logs", ...access(...auditRoles), validateQuery(adminAuditQuerySchema), asyncHandler(controller.auditLogs));
 adminRouter.get("/settings", ...access(...administratorRoles), asyncHandler(controller.settings));
 adminRouter.get("/feature-flags", ...access(...administratorRoles), asyncHandler(controller.featureFlags));
+adminRouter.post("/whatsapp-rate-cards/preview", ...access(...administratorRoles), validateBody(ratePreviewSchema), asyncHandler(rateCardController.preview));
 adminRouter.get("/whatsapp-rate-cards", ...access(...administratorRoles), validateQuery(rateCardListQuerySchema), asyncHandler(rateCardController.list));
 adminRouter.get("/whatsapp-rate-cards/:id", ...access(...administratorRoles), validateParams(rateCardIdParamsSchema), asyncHandler(rateCardController.get));
 adminRouter.post("/whatsapp-rate-cards", ...access(...administratorRoles), validateBody(rateCardInputSchema), asyncHandler(rateCardController.create));
 adminRouter.put("/whatsapp-rate-cards/:id", ...access(...administratorRoles), validateParams(rateCardIdParamsSchema), validateBody(rateCardInputSchema), asyncHandler(rateCardController.update));
 adminRouter.patch("/whatsapp-rate-cards/:id/status", ...access(...administratorRoles), validateParams(rateCardIdParamsSchema), validateBody(rateCardStatusSchema), asyncHandler(rateCardController.updateStatus));
-adminRouter.post("/whatsapp-rate-cards/preview", ...access(...administratorRoles), validateBody(ratePreviewSchema), asyncHandler(rateCardController.preview));
