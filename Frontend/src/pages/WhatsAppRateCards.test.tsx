@@ -27,5 +27,8 @@ describe("WhatsApp rate cards", () => {
     fireEvent.click(screen.getByRole("button", { name: "Add rate" }));
     expect(await screen.findByRole("dialog", { name: "Add rate card" })).toBeInTheDocument();
     expect(screen.getByLabelText("Meta rate")).toBeInTheDocument();
+    expect(screen.getByLabelText("Platform fee")).toHaveValue("0.000000");
+    expect(screen.getByLabelText("Effective from")).not.toHaveValue("");
+    expect(screen.getByLabelText("Effective to")).not.toHaveValue("");
   });
 });

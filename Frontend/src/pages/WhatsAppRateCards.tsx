@@ -13,7 +13,8 @@ type RateCard = {
 type ListResponse = { items: RateCard[]; pagination: { page: number; pageSize: number; total: number; totalPages: number } };
 type FormState = Omit<RateCard, "id" | "status" | "source"> & { status: "ACTIVE" | "INACTIVE"; source: string };
 
-const blank: FormState = { countryCode: "IN", countryName: "India", currency: "INR", category: "UTILITY", pricingType: "REGULAR", metaRate: "", platformFee: "", customerRate: "", volumeTierFrom: null, volumeTierTo: null, effectiveFrom: "", effectiveTo: null, status: "ACTIVE", source: "MANUAL", notes: null };
+function dateInputValue(value: Date) { return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, "0")}-${String(value.getDate()).padStart(2, "0")}`; }
+function createBlankForm(): FormState { const today = new Date(); const nextYear = new Date(today); nextYear.setFullYear(today.getFullYear() + 1); return { countryCode: "IN", countryName: "India", currency: "INR", category: "UTILITY", pricingType: "REGULAR", metaRate: "", platformFee: "0.000000", customerRate: "", volumeTierFrom: null, volumeTierTo: null, effectiveFrom: dateInputValue(today), effectiveTo: dateInputValue(nextYear), status: "ACTIVE", source: "MANUAL", notes: null }; }
 const categories = ["MARKETING", "UTILITY", "AUTHENTICATION"];
 const pricingTypes = ["REGULAR", "FREE_CUSTOMER_SERVICE", "FREE_ENTRY_POINT", "VOLUME_TIER"];
 
@@ -25,7 +26,7 @@ function TextField({ label, value, onChange, id, type = "text", required = false
 
 export function WhatsAppRateCards() {
   const [rows, setRows] = useState<RateCard[]>([]);
-  const [form, setForm] = useState<FormState>(blank);
+  const [form, setForm] = useState<FormState>(createBlankForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [filters, setFilters] = useState({ countryCode: "", category: "", pricingType: "", status: "" });
@@ -43,7 +44,7 @@ export function WhatsAppRateCards() {
   useEffect(() => { void load(); }, [query]);
 
   const update = (key: keyof FormState, value: string) => setForm((current) => ({ ...current, [key]: value }));
-  const openCreate = () => { setEditingId(null); setForm(blank); setError(null); setDrawerOpen(true); };
+  const openCreate = () => { setEditingId(null); setForm(createBlankForm()); setError(null); setDrawerOpen(true); };
   const openEdit = (row: RateCard) => { setEditingId(row.id); setForm({ ...row }); setError(null); setDrawerOpen(true); };
   const closeDrawer = () => { if (!working) setDrawerOpen(false); };
   const submit = async (event: FormEvent) => {
@@ -51,7 +52,7 @@ export function WhatsAppRateCards() {
     const payload = { ...form, volumeTierFrom: form.volumeTierFrom || null, volumeTierTo: form.volumeTierTo || null, effectiveTo: form.effectiveTo || null, notes: form.notes || null, ...(form.customerRate ? { customerRate: form.customerRate } : { customerRate: undefined }) };
     try {
       await apiRequest<RateCard>(editingId ? `/admin/whatsapp-rate-cards/${editingId}` : "/admin/whatsapp-rate-cards", { method: editingId ? "PUT" : "POST", body: JSON.stringify(payload) });
-      setDrawerOpen(false); setForm(blank); setEditingId(null); await load();
+      setDrawerOpen(false); setForm(createBlankForm()); setEditingId(null); await load();
     } catch (caughtError) { setError(caughtError instanceof ApiError ? caughtError.message : "Unable to save rate card."); }
     finally { setWorking(false); }
   };
