@@ -105,6 +105,8 @@ enum TemplateStatus {
   PENDING
   APPROVED
   REJECTED
+  DELETING
+  DELETE_FAILED
   DELETED
 }
 
@@ -319,6 +321,10 @@ model Template {
   createdById         String?        @map("created_by_id") @db.Uuid
   updatedById         String?        @map("updated_by_id") @db.Uuid
   deletedById         String?        @map("deleted_by_id") @db.Uuid
+  deletionAttemptCount Int            @default(0) @map("deletion_attempt_count")
+  deletionNextAttemptAt DateTime?     @map("deletion_next_attempt_at") @db.Timestamptz(3)
+  deletionProcessingAt DateTime?      @map("deletion_processing_at") @db.Timestamptz(3)
+  deletionError       String?         @map("deletion_error") @db.Text
   createdAt           DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt           DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
   deletedAt           DateTime?      @map("deleted_at") @db.Timestamptz(3)
@@ -335,6 +341,7 @@ model Template {
   @@index([createdById])
   @@index([updatedById])
   @@index([deletedById])
+  @@index([status, deletionNextAttemptAt, deletionProcessingAt])
   @@map("templates")
 }
 

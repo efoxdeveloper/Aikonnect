@@ -3,7 +3,7 @@ import { TemplateStatus } from "../../generated/prisma/enums.js";
 import { prisma } from "../../database/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { toSlug } from "../../utils/slug.js";
-import { addWhatsAppTemplateFromLibrary, assertWhatsAppCatalogReady, connectedWhatsAppWabaId, createWhatsAppTemplate, deleteWhatsAppTemplate, listWhatsAppTemplateLibrary, listWhatsAppTemplates, updateWhatsAppTemplate } from "../whatsapp/whatsapp.service.js";
+import { addWhatsAppTemplateFromLibrary, assertWhatsAppCatalogReady, connectedWhatsAppWabaId, createWhatsAppTemplate, listWhatsAppTemplateLibrary, listWhatsAppTemplates, updateWhatsAppTemplate } from "../whatsapp/whatsapp.service.js";
 import { reviewTemplateWithAI, type TemplateAIReview } from "./template-ai.service.js";
 import type { AddLibraryTemplateInput, CreateTemplateInput, ListTemplatesQuery, TemplateLibraryQuery, UpdateTemplateInput } from "./template.schemas.js";
 import { buildMetaTemplatePayload, buildMetaTemplateUpdatePayload, languageCode, metaTemplateName } from "./meta-template-payload.js";
@@ -12,6 +12,8 @@ const templateInclude = {
   createdBy: { select: { firstName: true, lastName: true } },
   updatedBy: { select: { firstName: true, lastName: true } },
 } satisfies Prisma.TemplateInclude;
+
+const templateDeletionStatuses: TemplateStatus[] = [TemplateStatus.DELETING, TemplateStatus.DELETE_FAILED, TemplateStatus.DELETED];
 
 type TemplateRecord = Prisma.TemplateGetPayload<{ include: typeof templateInclude }>;
 
@@ -45,6 +47,8 @@ function serializeTemplate(template: TemplateRecord) {
     createdAt: template.createdAt,
     updatedAt: template.updatedAt,
     deletedAt: template.deletedAt,
+    deletionError: template.deletionError,
+    deletionAttemptCount: template.deletionAttemptCount,
   };
 }
 
@@ -174,9 +178,9 @@ function isUniqueConstraintError(error: unknown) {
 
 export async function listTemplates(workspaceId: string, query: ListTemplatesQuery) {
   const statusWhere: Prisma.TemplateWhereInput = query.status === "deleted"
-    ? { status: TemplateStatus.DELETED }
+    ? { status: { in: [TemplateStatus.DELETING, TemplateStatus.DELETE_FAILED, TemplateStatus.DELETED] } }
     : query.status === "active"
-      ? { status: { not: TemplateStatus.DELETED } }
+      ? { status: { notIn: [TemplateStatus.DELETING, TemplateStatus.DELETE_FAILED, TemplateStatus.DELETED] } }
       : {};
   const where: Prisma.TemplateWhereInput = {
     workspaceId,
@@ -220,8 +224,9 @@ export async function syncTemplatesFromMeta(workspaceId: string, actorUserId: st
     categories[mapped.category] = (categories[mapped.category] ?? 0) + 1;
     const existing = await prisma.template.findFirst({
       where: { workspaceId, OR: [{ metaTemplateId: remote.id }, { metaWabaId: result.wabaId, metaTemplateName: remote.name, metaLanguageCode: remote.language ?? mapped.language }] },
-      select: { id: true },
+      select: { id: true, status: true },
     });
+    if (existing && templateDeletionStatuses.includes(existing.status)) continue;
     const data = {
       metaTemplateId: remote.id,
       metaTemplateName: remote.name,
@@ -241,6 +246,10 @@ export async function syncTemplatesFromMeta(workspaceId: string, actorUserId: st
       content: mapped.content as Prisma.InputJsonValue,
       status: metaTemplateStatus(remote.status),
       deletedAt: null,
+      deletionAttemptCount: 0,
+      deletionNextAttemptAt: null,
+      deletionProcessingAt: null,
+      deletionError: null,
       updatedById: actorUserId,
     };
     if (existing) await prisma.template.update({ where: { id: existing.id }, data });
@@ -323,7 +332,7 @@ export async function createTemplate(workspaceId: string, actorUserId: string, i
 }
 
 export async function updateTemplate(workspaceId: string, templateId: string, actorUserId: string, input: UpdateTemplateInput) {
-  const existing = await prisma.template.findFirst({ where: { id: templateId, workspaceId, status: { not: TemplateStatus.DELETED } }, select: { id: true, metaTemplateId: true, metaTemplateName: true, metaWabaId: true, metaLanguageCode: true, metaStatus: true, name: true, category: true, language: true, templateType: true, headerType: true, headerText: true, headerFileName: true, body: true, footer: true, content: true } });
+  const existing = await prisma.template.findFirst({ where: { id: templateId, workspaceId, status: { notIn: [TemplateStatus.DELETED, TemplateStatus.DELETING, TemplateStatus.DELETE_FAILED] } }, select: { id: true, metaTemplateId: true, metaTemplateName: true, metaWabaId: true, metaLanguageCode: true, metaStatus: true, name: true, category: true, language: true, templateType: true, headerType: true, headerText: true, headerFileName: true, body: true, footer: true, content: true } });
   if (!existing) throw new AppError(404, "Template was not found", "TEMPLATE_NOT_FOUND");
   if (existing.metaTemplateId && input.name && metaTemplateName(input.name) !== existing.metaTemplateName) {
     throw new AppError(422, "Meta template names cannot be changed after submission", "META_TEMPLATE_NAME_IMMUTABLE");
@@ -375,17 +384,53 @@ export async function updateTemplate(workspaceId: string, templateId: string, ac
 }
 
 export async function deleteTemplate(workspaceId: string, templateId: string, actorUserId: string) {
-  const existing = await prisma.template.findFirst({ where: { id: templateId, workspaceId, status: { not: TemplateStatus.DELETED } }, select: { id: true, metaTemplateId: true, metaTemplateName: true, name: true } });
+  const existing = await prisma.template.findFirst({ where: { id: templateId, workspaceId, status: { not: TemplateStatus.DELETED } }, select: { id: true, status: true, metaTemplateId: true } });
   if (!existing) throw new AppError(404, "Template was not found", "TEMPLATE_NOT_FOUND");
-  if (existing.metaTemplateId) await deleteWhatsAppTemplate(workspaceId, existing.metaTemplateId, existing.metaTemplateName ?? metaTemplateName(existing.name));
+
+  if (existing.status === TemplateStatus.DELETING) return { queued: true };
+
+  const deletedAt = new Date();
+  if (!existing.metaTemplateId) {
+    const result = await prisma.template.updateMany({
+      where: { id: templateId, workspaceId, status: { not: TemplateStatus.DELETED } },
+      data: {
+        status: TemplateStatus.DELETED,
+        deletedAt,
+        deletedById: actorUserId,
+        updatedById: actorUserId,
+        deletionAttemptCount: 0,
+        deletionNextAttemptAt: null,
+        deletionProcessingAt: null,
+        deletionError: null,
+      },
+    });
+    if (result.count !== 1) throw new AppError(404, "Template was not found", "TEMPLATE_NOT_FOUND");
+    return { queued: false };
+  }
+
   const result = await prisma.template.updateMany({
     where: { id: templateId, workspaceId, status: { not: TemplateStatus.DELETED } },
-    data: { status: TemplateStatus.DELETED, deletedAt: new Date(), deletedById: actorUserId, updatedById: actorUserId },
+    data: {
+      status: TemplateStatus.DELETING,
+      deletedAt,
+      deletedById: actorUserId,
+      updatedById: actorUserId,
+      deletionAttemptCount: 0,
+      deletionNextAttemptAt: deletedAt,
+      deletionProcessingAt: null,
+      deletionError: null,
+    },
   });
   if (result.count !== 1) throw new AppError(404, "Template was not found", "TEMPLATE_NOT_FOUND");
+  return { queued: true };
 }
 
 export async function restoreTemplate(workspaceId: string, templateId: string, actorUserId: string) {
+  const current = await prisma.template.findFirst({ where: { id: templateId, workspaceId }, select: { status: true } });
+  if (!current) throw new AppError(404, "Deleted template was not found", "TEMPLATE_NOT_FOUND");
+  if (current.status === TemplateStatus.DELETING || current.status === TemplateStatus.DELETE_FAILED) {
+    throw new AppError(409, "This template is still being removed from Meta. Retry the deletion before restoring it.", "TEMPLATE_DELETION_IN_PROGRESS");
+  }
   const result = await prisma.template.updateMany({
     where: { id: templateId, workspaceId, status: TemplateStatus.DELETED },
     data: { status: TemplateStatus.DRAFT, deletedAt: null, deletedById: null, updatedById: actorUserId, metaTemplateId: null, metaTemplateName: null, metaWabaId: null, metaLanguageCode: null, metaStatus: null, metaRejectionReason: null },

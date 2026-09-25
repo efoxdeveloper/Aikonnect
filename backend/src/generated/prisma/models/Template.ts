@@ -20,8 +20,18 @@ export type TemplateModel = runtime.Types.Result.DefaultSelection<Prisma.$Templa
 
 export type AggregateTemplate = {
   _count: TemplateCountAggregateOutputType | null
+  _avg: TemplateAvgAggregateOutputType | null
+  _sum: TemplateSumAggregateOutputType | null
   _min: TemplateMinAggregateOutputType | null
   _max: TemplateMaxAggregateOutputType | null
+}
+
+export type TemplateAvgAggregateOutputType = {
+  deletionAttemptCount: number | null
+}
+
+export type TemplateSumAggregateOutputType = {
+  deletionAttemptCount: number | null
 }
 
 export type TemplateMinAggregateOutputType = {
@@ -47,6 +57,10 @@ export type TemplateMinAggregateOutputType = {
   createdById: string | null
   updatedById: string | null
   deletedById: string | null
+  deletionAttemptCount: number | null
+  deletionNextAttemptAt: Date | null
+  deletionProcessingAt: Date | null
+  deletionError: string | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -75,6 +89,10 @@ export type TemplateMaxAggregateOutputType = {
   createdById: string | null
   updatedById: string | null
   deletedById: string | null
+  deletionAttemptCount: number | null
+  deletionNextAttemptAt: Date | null
+  deletionProcessingAt: Date | null
+  deletionError: string | null
   createdAt: Date | null
   updatedAt: Date | null
   deletedAt: Date | null
@@ -104,12 +122,24 @@ export type TemplateCountAggregateOutputType = {
   createdById: number
   updatedById: number
   deletedById: number
+  deletionAttemptCount: number
+  deletionNextAttemptAt: number
+  deletionProcessingAt: number
+  deletionError: number
   createdAt: number
   updatedAt: number
   deletedAt: number
   _all: number
 }
 
+
+export type TemplateAvgAggregateInputType = {
+  deletionAttemptCount?: true
+}
+
+export type TemplateSumAggregateInputType = {
+  deletionAttemptCount?: true
+}
 
 export type TemplateMinAggregateInputType = {
   id?: true
@@ -134,6 +164,10 @@ export type TemplateMinAggregateInputType = {
   createdById?: true
   updatedById?: true
   deletedById?: true
+  deletionAttemptCount?: true
+  deletionNextAttemptAt?: true
+  deletionProcessingAt?: true
+  deletionError?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -162,6 +196,10 @@ export type TemplateMaxAggregateInputType = {
   createdById?: true
   updatedById?: true
   deletedById?: true
+  deletionAttemptCount?: true
+  deletionNextAttemptAt?: true
+  deletionProcessingAt?: true
+  deletionError?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -191,6 +229,10 @@ export type TemplateCountAggregateInputType = {
   createdById?: true
   updatedById?: true
   deletedById?: true
+  deletionAttemptCount?: true
+  deletionNextAttemptAt?: true
+  deletionProcessingAt?: true
+  deletionError?: true
   createdAt?: true
   updatedAt?: true
   deletedAt?: true
@@ -235,6 +277,18 @@ export type TemplateAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: TemplateAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: TemplateSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: TemplateMinAggregateInputType
@@ -265,6 +319,8 @@ export type TemplateGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: TemplateCountAggregateInputType | true
+  _avg?: TemplateAvgAggregateInputType
+  _sum?: TemplateSumAggregateInputType
   _min?: TemplateMinAggregateInputType
   _max?: TemplateMaxAggregateInputType
 }
@@ -293,10 +349,16 @@ export type TemplateGroupByOutputType = {
   createdById: string | null
   updatedById: string | null
   deletedById: string | null
+  deletionAttemptCount: number
+  deletionNextAttemptAt: Date | null
+  deletionProcessingAt: Date | null
+  deletionError: string | null
   createdAt: Date
   updatedAt: Date
   deletedAt: Date | null
   _count: TemplateCountAggregateOutputType | null
+  _avg: TemplateAvgAggregateOutputType | null
+  _sum: TemplateSumAggregateOutputType | null
   _min: TemplateMinAggregateOutputType | null
   _max: TemplateMaxAggregateOutputType | null
 }
@@ -343,6 +405,10 @@ export type TemplateWhereInput = {
   createdById?: Prisma.UuidNullableFilter<"Template"> | string | null
   updatedById?: Prisma.UuidNullableFilter<"Template"> | string | null
   deletedById?: Prisma.UuidNullableFilter<"Template"> | string | null
+  deletionAttemptCount?: Prisma.IntFilter<"Template"> | number
+  deletionNextAttemptAt?: Prisma.DateTimeNullableFilter<"Template"> | Date | string | null
+  deletionProcessingAt?: Prisma.DateTimeNullableFilter<"Template"> | Date | string | null
+  deletionError?: Prisma.StringNullableFilter<"Template"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Template"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Template"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Template"> | Date | string | null
@@ -376,6 +442,10 @@ export type TemplateOrderByWithRelationInput = {
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedById?: Prisma.SortOrderInput | Prisma.SortOrder
   deletedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletionAttemptCount?: Prisma.SortOrder
+  deletionNextAttemptAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletionProcessingAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletionError?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -414,6 +484,10 @@ export type TemplateWhereUniqueInput = Prisma.AtLeast<{
   createdById?: Prisma.UuidNullableFilter<"Template"> | string | null
   updatedById?: Prisma.UuidNullableFilter<"Template"> | string | null
   deletedById?: Prisma.UuidNullableFilter<"Template"> | string | null
+  deletionAttemptCount?: Prisma.IntFilter<"Template"> | number
+  deletionNextAttemptAt?: Prisma.DateTimeNullableFilter<"Template"> | Date | string | null
+  deletionProcessingAt?: Prisma.DateTimeNullableFilter<"Template"> | Date | string | null
+  deletionError?: Prisma.StringNullableFilter<"Template"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Template"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Template"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Template"> | Date | string | null
@@ -447,12 +521,18 @@ export type TemplateOrderByWithAggregationInput = {
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedById?: Prisma.SortOrderInput | Prisma.SortOrder
   deletedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletionAttemptCount?: Prisma.SortOrder
+  deletionNextAttemptAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletionProcessingAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletionError?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TemplateCountOrderByAggregateInput
+  _avg?: Prisma.TemplateAvgOrderByAggregateInput
   _max?: Prisma.TemplateMaxOrderByAggregateInput
   _min?: Prisma.TemplateMinOrderByAggregateInput
+  _sum?: Prisma.TemplateSumOrderByAggregateInput
 }
 
 export type TemplateScalarWhereWithAggregatesInput = {
@@ -482,6 +562,10 @@ export type TemplateScalarWhereWithAggregatesInput = {
   createdById?: Prisma.UuidNullableWithAggregatesFilter<"Template"> | string | null
   updatedById?: Prisma.UuidNullableWithAggregatesFilter<"Template"> | string | null
   deletedById?: Prisma.UuidNullableWithAggregatesFilter<"Template"> | string | null
+  deletionAttemptCount?: Prisma.IntWithAggregatesFilter<"Template"> | number
+  deletionNextAttemptAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Template"> | Date | string | null
+  deletionProcessingAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Template"> | Date | string | null
+  deletionError?: Prisma.StringNullableWithAggregatesFilter<"Template"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Template"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Template"> | Date | string
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Template"> | Date | string | null
@@ -507,6 +591,10 @@ export type TemplateCreateInput = {
   footer?: string | null
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TemplateStatus
+  deletionAttemptCount?: number
+  deletionNextAttemptAt?: Date | string | null
+  deletionProcessingAt?: Date | string | null
+  deletionError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -540,6 +628,10 @@ export type TemplateUncheckedCreateInput = {
   createdById?: string | null
   updatedById?: string | null
   deletedById?: string | null
+  deletionAttemptCount?: number
+  deletionNextAttemptAt?: Date | string | null
+  deletionProcessingAt?: Date | string | null
+  deletionError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -565,6 +657,10 @@ export type TemplateUpdateInput = {
   footer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTemplateStatusFieldUpdateOperationsInput | $Enums.TemplateStatus
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -598,6 +694,10 @@ export type TemplateUncheckedUpdateInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -627,6 +727,10 @@ export type TemplateCreateManyInput = {
   createdById?: string | null
   updatedById?: string | null
   deletedById?: string | null
+  deletionAttemptCount?: number
+  deletionNextAttemptAt?: Date | string | null
+  deletionProcessingAt?: Date | string | null
+  deletionError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -652,6 +756,10 @@ export type TemplateUpdateManyMutationInput = {
   footer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTemplateStatusFieldUpdateOperationsInput | $Enums.TemplateStatus
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -681,6 +789,10 @@ export type TemplateUncheckedUpdateManyInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -730,9 +842,17 @@ export type TemplateCountOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   updatedById?: Prisma.SortOrder
   deletedById?: Prisma.SortOrder
+  deletionAttemptCount?: Prisma.SortOrder
+  deletionNextAttemptAt?: Prisma.SortOrder
+  deletionProcessingAt?: Prisma.SortOrder
+  deletionError?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
+}
+
+export type TemplateAvgOrderByAggregateInput = {
+  deletionAttemptCount?: Prisma.SortOrder
 }
 
 export type TemplateMaxOrderByAggregateInput = {
@@ -758,6 +878,10 @@ export type TemplateMaxOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   updatedById?: Prisma.SortOrder
   deletedById?: Prisma.SortOrder
+  deletionAttemptCount?: Prisma.SortOrder
+  deletionNextAttemptAt?: Prisma.SortOrder
+  deletionProcessingAt?: Prisma.SortOrder
+  deletionError?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
@@ -786,9 +910,17 @@ export type TemplateMinOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   updatedById?: Prisma.SortOrder
   deletedById?: Prisma.SortOrder
+  deletionAttemptCount?: Prisma.SortOrder
+  deletionNextAttemptAt?: Prisma.SortOrder
+  deletionProcessingAt?: Prisma.SortOrder
+  deletionError?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
+}
+
+export type TemplateSumOrderByAggregateInput = {
+  deletionAttemptCount?: Prisma.SortOrder
 }
 
 export type TemplateCreateNestedManyWithoutCreatedByInput = {
@@ -983,6 +1115,10 @@ export type TemplateCreateWithoutCreatedByInput = {
   footer?: string | null
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TemplateStatus
+  deletionAttemptCount?: number
+  deletionNextAttemptAt?: Date | string | null
+  deletionProcessingAt?: Date | string | null
+  deletionError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1014,6 +1150,10 @@ export type TemplateUncheckedCreateWithoutCreatedByInput = {
   status?: $Enums.TemplateStatus
   updatedById?: string | null
   deletedById?: string | null
+  deletionAttemptCount?: number
+  deletionNextAttemptAt?: Date | string | null
+  deletionProcessingAt?: Date | string | null
+  deletionError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1049,6 +1189,10 @@ export type TemplateCreateWithoutUpdatedByInput = {
   footer?: string | null
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TemplateStatus
+  deletionAttemptCount?: number
+  deletionNextAttemptAt?: Date | string | null
+  deletionProcessingAt?: Date | string | null
+  deletionError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1080,6 +1224,10 @@ export type TemplateUncheckedCreateWithoutUpdatedByInput = {
   status?: $Enums.TemplateStatus
   createdById?: string | null
   deletedById?: string | null
+  deletionAttemptCount?: number
+  deletionNextAttemptAt?: Date | string | null
+  deletionProcessingAt?: Date | string | null
+  deletionError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1115,6 +1263,10 @@ export type TemplateCreateWithoutDeletedByInput = {
   footer?: string | null
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TemplateStatus
+  deletionAttemptCount?: number
+  deletionNextAttemptAt?: Date | string | null
+  deletionProcessingAt?: Date | string | null
+  deletionError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1146,6 +1298,10 @@ export type TemplateUncheckedCreateWithoutDeletedByInput = {
   status?: $Enums.TemplateStatus
   createdById?: string | null
   updatedById?: string | null
+  deletionAttemptCount?: number
+  deletionNextAttemptAt?: Date | string | null
+  deletionProcessingAt?: Date | string | null
+  deletionError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1204,6 +1360,10 @@ export type TemplateScalarWhereInput = {
   createdById?: Prisma.UuidNullableFilter<"Template"> | string | null
   updatedById?: Prisma.UuidNullableFilter<"Template"> | string | null
   deletedById?: Prisma.UuidNullableFilter<"Template"> | string | null
+  deletionAttemptCount?: Prisma.IntFilter<"Template"> | number
+  deletionNextAttemptAt?: Prisma.DateTimeNullableFilter<"Template"> | Date | string | null
+  deletionProcessingAt?: Prisma.DateTimeNullableFilter<"Template"> | Date | string | null
+  deletionError?: Prisma.StringNullableFilter<"Template"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Template"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Template"> | Date | string
   deletedAt?: Prisma.DateTimeNullableFilter<"Template"> | Date | string | null
@@ -1261,6 +1421,10 @@ export type TemplateCreateWithoutWorkspaceInput = {
   footer?: string | null
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TemplateStatus
+  deletionAttemptCount?: number
+  deletionNextAttemptAt?: Date | string | null
+  deletionProcessingAt?: Date | string | null
+  deletionError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1292,6 +1456,10 @@ export type TemplateUncheckedCreateWithoutWorkspaceInput = {
   createdById?: string | null
   updatedById?: string | null
   deletedById?: string | null
+  deletionAttemptCount?: number
+  deletionNextAttemptAt?: Date | string | null
+  deletionProcessingAt?: Date | string | null
+  deletionError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1346,6 +1514,10 @@ export type TemplateCreateManyCreatedByInput = {
   status?: $Enums.TemplateStatus
   updatedById?: string | null
   deletedById?: string | null
+  deletionAttemptCount?: number
+  deletionNextAttemptAt?: Date | string | null
+  deletionProcessingAt?: Date | string | null
+  deletionError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1374,6 +1546,10 @@ export type TemplateCreateManyUpdatedByInput = {
   status?: $Enums.TemplateStatus
   createdById?: string | null
   deletedById?: string | null
+  deletionAttemptCount?: number
+  deletionNextAttemptAt?: Date | string | null
+  deletionProcessingAt?: Date | string | null
+  deletionError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1402,6 +1578,10 @@ export type TemplateCreateManyDeletedByInput = {
   status?: $Enums.TemplateStatus
   createdById?: string | null
   updatedById?: string | null
+  deletionAttemptCount?: number
+  deletionNextAttemptAt?: Date | string | null
+  deletionProcessingAt?: Date | string | null
+  deletionError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1427,6 +1607,10 @@ export type TemplateUpdateWithoutCreatedByInput = {
   footer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTemplateStatusFieldUpdateOperationsInput | $Enums.TemplateStatus
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1458,6 +1642,10 @@ export type TemplateUncheckedUpdateWithoutCreatedByInput = {
   status?: Prisma.EnumTemplateStatusFieldUpdateOperationsInput | $Enums.TemplateStatus
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1486,6 +1674,10 @@ export type TemplateUncheckedUpdateManyWithoutCreatedByInput = {
   status?: Prisma.EnumTemplateStatusFieldUpdateOperationsInput | $Enums.TemplateStatus
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1511,6 +1703,10 @@ export type TemplateUpdateWithoutUpdatedByInput = {
   footer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTemplateStatusFieldUpdateOperationsInput | $Enums.TemplateStatus
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1542,6 +1738,10 @@ export type TemplateUncheckedUpdateWithoutUpdatedByInput = {
   status?: Prisma.EnumTemplateStatusFieldUpdateOperationsInput | $Enums.TemplateStatus
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1570,6 +1770,10 @@ export type TemplateUncheckedUpdateManyWithoutUpdatedByInput = {
   status?: Prisma.EnumTemplateStatusFieldUpdateOperationsInput | $Enums.TemplateStatus
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1595,6 +1799,10 @@ export type TemplateUpdateWithoutDeletedByInput = {
   footer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTemplateStatusFieldUpdateOperationsInput | $Enums.TemplateStatus
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1626,6 +1834,10 @@ export type TemplateUncheckedUpdateWithoutDeletedByInput = {
   status?: Prisma.EnumTemplateStatusFieldUpdateOperationsInput | $Enums.TemplateStatus
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1654,6 +1866,10 @@ export type TemplateUncheckedUpdateManyWithoutDeletedByInput = {
   status?: Prisma.EnumTemplateStatusFieldUpdateOperationsInput | $Enums.TemplateStatus
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1682,6 +1898,10 @@ export type TemplateCreateManyWorkspaceInput = {
   createdById?: string | null
   updatedById?: string | null
   deletedById?: string | null
+  deletionAttemptCount?: number
+  deletionNextAttemptAt?: Date | string | null
+  deletionProcessingAt?: Date | string | null
+  deletionError?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   deletedAt?: Date | string | null
@@ -1707,6 +1927,10 @@ export type TemplateUpdateWithoutWorkspaceInput = {
   footer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   content?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTemplateStatusFieldUpdateOperationsInput | $Enums.TemplateStatus
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1738,6 +1962,10 @@ export type TemplateUncheckedUpdateWithoutWorkspaceInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1766,6 +1994,10 @@ export type TemplateUncheckedUpdateManyWithoutWorkspaceInput = {
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletionAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  deletionNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1797,6 +2029,10 @@ export type TemplateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   createdById?: boolean
   updatedById?: boolean
   deletedById?: boolean
+  deletionAttemptCount?: boolean
+  deletionNextAttemptAt?: boolean
+  deletionProcessingAt?: boolean
+  deletionError?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -1830,6 +2066,10 @@ export type TemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   createdById?: boolean
   updatedById?: boolean
   deletedById?: boolean
+  deletionAttemptCount?: boolean
+  deletionNextAttemptAt?: boolean
+  deletionProcessingAt?: boolean
+  deletionError?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -1863,6 +2103,10 @@ export type TemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   createdById?: boolean
   updatedById?: boolean
   deletedById?: boolean
+  deletionAttemptCount?: boolean
+  deletionNextAttemptAt?: boolean
+  deletionProcessingAt?: boolean
+  deletionError?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
@@ -1896,12 +2140,16 @@ export type TemplateSelectScalar = {
   createdById?: boolean
   updatedById?: boolean
   deletedById?: boolean
+  deletionAttemptCount?: boolean
+  deletionNextAttemptAt?: boolean
+  deletionProcessingAt?: boolean
+  deletionError?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   deletedAt?: boolean
 }
 
-export type TemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "metaTemplateId" | "metaWabaId" | "metaTemplateName" | "metaLanguageCode" | "metaStatus" | "metaRejectionReason" | "name" | "templateKey" | "category" | "language" | "templateType" | "headerType" | "headerText" | "headerFileName" | "body" | "footer" | "content" | "status" | "createdById" | "updatedById" | "deletedById" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["template"]>
+export type TemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "metaTemplateId" | "metaWabaId" | "metaTemplateName" | "metaLanguageCode" | "metaStatus" | "metaRejectionReason" | "name" | "templateKey" | "category" | "language" | "templateType" | "headerType" | "headerText" | "headerFileName" | "body" | "footer" | "content" | "status" | "createdById" | "updatedById" | "deletedById" | "deletionAttemptCount" | "deletionNextAttemptAt" | "deletionProcessingAt" | "deletionError" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["template"]>
 export type TemplateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.Template$createdByArgs<ExtArgs>
@@ -1953,6 +2201,10 @@ export type $TemplatePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     createdById: string | null
     updatedById: string | null
     deletedById: string | null
+    deletionAttemptCount: number
+    deletionNextAttemptAt: Date | null
+    deletionProcessingAt: Date | null
+    deletionError: string | null
     createdAt: Date
     updatedAt: Date
     deletedAt: Date | null
@@ -2406,6 +2658,10 @@ export interface TemplateFieldRefs {
   readonly createdById: Prisma.FieldRef<"Template", 'String'>
   readonly updatedById: Prisma.FieldRef<"Template", 'String'>
   readonly deletedById: Prisma.FieldRef<"Template", 'String'>
+  readonly deletionAttemptCount: Prisma.FieldRef<"Template", 'Int'>
+  readonly deletionNextAttemptAt: Prisma.FieldRef<"Template", 'DateTime'>
+  readonly deletionProcessingAt: Prisma.FieldRef<"Template", 'DateTime'>
+  readonly deletionError: Prisma.FieldRef<"Template", 'String'>
   readonly createdAt: Prisma.FieldRef<"Template", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Template", 'DateTime'>
   readonly deletedAt: Prisma.FieldRef<"Template", 'DateTime'>

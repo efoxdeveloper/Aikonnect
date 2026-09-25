@@ -4,6 +4,7 @@ import { AppError } from "../../middleware/error-handler.js";
 import { getWhatsAppTemplateCapabilities, uploadWhatsAppTemplateMedia } from "../whatsapp/whatsapp.service.js";
 import type { AddLibraryTemplateInput, CreateTemplateInput, ListTemplatesQuery, TemplateLibraryQuery, UpdateTemplateInput } from "./template.schemas.js";
 import * as service from "./template.service.js";
+import { dispatchTemplateDeletion } from "./template-deletion.worker.js";
 
 export async function list(request: Request, response: Response) {
   response.status(200).json({ success: true, data: await service.listTemplates(request.params.workspaceId as string, request.validatedQuery as ListTemplatesQuery) });
@@ -46,7 +47,14 @@ export async function update(request: Request, response: Response) {
 }
 
 export async function remove(request: Request, response: Response) {
-  await service.deleteTemplate(request.params.workspaceId as string, request.params.templateId as string, requireAuth(request).userId);
+  const workspaceId = request.params.workspaceId as string;
+  const templateId = request.params.templateId as string;
+  const result = await service.deleteTemplate(workspaceId, templateId, requireAuth(request).userId);
+  if (result.queued) {
+    dispatchTemplateDeletion(templateId);
+    response.status(202).json({ success: true, data: { status: "DELETING" } });
+    return;
+  }
   response.status(204).send();
 }
 

@@ -145,6 +145,8 @@ export const TemplateStatus = {
   PENDING: 'PENDING',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED',
+  DELETING: 'DELETING',
+  DELETE_FAILED: 'DELETE_FAILED',
   DELETED: 'DELETED'
 } as const
 

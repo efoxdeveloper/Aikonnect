@@ -239,11 +239,11 @@ function sanitizeMetaPayload(value: unknown): unknown {
   }));
 }
 
-async function deleteMeta<T extends MetaResponse>(path: string, accessToken: string, stage: MetaRequestStage): Promise<T> {
+async function deleteMeta<T extends MetaResponse>(path: string, accessToken: string, stage: MetaRequestStage, timeoutMs = META_REQUEST_TIMEOUT_MS): Promise<T> {
   const response = await requestMeta(`https://graph.facebook.com/${env.META_GRAPH_API_VERSION}${path}`, {
     method: "DELETE",
     headers: { authorization: `Bearer ${accessToken}` },
-  }, stage);
+  }, stage, 1, timeoutMs);
   return parseMetaResponse(response, stage) as Promise<T>;
 }
 
@@ -621,9 +621,9 @@ export async function updateWhatsAppTemplate(workspaceId: string, metaTemplateId
   return postMeta<MetaTemplateResponse>(`/${encodeURIComponent(metaTemplateId)}`, accessToken, body, "update_template");
 }
 
-export async function deleteWhatsAppTemplate(workspaceId: string, metaTemplateId: string, name: string) {
+export async function deleteWhatsAppTemplate(workspaceId: string, metaTemplateId: string, name: string, timeoutMs = META_REQUEST_TIMEOUT_MS) {
   const { wabaId, accessToken } = await workspaceMetaCredentials(workspaceId);
-  return deleteMeta<MetaResponse>(`/${encodeURIComponent(wabaId)}/message_templates?hsm_id=${encodeURIComponent(metaTemplateId)}&name=${encodeURIComponent(name)}`, accessToken, "delete_template");
+  return deleteMeta<MetaResponse>(`/${encodeURIComponent(wabaId)}/message_templates?hsm_id=${encodeURIComponent(metaTemplateId)}&name=${encodeURIComponent(name)}`, accessToken, "delete_template", timeoutMs);
 }
 
 export async function sendWhatsAppConversationText(workspaceId: string, conversationId: string, body: string, chargeKey?: string) {

@@ -197,6 +197,10 @@ export const TemplateScalarFieldEnum = {
   createdById: 'createdById',
   updatedById: 'updatedById',
   deletedById: 'deletedById',
+  deletionAttemptCount: 'deletionAttemptCount',
+  deletionNextAttemptAt: 'deletionNextAttemptAt',
+  deletionProcessingAt: 'deletionProcessingAt',
+  deletionError: 'deletionError',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   deletedAt: 'deletedAt'
