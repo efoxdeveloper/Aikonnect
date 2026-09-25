@@ -38,13 +38,14 @@ function run(command, args) {
 
 console.log("Deploying Interakt from " + repositoryRoot + (dryRun ? " (dry run)" : ""));
 
-// Deployments always use the remote checkout as the source of truth. Reset
-// tracked edits and remove untracked non-ignored files before pulling so a
-// dirty deployment machine cannot block or alter the release. Ignored files
-// such as production .env files are intentionally preserved by git clean -fd.
-run("git", ["reset", "--hard", "HEAD"]);
+// Deployments always use the remote checkout as the source of truth. Fetch the
+// remote tip, reset tracked edits and local commits, and remove untracked
+// non-ignored files so a dirty deployment machine cannot block or alter the
+// release. Ignored files such as production .env files are intentionally
+// preserved by git clean -fd.
+run("git", ["fetch", "origin", "main"]);
+run("git", ["reset", "--hard", "origin/main"]);
 run("git", ["clean", "-fd"]);
-run("git", ["pull", "--ff-only", "origin", "main"]);
 run(npmCommand, ["--prefix", "backend", "ci"]);
 run(npmCommand, ["--prefix", "Frontend", "ci"]);
 // Treat every deployment as a patch release so the sidebar version identifies

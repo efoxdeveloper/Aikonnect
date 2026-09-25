@@ -12,12 +12,12 @@ test("deploy dry-run bumps, records and pushes the frontend patch version", () =
     encoding: "utf8",
   });
   assert.equal(result.status, 0, result.stderr);
-  const resetIndex = result.stdout.indexOf("git reset --hard HEAD");
+  const fetchIndex = result.stdout.indexOf("git fetch origin main");
+  const resetIndex = result.stdout.indexOf("git reset --hard origin/main");
   const cleanIndex = result.stdout.indexOf("git clean -fd");
-  const pullIndex = result.stdout.indexOf("git pull --ff-only origin main");
-  assert.ok(resetIndex >= 0, "deploy should discard tracked local changes");
+  assert.ok(fetchIndex >= 0, "deploy should fetch the remote branch");
+  assert.ok(resetIndex > fetchIndex, "deploy should reset to the fetched remote branch");
   assert.ok(cleanIndex > resetIndex, "deploy should clean untracked files after resetting");
-  assert.ok(pullIndex > cleanIndex, "deploy should pull only after cleaning the checkout");
   assert.match(result.stdout, /Frontend version patch --no-git-tag-version/);
   assert.match(result.stdout, /git -c user\.name=Interakt Deploy Bot -c user\.email=deploy@aikonnect\.efoxtechnologies\.com commit -m chore: bump frontend version for deployment/);
   assert.match(result.stdout, /git push origin main/);
