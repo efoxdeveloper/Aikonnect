@@ -59,8 +59,7 @@ export function WhatsAppConnectionGuide({
       <section role="dialog" aria-modal="true" aria-labelledby="whatsapp-connection-guide-title" className="flex max-h-[min(700px,calc(100dvh-2rem))] w-full max-w-[820px] min-h-0 flex-col overflow-hidden rounded-xl bg-white shadow-[0_24px_70px_rgba(15,23,42,.28)]">
         <header className="flex shrink-0 items-start justify-between gap-4 border-b border-slate-100 px-5 py-4 sm:px-6">
           <div className="min-w-0">
-            <div className="flex items-center gap-3 text-[11px] font-medium text-slate-600"><span>Step 1 of 2</span><span className="h-1.5 w-28 overflow-hidden rounded-full bg-slate-200"><span className="block h-full w-1/2 rounded-full bg-[var(--brand)]" /></span><span className="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-semibold text-emerald-700">WhatsApp Business API</span></div>
-            <h2 id="whatsapp-connection-guide-title" className="mt-4 text-[21px] font-semibold leading-tight tracking-[-0.025em] text-slate-900">2 Ways to Setup WhatsApp API Number</h2>
+            <h2 id="whatsapp-connection-guide-title" className="text-[21px] font-semibold leading-tight tracking-[-0.025em] text-slate-900">2 Ways to Setup WhatsApp API Number</h2>
             <p className="mt-1 text-sm text-slate-600">You can connect your number in two ways. Here&apos;s how they differ.</p>
           </div>
           <button type="button" aria-label="Close connection options" onClick={onClose} className="flex size-9 shrink-0 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-800 shadow-sm transition-colors hover:bg-slate-50"><X size={18} aria-hidden="true" /></button>

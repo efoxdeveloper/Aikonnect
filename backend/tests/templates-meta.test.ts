@@ -159,6 +159,27 @@ test("AI preflight reports Groq quota failures clearly", { concurrency: false },
   );
 });
 
+test("AI preflight retries with JSON object mode when Groq rejects structured output", { concurrency: false }, async (t) => {
+  env.GROQ_API_KEY = "test-groq-key";
+  t.after(() => { env.GROQ_API_KEY = undefined; });
+  const requests: any[] = [];
+  stub(t, globalThis, "fetch", async (_input: string | URL, init?: RequestInit) => {
+    const body = JSON.parse(String(init?.body));
+    requests.push(body);
+    if (requests.length === 1) {
+      return new Response(JSON.stringify({ error: { message: "Failed to validate JSON. Please adjust your prompt.", failed_generation: "not valid" } }), { status: 400 });
+    }
+    return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({ decision: "pass", summary: "The template is ready for Meta review.", issues: [] }) } }] }), { status: 200 });
+  });
+
+  const { reviewTemplateWithAI } = await import("../src/modules/templates/template-ai.service.js");
+  const result = await reviewTemplateWithAI({ name: "Test", category: "Marketing", language: "en_US", headerType: "none", body: "Hello", buttons: [] });
+
+  assert.equal(result?.decision, "pass");
+  assert.equal(requests[0].response_format.type, "json_schema");
+  assert.deepEqual(requests[1].response_format, { type: "json_object" });
+});
+
 test("sync imports Meta templates into the workspace library", { concurrency: false }, async (t) => {
   const creates: any[] = [];
   stub(t, prisma.whatsAppBusinessAccount, "findFirst", async () => account());

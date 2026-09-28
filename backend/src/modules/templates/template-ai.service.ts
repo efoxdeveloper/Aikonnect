@@ -33,10 +33,9 @@ const responseSchema = {
   required: ["decision", "summary", "issues"],
   properties: {
     decision: { type: "string", enum: ["pass", "block"] },
-    summary: { type: "string", minLength: 1, maxLength: 240 },
+    summary: { type: "string" },
     issues: {
       type: "array",
-      maxItems: 8,
       items: {
         type: "object",
         additionalProperties: false,
@@ -44,13 +43,22 @@ const responseSchema = {
         properties: {
           severity: { type: "string", enum: ["error", "warning"] },
           field: { type: "string", enum: ["name", "category", "language", "header", "body", "footer", "buttons"] },
-          message: { type: "string", minLength: 1, maxLength: 240 },
-          suggestion: { type: "string", maxLength: 240 },
+          message: { type: "string" },
+          suggestion: { type: "string" },
         },
       },
     },
   },
 } as const;
+
+type GroqResponsePayload = {
+  choices?: Array<{ message?: { content?: unknown } }>;
+  error?: { message?: unknown; failed_generation?: unknown };
+};
+
+type GroqResponseFormat =
+  | { type: "json_schema"; json_schema: { name: string; strict: true; schema: typeof responseSchema } }
+  | { type: "json_object" };
 
 function promptFor(input: TemplateReviewInput) {
   return [
@@ -59,59 +67,88 @@ function promptFor(input: TemplateReviewInput) {
     "Block only clear, likely Meta rejection or safety problems. Use warnings for subjective copy improvements.",
     "Check for misleading claims, scams, impersonation, requests for passwords or sensitive credentials, abusive or hateful content, unsafe regulated claims, malformed or confusing variables, and category mismatch.",
     "Variables use WhatsApp syntax such as {{1}}. Do not block ordinary promotional language, discounts, support messages, or transactional updates by themselves.",
-    "This is a preflight review, not a Meta approval decision. Return only the requested JSON object.",
+    "This is a preflight review, not a Meta approval decision. Return only one JSON object with decision, summary, and issues. Each issue must contain severity, field, message, and suggestion. Use an empty string when an issue has no suggestion.",
     `Template JSON:\n${JSON.stringify(input)}`,
   ].join("\n\n");
 }
 
-export async function reviewTemplateWithAI(input: TemplateReviewInput): Promise<TemplateAIReview | null> {
-  if (!env.GROQ_API_KEY) return null;
+function requestBody(input: TemplateReviewInput, responseFormat: GroqResponseFormat) {
+  return {
+    model: env.GROQ_MODEL,
+    temperature: 0,
+    max_tokens: 900,
+    response_format: responseFormat,
+    messages: [
+      { role: "system", content: "You are a careful WhatsApp template compliance reviewer. Return only valid JSON and follow the requested output shape exactly." },
+      { role: "user", content: promptFor(input) },
+    ],
+  };
+}
 
-  let response: Response;
+async function requestGroq(input: TemplateReviewInput, responseFormat: GroqResponseFormat): Promise<Response> {
   try {
-    response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    return await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         authorization: `Bearer ${env.GROQ_API_KEY}`,
         "content-type": "application/json",
       },
-      body: JSON.stringify({
-        model: env.GROQ_MODEL,
-        temperature: 0,
-        max_tokens: 900,
-        response_format: {
-          type: "json_schema",
-          json_schema: { name: "whatsapp_template_review", strict: true, schema: responseSchema },
-        },
-        messages: [
-          { role: "system", content: "You are a careful WhatsApp template compliance reviewer. Follow the output schema exactly." },
-          { role: "user", content: promptFor(input) },
-        ],
-      }),
+      body: JSON.stringify(requestBody(input, responseFormat)),
       signal: AbortSignal.timeout(10_000),
     });
   } catch {
     throw new AppError(503, "AI template validation is temporarily unavailable. Please try again.", "TEMPLATE_AI_UNAVAILABLE");
   }
+}
 
-  if (!response.ok) {
-    const providerPayload = await response.json().catch(() => ({})) as { error?: { message?: unknown; code?: unknown } };
-    const providerMessage = typeof providerPayload.error?.message === "string" ? providerPayload.error.message : "";
-    if (response.status === 401 || response.status === 403) {
-      throw new AppError(503, "Groq rejected the API key. Check GROQ_API_KEY in the server environment.", "TEMPLATE_AI_AUTH_FAILED");
-    }
-    if (response.status === 429) {
-      throw new AppError(503, "Groq rate limit or free-tier quota reached. Please try again later.", "TEMPLATE_AI_RATE_LIMITED");
-    }
-    throw new AppError(503, providerMessage ? `Groq rejected the validation request: ${providerMessage}` : "AI template validation is temporarily unavailable. Please try again.", "TEMPLATE_AI_UNAVAILABLE");
+async function providerPayload(response: Response): Promise<GroqResponsePayload> {
+  return await response.json().catch(() => ({})) as GroqResponsePayload;
+}
+
+function isStructuredOutputFailure(response: Response, payload: GroqResponsePayload) {
+  if (response.status !== 400) return false;
+  const message = typeof payload.error?.message === "string" ? payload.error.message.toLowerCase() : "";
+  return message.includes("failed to validate json") || payload.error?.failed_generation !== undefined;
+}
+
+function throwProviderError(response: Response, payload: GroqResponsePayload): never {
+  const providerMessage = typeof payload.error?.message === "string" ? payload.error.message : "";
+  if (response.status === 401 || response.status === 403) {
+    throw new AppError(503, "Groq rejected the API key. Check GROQ_API_KEY in the server environment.", "TEMPLATE_AI_AUTH_FAILED");
   }
+  if (response.status === 429) {
+    throw new AppError(503, "Groq rate limit or free-tier quota reached. Please try again later.", "TEMPLATE_AI_RATE_LIMITED");
+  }
+  throw new AppError(503, providerMessage ? `Groq rejected the validation request: ${providerMessage}` : "AI template validation is temporarily unavailable. Please try again.", "TEMPLATE_AI_UNAVAILABLE");
+}
 
+async function parseReview(response: Response): Promise<TemplateAIReview> {
   try {
-    const payload = await response.json() as { choices?: Array<{ message?: { content?: unknown } }> };
+    const payload = await response.json() as GroqResponsePayload;
     const content = payload.choices?.[0]?.message?.content;
     const parsed = typeof content === "string" ? JSON.parse(content) as unknown : content;
     return reviewSchema.parse(parsed);
   } catch {
     throw new AppError(502, "AI template validation returned an invalid review. Please try again.", "TEMPLATE_AI_RESPONSE_INVALID");
   }
+}
+
+export async function reviewTemplateWithAI(input: TemplateReviewInput): Promise<TemplateAIReview | null> {
+  if (!env.GROQ_API_KEY) return null;
+
+  let response = await requestGroq(input, {
+    type: "json_schema",
+    json_schema: { name: "whatsapp_template_review", strict: true, schema: responseSchema },
+  });
+
+  if (!response.ok) {
+    let payload = await providerPayload(response);
+    if (isStructuredOutputFailure(response, payload)) {
+      response = await requestGroq(input, { type: "json_object" });
+      if (!response.ok) payload = await providerPayload(response);
+    }
+    if (!response.ok) throwProviderError(response, payload);
+  }
+
+  return parseReview(response);
 }

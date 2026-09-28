@@ -22,5 +22,7 @@ describe("WhatsApp connection guide", () => {
     expect(screen.getByRole("button", { name: "Proceed with WA Business App Number" })).toBeDisabled();
     fireEvent.click(proceed);
     expect(onNext).not.toHaveBeenCalled();
+    expect(screen.queryByText("Step 1 of 2")).not.toBeInTheDocument();
+    expect(screen.queryByText("WhatsApp Business API")).not.toBeInTheDocument();
   });
 });
