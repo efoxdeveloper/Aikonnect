@@ -236,10 +236,12 @@ export async function getWorkspaceOnboarding(workspaceId: string) {
       onboardingStep: true,
       onboardingData: true,
       onboardingCompletedAt: true,
+      owner: { select: { phone: true } },
     },
   });
   if (!workspace) throw new AppError(404, "Workspace was not found", "WORKSPACE_NOT_FOUND");
-  return { ...workspace, data: workspace.onboardingData };
+  const { owner, ...workspaceData } = workspace;
+  return { ...workspaceData, phone: owner.phone, data: workspace.onboardingData };
 }
 
 export async function saveWorkspaceOnboarding(
@@ -281,27 +283,36 @@ export async function completeWorkspaceOnboarding(
   }
   if (workspace.onboardingCompletedAt) throw new AppError(409, "Workspace onboarding is already complete", "ONBOARDING_ALREADY_COMPLETE");
 
-  return prisma.workspace.update({
-    where: { id: workspaceId },
-    data: {
-      name: input.name,
-      country: input.country,
-      timezone: input.timezone,
-      onboardingStep: 4,
-      onboardingData: {
-        ...(workspace.onboardingData as Record<string, unknown>),
-        ...input,
-      } as Prisma.InputJsonValue,
-      onboardingCompletedAt: new Date(),
-    },
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-      country: true,
-      timezone: true,
-      onboardingCompletedAt: true,
-    },
+  return prisma.$transaction(async (transaction) => {
+    const updatedWorkspace = await transaction.workspace.update({
+      where: { id: workspaceId },
+      data: {
+        name: input.companyName,
+        companyName: input.companyName,
+        companyWebsite: input.companyWebsite || null,
+        companyLocation: input.state,
+        annualRevenue: input.annualRevenue,
+        industry: input.industry,
+        country: input.country,
+        timezone: input.timezone,
+        onboardingStep: 4,
+        onboardingData: {
+          ...(workspace.onboardingData as Record<string, unknown>),
+          ...input,
+        } as Prisma.InputJsonValue,
+        onboardingCompletedAt: new Date(),
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        country: true,
+        timezone: true,
+        onboardingCompletedAt: true,
+      },
+    });
+    await transaction.user.update({ where: { id: workspace.ownerId }, data: { phone: input.phone } });
+    return updatedWorkspace;
   });
 }
 

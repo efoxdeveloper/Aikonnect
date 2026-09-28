@@ -19,17 +19,25 @@ vi.mock("@/hooks/use-workspace-setup", () => ({
 const baseOnboarding: {
   name: string;
   companyName: string;
+  companyWebsite: string | null;
+  companyLocation: string | null;
+  annualRevenue: string | null;
   country: string;
   timezone: string;
+  phone: string | null;
   onboardingStep: number;
-  data: { channel: "whatsapp"; state: string; objectives: string[]; integrations: string[]; [key: string]: unknown };
+  data: { channel: "whatsapp"; phone: string; companyName: string; companyWebsite: string; country: string; state: string; annualRevenue: string; termsAccepted: boolean; objectives: string[]; integrations: string[]; [key: string]: unknown };
 } = {
   name: "Acme Support",
   companyName: "Acme Support",
+  companyWebsite: null,
+  companyLocation: "Delhi",
+  annualRevenue: "under-50-lakh",
   country: "India",
   timezone: "Asia/Kolkata",
+  phone: "+919876543210",
   onboardingStep: 0,
-  data: { channel: "whatsapp", state: "Delhi", objectives: [], integrations: [] },
+  data: { channel: "whatsapp", phone: "+919876543210", companyName: "Acme Support", companyWebsite: "", country: "India", state: "Delhi", annualRevenue: "under-50-lakh", termsAccepted: true, objectives: [], integrations: [] },
 };
 
 function authValue(): AuthContextValue {

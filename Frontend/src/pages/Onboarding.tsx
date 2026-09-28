@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeftIcon as ArrowLeft, ArrowRightIcon as ArrowRight, CheckIcon as Check, LoaderCircleIcon as LoaderCircle } from "@animateicons/react/lucide";
-import { Step, StepLabel, Stepper } from "@mui/material";
+import { Step, StepLabel, Stepper, TextField } from "@mui/material";
 import { Code2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { siFacebook, siGooglesheets, siRazorpay, siShopify, siWhatsapp, siXendit, type SimpleIcon } from "simple-icons";
 import { AuthMark } from "@/components/auth/AuthShell";
+import { authTextFieldSx } from "@/components/auth/auth-text-field";
 import { Button } from "@/components/ui/button";
+import { InternationalPhoneInput } from "@/components/ui/international-phone-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
 import { ApiError, apiRequest } from "@/lib/api";
@@ -17,8 +19,13 @@ type Integration = "apis-webhooks" | "shopify" | "google-sheets" | "facebook-lea
 type YesNo = "yes" | "no";
 
 type OnboardingData = {
+  phone?: string;
+  companyName?: string;
+  companyWebsite?: string;
+  country?: string;
   channel?: Channel;
   state?: string;
+  annualRevenue?: string;
   whatsappUpdatesConsent?: boolean;
   termsAccepted?: boolean;
   captchaCompleted?: boolean;
@@ -33,8 +40,12 @@ type OnboardingData = {
 type OnboardingResponse = {
   name: string;
   companyName: string | null;
+  companyWebsite: string | null;
+  companyLocation: string | null;
+  annualRevenue: string | null;
   country: string | null;
   timezone: string | null;
+  phone: string | null;
   onboardingStep: number;
   data: Partial<OnboardingData>;
 };
@@ -122,7 +133,7 @@ export function Onboarding() {
   const [completionMessageIndex, setCompletionMessageIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
-  const country = workspace?.country ?? "India";
+  const country = data.country ?? workspace?.country ?? "India";
   const timezone = workspace?.timezone ?? (country === "India" ? "Asia/Kolkata" : "UTC");
   const progress = Math.round((step / (steps.length - 1)) * 100);
   const selectedObjectives = useMemo(() => new Set(data.objectives), [data.objectives]);
@@ -137,7 +148,18 @@ export function Onboarding() {
         if (!mounted) return;
         setWorkspace(result);
         setStep(Math.min(Math.max(result.onboardingStep, 0), steps.length - 1));
-        setData({ ...emptyData, ...result.data, objectives: result.data.objectives ?? [], integrations: result.data.integrations ?? [] });
+        setData({
+          ...emptyData,
+          ...result.data,
+          phone: result.data.phone ?? result.phone ?? "",
+          companyName: result.data.companyName ?? result.companyName ?? "",
+          companyWebsite: result.data.companyWebsite ?? result.companyWebsite ?? "",
+          country: result.data.country ?? result.country ?? "India",
+          state: result.data.state ?? result.companyLocation ?? "",
+          annualRevenue: result.data.annualRevenue ?? result.annualRevenue ?? "",
+          objectives: result.data.objectives ?? [],
+          integrations: result.data.integrations ?? [],
+        });
       })
       .catch((caughtError) => setError(caughtError instanceof ApiError ? caughtError.message : "Unable to load your onboarding progress."))
       .finally(() => { if (mounted) setLoading(false); });
@@ -192,7 +214,7 @@ export function Onboarding() {
       await apiRequest(`/workspaces/${workspaceId}/onboarding/complete`, {
         method: "POST",
         headers: { authorization: `Bearer ${accessToken}` },
-        body: JSON.stringify({ name: workspace.name, country, timezone, ...data }),
+        body: JSON.stringify({ name: data.companyName?.trim() || workspace.name, country, timezone, ...data }),
       });
       await refreshUser();
       const remainingPreviewTime = Math.max(0, 2000 - (performance.now() - previewStartedAt));
@@ -209,6 +231,7 @@ export function Onboarding() {
 
   async function next() {
     if (step === 0 && (!data.industry || !data.industrySubcategory)) return setError("Select your industry and a sub-category to continue.");
+    if (step === 0 && (!data.phone || !data.companyName?.trim() || !data.country || !data.state?.trim() || !data.annualRevenue || !data.channel || !data.termsAccepted)) return setError("Complete your business details and accept the terms to continue.");
     if (step === 1 && data.objectives.length === 0) return setError("Choose at least one business objective.");
     if (step === steps.length - 1) return finish();
     await saveProgress(step + 1, data);
@@ -226,7 +249,23 @@ export function Onboarding() {
         <div className="grid gap-6 px-4 py-5 sm:px-8 sm:py-6 lg:grid-cols-[minmax(0,1fr)_250px]">
           <div className="flex min-h-[420px] min-w-0 flex-col sm:min-h-[440px]">
             <div className="flex-1">
-            {step === 0 && <><p className="text-xs font-semibold text-[var(--brand)]">Let&apos;s Get Started!</p><h2 className="mt-1 text-[19px] font-semibold text-[var(--text-primary)]">Which industry does your business belong to?</h2><p className="mt-1 text-sm text-[var(--text-secondary)]">We&apos;ll accordingly personalise your experience.</p><div className="mt-5 flex flex-wrap gap-2.5">{industries.map(([value, label]) => <IndustryChip key={value} selected={data.industry === value} label={label} onClick={() => selectIndustry(value)} />)}</div><div className="mt-5"><label htmlFor="onboarding-subcategory" className="mb-2 block text-sm font-semibold text-[var(--text-primary)]">Sub-category</label><Select value={data.industrySubcategory ?? ""} onValueChange={(value) => updateData("industrySubcategory", value)}><SelectTrigger id="onboarding-subcategory" aria-label="Sub-category" className="h-12"><SelectValue placeholder={data.industry ? "Select a sub-category" : "Select an industry first"} /></SelectTrigger><SelectContent>{availableSubcategories.map((value) => <SelectItem key={value} value={value}>{value}</SelectItem>)}</SelectContent></Select></div></>}
+            {step === 0 && <>
+              <p className="text-xs font-semibold text-[var(--brand)]">Let&apos;s Get Started!</p>
+              <h2 className="mt-1 text-[19px] font-semibold text-[var(--text-primary)]">Which industry does your business belong to?</h2>
+              <p className="mt-1 text-sm text-[var(--text-secondary)]">Tell us about your business so we can prepare the right workspace.</p>
+              <div className="mt-5 grid gap-3.5 sm:grid-cols-2">
+                <InternationalPhoneInput id="onboarding-phone" required value={data.phone ?? ""} onChange={(value) => updateData("phone", value)} />
+                <TextField id="onboarding-company-name" label="Company name" required value={data.companyName ?? ""} onChange={(event) => updateData("companyName", event.target.value)} fullWidth size="small" sx={authTextFieldSx} slotProps={{ htmlInput: { "aria-label": "Company name", autoComplete: "organization" } }} />
+                <TextField id="onboarding-company-website" label="Company website (optional)" type="url" value={data.companyWebsite ?? ""} onChange={(event) => updateData("companyWebsite", event.target.value)} fullWidth size="small" sx={authTextFieldSx} slotProps={{ htmlInput: { "aria-label": "Company website (optional)", autoComplete: "url" } }} />
+                <TextField id="onboarding-state" label="State / region" required value={data.state ?? ""} onChange={(event) => updateData("state", event.target.value)} fullWidth size="small" sx={authTextFieldSx} slotProps={{ htmlInput: { "aria-label": "State / region", autoComplete: "address-level1" } }} />
+                <div><label htmlFor="onboarding-country" className="mb-2 block text-sm font-semibold text-[var(--text-primary)]">Country</label><Select value={country} onValueChange={(value) => updateData("country", value)}><SelectTrigger id="onboarding-country" aria-label="Country" className="h-10"><SelectValue placeholder="Select country" /></SelectTrigger><SelectContent>{countries.map((value) => <SelectItem key={value} value={value}>{value}</SelectItem>)}</SelectContent></Select></div>
+                <div><label htmlFor="onboarding-annual-revenue" className="mb-2 block text-sm font-semibold text-[var(--text-primary)]">Annual revenue</label><Select value={data.annualRevenue ?? ""} onValueChange={(value) => updateData("annualRevenue", value)}><SelectTrigger id="onboarding-annual-revenue" aria-label="Annual revenue" className="h-10"><SelectValue placeholder="Select a revenue range" /></SelectTrigger><SelectContent><SelectItem value="under-50-lakh">Under ₹50 lakh</SelectItem><SelectItem value="50-lakh-1-crore">₹50 lakh – ₹1 crore</SelectItem><SelectItem value="1-5-crore">₹1 crore – ₹5 crore</SelectItem><SelectItem value="5-25-crore">₹5 crore – ₹25 crore</SelectItem><SelectItem value="25-crore-plus">₹25 crore and above</SelectItem></SelectContent></Select></div>
+              </div>
+              <fieldset className="mt-5"><legend className="mb-2 text-sm font-semibold text-[var(--text-primary)]">Which channels do you want to use?</legend><div className="grid gap-2 sm:grid-cols-3">{([["whatsapp", "WhatsApp"], ["instagram", "Instagram"], ["both", "WhatsApp + Instagram"]] as const).map(([value, label]) => <ChoiceCard key={value} selected={data.channel === value} label={label} onClick={() => updateData("channel", value)} />)}</div></fieldset>
+              <div className="mt-5 flex flex-col gap-2.5 rounded-md border border-[var(--border-soft)] bg-[var(--surface-subtle)] p-3.5 text-xs text-[var(--text-secondary)]"><label className="flex cursor-pointer items-start gap-2.5"><input type="checkbox" checked={data.whatsappUpdatesConsent ?? false} onChange={(event) => updateData("whatsappUpdatesConsent", event.target.checked)} className="mt-0.5 size-4 accent-[var(--brand)]" /><span>I agree to receive important account updates on WhatsApp.</span></label><label className="flex cursor-pointer items-start gap-2.5"><input type="checkbox" checked={data.termsAccepted ?? false} onChange={(event) => updateData("termsAccepted", event.target.checked)} className="mt-0.5 size-4 accent-[var(--brand)]" required /><span>I agree to Marento&apos;s <a href="#terms" onClick={(event) => event.stopPropagation()} className="font-medium text-[var(--brand)] underline decoration-[var(--green-300)] underline-offset-2">Terms of Service</a> and <a href="#privacy" onClick={(event) => event.stopPropagation()} className="font-medium text-[var(--brand)] underline decoration-[var(--green-300)] underline-offset-2">Privacy Policy</a>.</span></label></div>
+              <div className="mt-5 flex flex-wrap gap-2.5">{industries.map(([value, label]) => <IndustryChip key={value} selected={data.industry === value} label={label} onClick={() => selectIndustry(value)} />)}</div>
+              <div className="mt-5"><label htmlFor="onboarding-subcategory" className="mb-2 block text-sm font-semibold text-[var(--text-primary)]">Sub-category</label><Select value={data.industrySubcategory ?? ""} onValueChange={(value) => updateData("industrySubcategory", value)}><SelectTrigger id="onboarding-subcategory" aria-label="Sub-category" className="h-12"><SelectValue placeholder={data.industry ? "Select a sub-category" : "Select an industry first"} /></SelectTrigger><SelectContent>{availableSubcategories.map((value) => <SelectItem key={value} value={value}>{value}</SelectItem>)}</SelectContent></Select></div>
+            </>}
             {step === 1 && <><h2 className="text-[19px] font-semibold text-[var(--text-primary)]">What are your business objectives?</h2><p className="mt-1.5 text-sm text-[var(--text-secondary)]">Choose up to 3 objectives and we&apos;ll help you achieve them quickly.</p><div className="mt-5 grid gap-3 sm:grid-cols-2">{objectives.map(([value, title, description]) => <ObjectiveCard key={value} selected={selectedObjectives.has(value)} disabled={!selectedObjectives.has(value) && data.objectives.length >= 3} title={title} description={description} onClick={() => updateData("objectives", selectedObjectives.has(value) ? data.objectives.filter((item) => item !== value) : [...data.objectives, value])} />)}</div><p className="mt-3 text-xs text-[var(--text-muted)]">{data.objectives.length}/3 selected</p></>}
             {step === 2 && <><h2 className="text-[19px] font-semibold text-[var(--text-primary)]">Looking to integrate with a software tool?</h2><p className="mt-1.5 text-sm text-[var(--text-secondary)]">You can connect Marento to tools used by your team.</p><div className="mt-5"><p className="text-sm font-semibold text-[#36537f]">Custom Integration</p><div className="mt-2 max-w-[292px]">{integrations.filter(({ group }) => group === "custom").map((option) => <IntegrationCard key={option.value} option={option} selected={selectedIntegrations.has(option.value)} onClick={() => updateData("integrations", selectedIntegrations.has(option.value) ? data.integrations.filter((item) => item !== option.value) : [...data.integrations, option.value])} />)}</div></div><div className="mt-4"><p className="text-sm font-semibold text-[#36537f]">Popular Tools</p><div className="mt-2 grid gap-2.5 sm:grid-cols-3">{integrations.filter(({ group }) => group === "popular").map((option) => <IntegrationCard key={option.value} option={option} selected={selectedIntegrations.has(option.value)} onClick={() => updateData("integrations", selectedIntegrations.has(option.value) ? data.integrations.filter((item) => item !== option.value) : [...data.integrations, option.value])} />)}</div></div><div className="mt-4"><p className="text-sm font-semibold text-[#36537f]">Payment Provider</p><div className="mt-2 grid gap-2.5 sm:grid-cols-3">{integrations.filter(({ group }) => group === "payment").map((option) => <IntegrationCard key={option.value} option={option} selected={selectedIntegrations.has(option.value)} onClick={() => updateData("integrations", selectedIntegrations.has(option.value) ? data.integrations.filter((item) => item !== option.value) : [...data.integrations, option.value])} />)}</div></div></>}
             {step === 3 && <><h2 className="text-[19px] font-semibold text-[var(--text-primary)]">A Few Quick Checks Before We Begin</h2><p className="mt-1.5 text-sm text-[var(--text-secondary)]">Help us understand your current setup to get you started faster.</p><div className="mt-7 space-y-12"><fieldset><legend className="mb-3 text-sm font-semibold text-[var(--text-primary)]">Do you have a Facebook Business Manager account?</legend><div className="flex gap-8"><RadioOption name="meta-business-manager" label="Yes" selected={data.metaBusinessManager === "yes"} onChange={() => updateData("metaBusinessManager", "yes")} /><RadioOption name="meta-business-manager" label="No" selected={data.metaBusinessManager === "no"} onChange={() => updateData("metaBusinessManager", "no")} /></div></fieldset><fieldset><legend className="mb-3 text-sm font-semibold text-[var(--text-primary)]">Have you used a WhatsApp API number previously?</legend><div className="flex gap-8"><RadioOption name="used-whatsapp-api" label="Yes" selected={data.usedWhatsAppApi === "yes"} onChange={() => updateData("usedWhatsAppApi", "yes")} /><RadioOption name="used-whatsapp-api" label="No" selected={data.usedWhatsAppApi === "no"} onChange={() => updateData("usedWhatsAppApi", "no")} /></div></fieldset></div></>}

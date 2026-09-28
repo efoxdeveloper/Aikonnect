@@ -64,6 +64,38 @@ test("Google signup creates a verified user, linked identity, workspace, and reu
   assert.ok(firstLogin.workspace?.id);
   assert.ok(firstLogin.accessToken);
 
+  const completionResponse = await fetch(`${baseUrl}/workspaces/${firstLogin.workspace?.id}/onboarding/complete`, {
+    method: "POST",
+    headers: { authorization: `Bearer ${firstLogin.accessToken}`, "content-type": "application/json" },
+    body: JSON.stringify({
+      name: "Google Integration Co",
+      companyName: "Google Integration Co",
+      phone: "+919876543210",
+      companyWebsite: "https://example.com",
+      country: "India",
+      state: "Delhi",
+      annualRevenue: "under-50-lakh",
+      channel: "whatsapp",
+      termsAccepted: true,
+      industry: "technology",
+      industrySubcategory: "B2B services",
+      objectives: ["automated-notifications"],
+      integrations: [],
+      metaBusinessManager: "no",
+      usedWhatsAppApi: "no",
+      timezone: "Asia/Kolkata",
+    }),
+  });
+  assert.equal(completionResponse.status, 200);
+  const completedWorkspace = await prisma.workspace.findUnique({ where: { id: firstLogin.workspace?.id }, select: { companyName: true, companyWebsite: true, companyLocation: true, annualRevenue: true, onboardingCompletedAt: true } });
+  const completedUser = await prisma.user.findUnique({ where: { id: firstLogin.user.id }, select: { phone: true } });
+  assert.equal(completedWorkspace?.companyName, "Google Integration Co");
+  assert.equal(completedWorkspace?.companyWebsite, "https://example.com");
+  assert.equal(completedWorkspace?.companyLocation, "Delhi");
+  assert.equal(completedWorkspace?.annualRevenue, "under-50-lakh");
+  assert.ok(completedWorkspace?.onboardingCompletedAt);
+  assert.equal(completedUser?.phone, "+919876543210");
+
   const linked = await prisma.oAuthAccount.findUnique({ where: { provider_providerAccountId: { provider: "google", providerAccountId: identity.providerAccountId } } });
   assert.equal(linked?.userId, firstLogin.user.id);
 
@@ -322,7 +354,18 @@ test("registration requires email verification before workspace RBAC and session
       headers: { ...authorization, "content-type": "application/json" },
       body: JSON.stringify({
         name: "Integration Customer Care",
+        companyName: "Integration Customer Care",
+        phone: "+919876543211",
+        companyWebsite: "",
         country: "India",
+        state: "Delhi",
+        annualRevenue: "under-50-lakh",
+        channel: "whatsapp",
+        termsAccepted: true,
+        industry: "technology",
+        industrySubcategory: "B2B services",
+        objectives: ["automated-notifications"],
+        integrations: [],
         timezone: "Asia/Kolkata",
       }),
     },

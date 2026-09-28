@@ -6,6 +6,13 @@ const optionalText = (maximum: number) => z.string().trim().max(maximum).optiona
 const permissionValues = Object.values(PERMISSIONS) as [string, ...string[]];
 const industry = z.enum(industryValues);
 const channel = z.enum(["whatsapp", "instagram", "both"]);
+const annualRevenue = z.enum([
+  "under-50-lakh",
+  "50-lakh-1-crore",
+  "1-5-crore",
+  "5-25-crore",
+  "25-crore-plus",
+]);
 const objective = z.enum([
   "automated-notifications",
   "chat-support-automation",
@@ -30,8 +37,13 @@ const yesNo = z.enum(["yes", "no"]);
 const businessVerification = z.enum(["already-verified", "gst-certificate", "website-domain", "connect-without-verification"]);
 
 export const onboardingDataSchema = z.object({
+  phone: optionalText(30),
+  companyName: optionalText(160),
+  companyWebsite: z.union([z.url().max(500), z.literal("")]).optional(),
+  country: optionalText(100),
   channel: channel.optional(),
   state: optionalText(100),
+  annualRevenue: annualRevenue.optional(),
   whatsappUpdatesConsent: z.boolean().optional(),
   termsAccepted: z.boolean().optional(),
   captchaCompleted: z.boolean().optional(),
@@ -78,7 +90,18 @@ export const completeWorkspaceOnboardingSchema = z.object({
   name: z.string().trim().min(1).max(160),
   country: z.string().trim().min(2).max(100),
   timezone: z.string().trim().min(1).max(100).refine(validTimezone, "Select a valid time zone"),
-}).and(onboardingDataSchema.partial());
+}).and(onboardingDataSchema.partial()).and(z.object({
+  phone: z.string().trim().min(7).max(30),
+  companyName: z.string().trim().min(1).max(160),
+  companyWebsite: z.union([z.url().max(500), z.literal("")]).optional(),
+  state: z.string().trim().min(1).max(100),
+  annualRevenue,
+  channel,
+  termsAccepted: z.literal(true),
+  industry,
+  industrySubcategory: z.string().trim().min(1).max(100),
+  objectives: z.array(objective).min(1).max(3),
+}));
 
 export const saveWorkspaceOnboardingSchema = z.object({
   step: z.number().int().min(0).max(4),
