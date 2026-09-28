@@ -48,6 +48,31 @@ test("protected workspace routes reject anonymous requests", async () => {
   assert.equal(body.error.code, "AUTHENTICATION_REQUIRED");
 });
 
+test("account settings routes reject anonymous profile and preference updates", async () => {
+  const profileResponse = await fetch(`${baseUrl}/auth/profile`, {
+    method: "PATCH",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ firstName: "Anonymous", lastName: "User", phone: null }),
+  });
+  assert.equal(profileResponse.status, 401);
+
+  const preferencesResponse = await fetch(`${baseUrl}/auth/preferences`, {
+    method: "PATCH",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      language: "en-IN",
+      timezone: "Asia/Kolkata",
+      dateFormat: "DD/MM/YYYY",
+      defaultLandingPage: "/dashboard",
+      notifyProductUpdates: true,
+      notifyBillingAlerts: true,
+      notifyCampaignAlerts: true,
+      notifyWhatsappAlerts: true,
+    }),
+  });
+  assert.equal(preferencesResponse.status, 401);
+});
+
 test("Google signup creates a verified user, linked identity, workspace, and reusable session", async () => {
   const email = `google-integration-${Date.now()}@gmail.com`;
   createdEmails.push(email);
@@ -63,6 +88,38 @@ test("Google signup creates a verified user, linked identity, workspace, and reu
   assert.ok(firstLogin.user.emailVerifiedAt);
   assert.ok(firstLogin.workspace?.id);
   assert.ok(firstLogin.accessToken);
+
+  const profileResponse = await fetch(`${baseUrl}/auth/profile`, {
+    method: "PATCH",
+    headers: { authorization: `Bearer ${firstLogin.accessToken}`, "content-type": "application/json" },
+    body: JSON.stringify({ firstName: "Google Updated", lastName: "Integration", phone: "+919876543210" }),
+  });
+  assert.equal(profileResponse.status, 200);
+  const updatedProfile = (await profileResponse.json()).data as Record<string, unknown>;
+  assert.equal(updatedProfile.firstName, "Google Updated");
+  assert.equal(updatedProfile.lastName, "Integration");
+  assert.equal(updatedProfile.phone, "+919876543210");
+
+  const preferencesResponse = await fetch(`${baseUrl}/auth/preferences`, {
+    method: "PATCH",
+    headers: { authorization: `Bearer ${firstLogin.accessToken}`, "content-type": "application/json" },
+    body: JSON.stringify({
+      language: "en-US",
+      timezone: "UTC",
+      dateFormat: "YYYY-MM-DD",
+      defaultLandingPage: "/inbox",
+      notifyProductUpdates: false,
+      notifyBillingAlerts: true,
+      notifyCampaignAlerts: false,
+      notifyWhatsappAlerts: true,
+    }),
+  });
+  assert.equal(preferencesResponse.status, 200);
+  const updatedPreferences = (await preferencesResponse.json()).data as Record<string, unknown>;
+  assert.equal(updatedPreferences.language, "en-US");
+  assert.equal(updatedPreferences.timezone, "UTC");
+  assert.equal(updatedPreferences.defaultLandingPage, "/inbox");
+  assert.equal(updatedPreferences.notifyProductUpdates, false);
 
   const completionResponse = await fetch(`${baseUrl}/workspaces/${firstLogin.workspace?.id}/onboarding/complete`, {
     method: "POST",

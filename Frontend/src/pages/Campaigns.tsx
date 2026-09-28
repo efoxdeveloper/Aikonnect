@@ -1073,13 +1073,6 @@ export function Campaigns() {
                   <span className="size-2 rounded-full bg-[var(--success)]" />
                   Healthy
                 </span>
-                <span className="mx-0.5 h-5 w-px bg-[var(--border)]" />
-                <a
-                  href="/account-settings"
-                  className="text-[var(--brand-hover)] underline underline-offset-2"
-                >
-                  Notifications limit
-                </a>
               </div>
             </div>
           </div>

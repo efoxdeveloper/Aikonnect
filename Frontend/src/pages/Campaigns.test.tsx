@@ -152,6 +152,7 @@ describe("Campaigns", () => {
     expect(
       screen.getByRole("heading", { name: "Campaigns" }),
     ).toBeInTheDocument();
+    expect(screen.queryByText("Notifications limit")).not.toBeInTheDocument();
     const createButton = screen.getAllByRole("button", {
       name: "Create WhatsApp Campaign",
     })[0];

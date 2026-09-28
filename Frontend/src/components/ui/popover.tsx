@@ -2,5 +2,6 @@ import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { cn } from "@/lib/utils";
 const Popover = PopoverPrimitive.Root;
 const PopoverTrigger = PopoverPrimitive.Trigger;
+const PopoverAnchor = PopoverPrimitive.Anchor;
 function PopoverContent({ className, sideOffset = 6, ...props }: React.ComponentProps<typeof PopoverPrimitive.Content>) { return <PopoverPrimitive.Portal><PopoverPrimitive.Content sideOffset={sideOffset} className={cn("interactive-surface z-50 rounded-lg border border-[var(--border)] bg-white p-4 text-sm shadow-[0_10px_30px_rgba(4,45,29,0.10)] outline-none", className)} {...props} /></PopoverPrimitive.Portal>; }
-export { Popover, PopoverTrigger, PopoverContent };
+export { Popover, PopoverTrigger, PopoverAnchor, PopoverContent };

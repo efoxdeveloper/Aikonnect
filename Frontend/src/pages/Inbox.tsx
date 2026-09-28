@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import MuiAvatar from "@mui/material/Avatar";
 import {
   Archive,
   ArrowLeft,
@@ -123,7 +124,7 @@ function initials(name: string) {
 function ContactAvatar({ name, imageUrl, className }: { name: string; imageUrl?: string | null; className?: string }) {
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
   const showImage = Boolean(imageUrl && imageUrl !== failedUrl);
-  return <div className={cn("relative flex shrink-0 items-center justify-center overflow-hidden rounded-full", showImage ? "bg-[var(--brand-soft)] text-[var(--brand)]" : "bg-[#dfe5e7] text-white", className)}>{showImage ? <img src={imageUrl ?? undefined} alt={`${name} profile`} className="size-full object-cover" onError={() => setFailedUrl(imageUrl ?? null)} /> : <UserRound data-testid="contact-avatar-fallback" aria-label={`${name} default profile`} size={Math.max(16, 22)} strokeWidth={1.7} />}</div>;
+  return <MuiAvatar src={showImage ? imageUrl ?? undefined : undefined} alt={showImage ? `${name} profile` : undefined} onError={() => setFailedUrl(imageUrl ?? null)} className={cn("relative shrink-0", showImage ? "bg-[var(--brand-soft)] text-[var(--brand)]" : "bg-[#dfe5e7] text-white", className)}>{!showImage && <UserRound data-testid="contact-avatar-fallback" aria-label={`${name} default profile`} size={Math.max(16, 22)} strokeWidth={1.7} />}</MuiAvatar>;
 }
 
 function formatTime(value: string | null) {

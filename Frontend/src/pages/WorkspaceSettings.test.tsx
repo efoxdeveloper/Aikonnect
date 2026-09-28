@@ -23,6 +23,12 @@ describe("WorkspaceSettings", () => {
     vi.mocked(apiRequest).mockResolvedValueOnce(workspace).mockResolvedValueOnce({ ...workspace, name: "Updated Support" });
     render(<AuthContext.Provider value={auth()}><MemoryRouter><WorkspaceSettings /></MemoryRouter></AuthContext.Provider>);
     expect(await screen.findByDisplayValue("Acme Support")).toBeInTheDocument();
+    expect(screen.getByTestId("workspace-settings-page")).toHaveClass("h-full", "overflow-hidden");
+    expect(screen.getByTestId("workspace-settings-scroll-region")).toHaveClass("overflow-y-auto");
+    expect(screen.queryByText("The name your team sees throughout the app.")).not.toBeInTheDocument();
+    expect(screen.queryByText("Keep your company information up to date.")).not.toBeInTheDocument();
+    expect(screen.queryByText("Used for dates, time and business communication.")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Workspace logo")).not.toBeInTheDocument();
     fireEvent.change(screen.getByLabelText("Workspace name"), { target: { value: "Updated Support" } });
     fireEvent.click(screen.getByRole("button", { name: /save changes/i }));
     await waitFor(() => expect(apiRequest).toHaveBeenLastCalledWith("/workspaces/workspace-1", expect.objectContaining({ method: "PATCH", body: expect.stringContaining("Updated Support") })));

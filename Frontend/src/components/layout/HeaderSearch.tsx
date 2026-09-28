@@ -1,9 +1,76 @@
-import { useState } from "react";
+import { useMemo, useState, type KeyboardEvent } from "react";
 import { SearchIcon as Search } from "@animateicons/react/lucide";
-import { Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
+import { navigationGroups, type NavigationItem } from "@/config/navigation";
 import { useAnimatedIcon } from "@/hooks/use-animated-icon";
 
-export function HeaderSearch() { const [open, setOpen] = useState(false); const searchIcon = useAnimatedIcon(); return <Popover open={open} onOpenChange={setOpen}><PopoverTrigger asChild><div onMouseEnter={searchIcon.onMouseEnter} onMouseLeave={searchIcon.onMouseLeave} className="group/search flex h-10 w-[min(320px,34vw)] items-center gap-2 rounded-lg border border-[#e4e8e5] bg-[#f7f8f7] px-3 transition-[border-color,box-shadow] focus-within:border-[var(--brand-accent)] focus-within:ring-2 focus-within:ring-[var(--brand-accent)]/10"><Search ref={searchIcon.ref} size={18} duration={0.7} className="shrink-0 text-[#64726c] transition-colors duration-150 group-focus-within/search:text-[var(--brand)]" /><Input aria-label="Search" placeholder="Search workspace..." onFocus={() => setOpen(true)} className="h-9 border-0 bg-transparent px-0 text-[14px] font-normal shadow-none focus-visible:ring-0" /></div></PopoverTrigger><PopoverContent align="start" className="w-[320px] p-0"><Command><CommandInput placeholder="Search workspace..." /><CommandList><CommandEmpty>No results found.</CommandEmpty><CommandItem onSelect={() => setOpen(false)}><Sparkles className="size-4 text-[var(--brand)]" />Quickly find anything</CommandItem></CommandList></Command></PopoverContent></Popover>; }
+type SearchResult = { item: NavigationItem; groupTitle?: string };
+
+const searchResults: SearchResult[] = navigationGroups.flatMap((group) => group.items.flatMap((item) => [
+  { item, groupTitle: group.title },
+  ...(item.children ?? []).map((child) => ({ item: child, groupTitle: group.title })),
+])).filter(({ item }) => Boolean(item.url));
+
+export function HeaderSearch() {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
+  const searchIcon = useAnimatedIcon();
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredResults = useMemo(() => searchResults.filter(({ item, groupTitle }) => {
+    if (!normalizedQuery) return true;
+    return `${item.title} ${groupTitle ?? ""}`.toLowerCase().includes(normalizedQuery);
+  }), [normalizedQuery]);
+
+  const selectResult = (url?: string) => {
+    if (!url) return;
+    navigate(url);
+    setOpen(false);
+    setQuery("");
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      selectResult(filteredResults[0]?.item.url);
+    }
+    if (event.key === "Escape") {
+      setOpen(false);
+    }
+  };
+
+  return <Popover open={open} onOpenChange={setOpen}>
+    <PopoverAnchor asChild>
+      <div onMouseEnter={searchIcon.onMouseEnter} onMouseLeave={searchIcon.onMouseLeave} className="group/search flex h-10 w-[min(320px,34vw)] items-center gap-2 rounded-lg border border-[#e4e8e5] bg-[#f7f8f7] px-3 transition-[border-color,box-shadow] focus-within:border-[var(--brand-accent)] focus-within:ring-2 focus-within:ring-[var(--brand-accent)]/10">
+        <Search ref={searchIcon.ref} size={18} duration={0.7} className="shrink-0 text-[#64726c] transition-colors duration-150 group-focus-within/search:text-[var(--brand)]" />
+        <Input
+          aria-label="Search"
+          aria-expanded={open}
+          placeholder="Search workspace..."
+          value={query}
+          onChange={(event) => { setQuery(event.target.value); setOpen(true); }}
+          onFocus={() => setOpen(true)}
+          onKeyDown={handleKeyDown}
+          className="h-9 border-0 bg-transparent px-0 text-[14px] font-normal shadow-none focus-visible:ring-0"
+        />
+      </div>
+    </PopoverAnchor>
+    <PopoverContent align="start" className="w-[320px] p-0">
+      <Command shouldFilter={false}>
+        <CommandList>
+          <CommandEmpty>No pages found.</CommandEmpty>
+          <CommandGroup heading="Navigate to">
+            {filteredResults.map(({ item, groupTitle }) => <CommandItem key={item.url} value={item.title} onSelect={() => selectResult(item.url)}>
+              <item.icon size={17} duration={0.7} className="shrink-0 text-[var(--text-muted)]" />
+              <span className="min-w-0 flex-1 truncate">{item.title}</span>
+              {groupTitle && <span className="shrink-0 text-[11px] text-[var(--text-muted)]">{groupTitle}</span>}
+            </CommandItem>)}
+          </CommandGroup>
+        </CommandList>
+      </Command>
+    </PopoverContent>
+  </Popover>;
+}

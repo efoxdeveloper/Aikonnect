@@ -46,9 +46,49 @@ describe("AccountSettings", () => {
     expect(screen.getByTestId("account-settings-page")).toHaveClass("h-full", "overflow-hidden");
     expect(screen.getByTestId("account-settings-scroll-region")).toHaveClass("overflow-y-auto");
     expect(screen.getByRole("heading", { name: "Account settings" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Personal information" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Profile details" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Email address" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Password" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Password and sign-in" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Notifications" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Preferences" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Workspace access" })).toBeInTheDocument();
+  });
+
+  it("saves editable profile details", async () => {
+    vi.mocked(apiRequest).mockResolvedValueOnce({});
+    renderPage();
+
+    fireEvent.change(screen.getByLabelText("First name"), { target: { value: "Aarav" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save profile" }));
+
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith("/auth/profile", expect.objectContaining({
+      method: "PATCH",
+      headers: { authorization: "Bearer access-token" },
+      body: JSON.stringify({ firstName: "Aarav", lastName: "Agent", phone: null }),
+    })));
+    expect(await screen.findByRole("status")).toHaveTextContent(/profile details updated/i);
+  });
+
+  it("persists notification preferences", async () => {
+    vi.mocked(apiRequest).mockResolvedValueOnce({});
+    renderPage();
+
+    fireEvent.click(screen.getByRole("switch", { name: "Billing alerts" }));
+    fireEvent.click(screen.getByRole("button", { name: "Save notifications" }));
+
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith("/auth/preferences", expect.objectContaining({
+      method: "PATCH",
+      body: JSON.stringify({
+        language: "en-IN",
+        timezone: "Asia/Kolkata",
+        dateFormat: "DD/MM/YYYY",
+        defaultLandingPage: "/dashboard",
+        notifyProductUpdates: true,
+        notifyBillingAlerts: false,
+        notifyCampaignAlerts: true,
+        notifyWhatsappAlerts: true,
+      }),
+    })));
   });
 
   it("updates the email through the authenticated API flow", async () => {

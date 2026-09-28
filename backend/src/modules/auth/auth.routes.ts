@@ -13,6 +13,8 @@ import {
   loginSchema,
   registerSchema,
   resetPasswordSchema,
+  updatePreferencesSchema,
+  updateProfileSchema,
   verifyEmailSchema,
 } from "./auth.schemas.js";
 
@@ -35,3 +37,5 @@ authRouter.patch("/email", credentialRateLimit, authenticate, validateBody(chang
 authRouter.get("/me", authenticate, asyncHandler(controller.me));
 authRouter.post("/logout-all", authenticate, asyncHandler(controller.logoutAll));
 authRouter.post("/change-password", authenticate, validateBody(changePasswordSchema), asyncHandler(controller.changePassword));
+authRouter.patch("/profile", authenticate, validateBody(updateProfileSchema), asyncHandler(controller.updateProfile));
+authRouter.patch("/preferences", authenticate, validateBody(updatePreferencesSchema), asyncHandler(controller.updatePreferences));

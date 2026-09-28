@@ -240,3 +240,11 @@ export async function changePassword(request: Request, response: Response) {
   response.clearCookie(env.AUTH_COOKIE_NAME, refreshCookieOptions);
   response.status(200).json({ success: true, data: { message: "Password changed; sign in again" } });
 }
+
+export async function updateProfile(request: Request, response: Response) {
+  response.status(200).json({ success: true, data: await authService.updateProfile(requireAuth(request).userId, request.body) });
+}
+
+export async function updatePreferences(request: Request, response: Response) {
+  response.status(200).json({ success: true, data: await authService.updatePreferences(requireAuth(request).userId, request.body) });
+}

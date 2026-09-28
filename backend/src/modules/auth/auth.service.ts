@@ -8,7 +8,7 @@ import { generateSecureToken, hashPassword, hashToken, verifyPassword } from "..
 import { signAccessToken } from "../../utils/tokens.js";
 import { sendPasswordResetEmail, sendVerificationEmail } from "../../services/email.service.js";
 import { verifyTurnstileToken } from "../../services/turnstile.service.js";
-import type { ChangeEmailInput, ChangePasswordInput, LoginInput, RegisterInput, ResetPasswordInput } from "./auth.schemas.js";
+import type { ChangeEmailInput, ChangePasswordInput, LoginInput, RegisterInput, ResetPasswordInput, UpdatePreferencesInput, UpdateProfileInput } from "./auth.schemas.js";
 import type { GoogleIdentity } from "./google-oauth.service.js";
 
 type SessionMetadata = { ipAddress?: string; userAgent?: string };
@@ -23,6 +23,14 @@ const publicUserSelect = {
   platformRole: true,
   emailVerifiedAt: true,
   lastLoginAt: true,
+  language: true,
+  timezone: true,
+  dateFormat: true,
+  defaultLandingPage: true,
+  notifyProductUpdates: true,
+  notifyBillingAlerts: true,
+  notifyCampaignAlerts: true,
+  notifyWhatsappAlerts: true,
   createdAt: true,
 } as const;
 
@@ -277,6 +285,7 @@ export async function getCurrentUser(userId: string) {
     where: { id: userId },
     select: {
       ...publicUserSelect,
+      oauthAccounts: { select: { provider: true } },
       memberships: {
         where: { status: "ACTIVE" },
         select: {
@@ -310,6 +319,8 @@ export async function getCurrentUser(userId: string) {
 
   return {
     ...user,
+    oauthProviders: user.oauthAccounts.map(({ provider }) => provider),
+    oauthAccounts: undefined,
     memberships: user.memberships.map((membership) => ({
       ...membership,
       role: {
@@ -318,6 +329,22 @@ export async function getCurrentUser(userId: string) {
       },
     })),
   };
+}
+
+export async function updateProfile(userId: string, input: UpdateProfileInput) {
+  return prisma.user.update({
+    where: { id: userId },
+    data: { firstName: input.firstName, lastName: input.lastName, phone: input.phone || null },
+    select: publicUserSelect,
+  });
+}
+
+export async function updatePreferences(userId: string, input: UpdatePreferencesInput) {
+  return prisma.user.update({
+    where: { id: userId },
+    data: input,
+    select: publicUserSelect,
+  });
 }
 
 export async function requestPasswordReset(email: string) {

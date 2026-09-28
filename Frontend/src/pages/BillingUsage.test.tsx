@@ -25,7 +25,7 @@ const auth = (permissions: string[] = ["billing.read"]): AuthContextValue => ({
 });
 
 const usage = {
-  wallet: { currency: "INR", balanceMinorUnits: "12500", balance: "125.00", configuredFromBackend: false },
+  wallet: { currency: "INR", totalBalance: "125.000000", reservedBalance: "2.500000", availableBalance: "122.500000", lowBalanceThreshold: "10.000000", status: "ACTIVE", balanceMinorUnits: "12500", balance: "125.00", configuredFromBackend: false },
   filters: { from: "2026-08-01T00:00:00.000Z", to: "2026-08-31T23:59:59.999Z" },
   summary: { totalMessages: 42, incomingMessages: 18, outgoingMessages: 24, deliveredMessages: 22, readMessages: 16, failedMessages: 2, engagedContacts: 9, activeConversations: 7, mediaMessages: 3 },
   breakdown: [
@@ -49,8 +49,12 @@ describe("BillingUsage", () => {
 
     expect(screen.getByTestId("billing-usage-page")).toHaveClass("h-full", "overflow-hidden");
     expect(screen.getByTestId("billing-usage-scroll-region")).toHaveClass("overflow-y-auto");
+    expect(screen.queryByText("Internal tracking")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Add funds" })).toBeInTheDocument();
     expect(await screen.findByText("Total messages")).toBeInTheDocument();
-    expect(screen.getByText("₹ 125.00")).toBeInTheDocument();
+    expect(screen.getByText("₹ 122.50")).toBeInTheDocument();
+    expect(screen.getByText("₹ 2.50")).toBeInTheDocument();
+    expect(screen.queryByText("Engaged contacts")).not.toBeInTheDocument();
     expect(screen.getByText("42")).toBeInTheDocument();
     expect(screen.getByText("Meta billing is separate")).toBeInTheDocument();
 

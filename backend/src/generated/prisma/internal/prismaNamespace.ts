@@ -3541,6 +3541,14 @@ export const UserScalarFieldEnum = {
   platformRole: 'platformRole',
   emailVerifiedAt: 'emailVerifiedAt',
   lastLoginAt: 'lastLoginAt',
+  language: 'language',
+  timezone: 'timezone',
+  dateFormat: 'dateFormat',
+  defaultLandingPage: 'defaultLandingPage',
+  notifyProductUpdates: 'notifyProductUpdates',
+  notifyBillingAlerts: 'notifyBillingAlerts',
+  notifyCampaignAlerts: 'notifyCampaignAlerts',
+  notifyWhatsappAlerts: 'notifyWhatsappAlerts',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -4422,6 +4430,13 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+
+
+
+/**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -4460,13 +4475,6 @@ export type EnumTemplateStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'TemplateStatus[]'
  */
 export type ListEnumTemplateStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TemplateStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -5031,4 +5039,3 @@ export type PrismaAction =
  * `PrismaClient` proxy available in interactive transactions.
  */
 export type TransactionClient = Omit<DefaultPrismaClient, runtime.ITXClientDenyList>
-

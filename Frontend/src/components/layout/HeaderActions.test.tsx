@@ -35,6 +35,7 @@ describe("WalletBalance", () => {
     render(<AuthContext.Provider value={auth()}><MemoryRouter><WalletBalance /></MemoryRouter></AuthContext.Provider>);
 
     await waitFor(() => expect(screen.getByTestId("navbar-wallet")).toHaveTextContent("₹ 125.00"));
+    expect(screen.getByTestId("navbar-wallet")).toHaveClass("rounded-md", "shadow-none");
     expect(apiRequest).toHaveBeenCalledWith("/workspaces/workspace-1/wallet/", expect.objectContaining({ headers: { authorization: "Bearer access-token" } }));
   });
 

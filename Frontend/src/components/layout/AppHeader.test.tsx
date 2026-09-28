@@ -56,7 +56,9 @@ describe("AppHeader", () => {
       </AuthContext.Provider>,
     );
 
-    expect(screen.getByRole("button", { name: "Switch workspace: Acme Support" })).toHaveAttribute("data-navbar-workspace");
+    const workspaceButton = screen.getByRole("button", { name: "Switch workspace: Acme Support" });
+    expect(workspaceButton).toHaveAttribute("data-navbar-workspace");
+    expect(workspaceButton).toHaveClass("rounded-lg", "border-[var(--border)]");
     expect(screen.getByText("Acme Support")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Notifications" })).toBeInTheDocument();
     expect(screen.getByTestId("sidebar-brand-header")).toBeInTheDocument();

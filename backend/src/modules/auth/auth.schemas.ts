@@ -11,6 +11,14 @@ const password = z
 const optionalText = (maximum: number) => z.string().trim().max(maximum).optional();
 const industry = z.enum(industryValues);
 const channel = z.enum(["whatsapp", "instagram", "both"]);
+const validTimezone = (value: string) => {
+  try {
+    new Intl.DateTimeFormat("en", { timeZone: value }).format();
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 export const registerSchema = z.object({
   email,
@@ -55,6 +63,21 @@ export const changePasswordSchema = z.object({
   currentPassword: z.string().min(1).max(128),
   newPassword: password,
 });
+export const updateProfileSchema = z.object({
+  firstName: z.string().trim().min(1).max(100),
+  lastName: z.string().trim().min(1).max(100),
+  phone: z.union([z.string().trim().max(30), z.null()]),
+});
+export const updatePreferencesSchema = z.object({
+  language: z.enum(["en-IN", "en-US", "en-GB"]),
+  timezone: z.string().trim().min(1).max(100).refine(validTimezone, "Select a valid time zone"),
+  dateFormat: z.enum(["DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD"]),
+  defaultLandingPage: z.enum(["/dashboard", "/inbox", "/campaigns"]),
+  notifyProductUpdates: z.boolean(),
+  notifyBillingAlerts: z.boolean(),
+  notifyCampaignAlerts: z.boolean(),
+  notifyWhatsappAlerts: z.boolean(),
+});
 
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type EmailAvailabilityQuery = z.infer<typeof emailAvailabilityQuerySchema>;
@@ -62,3 +85,5 @@ export type LoginInput = z.infer<typeof loginSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
 export type ChangeEmailInput = z.infer<typeof changeEmailSchema>;
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+export type UpdatePreferencesInput = z.infer<typeof updatePreferencesSchema>;

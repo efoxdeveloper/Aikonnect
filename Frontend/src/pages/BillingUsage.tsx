@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { BarChart3, CalendarDays, CheckCircle2, Info, MessageSquare, Users, WalletCards } from "lucide-react";
+import { BarChart3, CalendarDays, CheckCircle2, Info, MessageSquare, Plus, WalletCards } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { apiRequest } from "@/lib/api";
 import { getActiveMembership } from "@/lib/workspace";
@@ -26,6 +26,7 @@ type LedgerEntry = { id: string; direction: "CREDIT" | "DEBIT" | "HOLD" | "RELEA
 type LedgerData = { items: LedgerEntry[]; pagination: { page: number; pageSize: number; total: number; totalPages: number; hasNext: boolean; hasPrevious: boolean } };
 
 const numberFormat = new Intl.NumberFormat("en-IN");
+const moneyDisplayFormat = new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 function dateRange(days: number) {
   const to = new Date();
@@ -57,7 +58,8 @@ function formatMoney(currency: string, value: string | null | undefined, signed 
   if (value === null || value === undefined) return "—";
   const prefix = currency === "INR" ? "₹" : currency;
   const sign = signed ? direction === "DEBIT" ? "−" : direction === "CREDIT" ? "+" : "" : "";
-  return `${sign}${prefix} ${value}`;
+  const amount = Number(value);
+  return `${sign}${prefix} ${Number.isFinite(amount) ? moneyDisplayFormat.format(amount) : value}`;
 }
 
 export function BillingUsage() {
@@ -150,7 +152,6 @@ export function BillingUsage() {
           <MetricCard icon={<MessageSquare size={17} />} label="Total messages" value={data.summary.totalMessages} detail={`${numberFormat.format(data.summary.incomingMessages)} incoming`} />
           <MetricCard icon={<BarChart3 size={17} />} label="Outbound messages" value={data.summary.outgoingMessages} detail={`${numberFormat.format(data.summary.deliveredMessages)} delivered`} />
           <MetricCard icon={<CheckCircle2 size={17} />} label="Read messages" value={data.summary.readMessages} detail={`${numberFormat.format(data.summary.failedMessages)} failed`} />
-          <MetricCard icon={<Users size={17} />} label="Engaged contacts" value={data.summary.engagedContacts} detail={`${numberFormat.format(data.summary.activeConversations)} conversations`} />
         </div>
 
         <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.3fr)_minmax(320px,.7fr)]">
@@ -180,5 +181,5 @@ function MetricCard({ icon, label, value, detail }: { icon: ReactNode; label: st
 }
 
 function PageFrame({ title, children }: { title: string; children: ReactNode }) {
-  return <div data-testid="billing-usage-page" className="flex h-full min-h-0 flex-col overflow-hidden bg-[var(--page-background)]"><header className="flex-none border-b border-[var(--border-soft)] bg-white shadow-[0_1px_3px_rgba(30,40,55,.04)]"><div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-5 py-3 sm:px-8"><h1 className="text-[19px] font-medium leading-6 tracking-[-0.015em] text-[var(--text-primary)]">{title}</h1><span className="rounded-md bg-[var(--brand-soft)] px-2.5 py-1 text-[11px] font-medium text-[var(--brand)]">Internal tracking</span></div></header><main data-testid="billing-usage-scroll-region" className="min-h-0 flex-1 overflow-y-auto"><div className="mx-auto w-full max-w-[1400px] px-5 py-5 sm:px-8 sm:py-7">{children}</div></main></div>;
+  return <div data-testid="billing-usage-page" className="flex h-full min-h-0 flex-col overflow-hidden bg-[var(--page-background)]"><header className="flex-none border-b border-[var(--border-soft)] bg-white shadow-[0_1px_3px_rgba(30,40,55,.04)]"><div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-5 py-3 sm:px-8"><h1 className="text-[19px] font-medium leading-6 tracking-[-0.015em] text-[var(--text-primary)]">{title}</h1><button type="button" aria-label="Add funds" className="inline-flex h-8 items-center gap-1.5 rounded-md bg-[var(--brand)] px-3 text-xs font-medium text-white transition-opacity hover:opacity-90"><Plus size={14} aria-hidden="true" />Add funds</button></div></header><main data-testid="billing-usage-scroll-region" className="min-h-0 flex-1 overflow-y-auto"><div className="mx-auto w-full max-w-[1400px] px-5 py-5 sm:px-8 sm:py-7">{children}</div></main></div>;
 }

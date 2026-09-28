@@ -8,7 +8,19 @@ export type AuthUser = {
   email: string;
   firstName: string;
   lastName: string;
+  phone?: string | null;
   emailVerifiedAt: string | null;
+  lastLoginAt?: string | null;
+  createdAt?: string;
+  language?: "en-IN" | "en-US" | "en-GB";
+  timezone?: string;
+  dateFormat?: "DD/MM/YYYY" | "MM/DD/YYYY" | "YYYY-MM-DD";
+  defaultLandingPage?: "/dashboard" | "/inbox" | "/campaigns";
+  notifyProductUpdates?: boolean;
+  notifyBillingAlerts?: boolean;
+  notifyCampaignAlerts?: boolean;
+  notifyWhatsappAlerts?: boolean;
+  oauthProviders?: string[];
   platformRole?: "NONE" | "SUPPORT" | "OPERATIONS" | "BILLING" | "ADMIN" | "SUPER_ADMIN";
   memberships: Array<{
     id: string;

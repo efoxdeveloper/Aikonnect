@@ -1,7 +1,7 @@
 import { useState } from "react";
+import MuiAvatar from "@mui/material/Avatar";
 import { useNavigate } from "react-router-dom";
 import { CreditCard, LogOut, Settings, UserRound } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,9 +38,7 @@ export function UserMenu() {
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <button type="button" aria-label="Open profile menu" title="Open profile menu" className="interakt-button size-11 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]/30">
-          <Avatar className="size-[42px] border border-[var(--border)]">
-            <AvatarFallback className="bg-[var(--brand-soft)] text-sm font-semibold text-[var(--brand)]">{initials}</AvatarFallback>
-          </Avatar>
+          <MuiAvatar className="size-[42px] border border-[var(--border)] bg-[var(--brand-soft)] text-sm font-semibold text-[var(--brand)]">{initials}</MuiAvatar>
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[205px]">

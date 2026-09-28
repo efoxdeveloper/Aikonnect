@@ -35,6 +35,14 @@ export type UserMinAggregateOutputType = {
   platformRole: $Enums.PlatformRole | null
   emailVerifiedAt: Date | null
   lastLoginAt: Date | null
+  language: string | null
+  timezone: string | null
+  dateFormat: string | null
+  defaultLandingPage: string | null
+  notifyProductUpdates: boolean | null
+  notifyBillingAlerts: boolean | null
+  notifyCampaignAlerts: boolean | null
+  notifyWhatsappAlerts: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,6 +58,14 @@ export type UserMaxAggregateOutputType = {
   platformRole: $Enums.PlatformRole | null
   emailVerifiedAt: Date | null
   lastLoginAt: Date | null
+  language: string | null
+  timezone: string | null
+  dateFormat: string | null
+  defaultLandingPage: string | null
+  notifyProductUpdates: boolean | null
+  notifyBillingAlerts: boolean | null
+  notifyCampaignAlerts: boolean | null
+  notifyWhatsappAlerts: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -65,6 +81,14 @@ export type UserCountAggregateOutputType = {
   platformRole: number
   emailVerifiedAt: number
   lastLoginAt: number
+  language: number
+  timezone: number
+  dateFormat: number
+  defaultLandingPage: number
+  notifyProductUpdates: number
+  notifyBillingAlerts: number
+  notifyCampaignAlerts: number
+  notifyWhatsappAlerts: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -82,6 +106,14 @@ export type UserMinAggregateInputType = {
   platformRole?: true
   emailVerifiedAt?: true
   lastLoginAt?: true
+  language?: true
+  timezone?: true
+  dateFormat?: true
+  defaultLandingPage?: true
+  notifyProductUpdates?: true
+  notifyBillingAlerts?: true
+  notifyCampaignAlerts?: true
+  notifyWhatsappAlerts?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -97,6 +129,14 @@ export type UserMaxAggregateInputType = {
   platformRole?: true
   emailVerifiedAt?: true
   lastLoginAt?: true
+  language?: true
+  timezone?: true
+  dateFormat?: true
+  defaultLandingPage?: true
+  notifyProductUpdates?: true
+  notifyBillingAlerts?: true
+  notifyCampaignAlerts?: true
+  notifyWhatsappAlerts?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -112,6 +152,14 @@ export type UserCountAggregateInputType = {
   platformRole?: true
   emailVerifiedAt?: true
   lastLoginAt?: true
+  language?: true
+  timezone?: true
+  dateFormat?: true
+  defaultLandingPage?: true
+  notifyProductUpdates?: true
+  notifyBillingAlerts?: true
+  notifyCampaignAlerts?: true
+  notifyWhatsappAlerts?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -200,6 +248,14 @@ export type UserGroupByOutputType = {
   platformRole: $Enums.PlatformRole
   emailVerifiedAt: Date | null
   lastLoginAt: Date | null
+  language: string
+  timezone: string
+  dateFormat: string
+  defaultLandingPage: string
+  notifyProductUpdates: boolean
+  notifyBillingAlerts: boolean
+  notifyCampaignAlerts: boolean
+  notifyWhatsappAlerts: boolean
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -236,6 +292,14 @@ export type UserWhereInput = {
   platformRole?: Prisma.EnumPlatformRoleFilter<"User"> | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  language?: Prisma.StringFilter<"User"> | string
+  timezone?: Prisma.StringFilter<"User"> | string
+  dateFormat?: Prisma.StringFilter<"User"> | string
+  defaultLandingPage?: Prisma.StringFilter<"User"> | string
+  notifyProductUpdates?: Prisma.BoolFilter<"User"> | boolean
+  notifyBillingAlerts?: Prisma.BoolFilter<"User"> | boolean
+  notifyCampaignAlerts?: Prisma.BoolFilter<"User"> | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   ownedWorkspaces?: Prisma.WorkspaceListRelationFilter
@@ -286,6 +350,14 @@ export type UserOrderByWithRelationInput = {
   platformRole?: Prisma.SortOrder
   emailVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  language?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  dateFormat?: Prisma.SortOrder
+  defaultLandingPage?: Prisma.SortOrder
+  notifyProductUpdates?: Prisma.SortOrder
+  notifyBillingAlerts?: Prisma.SortOrder
+  notifyCampaignAlerts?: Prisma.SortOrder
+  notifyWhatsappAlerts?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   ownedWorkspaces?: Prisma.WorkspaceOrderByRelationAggregateInput
@@ -339,6 +411,14 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   platformRole?: Prisma.EnumPlatformRoleFilter<"User"> | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  language?: Prisma.StringFilter<"User"> | string
+  timezone?: Prisma.StringFilter<"User"> | string
+  dateFormat?: Prisma.StringFilter<"User"> | string
+  defaultLandingPage?: Prisma.StringFilter<"User"> | string
+  notifyProductUpdates?: Prisma.BoolFilter<"User"> | boolean
+  notifyBillingAlerts?: Prisma.BoolFilter<"User"> | boolean
+  notifyCampaignAlerts?: Prisma.BoolFilter<"User"> | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   ownedWorkspaces?: Prisma.WorkspaceListRelationFilter
@@ -389,6 +469,14 @@ export type UserOrderByWithAggregationInput = {
   platformRole?: Prisma.SortOrder
   emailVerifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  language?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  dateFormat?: Prisma.SortOrder
+  defaultLandingPage?: Prisma.SortOrder
+  notifyProductUpdates?: Prisma.SortOrder
+  notifyBillingAlerts?: Prisma.SortOrder
+  notifyCampaignAlerts?: Prisma.SortOrder
+  notifyWhatsappAlerts?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -410,6 +498,14 @@ export type UserScalarWhereWithAggregatesInput = {
   platformRole?: Prisma.EnumPlatformRoleWithAggregatesFilter<"User"> | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   lastLoginAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  language?: Prisma.StringWithAggregatesFilter<"User"> | string
+  timezone?: Prisma.StringWithAggregatesFilter<"User"> | string
+  dateFormat?: Prisma.StringWithAggregatesFilter<"User"> | string
+  defaultLandingPage?: Prisma.StringWithAggregatesFilter<"User"> | string
+  notifyProductUpdates?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  notifyBillingAlerts?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  notifyCampaignAlerts?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  notifyWhatsappAlerts?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -425,6 +521,14 @@ export type UserCreateInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -475,6 +579,14 @@ export type UserUncheckedCreateInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -525,6 +637,14 @@ export type UserUpdateInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -575,6 +695,14 @@ export type UserUncheckedUpdateInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -625,6 +753,14 @@ export type UserCreateManyInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -640,6 +776,14 @@ export type UserUpdateManyMutationInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -655,6 +799,14 @@ export type UserUncheckedUpdateManyInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -670,6 +822,14 @@ export type UserCountOrderByAggregateInput = {
   platformRole?: Prisma.SortOrder
   emailVerifiedAt?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
+  language?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  dateFormat?: Prisma.SortOrder
+  defaultLandingPage?: Prisma.SortOrder
+  notifyProductUpdates?: Prisma.SortOrder
+  notifyBillingAlerts?: Prisma.SortOrder
+  notifyCampaignAlerts?: Prisma.SortOrder
+  notifyWhatsappAlerts?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -685,6 +845,14 @@ export type UserMaxOrderByAggregateInput = {
   platformRole?: Prisma.SortOrder
   emailVerifiedAt?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
+  language?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  dateFormat?: Prisma.SortOrder
+  defaultLandingPage?: Prisma.SortOrder
+  notifyProductUpdates?: Prisma.SortOrder
+  notifyBillingAlerts?: Prisma.SortOrder
+  notifyCampaignAlerts?: Prisma.SortOrder
+  notifyWhatsappAlerts?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -700,6 +868,14 @@ export type UserMinOrderByAggregateInput = {
   platformRole?: Prisma.SortOrder
   emailVerifiedAt?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
+  language?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  dateFormat?: Prisma.SortOrder
+  defaultLandingPage?: Prisma.SortOrder
+  notifyProductUpdates?: Prisma.SortOrder
+  notifyBillingAlerts?: Prisma.SortOrder
+  notifyCampaignAlerts?: Prisma.SortOrder
+  notifyWhatsappAlerts?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -732,6 +908,10 @@ export type EnumPlatformRoleFieldUpdateOperationsInput = {
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -1291,6 +1471,14 @@ export type UserCreateWithoutOauthAccountsInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -1340,6 +1528,14 @@ export type UserUncheckedCreateWithoutOauthAccountsInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -1405,6 +1601,14 @@ export type UserUpdateWithoutOauthAccountsInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -1454,6 +1658,14 @@ export type UserUncheckedUpdateWithoutOauthAccountsInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1503,6 +1715,14 @@ export type UserCreateWithoutOwnedTenantsInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -1552,6 +1772,14 @@ export type UserUncheckedCreateWithoutOwnedTenantsInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -1617,6 +1845,14 @@ export type UserUpdateWithoutOwnedTenantsInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -1666,6 +1902,14 @@ export type UserUncheckedUpdateWithoutOwnedTenantsInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1715,6 +1959,14 @@ export type UserCreateWithoutOwnedWorkspacesInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedTenants?: Prisma.TenantCreateNestedManyWithoutOwnerInput
@@ -1764,6 +2016,14 @@ export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedTenants?: Prisma.TenantUncheckedCreateNestedManyWithoutOwnerInput
@@ -1829,6 +2089,14 @@ export type UserUpdateWithoutOwnedWorkspacesInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedTenants?: Prisma.TenantUpdateManyWithoutOwnerNestedInput
@@ -1878,6 +2146,14 @@ export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedTenants?: Prisma.TenantUncheckedUpdateManyWithoutOwnerNestedInput
@@ -1927,6 +2203,14 @@ export type UserCreateWithoutTemplatesCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -1976,6 +2260,14 @@ export type UserUncheckedCreateWithoutTemplatesCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -2030,6 +2322,14 @@ export type UserCreateWithoutTemplatesUpdatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -2079,6 +2379,14 @@ export type UserUncheckedCreateWithoutTemplatesUpdatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -2133,6 +2441,14 @@ export type UserCreateWithoutTemplatesDeletedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -2182,6 +2498,14 @@ export type UserUncheckedCreateWithoutTemplatesDeletedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -2247,6 +2571,14 @@ export type UserUpdateWithoutTemplatesCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -2296,6 +2628,14 @@ export type UserUncheckedUpdateWithoutTemplatesCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -2356,6 +2696,14 @@ export type UserUpdateWithoutTemplatesUpdatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -2405,6 +2753,14 @@ export type UserUncheckedUpdateWithoutTemplatesUpdatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -2465,6 +2821,14 @@ export type UserUpdateWithoutTemplatesDeletedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -2514,6 +2878,14 @@ export type UserUncheckedUpdateWithoutTemplatesDeletedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -2563,6 +2935,14 @@ export type UserCreateWithoutApiKeysCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -2612,6 +2992,14 @@ export type UserUncheckedCreateWithoutApiKeysCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -2677,6 +3065,14 @@ export type UserUpdateWithoutApiKeysCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -2726,6 +3122,14 @@ export type UserUncheckedUpdateWithoutApiKeysCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -2775,6 +3179,14 @@ export type UserCreateWithoutWebhookEndpointsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -2824,6 +3236,14 @@ export type UserUncheckedCreateWithoutWebhookEndpointsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -2889,6 +3309,14 @@ export type UserUpdateWithoutWebhookEndpointsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -2938,6 +3366,14 @@ export type UserUncheckedUpdateWithoutWebhookEndpointsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -2987,6 +3423,14 @@ export type UserCreateWithoutContactsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -3036,6 +3480,14 @@ export type UserUncheckedCreateWithoutContactsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -3090,6 +3542,14 @@ export type UserCreateWithoutContactsOwnedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -3139,6 +3599,14 @@ export type UserUncheckedCreateWithoutContactsOwnedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -3193,6 +3661,14 @@ export type UserCreateWithoutContactsUpdatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -3242,6 +3718,14 @@ export type UserUncheckedCreateWithoutContactsUpdatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -3296,6 +3780,14 @@ export type UserCreateWithoutContactsDeletedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -3345,6 +3837,14 @@ export type UserUncheckedCreateWithoutContactsDeletedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -3410,6 +3910,14 @@ export type UserUpdateWithoutContactsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -3459,6 +3967,14 @@ export type UserUncheckedUpdateWithoutContactsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -3519,6 +4035,14 @@ export type UserUpdateWithoutContactsOwnedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -3568,6 +4092,14 @@ export type UserUncheckedUpdateWithoutContactsOwnedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -3628,6 +4160,14 @@ export type UserUpdateWithoutContactsUpdatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -3677,6 +4217,14 @@ export type UserUncheckedUpdateWithoutContactsUpdatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -3737,6 +4285,14 @@ export type UserUpdateWithoutContactsDeletedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -3786,6 +4342,14 @@ export type UserUncheckedUpdateWithoutContactsDeletedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -3835,6 +4399,14 @@ export type UserCreateWithoutContactConsentEventsInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -3884,6 +4456,14 @@ export type UserUncheckedCreateWithoutContactConsentEventsInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -3949,6 +4529,14 @@ export type UserUpdateWithoutContactConsentEventsInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -3998,6 +4586,14 @@ export type UserUncheckedUpdateWithoutContactConsentEventsInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -4047,6 +4643,14 @@ export type UserCreateWithoutMessagesCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -4096,6 +4700,14 @@ export type UserUncheckedCreateWithoutMessagesCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -4161,6 +4773,14 @@ export type UserUpdateWithoutMessagesCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -4210,6 +4830,14 @@ export type UserUncheckedUpdateWithoutMessagesCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -4259,6 +4887,14 @@ export type UserCreateWithoutWhatsappRateCardsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -4308,6 +4944,14 @@ export type UserUncheckedCreateWithoutWhatsappRateCardsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -4362,6 +5006,14 @@ export type UserCreateWithoutWhatsappRateCardsUpdatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -4411,6 +5063,14 @@ export type UserUncheckedCreateWithoutWhatsappRateCardsUpdatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -4476,6 +5136,14 @@ export type UserUpdateWithoutWhatsappRateCardsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -4525,6 +5193,14 @@ export type UserUncheckedUpdateWithoutWhatsappRateCardsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -4585,6 +5261,14 @@ export type UserUpdateWithoutWhatsappRateCardsUpdatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -4634,6 +5318,14 @@ export type UserUncheckedUpdateWithoutWhatsappRateCardsUpdatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -4683,6 +5375,14 @@ export type UserCreateWithoutContactCustomFieldsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -4732,6 +5432,14 @@ export type UserUncheckedCreateWithoutContactCustomFieldsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -4786,6 +5494,14 @@ export type UserCreateWithoutContactCustomFieldsUpdatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -4835,6 +5551,14 @@ export type UserUncheckedCreateWithoutContactCustomFieldsUpdatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -4900,6 +5624,14 @@ export type UserUpdateWithoutContactCustomFieldsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -4949,6 +5681,14 @@ export type UserUncheckedUpdateWithoutContactCustomFieldsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -5009,6 +5749,14 @@ export type UserUpdateWithoutContactCustomFieldsUpdatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -5058,6 +5806,14 @@ export type UserUncheckedUpdateWithoutContactCustomFieldsUpdatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -5107,6 +5863,14 @@ export type UserCreateWithoutContactSegmentsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -5156,6 +5920,14 @@ export type UserUncheckedCreateWithoutContactSegmentsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -5210,6 +5982,14 @@ export type UserCreateWithoutContactSegmentsUpdatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -5259,6 +6039,14 @@ export type UserUncheckedCreateWithoutContactSegmentsUpdatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -5324,6 +6112,14 @@ export type UserUpdateWithoutContactSegmentsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -5373,6 +6169,14 @@ export type UserUncheckedUpdateWithoutContactSegmentsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -5433,6 +6237,14 @@ export type UserUpdateWithoutContactSegmentsUpdatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -5482,6 +6294,14 @@ export type UserUncheckedUpdateWithoutContactSegmentsUpdatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -5531,6 +6351,14 @@ export type UserCreateWithoutContactTasksCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -5580,6 +6408,14 @@ export type UserUncheckedCreateWithoutContactTasksCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -5634,6 +6470,14 @@ export type UserCreateWithoutContactTasksUpdatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -5683,6 +6527,14 @@ export type UserUncheckedCreateWithoutContactTasksUpdatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -5748,6 +6600,14 @@ export type UserUpdateWithoutContactTasksCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -5797,6 +6657,14 @@ export type UserUncheckedUpdateWithoutContactTasksCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -5857,6 +6725,14 @@ export type UserUpdateWithoutContactTasksUpdatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -5906,6 +6782,14 @@ export type UserUncheckedUpdateWithoutContactTasksUpdatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -5955,6 +6839,14 @@ export type UserCreateWithoutContactNotesCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -6004,6 +6896,14 @@ export type UserUncheckedCreateWithoutContactNotesCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -6058,6 +6958,14 @@ export type UserCreateWithoutContactNotesUpdatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -6107,6 +7015,14 @@ export type UserUncheckedCreateWithoutContactNotesUpdatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -6161,6 +7077,14 @@ export type UserCreateWithoutContactNotesDeletedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -6210,6 +7134,14 @@ export type UserUncheckedCreateWithoutContactNotesDeletedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -6275,6 +7207,14 @@ export type UserUpdateWithoutContactNotesCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -6324,6 +7264,14 @@ export type UserUncheckedUpdateWithoutContactNotesCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -6384,6 +7332,14 @@ export type UserUpdateWithoutContactNotesUpdatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -6433,6 +7389,14 @@ export type UserUncheckedUpdateWithoutContactNotesUpdatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -6493,6 +7457,14 @@ export type UserUpdateWithoutContactNotesDeletedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -6542,6 +7514,14 @@ export type UserUncheckedUpdateWithoutContactNotesDeletedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -6591,6 +7571,14 @@ export type UserCreateWithoutAutomationsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -6640,6 +7628,14 @@ export type UserUncheckedCreateWithoutAutomationsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -6705,6 +7701,14 @@ export type UserUpdateWithoutAutomationsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -6754,6 +7758,14 @@ export type UserUncheckedUpdateWithoutAutomationsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -6803,6 +7815,14 @@ export type UserCreateWithoutWorkflowsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -6852,6 +7872,14 @@ export type UserUncheckedCreateWithoutWorkflowsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -6917,6 +7945,14 @@ export type UserUpdateWithoutWorkflowsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -6966,6 +8002,14 @@ export type UserUncheckedUpdateWithoutWorkflowsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -7015,6 +8059,14 @@ export type UserCreateWithoutCampaignsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -7064,6 +8116,14 @@ export type UserUncheckedCreateWithoutCampaignsCreatedInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -7129,6 +8189,14 @@ export type UserUpdateWithoutCampaignsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -7178,6 +8246,14 @@ export type UserUncheckedUpdateWithoutCampaignsCreatedInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -7227,6 +8303,14 @@ export type UserCreateWithoutMembershipsInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -7276,6 +8360,14 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -7341,6 +8433,14 @@ export type UserUpdateWithoutMembershipsInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -7390,6 +8490,14 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -7439,6 +8547,14 @@ export type UserCreateWithoutInvitationsSentInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -7488,6 +8604,14 @@ export type UserUncheckedCreateWithoutInvitationsSentInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -7553,6 +8677,14 @@ export type UserUpdateWithoutInvitationsSentInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -7602,6 +8734,14 @@ export type UserUncheckedUpdateWithoutInvitationsSentInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -7651,6 +8791,14 @@ export type UserCreateWithoutSessionsInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -7700,6 +8848,14 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -7765,6 +8921,14 @@ export type UserUpdateWithoutSessionsInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -7814,6 +8978,14 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -7863,6 +9035,14 @@ export type UserCreateWithoutWalletLedgerEntriesInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -7912,6 +9092,14 @@ export type UserUncheckedCreateWithoutWalletLedgerEntriesInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -7977,6 +9165,14 @@ export type UserUpdateWithoutWalletLedgerEntriesInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -8026,6 +9222,14 @@ export type UserUncheckedUpdateWithoutWalletLedgerEntriesInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -8075,6 +9279,14 @@ export type UserCreateWithoutPlatformAuditLogsInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -8124,6 +9336,14 @@ export type UserUncheckedCreateWithoutPlatformAuditLogsInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -8189,6 +9409,14 @@ export type UserUpdateWithoutPlatformAuditLogsInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -8238,6 +9466,14 @@ export type UserUncheckedUpdateWithoutPlatformAuditLogsInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -8287,6 +9523,14 @@ export type UserCreateWithoutEmailVerificationTokensInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -8336,6 +9580,14 @@ export type UserUncheckedCreateWithoutEmailVerificationTokensInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -8401,6 +9653,14 @@ export type UserUpdateWithoutEmailVerificationTokensInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -8450,6 +9710,14 @@ export type UserUncheckedUpdateWithoutEmailVerificationTokensInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -8499,6 +9767,14 @@ export type UserCreateWithoutPasswordResetTokensInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
@@ -8548,6 +9824,14 @@ export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
   platformRole?: $Enums.PlatformRole
   emailVerifiedAt?: Date | string | null
   lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
@@ -8613,6 +9897,14 @@ export type UserUpdateWithoutPasswordResetTokensInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
@@ -8662,6 +9954,14 @@ export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
   platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
   emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
@@ -9048,6 +10348,14 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   platformRole?: boolean
   emailVerifiedAt?: boolean
   lastLoginAt?: boolean
+  language?: boolean
+  timezone?: boolean
+  dateFormat?: boolean
+  defaultLandingPage?: boolean
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   ownedWorkspaces?: boolean | Prisma.User$ownedWorkspacesArgs<ExtArgs>
@@ -9099,6 +10407,14 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   platformRole?: boolean
   emailVerifiedAt?: boolean
   lastLoginAt?: boolean
+  language?: boolean
+  timezone?: boolean
+  dateFormat?: boolean
+  defaultLandingPage?: boolean
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -9114,6 +10430,14 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   platformRole?: boolean
   emailVerifiedAt?: boolean
   lastLoginAt?: boolean
+  language?: boolean
+  timezone?: boolean
+  dateFormat?: boolean
+  defaultLandingPage?: boolean
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -9129,11 +10453,19 @@ export type UserSelectScalar = {
   platformRole?: boolean
   emailVerifiedAt?: boolean
   lastLoginAt?: boolean
+  language?: boolean
+  timezone?: boolean
+  dateFormat?: boolean
+  defaultLandingPage?: boolean
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "firstName" | "lastName" | "phone" | "status" | "platformRole" | "emailVerifiedAt" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "firstName" | "lastName" | "phone" | "status" | "platformRole" | "emailVerifiedAt" | "lastLoginAt" | "language" | "timezone" | "dateFormat" | "defaultLandingPage" | "notifyProductUpdates" | "notifyBillingAlerts" | "notifyCampaignAlerts" | "notifyWhatsappAlerts" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   ownedWorkspaces?: boolean | Prisma.User$ownedWorkspacesArgs<ExtArgs>
   ownedTenants?: boolean | Prisma.User$ownedTenantsArgs<ExtArgs>
@@ -9225,6 +10557,14 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     platformRole: $Enums.PlatformRole
     emailVerifiedAt: Date | null
     lastLoginAt: Date | null
+    language: string
+    timezone: string
+    dateFormat: string
+    defaultLandingPage: string
+    notifyProductUpdates: boolean
+    notifyBillingAlerts: boolean
+    notifyCampaignAlerts: boolean
+    notifyWhatsappAlerts: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -9695,6 +11035,14 @@ export interface UserFieldRefs {
   readonly platformRole: Prisma.FieldRef<"User", 'PlatformRole'>
   readonly emailVerifiedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly lastLoginAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly language: Prisma.FieldRef<"User", 'String'>
+  readonly timezone: Prisma.FieldRef<"User", 'String'>
+  readonly dateFormat: Prisma.FieldRef<"User", 'String'>
+  readonly defaultLandingPage: Prisma.FieldRef<"User", 'String'>
+  readonly notifyProductUpdates: Prisma.FieldRef<"User", 'Boolean'>
+  readonly notifyBillingAlerts: Prisma.FieldRef<"User", 'Boolean'>
+  readonly notifyCampaignAlerts: Prisma.FieldRef<"User", 'Boolean'>
+  readonly notifyWhatsappAlerts: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

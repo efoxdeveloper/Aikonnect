@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Building2, ChevronDown, Plus, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,25 +11,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
 import { ApiError, apiRequest } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { getActiveMembership, markWorkspaceForOnboarding, setActiveWorkspaceId } from "@/lib/workspace";
 
 function initials(name: string) {
   return name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase()).join("") || "WS";
-}
-
-function WorkspaceAvatar({ name, logoData, size }: { name: string; logoData?: string | null; size: "large" | "small" }) {
-  const classes = size === "large" ? "size-10 rounded-md" : "size-7 rounded-md";
-  return (
-    <Avatar className={cn(classes, "border border-white/10 bg-white/10")}>
-      <AvatarImage src={logoData ?? undefined} alt="" />
-      <AvatarFallback className={cn("rounded-md", size === "large" ? "bg-white/10 text-[12px] text-white" : "bg-[var(--brand-soft)] text-[10px] text-[var(--brand)]", "font-semibold")}>
-        {initials(name)}
-      </AvatarFallback>
-    </Avatar>
-  );
 }
 
 export function WorkspaceSwitcher() {
@@ -72,16 +58,13 @@ export function WorkspaceSwitcher() {
             aria-label={`Switch workspace: ${workspaceName}`}
             title={`Switch workspace: ${workspaceName}`}
             variant="ghost"
-            className="h-10 w-10 shrink-0 justify-center gap-2 rounded-lg border border-[#e4e8e5] bg-[#f7f8f7] px-1.5 text-[var(--text-primary)] shadow-none hover:bg-[var(--brand-subtle)] sm:w-[min(220px,30vw)] sm:justify-start sm:px-2"
+            className="h-9 w-9 shrink-0 justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] px-1.5 text-[var(--text-primary)] shadow-none transition-colors hover:border-[var(--brand)]/30 hover:bg-white sm:w-[min(196px,28vw)] sm:justify-start sm:px-1.5"
           >
             <span className="relative shrink-0">
-              <WorkspaceAvatar name={workspaceName} logoData={workspace?.logoData} size="small" />
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><Building2 size={15} aria-hidden="true" /></span>
               <span className="absolute -right-0.5 -top-0.5 size-2 rounded-full bg-[#34d399] ring-2 ring-[#f7f8f7]" />
             </span>
-            <span className="hidden min-w-0 flex-1 text-left sm:block">
-              <span className="block truncate text-[13px] font-semibold leading-4 text-[var(--text-primary)]">{workspaceName}</span>
-              <span className="mt-0.5 block truncate text-[11px] font-normal leading-4 text-[var(--text-muted)]">Business workspace</span>
-            </span>
+            <span className="hidden min-w-0 flex-1 truncate text-left text-xs font-medium text-[var(--text-primary)] sm:block">{workspaceName}</span>
             <ChevronDown className="hidden size-4 shrink-0 text-[var(--text-muted)] sm:block" strokeWidth={1.9} />
           </Button>
         </DropdownMenuTrigger>
@@ -89,7 +72,7 @@ export function WorkspaceSwitcher() {
           <DropdownMenuLabel>Switch workspace</DropdownMenuLabel>
           {memberships.map(({ workspace: item }) => (
             <DropdownMenuItem key={item.id} onSelect={() => { setActiveWorkspaceId(item.id); window.location.reload(); }}>
-              <WorkspaceAvatar name={item.name} logoData={item.logoData} size="small" />
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><Building2 size={15} aria-hidden="true" /></span>
               <span className="truncate">{item.name}</span>
             </DropdownMenuItem>
           ))}

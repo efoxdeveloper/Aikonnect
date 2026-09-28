@@ -121,6 +121,14 @@ export const UserScalarFieldEnum = {
   platformRole: 'platformRole',
   emailVerifiedAt: 'emailVerifiedAt',
   lastLoginAt: 'lastLoginAt',
+  language: 'language',
+  timezone: 'timezone',
+  dateFormat: 'dateFormat',
+  defaultLandingPage: 'defaultLandingPage',
+  notifyProductUpdates: 'notifyProductUpdates',
+  notifyBillingAlerts: 'notifyBillingAlerts',
+  notifyCampaignAlerts: 'notifyCampaignAlerts',
+  notifyWhatsappAlerts: 'notifyWhatsappAlerts',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

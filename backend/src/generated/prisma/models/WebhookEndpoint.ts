@@ -538,10 +538,6 @@ export type WebhookEndpointUpdateeventsInput = {
   push?: string | string[]
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type WebhookEndpointCreateWithoutCreatedByInput = {
   id?: string
   name: string
