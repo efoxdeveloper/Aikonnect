@@ -100,6 +100,9 @@ describe("Onboarding", () => {
     expect(await screen.findByRole("heading", { name: "Tell us about your business" })).toBeInTheDocument();
     expect(screen.getByText("Step 1 of 5")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Retail" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "WhatsApp" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "Instagram" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "WhatsApp + Instagram" })).toBeDisabled();
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
     expect(screen.getByRole("alert")).toHaveTextContent("Complete your basic business details");
   });

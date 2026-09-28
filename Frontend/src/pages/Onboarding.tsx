@@ -94,7 +94,8 @@ const integrations: IntegrationOption[] = [
   { value: "cashfree", label: "Cashfree", icon: null, group: "payment" },
 ];
 
-const emptyData: OnboardingData = { objectives: [], integrations: [] };
+const channelOptions = [["whatsapp", "WhatsApp"], ["instagram", "Instagram"], ["both", "WhatsApp + Instagram"]] as const;
+const emptyData: OnboardingData = { channel: "whatsapp", objectives: [], integrations: [] };
 
 function ChoiceCard({ selected, label, onClick, disabled = false }: { selected: boolean; label: string; onClick: () => void; disabled?: boolean }) {
   return <button type="button" aria-pressed={selected} disabled={disabled} onClick={onClick} className={`flex min-h-12 items-center justify-between rounded-md border px-3.5 py-3 text-left text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${selected ? "border-[var(--brand)] bg-[var(--brand-soft)] font-semibold text-[var(--brand)]" : "border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[var(--brand)]/40 hover:bg-[var(--surface-subtle)]"}`}><span>{label}</span>{selected && <Check size={16} aria-hidden="true" />}</button>;
@@ -150,6 +151,7 @@ export function Onboarding() {
         const nextData: OnboardingData = {
           ...emptyData,
           ...result.data,
+          channel: result.data.channel ?? "whatsapp",
           phone: result.data.phone ?? result.phone ?? "",
           companyName: result.data.companyName ?? result.companyName ?? "",
           companyWebsite: result.data.companyWebsite ?? result.companyWebsite ?? "",
@@ -266,7 +268,7 @@ export function Onboarding() {
                 <div><label htmlFor="onboarding-country" className="mb-2 block text-sm font-semibold text-[var(--text-primary)]">Country</label><Select value={country} onValueChange={(value) => updateData("country", value)}><SelectTrigger id="onboarding-country" aria-label="Country" className="h-10"><SelectValue placeholder="Select country" /></SelectTrigger><SelectContent>{countries.map((value) => <SelectItem key={value} value={value}>{value}</SelectItem>)}</SelectContent></Select></div>
                 <div><label htmlFor="onboarding-annual-revenue" className="mb-2 block text-sm font-semibold text-[var(--text-primary)]">Annual revenue</label><Select value={data.annualRevenue ?? ""} onValueChange={(value) => updateData("annualRevenue", value)}><SelectTrigger id="onboarding-annual-revenue" aria-label="Annual revenue" className="h-10"><SelectValue placeholder="Select a revenue range" /></SelectTrigger><SelectContent><SelectItem value="under-50-lakh">Under ₹50 lakh</SelectItem><SelectItem value="50-lakh-1-crore">₹50 lakh – ₹1 crore</SelectItem><SelectItem value="1-5-crore">₹1 crore – ₹5 crore</SelectItem><SelectItem value="5-25-crore">₹5 crore – ₹25 crore</SelectItem><SelectItem value="25-crore-plus">₹25 crore and above</SelectItem></SelectContent></Select></div>
               </div>
-              <fieldset className="mt-5"><legend className="mb-2 text-sm font-semibold text-[var(--text-primary)]">Which channels do you want to use?</legend><div className="grid gap-2 sm:grid-cols-3">{([["whatsapp", "WhatsApp"], ["instagram", "Instagram"], ["both", "WhatsApp + Instagram"]] as const).map(([value, label]) => <ChoiceCard key={value} selected={data.channel === value} label={label} onClick={() => updateData("channel", value)} />)}</div></fieldset>
+              <fieldset className="mt-5"><legend className="mb-2 text-sm font-semibold text-[var(--text-primary)]">Which channels do you want to use?</legend><div className="grid gap-2 sm:grid-cols-3">{channelOptions.map(([value, label]) => <ChoiceCard key={value} selected={data.channel === value} label={label} disabled={value !== "whatsapp"} onClick={() => updateData("channel", value)} />)}</div></fieldset>
               <div className="mt-5 flex flex-col gap-2.5 rounded-md border border-[var(--border-soft)] bg-[var(--surface-subtle)] p-3.5 text-xs text-[var(--text-secondary)]"><label className="flex cursor-pointer items-start gap-2.5"><input type="checkbox" checked={data.whatsappUpdatesConsent ?? false} onChange={(event) => updateData("whatsappUpdatesConsent", event.target.checked)} className="mt-0.5 size-4 accent-[var(--brand)]" /><span>I agree to receive important account updates on WhatsApp.</span></label><label className="flex cursor-pointer items-start gap-2.5"><input type="checkbox" checked={data.termsAccepted ?? false} onChange={(event) => updateData("termsAccepted", event.target.checked)} className="mt-0.5 size-4 accent-[var(--brand)]" required /><span>I agree to Marento&apos;s <a href="#terms" onClick={(event) => event.stopPropagation()} className="font-medium text-[var(--brand)] underline decoration-[var(--green-300)] underline-offset-2">Terms of Service</a> and <a href="#privacy" onClick={(event) => event.stopPropagation()} className="font-medium text-[var(--brand)] underline decoration-[var(--green-300)] underline-offset-2">Privacy Policy</a>.</span></label></div>
             </>}
             {step === 1 && <>
