@@ -87,7 +87,21 @@ describe("Onboarding", () => {
     expect(screen.getByText("Complete your setup checks")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
     expect(screen.getByRole("alert")).toHaveTextContent("Select your industry");
-    expect(screen.getByText("Step 1 of 4")).toBeInTheDocument();
+    expect(screen.getByText("Step 2 of 5")).toBeInTheDocument();
+  });
+
+  it("shows the Basic step first for a Google workspace without profile details", async () => {
+    renderOnboarding({
+      ...baseOnboarding,
+      companyName: "Pawan&apos;s Workspace",
+      phone: null,
+      data: { ...baseOnboarding.data, companyName: "Pawan&apos;s Workspace", phone: "", state: "", annualRevenue: "", termsAccepted: false },
+    });
+    expect(await screen.findByRole("heading", { name: "Tell us about your business" })).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 5")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Retail" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Continue" }));
+    expect(screen.getByRole("alert")).toHaveTextContent("Complete your basic business details");
   });
 
   it("changes sub-category options with the selected industry", async () => {
@@ -100,17 +114,17 @@ describe("Onboarding", () => {
   });
 
   it("saves an optional step when the user skips it", async () => {
-    renderOnboarding({ ...baseOnboarding, onboardingStep: 2, data: { ...baseOnboarding.data, industry: "technology", industrySubcategory: "B2B services", objectives: ["automated-notifications"] } });
+    renderOnboarding({ ...baseOnboarding, onboardingStep: 3, data: { ...baseOnboarding.data, basicCompleted: true, industry: "technology", industrySubcategory: "B2B services", objectives: ["automated-notifications"] } });
     expect(await screen.findByRole("heading", { name: "Looking to integrate with a software tool?" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Skip" }));
     await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
       "/workspaces/workspace-1/onboarding",
-      expect.objectContaining({ method: "PATCH", body: expect.stringContaining('"step":3') }),
+      expect.objectContaining({ method: "PATCH", body: expect.stringContaining('"step":4') }),
     ));
   });
 
   it("renders integrations in grouped branded cards", async () => {
-    renderOnboarding({ ...baseOnboarding, onboardingStep: 2, data: { ...baseOnboarding.data, industry: "technology", industrySubcategory: "B2B services" } });
+    renderOnboarding({ ...baseOnboarding, onboardingStep: 3, data: { ...baseOnboarding.data, basicCompleted: true, industry: "technology", industrySubcategory: "B2B services" } });
     expect(await screen.findByRole("heading", { name: "Looking to integrate with a software tool?" })).toBeInTheDocument();
     expect(screen.getByText("Custom Integration")).toBeInTheDocument();
     expect(screen.getByText("Popular Tools")).toBeInTheDocument();
@@ -122,7 +136,7 @@ describe("Onboarding", () => {
   });
 
   it("renders business objectives as descriptive selection cards", async () => {
-    renderOnboarding({ ...baseOnboarding, onboardingStep: 1, data: { ...baseOnboarding.data, industry: "technology", industrySubcategory: "B2B services" } });
+    renderOnboarding({ ...baseOnboarding, onboardingStep: 2, data: { ...baseOnboarding.data, basicCompleted: true, industry: "technology", industrySubcategory: "B2B services" } });
     expect(await screen.findByRole("heading", { name: "What are your business objectives?" })).toBeInTheDocument();
     const updates = screen.getByRole("button", { name: /Send Project Updates & Technical Alerts/ });
     expect(updates).toHaveAttribute("aria-pressed", "false");
@@ -136,8 +150,8 @@ describe("Onboarding", () => {
     vi.mocked(apiRequest).mockImplementation(async (path) => {
       if (path.endsWith("/onboarding")) return {
         ...baseOnboarding,
-        onboardingStep: 3,
-        data: { ...baseOnboarding.data, industry: "technology", industrySubcategory: "B2B services", objectives: ["automated-notifications"] },
+        onboardingStep: 4,
+        data: { ...baseOnboarding.data, basicCompleted: true, industry: "technology", industrySubcategory: "B2B services", objectives: ["automated-notifications"] },
       };
       return undefined;
     });

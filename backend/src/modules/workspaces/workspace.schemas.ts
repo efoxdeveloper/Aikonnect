@@ -37,6 +37,7 @@ const yesNo = z.enum(["yes", "no"]);
 const businessVerification = z.enum(["already-verified", "gst-certificate", "website-domain", "connect-without-verification"]);
 
 export const onboardingDataSchema = z.object({
+  basicCompleted: z.boolean().optional(),
   phone: optionalText(30),
   companyName: optionalText(160),
   companyWebsite: z.union([z.url().max(500), z.literal("")]).optional(),
