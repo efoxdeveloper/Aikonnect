@@ -1,13 +1,14 @@
 import { Router } from "express";
 import { authenticate } from "../../middleware/authenticate.js";
 import { asyncHandler } from "../../middleware/async-handler.js";
-import { validateBody } from "../../middleware/validate.js";
+import { validateBody, validateQuery } from "../../middleware/validate.js";
 import { env } from "../../config/env.js";
 import { createRateLimiter } from "../../config/rate-limit.js";
 import * as controller from "./auth.controller.js";
 import {
   changePasswordSchema,
   changeEmailSchema,
+  emailAvailabilityQuerySchema,
   forgotPasswordSchema,
   loginSchema,
   registerSchema,
@@ -20,6 +21,7 @@ export const authRouter = Router();
 const credentialRateLimit = createRateLimiter({ windowMs: env.RATE_LIMIT_WINDOW_MS, limit: env.RATE_LIMIT_MAX });
 
 authRouter.post("/register", credentialRateLimit, validateBody(registerSchema), asyncHandler(controller.register));
+authRouter.get("/email-availability", credentialRateLimit, validateQuery(emailAvailabilityQuerySchema), asyncHandler(controller.emailAvailability));
 authRouter.post("/login", credentialRateLimit, validateBody(loginSchema), asyncHandler(controller.login));
 authRouter.get("/google", asyncHandler(controller.googleStart));
 authRouter.get("/google/callback", asyncHandler(controller.googleCallback));

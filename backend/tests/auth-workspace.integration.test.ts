@@ -108,6 +108,26 @@ test("registration validates required fields", async () => {
   assert.equal(body.error.code, "VALIDATION_ERROR");
 });
 
+test("email availability identifies existing accounts without authentication", async () => {
+  const email = `email-availability-${Date.now()}@example.com`;
+  createdEmails.push(email);
+  await prisma.user.create({
+    data: { email, passwordHash: "not-used-in-this-test", firstName: "Existing", lastName: "User" },
+  });
+
+  const existingResponse = await fetch(`${baseUrl}/auth/email-availability?email=${encodeURIComponent(email)}`);
+  assert.equal(existingResponse.status, 200);
+  assert.deepEqual((await existingResponse.json()).data, { available: false });
+
+  const availableEmail = `email-availability-new-${Date.now()}@example.com`;
+  const availableResponse = await fetch(`${baseUrl}/auth/email-availability?email=${encodeURIComponent(availableEmail)}`);
+  assert.equal(availableResponse.status, 200);
+  assert.deepEqual((await availableResponse.json()).data, { available: true });
+
+  const invalidResponse = await fetch(`${baseUrl}/auth/email-availability?email=not-an-email`);
+  assert.equal(invalidResponse.status, 422);
+});
+
 test("registration requires email verification before workspace RBAC and session flows", async () => {
   const suffix = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   const originalEmail = `integration-wrong-${suffix}@example.com`;

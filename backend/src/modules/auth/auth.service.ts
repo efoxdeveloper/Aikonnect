@@ -147,6 +147,11 @@ export async function register(input: RegisterInput, metadata: SessionMetadata) 
   };
 }
 
+export async function emailAvailability(email: string) {
+  const existingUser = await prisma.user.findUnique({ where: { email }, select: { id: true } });
+  return { available: !existingUser };
+}
+
 export async function login(input: LoginInput, metadata: SessionMetadata) {
   const userWithPassword = await prisma.user.findUnique({ where: { email: input.email } });
   if (!userWithPassword) {

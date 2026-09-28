@@ -65,7 +65,7 @@ function isBearerAuthorization(value: string | null): boolean {
 }
 
 function isAuthBootstrapPath(path: string): boolean {
-  return path === "/auth/login" || path === "/auth/register" || path === "/auth/refresh";
+  return path === "/auth/login" || path === "/auth/register" || path === "/auth/email-availability" || path === "/auth/refresh";
 }
 
 function notifyAuthenticationLost(): void {

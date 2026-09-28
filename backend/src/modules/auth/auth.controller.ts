@@ -170,6 +170,11 @@ export async function register(request: Request, response: Response) {
   response.status(201).json({ success: true, data });
 }
 
+export async function emailAvailability(request: Request, response: Response) {
+  const query = request.validatedQuery as { email: string };
+  response.status(200).json({ success: true, data: await authService.emailAvailability(query.email) });
+}
+
 export async function login(request: Request, response: Response) {
   const result = await authService.login(request.body, requestMetadata(request));
   setRefreshCookie(response, result.refreshToken, result.refreshExpiresAt);

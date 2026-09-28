@@ -34,6 +34,10 @@ describe("Login", () => {
     );
 
     expect(screen.getByTestId("auth-shell")).toBeInTheDocument();
+    const header = screen.getByAltText("Marento").parentElement;
+    expect(header).toHaveClass("flex", "items-center", "justify-center");
+    expect(header).toContainElement(screen.getByRole("heading", { name: "Login to your account" }));
+    expect(header).toContainElement(screen.getByText("Use your work email to sign in to Marento."));
     expect(screen.getByRole("button", { name: "Login with Google" })).toBeInTheDocument();
     expect(screen.getByLabelText("Email")).toBeRequired();
     expect(screen.getByLabelText("Password")).toBeRequired();

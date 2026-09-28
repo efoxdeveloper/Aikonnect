@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { ArrowRightIcon as ArrowRight, CheckIcon as Check, ChevronLeftIcon as ChevronLeft, EyeIcon as Eye, EyeOffIcon as EyeOff, IndianRupeeIcon as IndianRupee } from "@animateicons/react/lucide";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
@@ -9,13 +9,14 @@ import { CloudflareTurnstile } from "@/components/auth/CloudflareTurnstile";
 import { InternationalPhoneInput } from "@/components/ui/international-phone-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/contexts/AuthContext";
-import { ApiError } from "@/lib/api";
+import { ApiError, apiRequest } from "@/lib/api";
 import { getPasswordValidationError, toRegistrationRequest, type RegistrationFormData } from "@/pages/register.utils";
 import { AuthMark, AuthShell } from "@/components/auth/AuthShell";
 import { GoogleButton } from "@/components/auth/GoogleButton";
 import { authTextFieldSx } from "@/components/auth/auth-text-field";
 
 type RegistrationData = RegistrationFormData;
+type EmailAvailability = "idle" | "checking" | "available" | "exists";
 
 const channelOptions = [
   ["whatsapp", "WhatsApp"],
@@ -50,12 +51,14 @@ type RegistrationFieldProps = {
   type?: string;
   autoComplete?: string;
   required?: boolean;
+  error?: boolean;
+  helperText?: string;
   onChange: (field: keyof RegistrationData, value: string) => void;
 };
 
-function RegistrationField({ id, label, value, type = "text", autoComplete, required = true, onChange }: RegistrationFieldProps) {
+function RegistrationField({ id, label, value, type = "text", autoComplete, required = true, error, helperText, onChange }: RegistrationFieldProps) {
   return (
-    <TextField id={id} name={id} type={type} autoComplete={autoComplete} label={label} required={required} value={value} onChange={(event) => onChange(id, event.target.value)} fullWidth size="small" variant="outlined" sx={authTextFieldSx} slotProps={{ htmlInput: { "aria-label": label } }} />
+    <TextField id={id} name={id} type={type} autoComplete={autoComplete} label={label} required={required} error={error} helperText={helperText} value={value} onChange={(event) => onChange(id, event.target.value)} fullWidth size="small" variant="outlined" sx={authTextFieldSx} slotProps={{ htmlInput: { "aria-label": label } }} />
   );
 }
 
@@ -106,13 +109,41 @@ export function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [emailAvailability, setEmailAvailability] = useState<EmailAvailability>("idle");
   const continueIcon = useAnimatedIcon();
   const revenueIcon = useAnimatedIcon();
   const backIcon = useAnimatedIcon();
   const completeIcon = useAnimatedIcon();
 
+  useEffect(() => {
+    const email = data.workEmail.trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailAvailability("idle");
+      return;
+    }
+
+    let current = true;
+    const timer = window.setTimeout(() => {
+      void apiRequest<{ available: boolean }>(`/auth/email-availability?email=${encodeURIComponent(email)}`)
+        .then((result) => {
+          if (current) setEmailAvailability(result.available ? "available" : "exists");
+        })
+        .catch(() => {
+          if (current) setEmailAvailability("idle");
+        });
+    }, 350);
+
+    return () => {
+      current = false;
+      window.clearTimeout(timer);
+    };
+  }, [data.workEmail]);
+
   const updateField = (field: keyof RegistrationData, value: string) => {
     setError(null);
+    if (field === "workEmail") {
+      setEmailAvailability("idle");
+    }
     setData((current) => ({ ...current, [field]: value }));
   };
 
@@ -125,6 +156,7 @@ export function Register() {
     event.preventDefault();
     setError(null);
     if (step === 1) {
+      if (emailAvailability === "exists") return;
       const passwordError = getPasswordValidationError(data.password, data.confirmPassword);
       if (passwordError) {
         setError(passwordError);
@@ -154,25 +186,15 @@ export function Register() {
   return (
     <AuthShell contentClassName="max-w-[560px]">
       <section aria-labelledby="register-title" className="w-full">
-        <div className="text-center">
-          <AuthMark className="mx-auto" />
-          <h1 id="register-title" className="mt-4 text-[23px] font-semibold leading-tight tracking-[-0.035em] text-[var(--text-primary)]">Create your account</h1>
-          <div className="mt-2 text-[13px] text-[var(--text-secondary)]">{step === 1 ? "Tell us who you are to get started." : "Set up your business profile before we send the verification email."}</div>
+        <div className="flex items-center justify-center gap-3 text-left">
+          <AuthMark className="shrink-0" />
+          <div className="min-w-0">
+            <h1 id="register-title" className="text-[23px] font-semibold leading-tight tracking-[-0.035em] text-[var(--text-primary)]">Create your account</h1>
+            <div className="mt-1 text-[13px] text-[var(--text-secondary)]">{step === 1 ? "Tell us who you are to get started." : "Set up your business profile before we send the verification email."}</div>
+          </div>
         </div>
 
         {step === 1 && <div className="mt-5"><GoogleButton label="Sign up with Google" /><div className="my-5 flex items-center gap-3" aria-hidden="true"><span className="h-px flex-1 bg-[var(--border-soft)]" /><span className="text-[10px] text-[var(--text-muted)]">Or continue with email</span><span className="h-px flex-1 bg-[var(--border-soft)]" /></div></div>}
-
-        <div className="mx-auto mt-5 flex max-w-[310px] items-center" aria-label={`Registration step ${step} of 2`}>
-          <div className="flex items-center gap-2">
-            <span className="flex size-7 items-center justify-center rounded-full bg-[var(--brand)] text-xs font-semibold text-white">1</span>
-            <span className="hidden text-xs font-medium text-[var(--brand)] sm:inline">Your details</span>
-          </div>
-          <span className={step === 2 ? "mx-3 h-px flex-1 bg-[var(--brand)]" : "mx-3 h-px flex-1 bg-[var(--border)]"} />
-          <div className="flex items-center gap-2">
-            <span className={step === 2 ? "flex size-7 items-center justify-center rounded-full bg-[var(--brand)] text-xs font-semibold text-white" : "flex size-7 items-center justify-center rounded-full border border-[var(--border)] bg-white text-xs font-semibold text-[var(--text-muted)]"}>2</span>
-            <span className={step === 2 ? "hidden text-xs font-medium text-[var(--brand)] sm:inline" : "hidden text-xs font-medium text-[var(--text-muted)] sm:inline"}>Company</span>
-          </div>
-        </div>
 
         <form key={step} className="auth-step mt-6" onSubmit={handleSubmit}>
           {step === 1 ? (
@@ -181,13 +203,13 @@ export function Register() {
                 <RegistrationField id="firstName" label="First name" value={data.firstName} onChange={updateField} autoComplete="given-name" />
                 <RegistrationField id="lastName" label="Last name" value={data.lastName} onChange={updateField} autoComplete="family-name" />
               </div>
-              <RegistrationField id="workEmail" label="Work email" value={data.workEmail} onChange={updateField} type="email" autoComplete="email" />
+              <RegistrationField id="workEmail" label="Work email" value={data.workEmail} onChange={updateField} type="email" autoComplete="email" error={emailAvailability === "exists"} helperText={emailAvailability === "exists" ? "Email already exists" : undefined} />
               <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
                 <PasswordField id="password" label="Password" value={data.password} visible={showPassword} onChange={updateField} onToggle={() => setShowPassword((visible) => !visible)} />
                 <PasswordField id="confirmPassword" label="Confirm password" value={data.confirmPassword} visible={showConfirmPassword} onChange={updateField} onToggle={() => setShowConfirmPassword((visible) => !visible)} />
               </div>
               {error && <p role="alert" className="rounded-md bg-[var(--danger-soft)] px-3 py-2.5 text-center">{error}</p>}
-              <Button type="submit" onMouseEnter={continueIcon.onMouseEnter} onMouseLeave={continueIcon.onMouseLeave} className="group h-12 w-full rounded-md text-sm font-semibold shadow-[0_6px_16px_rgba(4,63,41,.16)]">
+              <Button type="submit" disabled={emailAvailability === "exists"} onMouseEnter={continueIcon.onMouseEnter} onMouseLeave={continueIcon.onMouseLeave} className="group h-12 w-full rounded-md text-sm font-semibold shadow-[0_6px_16px_rgba(4,63,41,.16)]">
                 Continue
                 <ArrowRight ref={continueIcon.ref} size={16} duration={0.55} className="ml-2" aria-hidden="true" />
               </Button>

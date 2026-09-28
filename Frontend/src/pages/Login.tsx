@@ -57,10 +57,12 @@ export function Login() {
   return (
     <AuthShell>
       <section aria-labelledby="login-title">
-        <div className="text-center">
-          <AuthMark className="mx-auto" />
-          <h1 id="login-title" className="mt-4 text-[23px] font-semibold leading-tight tracking-[-0.035em] text-[var(--text-primary)]">Login to your account</h1>
-          <div className="mt-2 text-[13px] text-[var(--text-secondary)]">Enter your email below to access your Marento workspace.</div>
+        <div className="flex items-center justify-center gap-3 text-left">
+          <AuthMark className="shrink-0" />
+          <div className="min-w-0">
+            <h1 id="login-title" className="text-[23px] font-semibold leading-tight tracking-[-0.035em] text-[var(--text-primary)]">Login to your account</h1>
+            <div className="mt-1 text-[13px] text-[var(--text-secondary)]">Use your work email to sign in to Marento.</div>
+          </div>
         </div>
 
         <form className="mt-7" onSubmit={handleSubmit}>

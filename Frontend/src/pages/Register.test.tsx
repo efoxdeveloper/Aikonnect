@@ -1,8 +1,14 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AuthContext, type AuthContextValue } from "@/contexts/AuthContext";
+import { apiRequest } from "@/lib/api";
 import { Register } from "@/pages/Register";
+
+vi.mock("@/lib/api", () => ({
+  ApiError: class ApiError extends Error {},
+  apiRequest: vi.fn(),
+}));
 
 const authValue: AuthContextValue = {
   status: "unauthenticated",
@@ -18,6 +24,25 @@ const authValue: AuthContextValue = {
 };
 
 describe("registration password visibility", () => {
+  beforeEach(() => vi.mocked(apiRequest).mockReset().mockResolvedValue({ available: true }));
+
+  it("keeps the registration icon and intro copy in one row", () => {
+    render(
+      <AuthContext.Provider value={authValue}>
+        <MemoryRouter>
+          <Register />
+        </MemoryRouter>
+      </AuthContext.Provider>,
+    );
+
+    const header = screen.getByAltText("Marento").parentElement;
+    expect(header).toHaveClass("flex", "items-center", "justify-center");
+    expect(header).toContainElement(screen.getByRole("heading", { name: "Create your account" }));
+    expect(header).toContainElement(screen.getByText("Tell us who you are to get started."));
+    expect(screen.queryByText("Your details", { exact: true })).not.toBeInTheDocument();
+    expect(screen.queryByText("Company", { exact: true })).not.toBeInTheDocument();
+  });
+
   it("toggles password and confirmation visibility independently", () => {
     render(
       <AuthContext.Provider value={authValue}>
@@ -44,7 +69,24 @@ describe("registration password visibility", () => {
     expect(screen.getByRole("button", { name: "Hide confirm password" })).toBeInTheDocument();
   });
 
-  it("uses the shared international phone input on the company step", () => {
+  it("checks the email while typing and shows when it already exists", async () => {
+    vi.mocked(apiRequest).mockResolvedValueOnce({ available: false });
+    render(
+      <AuthContext.Provider value={authValue}>
+        <MemoryRouter>
+          <Register />
+        </MemoryRouter>
+      </AuthContext.Provider>,
+    );
+
+    fireEvent.change(screen.getByLabelText("Work email"), { target: { value: "existing@example.com" } });
+
+    await waitFor(() => expect(screen.getByText("Email already exists")).toBeInTheDocument());
+    expect(apiRequest).toHaveBeenCalledWith("/auth/email-availability?email=existing%40example.com");
+    expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
+  });
+
+  it("uses the shared international phone input on the company step", async () => {
     render(
       <AuthContext.Provider value={authValue}>
         <MemoryRouter>
@@ -58,6 +100,7 @@ describe("registration password visibility", () => {
     fireEvent.change(screen.getByLabelText("Work email"), { target: { value: "test@example.com" } });
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: "Password123" } });
     fireEvent.change(screen.getByLabelText("Confirm password"), { target: { value: "Password123" } });
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith("/auth/email-availability?email=test%40example.com"));
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
 
     const phone = screen.getByLabelText("Phone number");

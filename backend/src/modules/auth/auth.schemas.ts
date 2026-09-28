@@ -41,6 +41,8 @@ export const registerSchema = z.object({
   captchaToken: z.string().trim().min(1).max(2048).optional(),
 });
 
+export const emailAvailabilityQuerySchema = z.object({ email });
+
 export const loginSchema = z.object({ email, password: z.string().min(1).max(128) });
 export const forgotPasswordSchema = z.object({ email });
 export const resetPasswordSchema = z.object({ token: z.string().min(32), newPassword: password });
@@ -55,6 +57,7 @@ export const changePasswordSchema = z.object({
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;
+export type EmailAvailabilityQuery = z.infer<typeof emailAvailabilityQuerySchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
