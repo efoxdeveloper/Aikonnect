@@ -10,7 +10,7 @@ type TurnstileResponse = {
   "error-codes"?: string[];
 };
 
-export async function verifyTurnstileToken(token: string, remoteIp?: string): Promise<void> {
+export async function verifyTurnstileToken(token: string): Promise<void> {
   const secret = env.CLOUDFLARE_TURNSTILE_SECRET_KEY;
   if (!secret) throw new AppError(503, "Cloudflare verification is not configured.", "CAPTCHA_NOT_CONFIGURED");
 
@@ -18,7 +18,7 @@ export async function verifyTurnstileToken(token: string, remoteIp?: string): Pr
     const response = await fetch(TURNSTILE_VERIFY_URL, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ secret, response: token, ...(remoteIp ? { remoteip: remoteIp } : {}) }),
+      body: JSON.stringify({ secret, response: token }),
       signal: AbortSignal.timeout(5_000),
     });
     if (!response.ok) throw new Error(`Turnstile returned HTTP ${response.status}`);

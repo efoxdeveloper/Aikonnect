@@ -15,8 +15,8 @@ test("validates the Turnstile token through Cloudflare Siteverify", async () => 
   }) as typeof fetch;
 
   try {
-    await verifyTurnstileToken("turnstile-token", "127.0.0.1");
-    assert.deepEqual(requestBody, { secret: "test-secret", response: "turnstile-token", remoteip: "127.0.0.1" });
+    await verifyTurnstileToken("turnstile-token");
+    assert.deepEqual(requestBody, { secret: "test-secret", response: "turnstile-token" });
 
     globalThis.fetch = (async () => new Response(JSON.stringify({ success: false, "error-codes": ["timeout-or-duplicate"] }), { status: 200 })) as typeof fetch;
     await assert.rejects(

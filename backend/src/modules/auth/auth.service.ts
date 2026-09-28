@@ -69,7 +69,7 @@ async function createSession(userId: string, metadata: SessionMetadata) {
 }
 
 export async function register(input: RegisterInput, metadata: SessionMetadata) {
-  if (input.captchaToken) await verifyTurnstileToken(input.captchaToken, metadata.ipAddress);
+  if (input.captchaToken) await verifyTurnstileToken(input.captchaToken);
   else if (env.NODE_ENV !== "test") throw new AppError(422, "Complete the Cloudflare verification before creating your account.", "CAPTCHA_REQUIRED");
   const existingUser = await prisma.user.findUnique({ where: { email: input.email }, select: { id: true } });
   if (existingUser) throw new AppError(409, "An account with this email already exists", "EMAIL_IN_USE");
