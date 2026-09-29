@@ -308,7 +308,13 @@ async function registerNewPhoneNumber(phoneNumberId: string, accessToken: string
 }
 
 async function subscribeAppToWaba(wabaId: string, accessToken: string) {
-  const result = await postMeta(`/${encodeURIComponent(wabaId)}/subscribed_apps`, accessToken, {}, "subscribe_webhooks", META_OPTIONAL_REQUEST_TIMEOUT_MS);
+  const subscriptionPayload = env.META_WEBHOOK_URL
+    ? {
+        override_callback_uri: env.META_WEBHOOK_URL,
+        ...(env.META_WEBHOOK_VERIFY_TOKEN ? { verify_token: env.META_WEBHOOK_VERIFY_TOKEN } : {}),
+      }
+    : {};
+  const result = await postMeta(`/${encodeURIComponent(wabaId)}/subscribed_apps`, accessToken, subscriptionPayload, "subscribe_webhooks", META_OPTIONAL_REQUEST_TIMEOUT_MS);
   if (result.success !== true) {
     throw new AppError(502, "Meta did not confirm the WhatsApp webhook subscription. Check the app's webhook configuration and permissions.", "META_RESPONSE_INVALID", { stage: "subscribe_webhooks" });
   }

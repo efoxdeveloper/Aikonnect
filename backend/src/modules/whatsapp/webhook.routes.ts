@@ -68,6 +68,20 @@ function asArray(value: unknown): JsonRecord[] {
   return Array.isArray(value) ? value.map(asRecord).filter((item): item is JsonRecord => item !== null) : [];
 }
 
+export function formatWhatsAppFailureReason(status: WhatsAppStatus): string | undefined {
+  const error = asArray(status.errors)[0];
+  if (!error) return undefined;
+  const errorData = asRecord(error.error_data);
+  const parts = [
+    typeof error.code === "number" || typeof error.code === "string" ? `Meta error ${error.code}` : undefined,
+    asString(error.title),
+    asString(error.message),
+    asString(errorData?.details),
+    asString(error.fbtrace_id) ? `fbtrace_id=${error.fbtrace_id}` : undefined,
+  ].filter((part): part is string => Boolean(part?.trim()));
+  return [...new Set(parts)].join(": ") || "Meta reported an unspecified delivery failure";
+}
+
 function httpUrl(value: unknown) {
   const candidate = asString(value);
   if (!candidate) return undefined;
@@ -320,8 +334,8 @@ async function ingestMessageStatuses(workspaceId: string, statuses: WhatsAppStat
     const messageStatus = state as "DELIVERED" | "READ" | "FAILED";
     const timestamp = Number(status.timestamp);
     const occurredAt = Number.isFinite(timestamp) && timestamp > 0 ? new Date(timestamp * 1000) : new Date();
-    const errors = asArray(status.errors);
-    const failureReason = errors[0] ? asString(errors[0].title) ?? asString(errors[0].message) : undefined;
+    const failureReason = formatWhatsAppFailureReason(status);
+    logger.info({ workspaceId, metaMessageId, status: messageStatus, hasFailureDetails: Boolean(failureReason) }, "Processing WhatsApp message status");
     const existing = await prisma.message.findFirst({
       where: { workspaceId, metaMessageId },
       select: { id: true, conversationId: true, status: true, billingStatus: true },
@@ -340,6 +354,9 @@ async function ingestMessageStatuses(workspaceId: string, statuses: WhatsAppStat
           },
         });
       }
+    }
+    if (!existing) {
+      logger.warn({ workspaceId, metaMessageId, status: messageStatus }, "WhatsApp message status did not match a stored message");
     }
     if (existing && existing.billingStatus === "RESERVED") {
       try {
@@ -489,8 +506,19 @@ router.post("/", async (request: Request, response: Response) => {
   }
   const payload = asRecord(request.body) as WhatsAppWebhookPayload | null;
   if (!payload || payload.object !== "whatsapp_business_account") return response.sendStatus(400);
-  await processPayload(payload);
-  return response.sendStatus(200);
+  const entries = asArray(payload.entry);
+  logger.info({
+    entryCount: entries.length,
+    wabaIds: entries.map((entry) => asString(entry.id)).filter(Boolean),
+    fields: entries.flatMap((entry) => asArray(entry.changes).map((change) => asString(change.field)).filter(Boolean)),
+  }, "Received WhatsApp webhook");
+  try {
+    await processPayload(payload);
+    return response.sendStatus(200);
+  } catch (error) {
+    logger.error({ error }, "WhatsApp webhook processing failed");
+    return response.sendStatus(500);
+  }
 });
 
 export { router as whatsappWebhookRouter };

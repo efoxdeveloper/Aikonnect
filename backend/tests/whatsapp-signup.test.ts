@@ -111,6 +111,15 @@ function fixture(t: TestContext, options: {
     }
     if (url.pathname.endsWith("/subscribed_apps")) {
       assert.ok(steps.includes("persist"), "webhooks must be able to resolve the saved account");
+      const body = JSON.parse(String(init?.body));
+      if (env.META_WEBHOOK_URL) {
+        assert.deepEqual(body, {
+          override_callback_uri: env.META_WEBHOOK_URL,
+          verify_token: env.META_WEBHOOK_VERIFY_TOKEN,
+        });
+      } else {
+        assert.deepEqual(body, {});
+      }
       steps.push("subscribe-start");
       // Expose races: sync must wait until this promise resolves.
       await new Promise<void>((resolve) => setImmediate(resolve));
@@ -157,6 +166,26 @@ test("fresh-number signup registers the selected ID without a blocking phone loo
   assert.deepEqual(state.steps, ["exchange", "register", "persist", "subscribe-start", "subscribed"]);
   assert.equal(state.accountWrites[0]?.create.workspaceId, "workspace-id");
   assert.equal(state.phoneWrites[0]?.create.isOnBusinessApp, false);
+});
+
+test("WABA subscription applies the configured webhook callback override", async (t) => {
+  const previousUrl = env.META_WEBHOOK_URL;
+  const previousToken = env.META_WEBHOOK_VERIFY_TOKEN;
+  Object.assign(env, {
+    META_WEBHOOK_URL: "https://app.marento.in/api/webhooks/whatsapp",
+    META_WEBHOOK_VERIFY_TOKEN: "test-webhook-verify-token",
+  });
+  t.after(() => {
+    if (previousUrl) env.META_WEBHOOK_URL = previousUrl;
+    else delete (env as any).META_WEBHOOK_URL;
+    if (previousToken) env.META_WEBHOOK_VERIFY_TOKEN = previousToken;
+    else delete (env as any).META_WEBHOOK_VERIFY_TOKEN;
+  });
+
+  const state = fixture(t);
+  const result = await completeEmbeddedSignup("workspace-id", signup);
+  assert.deepEqual(result.syncWarnings, []);
+  assert.ok(state.steps.includes("subscribed"));
 });
 
 test("fresh-number registration failure does not persist an active connection", async (t) => {
