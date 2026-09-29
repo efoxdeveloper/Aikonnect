@@ -171,14 +171,20 @@ function mediaId(message: WhatsAppMessage) {
   return asString(messageDetails(message)?.id);
 }
 
-async function workspacePhoneNumber(wabaId: string | undefined, phoneNumberId: string) {
-  return prisma.whatsAppPhoneNumber.findFirst({
+async function workspacePhoneNumbers(wabaId: string | undefined, phoneNumberId: string) {
+  return prisma.whatsAppPhoneNumber.findMany({
     where: {
       metaPhoneNumberId: phoneNumberId,
-      ...(wabaId ? { businessAccount: { metaWabaId: wabaId } } : {}),
+      status: "ACTIVE",
+      businessAccount: { status: "CONNECTED", ...(wabaId ? { metaWabaId: wabaId } : {}) },
     },
+    orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
     select: { id: true, displayPhoneNumber: true, businessAccount: { select: { workspaceId: true } } },
   });
+}
+
+async function workspacePhoneNumber(wabaId: string | undefined, phoneNumberId: string) {
+  return (await workspacePhoneNumbers(wabaId, phoneNumberId))[0] ?? null;
 }
 
 async function ingestIncomingMessage(
@@ -518,7 +524,13 @@ async function processPayload(payload: WhatsAppWebhookPayload) {
           }
         }
       }
-      await ingestMessageStatuses(phoneNumber.businessAccount.workspaceId, asArray(value.statuses) as WhatsAppStatus[]);
+      const statuses = asArray(value.statuses) as WhatsAppStatus[];
+      if (statuses.length) {
+        const matchingPhoneNumbers = await workspacePhoneNumbers(wabaId, phoneNumberId);
+        for (const matchingPhoneNumber of matchingPhoneNumbers) {
+          await ingestMessageStatuses(matchingPhoneNumber.businessAccount.workspaceId, statuses);
+        }
+      }
       if (asArray(value.statuses).length) publishInboxRefresh(phoneNumber.businessAccount.workspaceId);
     }
   }

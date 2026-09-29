@@ -929,6 +929,24 @@ export async function disconnectWhatsApp(workspaceId: string) {
   return { ...result, message: "WhatsApp was removed from this workspace. To fully disconnect a coexistence number from Cloud API, open WhatsApp Business → Settings → Account → Business Platform → Disconnect Account." };
 }
 
+async function assertWhatsAppAssetAvailable(workspaceId: string, metaWabaId: string, metaPhoneNumberId: string) {
+  const conflictingAccount = await prisma.whatsAppBusinessAccount.findFirst({
+    where: { workspaceId: { not: workspaceId }, metaWabaId, status: "CONNECTED" },
+    select: { workspaceId: true },
+  });
+  if (conflictingAccount) {
+    throw new AppError(409, "This WhatsApp Business Account is already connected to another workspace. Disconnect it there before connecting it here.", "WHATSAPP_ASSET_ALREADY_CONNECTED", { metaWabaId });
+  }
+
+  const conflictingPhone = await prisma.whatsAppPhoneNumber.findFirst({
+    where: { metaPhoneNumberId, businessAccount: { workspaceId: { not: workspaceId }, status: "CONNECTED" } },
+    select: { businessAccount: { select: { workspaceId: true } } },
+  });
+  if (conflictingPhone) {
+    throw new AppError(409, "This WhatsApp phone number is already connected to another workspace. Disconnect it there before connecting it here.", "WHATSAPP_PHONE_ALREADY_CONNECTED", { metaPhoneNumberId });
+  }
+}
+
 export async function completeEmbeddedSignup(workspaceId: string, input: EmbeddedSignupInput) {
   const { encryptionKey } = requireMetaConfiguration();
   const mode = input.mode ?? "coexistence";
@@ -968,6 +986,7 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
   if (input.phoneNumberId && metaPhoneNumberId !== input.phoneNumberId) {
     throw new AppError(502, "Meta returned a different WhatsApp phone number", "META_PHONE_NUMBER_MISMATCH");
   }
+  await assertWhatsAppAssetAvailable(workspaceId, input.wabaId, metaPhoneNumberId);
   if (mode === "coexistence") {
     if (phone.is_on_biz_app === false) {
       throw new AppError(422, "The selected number is not enabled for WhatsApp Business App coexistence", "META_COEXISTENCE_NOT_ENABLED");

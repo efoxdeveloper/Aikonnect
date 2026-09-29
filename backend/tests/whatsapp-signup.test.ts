@@ -46,6 +46,7 @@ function fixture(t: TestContext, options: {
   missingSyncId?: boolean;
   registrationFails?: boolean;
   creditLine?: boolean;
+  conflictingWaba?: boolean;
 } = {}) {
   const steps: string[] = [];
   const accountWrites: Record<string, any>[] = [];
@@ -72,6 +73,8 @@ function fixture(t: TestContext, options: {
     if (typeof args.data.lastError === "string") warnings.push(args.data.lastError);
     return {};
   });
+  stubDelegate(t, prisma.whatsAppBusinessAccount, "findFirst", async () => options.conflictingWaba ? { workspaceId: "another-workspace" } : null);
+  stubDelegate(t, prisma.whatsAppPhoneNumber, "findFirst", async () => null);
   t.mock.method(globalThis, "fetch", async (input: string | URL, init?: RequestInit) => {
     const url = new URL(String(input));
     assert.equal(url.origin, "https://graph.facebook.com");
@@ -186,6 +189,18 @@ test("WABA subscription applies the configured webhook callback override", async
   const result = await completeEmbeddedSignup("workspace-id", signup);
   assert.deepEqual(result.syncWarnings, []);
   assert.ok(state.steps.includes("subscribed"));
+});
+
+test("rejects a WABA already connected to another workspace", async (t) => {
+  const state = fixture(t, { conflictingWaba: true });
+  await assert.rejects(completeEmbeddedSignup("workspace-id", signup), (error: unknown) => {
+    assert.ok(error instanceof AppError);
+    assert.equal(error.statusCode, 409);
+    assert.equal(error.code, "WHATSAPP_ASSET_ALREADY_CONNECTED");
+    return true;
+  });
+  assert.equal(state.accountWrites.length, 0);
+  assert.equal(state.steps.includes("persist"), false);
 });
 
 test("fresh-number registration failure does not persist an active connection", async (t) => {
