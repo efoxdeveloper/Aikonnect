@@ -11,6 +11,7 @@ const [{ app }, { prisma }, { env }] = await Promise.all([
 
 const configuredWebhookSecret = env.META_APP_SECRET;
 const configuredVerifyToken = env.META_WEBHOOK_VERIFY_TOKEN;
+const webhookRequestIds: string[] = [];
 
 let server: Server;
 let baseUrl: string;
@@ -28,6 +29,7 @@ before(async () => {
 });
 
 after(async () => {
+  if (webhookRequestIds.length) await prisma.whatsAppWebhookEvent.deleteMany({ where: { requestId: { in: webhookRequestIds } } });
   const users = await prisma.user.findMany({ where: { email: { in: createdEmails } }, select: { id: true } });
   const userIds = users.map(({ id }) => id);
   if (userIds.length) {
@@ -47,11 +49,13 @@ test("verifies Meta webhook subscriptions and rejects invalid signatures", async
   assert.equal(await verified.text(), "abc123");
 
   const body = JSON.stringify({ object: "whatsapp_business_account", entry: [] });
-  const unsigned = await fetch(baseUrl, { method: "POST", headers: { "content-type": "application/json" }, body });
+  const requestId = `webhook-test-verification-${Date.now()}`;
+  webhookRequestIds.push(requestId);
+  const unsigned = await fetch(baseUrl, { method: "POST", headers: { "content-type": "application/json", "x-request-id": requestId }, body });
   assert.equal(unsigned.status, 401);
   assert.ok(configuredWebhookSecret);
   const signature = createHmac("sha256", configuredWebhookSecret).update(body).digest("hex");
-  const accepted = await fetch(baseUrl, { method: "POST", headers: { "content-type": "application/json", "x-hub-signature-256": `sha256=${signature}` }, body });
+  const accepted = await fetch(baseUrl, { method: "POST", headers: { "content-type": "application/json", "x-hub-signature-256": `sha256=${signature}`, "x-request-id": requestId }, body });
   assert.equal(accepted.status, 200);
 });
 
@@ -76,11 +80,19 @@ test("ingests incoming WhatsApp messages into the mapped workspace and deduplica
   const body = JSON.stringify(payload);
   assert.ok(configuredWebhookSecret);
   const signature = createHmac("sha256", configuredWebhookSecret).update(body).digest("hex");
-  const headers = { "content-type": "application/json", "x-hub-signature-256": `sha256=${signature}` };
+  const requestId = `webhook-test-message-${suffix}`;
+  webhookRequestIds.push(requestId);
+  const headers = { "content-type": "application/json", "x-hub-signature-256": `sha256=${signature}`, "x-request-id": requestId };
   const first = await fetch(baseUrl, { method: "POST", headers, body });
   const retry = await fetch(baseUrl, { method: "POST", headers, body });
   assert.equal(first.status, 200);
   assert.equal(retry.status, 200);
+  const storedEvents = await prisma.whatsAppWebhookEvent.findMany({ where: { wabaId: account.metaWabaId }, orderBy: { createdAt: "desc" }, take: 2 });
+  assert.equal(storedEvents.length, 2);
+  assert.equal(storedEvents[0]?.responseStatus, 200);
+  assert.equal(storedEvents[0]?.responseBody, "OK");
+  assert.equal(storedEvents[0]?.webhookField, "messages");
+  assert.equal((storedEvents[0]?.payload as { object?: string }).object, "whatsapp_business_account");
   assert.equal(await prisma.contact.count({ where: { workspaceId, whatsappId: "919812345678" } }), 1);
   assert.equal((await prisma.contact.findFirstOrThrow({ where: { workspaceId, whatsappId: "919812345678" } })).profileImageUrl, "https://cdn.example.com/webhook-customer.jpg");
   assert.equal(await prisma.conversation.count({ where: { workspaceId, phoneNumberId: phoneNumber.id } }), 1);
@@ -146,7 +158,9 @@ test("ingests coexistence contact state and outbound message echoes", async () =
   const body = JSON.stringify(payload);
   assert.ok(configuredWebhookSecret);
   const signature = createHmac("sha256", configuredWebhookSecret).update(body).digest("hex");
-  const response = await fetch(baseUrl, { method: "POST", headers: { "content-type": "application/json", "x-hub-signature-256": `sha256=${signature}` }, body });
+  const requestId = `webhook-test-coexistence-${suffix}`;
+  webhookRequestIds.push(requestId);
+  const response = await fetch(baseUrl, { method: "POST", headers: { "content-type": "application/json", "x-hub-signature-256": `sha256=${signature}`, "x-request-id": requestId }, body });
   assert.equal(response.status, 200);
   assert.equal(await prisma.contact.count({ where: { workspaceId, whatsappId: "919812345678" } }), 1);
   const echo = await prisma.message.findFirstOrThrow({ where: { workspaceId, metaMessageId: `echo-${suffix}` } });

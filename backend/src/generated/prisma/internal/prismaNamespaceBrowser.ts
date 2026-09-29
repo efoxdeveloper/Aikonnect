@@ -62,6 +62,7 @@ export const ModelName = {
   ContactConsentEvent: 'ContactConsentEvent',
   Conversation: 'Conversation',
   Message: 'Message',
+  WhatsAppWebhookEvent: 'WhatsAppWebhookEvent',
   WhatsAppRateCard: 'WhatsAppRateCard',
   ContactCustomField: 'ContactCustomField',
   ContactCustomFieldValue: 'ContactCustomFieldValue',
@@ -369,6 +370,24 @@ export const MessageScalarFieldEnum = {
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const WhatsAppWebhookEventScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  wabaId: 'wabaId',
+  phoneNumberId: 'phoneNumberId',
+  webhookField: 'webhookField',
+  payload: 'payload',
+  responseStatus: 'responseStatus',
+  responseBody: 'responseBody',
+  processingError: 'processingError',
+  receivedAt: 'receivedAt',
+  processedAt: 'processedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type WhatsAppWebhookEventScalarFieldEnum = (typeof WhatsAppWebhookEventScalarFieldEnum)[keyof typeof WhatsAppWebhookEventScalarFieldEnum]
 
 
 export const WhatsAppRateCardScalarFieldEnum = {

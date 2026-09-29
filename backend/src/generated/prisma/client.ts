@@ -97,6 +97,11 @@ export type Conversation = Prisma.ConversationModel
  */
 export type Message = Prisma.MessageModel
 /**
+ * Model WhatsAppWebhookEvent
+ * 
+ */
+export type WhatsAppWebhookEvent = Prisma.WhatsAppWebhookEventModel
+/**
  * Model WhatsAppRateCard
  * 
  */

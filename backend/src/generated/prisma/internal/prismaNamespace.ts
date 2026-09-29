@@ -408,6 +408,7 @@ export const ModelName = {
   ContactConsentEvent: 'ContactConsentEvent',
   Conversation: 'Conversation',
   Message: 'Message',
+  WhatsAppWebhookEvent: 'WhatsAppWebhookEvent',
   WhatsAppRateCard: 'WhatsAppRateCard',
   ContactCustomField: 'ContactCustomField',
   ContactCustomFieldValue: 'ContactCustomFieldValue',
@@ -453,7 +454,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "oAuthAccount" | "tenant" | "workspace" | "template" | "publicApiKey" | "webhookEndpoint" | "contact" | "contactConsentEvent" | "conversation" | "message" | "whatsAppRateCard" | "contactCustomField" | "contactCustomFieldValue" | "contactSegment" | "contactTask" | "contactNote" | "contactTag" | "contactTagAssignment" | "workspaceSetupProgress" | "whatsAppBusinessAccount" | "whatsAppPhoneNumber" | "automation" | "automationLog" | "workflow" | "workflowRun" | "campaign" | "campaignRecipient" | "workspaceMember" | "role" | "permission" | "rolePermission" | "workspaceInvitation" | "session" | "wallet" | "walletLedgerEntry" | "walletReservation" | "workspaceBillingSettings" | "platformAuditLog" | "emailVerificationToken" | "passwordResetToken"
+    modelProps: "user" | "oAuthAccount" | "tenant" | "workspace" | "template" | "publicApiKey" | "webhookEndpoint" | "contact" | "contactConsentEvent" | "conversation" | "message" | "whatsAppWebhookEvent" | "whatsAppRateCard" | "contactCustomField" | "contactCustomFieldValue" | "contactSegment" | "contactTask" | "contactNote" | "contactTag" | "contactTagAssignment" | "workspaceSetupProgress" | "whatsAppBusinessAccount" | "whatsAppPhoneNumber" | "automation" | "automationLog" | "workflow" | "workflowRun" | "campaign" | "campaignRecipient" | "workspaceMember" | "role" | "permission" | "rolePermission" | "workspaceInvitation" | "session" | "wallet" | "walletLedgerEntry" | "walletReservation" | "workspaceBillingSettings" | "platformAuditLog" | "emailVerificationToken" | "passwordResetToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1268,6 +1269,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.MessageCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.MessageCountAggregateOutputType> | number
+        }
+      }
+    }
+    WhatsAppWebhookEvent: {
+      payload: Prisma.$WhatsAppWebhookEventPayload<ExtArgs>
+      fields: Prisma.WhatsAppWebhookEventFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WhatsAppWebhookEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppWebhookEventPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WhatsAppWebhookEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppWebhookEventPayload>
+        }
+        findFirst: {
+          args: Prisma.WhatsAppWebhookEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppWebhookEventPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WhatsAppWebhookEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppWebhookEventPayload>
+        }
+        findMany: {
+          args: Prisma.WhatsAppWebhookEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppWebhookEventPayload>[]
+        }
+        create: {
+          args: Prisma.WhatsAppWebhookEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppWebhookEventPayload>
+        }
+        createMany: {
+          args: Prisma.WhatsAppWebhookEventCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WhatsAppWebhookEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppWebhookEventPayload>[]
+        }
+        delete: {
+          args: Prisma.WhatsAppWebhookEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppWebhookEventPayload>
+        }
+        update: {
+          args: Prisma.WhatsAppWebhookEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppWebhookEventPayload>
+        }
+        deleteMany: {
+          args: Prisma.WhatsAppWebhookEventDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WhatsAppWebhookEventUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WhatsAppWebhookEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppWebhookEventPayload>[]
+        }
+        upsert: {
+          args: Prisma.WhatsAppWebhookEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WhatsAppWebhookEventPayload>
+        }
+        aggregate: {
+          args: Prisma.WhatsAppWebhookEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWhatsAppWebhookEvent>
+        }
+        groupBy: {
+          args: Prisma.WhatsAppWebhookEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WhatsAppWebhookEventGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WhatsAppWebhookEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WhatsAppWebhookEventCountAggregateOutputType> | number
         }
       }
     }
@@ -3791,6 +3866,24 @@ export const MessageScalarFieldEnum = {
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
+export const WhatsAppWebhookEventScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  wabaId: 'wabaId',
+  phoneNumberId: 'phoneNumberId',
+  webhookField: 'webhookField',
+  payload: 'payload',
+  responseStatus: 'responseStatus',
+  responseBody: 'responseBody',
+  processingError: 'processingError',
+  receivedAt: 'receivedAt',
+  processedAt: 'processedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type WhatsAppWebhookEventScalarFieldEnum = (typeof WhatsAppWebhookEventScalarFieldEnum)[keyof typeof WhatsAppWebhookEventScalarFieldEnum]
+
+
 export const WhatsAppRateCardScalarFieldEnum = {
   id: 'id',
   countryCode: 'countryCode',
@@ -4433,7 +4526,7 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-
+    
 
 
 /**
@@ -4947,6 +5040,7 @@ export type GlobalOmitConfig = {
   contactConsentEvent?: Prisma.ContactConsentEventOmit
   conversation?: Prisma.ConversationOmit
   message?: Prisma.MessageOmit
+  whatsAppWebhookEvent?: Prisma.WhatsAppWebhookEventOmit
   whatsAppRateCard?: Prisma.WhatsAppRateCardOmit
   contactCustomField?: Prisma.ContactCustomFieldOmit
   contactCustomFieldValue?: Prisma.ContactCustomFieldValueOmit
@@ -5039,3 +5133,4 @@ export type PrismaAction =
  * `PrismaClient` proxy available in interactive transactions.
  */
 export type TransactionClient = Omit<DefaultPrismaClient, runtime.ITXClientDenyList>
+

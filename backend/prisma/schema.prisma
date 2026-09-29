@@ -219,7 +219,7 @@ model User {
   campaignsCreated           Campaign[]               @relation("CampaignCreator")
   apiKeysCreated             PublicApiKey[]           @relation("ApiKeyCreator")
   webhookEndpointsCreated    WebhookEndpoint[]        @relation("WebhookEndpointCreator")
-  walletLedgerEntries         WalletLedgerEntry[]      @relation("WalletLedgerActor")
+  walletLedgerEntries        WalletLedgerEntry[]      @relation("WalletLedgerActor")
   platformAuditLogs          PlatformAuditLog[]       @relation("PlatformAuditActor")
   whatsappRateCardsCreated   WhatsAppRateCard[]       @relation("WhatsAppRateCardCreator")
   whatsappRateCardsUpdated   WhatsAppRateCard[]       @relation("WhatsAppRateCardUpdater")
@@ -244,16 +244,16 @@ model OAuthAccount {
 }
 
 model Tenant {
-  id          String     @id @default(uuid()) @db.Uuid
-  name        String     @db.VarChar(160)
-  slug        String     @unique @db.VarChar(180)
-  ownerId     String     @map("owner_id") @db.Uuid
-  createdAt   DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt   DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
-  owner       User       @relation("TenantOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  workspaces  Workspace[]
-  wallet      Wallet?
-  ledgerEntries WalletLedgerEntry[]
+  id                 String              @id @default(uuid()) @db.Uuid
+  name               String              @db.VarChar(160)
+  slug               String              @unique @db.VarChar(180)
+  ownerId            String              @map("owner_id") @db.Uuid
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  owner              User                @relation("TenantOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  workspaces         Workspace[]
+  wallet             Wallet?
+  ledgerEntries      WalletLedgerEntry[]
   walletReservations WalletReservation[]
 
   @@index([ownerId])
@@ -314,40 +314,40 @@ model Workspace {
 }
 
 model Template {
-  id                  String         @id @default(uuid()) @db.Uuid
-  workspaceId         String         @map("workspace_id") @db.Uuid
-  metaTemplateId      String?        @map("meta_template_id") @db.VarChar(100)
-  metaWabaId          String?        @map("meta_waba_id") @db.VarChar(100)
-  metaTemplateName    String?        @map("meta_template_name") @db.VarChar(512)
-  metaLanguageCode    String?        @map("meta_language_code") @db.VarChar(50)
-  metaStatus          String?        @map("meta_status") @db.VarChar(50)
-  metaRejectionReason String?        @map("meta_rejection_reason") @db.Text
-  name                String         @db.VarChar(160)
-  templateKey         String         @map("template_key") @db.VarChar(180)
-  category            String         @db.VarChar(40)
-  language            String         @db.VarChar(50)
-  templateType        String         @map("template_type") @db.VarChar(40)
-  headerType          String         @default("none") @map("header_type") @db.VarChar(20)
-  headerText          String?        @map("header_text") @db.VarChar(60)
-  headerFileName      String?        @map("header_file_name") @db.VarChar(255)
-  body                String         @db.Text
-  footer              String?        @db.VarChar(60)
-  content             Json           @default("{}") @db.JsonB
-  status              TemplateStatus @default(DRAFT)
-  createdById         String?        @map("created_by_id") @db.Uuid
-  updatedById         String?        @map("updated_by_id") @db.Uuid
-  deletedById         String?        @map("deleted_by_id") @db.Uuid
-  deletionAttemptCount Int            @default(0) @map("deletion_attempt_count")
-  deletionNextAttemptAt DateTime?     @map("deletion_next_attempt_at") @db.Timestamptz(3)
-  deletionProcessingAt DateTime?      @map("deletion_processing_at") @db.Timestamptz(3)
-  deletionError       String?         @map("deletion_error") @db.Text
-  createdAt           DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt           DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
-  deletedAt           DateTime?      @map("deleted_at") @db.Timestamptz(3)
-  workspace           Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  createdBy           User?          @relation("TemplateCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  updatedBy           User?          @relation("TemplateUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
-  deletedBy           User?          @relation("TemplateDeleter", fields: [deletedById], references: [id], onDelete: SetNull)
+  id                    String         @id @default(uuid()) @db.Uuid
+  workspaceId           String         @map("workspace_id") @db.Uuid
+  metaTemplateId        String?        @map("meta_template_id") @db.VarChar(100)
+  metaWabaId            String?        @map("meta_waba_id") @db.VarChar(100)
+  metaTemplateName      String?        @map("meta_template_name") @db.VarChar(512)
+  metaLanguageCode      String?        @map("meta_language_code") @db.VarChar(50)
+  metaStatus            String?        @map("meta_status") @db.VarChar(50)
+  metaRejectionReason   String?        @map("meta_rejection_reason") @db.Text
+  name                  String         @db.VarChar(160)
+  templateKey           String         @map("template_key") @db.VarChar(180)
+  category              String         @db.VarChar(40)
+  language              String         @db.VarChar(50)
+  templateType          String         @map("template_type") @db.VarChar(40)
+  headerType            String         @default("none") @map("header_type") @db.VarChar(20)
+  headerText            String?        @map("header_text") @db.VarChar(60)
+  headerFileName        String?        @map("header_file_name") @db.VarChar(255)
+  body                  String         @db.Text
+  footer                String?        @db.VarChar(60)
+  content               Json           @default("{}") @db.JsonB
+  status                TemplateStatus @default(DRAFT)
+  createdById           String?        @map("created_by_id") @db.Uuid
+  updatedById           String?        @map("updated_by_id") @db.Uuid
+  deletedById           String?        @map("deleted_by_id") @db.Uuid
+  deletionAttemptCount  Int            @default(0) @map("deletion_attempt_count")
+  deletionNextAttemptAt DateTime?      @map("deletion_next_attempt_at") @db.Timestamptz(3)
+  deletionProcessingAt  DateTime?      @map("deletion_processing_at") @db.Timestamptz(3)
+  deletionError         String?        @map("deletion_error") @db.Text
+  createdAt             DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt             DateTime?      @map("deleted_at") @db.Timestamptz(3)
+  workspace             Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy             User?          @relation("TemplateCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy             User?          @relation("TemplateUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+  deletedBy             User?          @relation("TemplateDeleter", fields: [deletedById], references: [id], onDelete: SetNull)
 
   @@unique([workspaceId, templateKey])
   @@unique([workspaceId, metaTemplateId])
@@ -517,53 +517,53 @@ model Conversation {
 }
 
 model Message {
-  id             String           @id @default(uuid()) @db.Uuid
-  workspaceId    String           @map("workspace_id") @db.Uuid
-  conversationId String           @map("conversation_id") @db.Uuid
-  contactId      String           @map("contact_id") @db.Uuid
-  metaMessageId  String?          @map("meta_message_id") @db.VarChar(200)
-  apiIdempotencyKey String?       @map("api_idempotency_key") @db.VarChar(255)
-  direction      MessageDirection
-  type           MessageType
-  status         MessageStatus    @default(SENT)
-  text           String?          @db.Text
-  mediaId        String?          @map("media_id") @db.VarChar(255)
-  mediaUrl       String?          @map("media_url") @db.Text
-  payload        Json             @default("{}") @db.JsonB
-  sentAt         DateTime         @map("sent_at") @db.Timestamptz(3)
-  deliveredAt    DateTime?        @map("delivered_at") @db.Timestamptz(3)
-  readAt         DateTime?        @map("read_at") @db.Timestamptz(3)
-  failedAt       DateTime?        @map("failed_at") @db.Timestamptz(3)
-  failureReason  String?          @map("failure_reason") @db.Text
-  rateCardId     String?          @map("rate_card_id") @db.Uuid
-  pricingCountry String?          @map("pricing_country") @db.Char(2)
-  pricingCategory String?         @map("pricing_category") @db.VarChar(40)
-  pricingType    String?          @map("pricing_type") @db.VarChar(60)
-  metaCost       Decimal?         @map("meta_cost") @db.Decimal(18, 6)
-  platformFee    Decimal?         @map("platform_fee") @db.Decimal(18, 6)
-  customerCost   Decimal?         @map("customer_cost") @db.Decimal(18, 6)
-  pricingCurrency String?         @map("pricing_currency") @db.Char(3)
-  pricingEffectiveDate DateTime?  @map("pricing_effective_date") @db.Timestamptz(3)
-  billingStatus  String           @default("NOT_APPLICABLE") @map("billing_status") @db.VarChar(20)
-  billingMode    String?          @map("billing_mode") @db.VarChar(40)
-  walletChargeAmount Decimal?      @map("wallet_charge_amount") @db.Decimal(18, 6)
-  billingCurrency String?         @map("billing_currency") @db.Char(3)
-  billingError    String?          @map("billing_error") @db.Text
-  estimatedMetaCost Decimal?       @map("estimated_meta_cost") @db.Decimal(18, 6)
-  actualMetaCost Decimal?          @map("actual_meta_cost") @db.Decimal(18, 6)
-  costDifference Decimal?          @map("cost_difference") @db.Decimal(18, 6)
-  reconciledAt   DateTime?         @map("reconciled_at") @db.Timestamptz(3)
-  deletedAt      DateTime?        @map("deleted_at") @db.Timestamptz(3)
-  createdById    String?          @map("created_by_id") @db.Uuid
-  createdAt      DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt      DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
-  workspace      Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  conversation   Conversation     @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  contact        Contact          @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  createdBy      User?            @relation("MessageCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  rateCard       WhatsAppRateCard? @relation(fields: [rateCardId], references: [id], onDelete: SetNull)
-  walletReservations WalletReservation[]
-  walletLedgerEntries WalletLedgerEntry[]
+  id                   String              @id @default(uuid()) @db.Uuid
+  workspaceId          String              @map("workspace_id") @db.Uuid
+  conversationId       String              @map("conversation_id") @db.Uuid
+  contactId            String              @map("contact_id") @db.Uuid
+  metaMessageId        String?             @map("meta_message_id") @db.VarChar(200)
+  apiIdempotencyKey    String?             @map("api_idempotency_key") @db.VarChar(255)
+  direction            MessageDirection
+  type                 MessageType
+  status               MessageStatus       @default(SENT)
+  text                 String?             @db.Text
+  mediaId              String?             @map("media_id") @db.VarChar(255)
+  mediaUrl             String?             @map("media_url") @db.Text
+  payload              Json                @default("{}") @db.JsonB
+  sentAt               DateTime            @map("sent_at") @db.Timestamptz(3)
+  deliveredAt          DateTime?           @map("delivered_at") @db.Timestamptz(3)
+  readAt               DateTime?           @map("read_at") @db.Timestamptz(3)
+  failedAt             DateTime?           @map("failed_at") @db.Timestamptz(3)
+  failureReason        String?             @map("failure_reason") @db.Text
+  rateCardId           String?             @map("rate_card_id") @db.Uuid
+  pricingCountry       String?             @map("pricing_country") @db.Char(2)
+  pricingCategory      String?             @map("pricing_category") @db.VarChar(40)
+  pricingType          String?             @map("pricing_type") @db.VarChar(60)
+  metaCost             Decimal?            @map("meta_cost") @db.Decimal(18, 6)
+  platformFee          Decimal?            @map("platform_fee") @db.Decimal(18, 6)
+  customerCost         Decimal?            @map("customer_cost") @db.Decimal(18, 6)
+  pricingCurrency      String?             @map("pricing_currency") @db.Char(3)
+  pricingEffectiveDate DateTime?           @map("pricing_effective_date") @db.Timestamptz(3)
+  billingStatus        String              @default("NOT_APPLICABLE") @map("billing_status") @db.VarChar(20)
+  billingMode          String?             @map("billing_mode") @db.VarChar(40)
+  walletChargeAmount   Decimal?            @map("wallet_charge_amount") @db.Decimal(18, 6)
+  billingCurrency      String?             @map("billing_currency") @db.Char(3)
+  billingError         String?             @map("billing_error") @db.Text
+  estimatedMetaCost    Decimal?            @map("estimated_meta_cost") @db.Decimal(18, 6)
+  actualMetaCost       Decimal?            @map("actual_meta_cost") @db.Decimal(18, 6)
+  costDifference       Decimal?            @map("cost_difference") @db.Decimal(18, 6)
+  reconciledAt         DateTime?           @map("reconciled_at") @db.Timestamptz(3)
+  deletedAt            DateTime?           @map("deleted_at") @db.Timestamptz(3)
+  createdById          String?             @map("created_by_id") @db.Uuid
+  createdAt            DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace            Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  conversation         Conversation        @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  contact              Contact             @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  createdBy            User?               @relation("MessageCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  rateCard             WhatsAppRateCard?   @relation(fields: [rateCardId], references: [id], onDelete: SetNull)
+  walletReservations   WalletReservation[]
+  walletLedgerEntries  WalletLedgerEntry[]
 
   @@unique([workspaceId, metaMessageId])
   @@unique([workspaceId, apiIdempotencyKey])
@@ -576,30 +576,50 @@ model Message {
   @@map("messages")
 }
 
-model WhatsAppRateCard {
+model WhatsAppWebhookEvent {
   id              String    @id @default(uuid()) @db.Uuid
-  countryCode     String    @map("country_code") @db.Char(2)
-  countryName     String    @map("country_name") @db.VarChar(100)
-  currency        String    @db.Char(3)
-  category        String    @db.VarChar(40)
-  pricingType     String    @map("pricing_type") @db.VarChar(60)
-  metaRate        Decimal   @map("meta_rate") @db.Decimal(18, 6)
-  platformFee     Decimal   @map("platform_fee") @db.Decimal(18, 6)
-  customerRate    Decimal   @map("customer_rate") @db.Decimal(18, 6)
-  volumeTierFrom  BigInt?   @map("volume_tier_from")
-  volumeTierTo    BigInt?   @map("volume_tier_to")
-  effectiveFrom   DateTime  @map("effective_from") @db.Timestamptz(3)
-  effectiveTo     DateTime? @map("effective_to") @db.Timestamptz(3)
-  status          String    @default("ACTIVE") @db.VarChar(20)
-  source          String    @default("MANUAL") @db.VarChar(40)
-  notes           String?   @db.Text
-  createdById     String?   @map("created_by") @db.Uuid
-  updatedById     String?   @map("updated_by") @db.Uuid
+  requestId       String?   @map("request_id") @db.VarChar(255)
+  wabaId          String?   @map("waba_id") @db.VarChar(200)
+  phoneNumberId   String?   @map("phone_number_id") @db.VarChar(200)
+  webhookField    String?   @map("webhook_field") @db.VarChar(100)
+  payload         Json      @default("{}") @db.JsonB
+  responseStatus  Int       @map("response_status")
+  responseBody    String?   @map("response_body") @db.Text
+  processingError String?   @map("processing_error") @db.Text
+  receivedAt      DateTime  @default(now()) @map("received_at") @db.Timestamptz(3)
+  processedAt     DateTime? @map("processed_at") @db.Timestamptz(3)
   createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
-  createdBy       User?     @relation("WhatsAppRateCardCreator", fields: [createdById], references: [id], onDelete: SetNull)
-  updatedBy       User?     @relation("WhatsAppRateCardUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
-  messages        Message[]
+
+  @@index([wabaId, createdAt])
+  @@index([responseStatus, createdAt])
+  @@index([requestId])
+  @@map("whatsapp_webhook_events")
+}
+
+model WhatsAppRateCard {
+  id                 String              @id @default(uuid()) @db.Uuid
+  countryCode        String              @map("country_code") @db.Char(2)
+  countryName        String              @map("country_name") @db.VarChar(100)
+  currency           String              @db.Char(3)
+  category           String              @db.VarChar(40)
+  pricingType        String              @map("pricing_type") @db.VarChar(60)
+  metaRate           Decimal             @map("meta_rate") @db.Decimal(18, 6)
+  platformFee        Decimal             @map("platform_fee") @db.Decimal(18, 6)
+  customerRate       Decimal             @map("customer_rate") @db.Decimal(18, 6)
+  volumeTierFrom     BigInt?             @map("volume_tier_from")
+  volumeTierTo       BigInt?             @map("volume_tier_to")
+  effectiveFrom      DateTime            @map("effective_from") @db.Timestamptz(3)
+  effectiveTo        DateTime?           @map("effective_to") @db.Timestamptz(3)
+  status             String              @default("ACTIVE") @db.VarChar(20)
+  source             String              @default("MANUAL") @db.VarChar(40)
+  notes              String?             @db.Text
+  createdById        String?             @map("created_by") @db.Uuid
+  updatedById        String?             @map("updated_by") @db.Uuid
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  createdBy          User?               @relation("WhatsAppRateCardCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy          User?               @relation("WhatsAppRateCardUpdater", fields: [updatedById], references: [id], onDelete: SetNull)
+  messages           Message[]
   walletReservations WalletReservation[]
 
   @@index([countryCode, category, pricingType, status])
@@ -777,24 +797,24 @@ model WorkspaceSetupProgress {
 }
 
 model WhatsAppBusinessAccount {
-  id                   String                   @id @default(uuid()) @db.Uuid
-  workspaceId          String                   @map("workspace_id") @db.Uuid
-  metaBusinessId       String?                  @map("meta_business_id") @db.VarChar(100)
-  metaWabaId           String?                  @map("meta_waba_id") @db.VarChar(100)
-  displayName          String?                  @map("display_name") @db.VarChar(160)
-  status               WhatsAppConnectionStatus @default(DISCONNECTED)
-  encryptedAccessToken String?                  @map("encrypted_access_token")
-  tokenExpiresAt       DateTime?                @map("token_expires_at") @db.Timestamptz(3)
-  connectedAt          DateTime?                @map("connected_at") @db.Timestamptz(3)
-  lastSyncedAt         DateTime?                @map("last_synced_at") @db.Timestamptz(3)
-  lastError            String?                  @map("last_error")
-  sharedBillingStatus  String                   @default("NOT_CONFIGURED") @map("shared_billing_status") @db.VarChar(30)
-  sharedBillingAllocationId String?             @map("shared_billing_allocation_id") @db.VarChar(100)
-  sharedBillingError   String?                  @map("shared_billing_error") @db.Text
-  createdAt            DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt            DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
-  workspace            Workspace                @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  phoneNumbers         WhatsAppPhoneNumber[]
+  id                        String                   @id @default(uuid()) @db.Uuid
+  workspaceId               String                   @map("workspace_id") @db.Uuid
+  metaBusinessId            String?                  @map("meta_business_id") @db.VarChar(100)
+  metaWabaId                String?                  @map("meta_waba_id") @db.VarChar(100)
+  displayName               String?                  @map("display_name") @db.VarChar(160)
+  status                    WhatsAppConnectionStatus @default(DISCONNECTED)
+  encryptedAccessToken      String?                  @map("encrypted_access_token")
+  tokenExpiresAt            DateTime?                @map("token_expires_at") @db.Timestamptz(3)
+  connectedAt               DateTime?                @map("connected_at") @db.Timestamptz(3)
+  lastSyncedAt              DateTime?                @map("last_synced_at") @db.Timestamptz(3)
+  lastError                 String?                  @map("last_error")
+  sharedBillingStatus       String                   @default("NOT_CONFIGURED") @map("shared_billing_status") @db.VarChar(30)
+  sharedBillingAllocationId String?                  @map("shared_billing_allocation_id") @db.VarChar(100)
+  sharedBillingError        String?                  @map("shared_billing_error") @db.Text
+  createdAt                 DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt                 DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace                 Workspace                @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  phoneNumbers              WhatsAppPhoneNumber[]
 
   @@unique([workspaceId, metaWabaId])
   @@index([workspaceId, status])
@@ -1084,59 +1104,59 @@ model Session {
 }
 
 model Wallet {
-  id                 String              @id @default(uuid()) @db.Uuid
-  tenantId           String              @unique @map("tenant_id") @db.Uuid
-  currency           String              @db.Char(3)
-  balanceMinorUnits  BigInt              @default(0) @map("balance_minor_units")
-  totalBalance       Decimal             @default(0) @map("total_balance") @db.Decimal(18, 6)
-  reservedBalance    Decimal             @default(0) @map("reserved_balance") @db.Decimal(18, 6)
-  status             String              @default("ACTIVE") @db.VarChar(20)
-  lowBalanceThreshold Decimal            @default(0) @map("low_balance_threshold") @db.Decimal(18, 6)
-  autoRechargeEnabled Boolean            @default(false) @map("auto_recharge_enabled")
-  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt          DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
-  tenant             Tenant              @relation(fields: [tenantId], references: [id], onDelete: Restrict)
-  entries            WalletLedgerEntry[]
-  reservations       WalletReservation[]
+  id                  String              @id @default(uuid()) @db.Uuid
+  tenantId            String              @unique @map("tenant_id") @db.Uuid
+  currency            String              @db.Char(3)
+  balanceMinorUnits   BigInt              @default(0) @map("balance_minor_units")
+  totalBalance        Decimal             @default(0) @map("total_balance") @db.Decimal(18, 6)
+  reservedBalance     Decimal             @default(0) @map("reserved_balance") @db.Decimal(18, 6)
+  status              String              @default("ACTIVE") @db.VarChar(20)
+  lowBalanceThreshold Decimal             @default(0) @map("low_balance_threshold") @db.Decimal(18, 6)
+  autoRechargeEnabled Boolean             @default(false) @map("auto_recharge_enabled")
+  createdAt           DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  tenant              Tenant              @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  entries             WalletLedgerEntry[]
+  reservations        WalletReservation[]
 
   @@map("wallets")
 }
 
 model WalletLedgerEntry {
-  id                  String              @id @default(uuid()) @db.Uuid
-  walletId            String              @map("wallet_id") @db.Uuid
-  tenantId            String              @map("tenant_id") @db.Uuid
-  workspaceId         String?             @map("workspace_id") @db.Uuid
-  direction           WalletEntryDirection
-  amountMinorUnits    BigInt?             @map("amount_minor_units")
-  balanceAfterMinorUnits BigInt?          @map("balance_after_minor_units")
-  transactionReference String             @unique @default(uuid()) @map("transaction_reference") @db.VarChar(100)
-  transactionType     String              @default("ADJUSTMENT") @map("transaction_type") @db.VarChar(40)
-  amount              Decimal             @default(0) @db.Decimal(18, 6)
-  currency            String              @default("INR") @db.Char(3)
-  openingTotalBalance Decimal            @default(0) @map("opening_total_balance") @db.Decimal(18, 6)
-  closingTotalBalance Decimal            @default(0) @map("closing_total_balance") @db.Decimal(18, 6)
-  openingReservedBalance Decimal         @default(0) @map("opening_reserved_balance") @db.Decimal(18, 6)
-  closingReservedBalance Decimal         @default(0) @map("closing_reserved_balance") @db.Decimal(18, 6)
-  openingAvailableBalance Decimal        @default(0) @map("opening_available_balance") @db.Decimal(18, 6)
-  closingAvailableBalance Decimal        @default(0) @map("closing_available_balance") @db.Decimal(18, 6)
-  messageId           String?             @map("message_id") @db.Uuid
-  reservationId       String?             @map("reservation_id") @db.Uuid
-  externalReference   String?             @map("external_reference") @db.VarChar(255)
-  clientReference     String?             @map("client_reference") @db.VarChar(255)
-  status              String              @default("COMPLETED") @db.VarChar(30)
-  idempotencyKey      String              @map("idempotency_key") @db.VarChar(255)
-  reason              String              @db.VarChar(80)
-  description         String?             @db.Text
-  metadata            Json                @default("{}") @db.JsonB
-  createdById         String?             @map("created_by_id") @db.Uuid
-  createdAt           DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
-  wallet              Wallet              @relation(fields: [walletId], references: [id], onDelete: Cascade)
-  tenant             Tenant              @relation(fields: [tenantId], references: [id], onDelete: Restrict)
-  workspace           Workspace?          @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
-  createdBy           User?               @relation("WalletLedgerActor", fields: [createdById], references: [id], onDelete: SetNull)
-  message             Message?            @relation(fields: [messageId], references: [id], onDelete: SetNull)
-  reservation         WalletReservation?  @relation(fields: [reservationId], references: [id], onDelete: SetNull)
+  id                      String               @id @default(uuid()) @db.Uuid
+  walletId                String               @map("wallet_id") @db.Uuid
+  tenantId                String               @map("tenant_id") @db.Uuid
+  workspaceId             String?              @map("workspace_id") @db.Uuid
+  direction               WalletEntryDirection
+  amountMinorUnits        BigInt?              @map("amount_minor_units")
+  balanceAfterMinorUnits  BigInt?              @map("balance_after_minor_units")
+  transactionReference    String               @unique @default(uuid()) @map("transaction_reference") @db.VarChar(100)
+  transactionType         String               @default("ADJUSTMENT") @map("transaction_type") @db.VarChar(40)
+  amount                  Decimal              @default(0) @db.Decimal(18, 6)
+  currency                String               @default("INR") @db.Char(3)
+  openingTotalBalance     Decimal              @default(0) @map("opening_total_balance") @db.Decimal(18, 6)
+  closingTotalBalance     Decimal              @default(0) @map("closing_total_balance") @db.Decimal(18, 6)
+  openingReservedBalance  Decimal              @default(0) @map("opening_reserved_balance") @db.Decimal(18, 6)
+  closingReservedBalance  Decimal              @default(0) @map("closing_reserved_balance") @db.Decimal(18, 6)
+  openingAvailableBalance Decimal              @default(0) @map("opening_available_balance") @db.Decimal(18, 6)
+  closingAvailableBalance Decimal              @default(0) @map("closing_available_balance") @db.Decimal(18, 6)
+  messageId               String?              @map("message_id") @db.Uuid
+  reservationId           String?              @map("reservation_id") @db.Uuid
+  externalReference       String?              @map("external_reference") @db.VarChar(255)
+  clientReference         String?              @map("client_reference") @db.VarChar(255)
+  status                  String               @default("COMPLETED") @db.VarChar(30)
+  idempotencyKey          String               @map("idempotency_key") @db.VarChar(255)
+  reason                  String               @db.VarChar(80)
+  description             String?              @db.Text
+  metadata                Json                 @default("{}") @db.JsonB
+  createdById             String?              @map("created_by_id") @db.Uuid
+  createdAt               DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  wallet                  Wallet               @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  tenant                  Tenant               @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  workspace               Workspace?           @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  createdBy               User?                @relation("WalletLedgerActor", fields: [createdById], references: [id], onDelete: SetNull)
+  message                 Message?             @relation(fields: [messageId], references: [id], onDelete: SetNull)
+  reservation             WalletReservation?   @relation(fields: [reservationId], references: [id], onDelete: SetNull)
 
   @@unique([walletId, idempotencyKey])
   @@index([tenantId, createdAt])
@@ -1149,30 +1169,30 @@ model WalletLedgerEntry {
 }
 
 model WalletReservation {
-  id                 String    @id @default(uuid()) @db.Uuid
-  walletId           String    @map("wallet_id") @db.Uuid
-  tenantId           String    @map("tenant_id") @db.Uuid
-  workspaceId        String    @map("workspace_id") @db.Uuid
-  messageId          String    @unique @map("message_id") @db.Uuid
-  rateCardId         String?   @map("rate_card_id") @db.Uuid
-  metaAmount         Decimal   @map("meta_amount") @db.Decimal(18, 6)
-  platformFee        Decimal   @map("platform_fee") @db.Decimal(18, 6)
-  customerAmount     Decimal   @map("customer_amount") @db.Decimal(18, 6)
-  walletChargeAmount Decimal   @map("wallet_charge_amount") @db.Decimal(18, 6)
-  currency           String    @db.Char(3)
-  status             String    @default("ACTIVE") @db.VarChar(20)
-  idempotencyKey     String    @unique @map("idempotency_key") @db.VarChar(255)
-  clientReference    String?   @map("client_reference") @db.VarChar(255)
-  expiresAt          DateTime? @map("expires_at") @db.Timestamptz(3)
-  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt          DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
-  completedAt        DateTime? @map("completed_at") @db.Timestamptz(3)
-  releasedAt         DateTime? @map("released_at") @db.Timestamptz(3)
-  wallet             Wallet    @relation(fields: [walletId], references: [id], onDelete: Restrict)
-  tenant             Tenant    @relation(fields: [tenantId], references: [id], onDelete: Restrict)
-  workspace          Workspace @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
-  message            Message   @relation(fields: [messageId], references: [id], onDelete: Restrict)
-  rateCard           WhatsAppRateCard? @relation(fields: [rateCardId], references: [id], onDelete: SetNull)
+  id                 String              @id @default(uuid()) @db.Uuid
+  walletId           String              @map("wallet_id") @db.Uuid
+  tenantId           String              @map("tenant_id") @db.Uuid
+  workspaceId        String              @map("workspace_id") @db.Uuid
+  messageId          String              @unique @map("message_id") @db.Uuid
+  rateCardId         String?             @map("rate_card_id") @db.Uuid
+  metaAmount         Decimal             @map("meta_amount") @db.Decimal(18, 6)
+  platformFee        Decimal             @map("platform_fee") @db.Decimal(18, 6)
+  customerAmount     Decimal             @map("customer_amount") @db.Decimal(18, 6)
+  walletChargeAmount Decimal             @map("wallet_charge_amount") @db.Decimal(18, 6)
+  currency           String              @db.Char(3)
+  status             String              @default("ACTIVE") @db.VarChar(20)
+  idempotencyKey     String              @unique @map("idempotency_key") @db.VarChar(255)
+  clientReference    String?             @map("client_reference") @db.VarChar(255)
+  expiresAt          DateTime?           @map("expires_at") @db.Timestamptz(3)
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  completedAt        DateTime?           @map("completed_at") @db.Timestamptz(3)
+  releasedAt         DateTime?           @map("released_at") @db.Timestamptz(3)
+  wallet             Wallet              @relation(fields: [walletId], references: [id], onDelete: Restrict)
+  tenant             Tenant              @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  workspace          Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  message            Message             @relation(fields: [messageId], references: [id], onDelete: Restrict)
+  rateCard           WhatsAppRateCard?   @relation(fields: [rateCardId], references: [id], onDelete: SetNull)
   ledgerEntries      WalletLedgerEntry[]
 
   @@index([walletId, status])
@@ -1200,17 +1220,17 @@ model WorkspaceBillingSettings {
 }
 
 model PlatformAuditLog {
-  id          String   @id @default(uuid()) @db.Uuid
-  actorUserId String   @map("actor_user_id") @db.Uuid
-  action      String   @db.VarChar(120)
-  resourceType String  @map("resource_type") @db.VarChar(80)
-  resourceId  String?  @map("resource_id") @db.Uuid
-  workspaceId String?  @map("workspace_id") @db.Uuid
-  metadata    Json     @default("{}") @db.JsonB
-  ipAddress   String?  @map("ip_address") @db.VarChar(45)
-  userAgent   String?  @map("user_agent") @db.VarChar(500)
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  actorUser   User     @relation("PlatformAuditActor", fields: [actorUserId], references: [id], onDelete: Restrict)
+  id           String   @id @default(uuid()) @db.Uuid
+  actorUserId  String   @map("actor_user_id") @db.Uuid
+  action       String   @db.VarChar(120)
+  resourceType String   @map("resource_type") @db.VarChar(80)
+  resourceId   String?  @map("resource_id") @db.Uuid
+  workspaceId  String?  @map("workspace_id") @db.Uuid
+  metadata     Json     @default("{}") @db.JsonB
+  ipAddress    String?  @map("ip_address") @db.VarChar(45)
+  userAgent    String?  @map("user_agent") @db.VarChar(500)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  actorUser    User     @relation("PlatformAuditActor", fields: [actorUserId], references: [id], onDelete: Restrict)
 
   @@index([createdAt])
   @@index([actorUserId, createdAt])

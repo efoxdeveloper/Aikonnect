@@ -68,6 +68,43 @@ function asArray(value: unknown): JsonRecord[] {
   return Array.isArray(value) ? value.map(asRecord).filter((item): item is JsonRecord => item !== null) : [];
 }
 
+function webhookEventMetadata(payload: unknown) {
+  const record = asRecord(payload);
+  const entry = asArray(record?.entry)[0];
+  const change = asArray(entry?.changes)[0];
+  const value = asRecord(change?.value);
+  const metadata = asRecord(value?.metadata);
+  return {
+    wabaId: asString(entry?.id),
+    phoneNumberId: asString(metadata?.phone_number_id),
+    webhookField: asString(change?.field),
+  };
+}
+
+async function persistWebhookEvent(payload: unknown, requestId: string | undefined, responseStatus: number, responseBody: string, processingError?: unknown) {
+  const metadata = webhookEventMetadata(payload);
+  try {
+    await prisma.whatsAppWebhookEvent.create({
+      data: {
+        ...metadata,
+        requestId,
+        payload: (asRecord(payload) ?? {}) as Prisma.InputJsonValue,
+        responseStatus,
+        responseBody,
+        processingError: processingError instanceof Error ? processingError.message : undefined,
+        processedAt: new Date(),
+      },
+    });
+  } catch (error) {
+    logger.error({ error, responseStatus, wabaId: metadata.wabaId }, "Failed to persist WhatsApp webhook event");
+  }
+}
+
+async function sendWebhookResponse(response: Response, payload: unknown, requestId: string | undefined, responseStatus: number, responseBody: string, processingError?: unknown) {
+  await persistWebhookEvent(payload, requestId, responseStatus, responseBody, processingError);
+  return response.status(responseStatus).type("text/plain").send(responseBody);
+}
+
 export function formatWhatsAppFailureReason(status: WhatsAppStatus): string | undefined {
   const error = asArray(status.errors)[0];
   if (!error) return undefined;
@@ -499,13 +536,14 @@ router.get("/", (request: Request, response: Response) => {
 });
 
 router.post("/", async (request: Request, response: Response) => {
+  const payload = asRecord(request.body) as WhatsAppWebhookPayload | null;
+  const requestId = request.get("x-request-id") ?? (request as Request & { id?: string }).id;
   const secret = env.META_APP_SECRET;
   const signature = request.get("x-hub-signature-256");
   if (!secret || !request.rawBody || !signature || !webhookSignatureIsValid(request.rawBody, signature, secret)) {
-    return response.sendStatus(401);
+    return sendWebhookResponse(response, payload, requestId, 401, "Unauthorized");
   }
-  const payload = asRecord(request.body) as WhatsAppWebhookPayload | null;
-  if (!payload || payload.object !== "whatsapp_business_account") return response.sendStatus(400);
+  if (!payload || payload.object !== "whatsapp_business_account") return sendWebhookResponse(response, payload, requestId, 400, "Bad Request");
   const entries = asArray(payload.entry);
   logger.info({
     entryCount: entries.length,
@@ -514,10 +552,10 @@ router.post("/", async (request: Request, response: Response) => {
   }, "Received WhatsApp webhook");
   try {
     await processPayload(payload);
-    return response.sendStatus(200);
+    return sendWebhookResponse(response, payload, requestId, 200, "OK");
   } catch (error) {
     logger.error({ error }, "WhatsApp webhook processing failed");
-    return response.sendStatus(500);
+    return sendWebhookResponse(response, payload, requestId, 500, "Internal Server Error", error);
   }
 });
 
