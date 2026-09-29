@@ -4,6 +4,7 @@ import { Dashboard } from "@/pages/Dashboard";
 import { Login } from "@/pages/Login";
 import { Register } from "@/pages/Register";
 import { ForgotPassword } from "@/pages/ForgotPassword";
+import { ResetPassword } from "@/pages/ResetPassword";
 import { PlatformAdminRoute, ProtectedRoute, PublicOnlyRoute } from "@/routes/AuthGuards";
 import { VerifyEmail } from "@/pages/VerifyEmail";
 import { InvitationAccept } from "@/pages/InvitationAccept";
@@ -29,6 +30,7 @@ export function AppRoutes() {
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/invitations/accept" element={<InvitationAccept />} />
       <Route element={<PublicOnlyRoute />}>
         <Route path="/login" element={<Login />} />

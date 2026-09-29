@@ -6,17 +6,32 @@ import { useAnimatedIcon } from "@/hooks/use-animated-icon";
 import { AuthMark, AuthShell } from "@/components/auth/AuthShell";
 import { authTextFieldSx } from "@/components/auth/auth-text-field";
 import { Button } from "@/components/ui/button";
+import { ApiError, apiRequest } from "@/lib/api";
 
 export function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const sendIcon = useAnimatedIcon();
   const successIcon = useAnimatedIcon();
   const backIcon = useAnimatedIcon();
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setSubmitted(true);
+    setError(null);
+    setSubmitting(true);
+    try {
+      await apiRequest<{ message: string }>("/auth/forgot-password", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      });
+      setSubmitted(true);
+    } catch (caughtError) {
+      setError(caughtError instanceof ApiError ? caughtError.message : "Unable to send the recovery link. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -31,10 +46,12 @@ export function ForgotPassword() {
             </div>
 
             <form className="mt-7 space-y-5" onSubmit={handleSubmit}>
-              <TextField id="recovery-email" name="email" type="email" autoComplete="email" label="Work email" required value={email} onChange={(event) => setEmail(event.target.value)} fullWidth size="small" variant="outlined" sx={authTextFieldSx} slotProps={{ htmlInput: { "aria-label": "Work email" } }} />
+              <TextField id="recovery-email" name="email" type="email" autoComplete="email" label="Work email" required disabled={submitting} value={email} onChange={(event) => setEmail(event.target.value)} fullWidth size="small" variant="outlined" sx={authTextFieldSx} slotProps={{ htmlInput: { "aria-label": "Work email" } }} />
 
-              <Button type="submit" onMouseEnter={sendIcon.onMouseEnter} onMouseLeave={sendIcon.onMouseLeave} className="h-12 w-full rounded-md text-sm font-semibold shadow-[0_6px_16px_rgba(4,63,41,.16)]">
-                Send recovery link
+              {error && <div role="alert" className="rounded-lg border border-[#f5dada] bg-[var(--danger-soft)] px-3 py-2.5 text-center text-xs text-[var(--danger)]">{error}</div>}
+
+              <Button type="submit" disabled={submitting} aria-busy={submitting} onMouseEnter={sendIcon.onMouseEnter} onMouseLeave={sendIcon.onMouseLeave} className="h-12 w-full rounded-md text-sm font-semibold shadow-[0_6px_16px_rgba(4,63,41,.16)]">
+                {submitting ? "Sending…" : "Send recovery link"}
                 <Send ref={sendIcon.ref} size={16} duration={0.55} className="ml-2" aria-hidden="true" />
               </Button>
             </form>
