@@ -15,6 +15,16 @@ whatsappRouter.post(
   validateBody(embeddedSignupSchema),
   asyncHandler(controller.completeEmbeddedSignup),
 );
+whatsappRouter.get(
+  "/status",
+  requireWorkspacePermission(PERMISSIONS.WHATSAPP_READ),
+  asyncHandler(controller.status),
+);
+whatsappRouter.post(
+  "/status/refresh",
+  requireWorkspacePermission(PERMISSIONS.WHATSAPP_READ),
+  asyncHandler(controller.refreshStatus),
+);
 whatsappRouter.post(
   "/test-message",
   requireWorkspacePermission(PERMISSIONS.WHATSAPP_MANAGE),

@@ -31,6 +31,10 @@ export type WhatsAppBusinessAccountMinAggregateOutputType = {
   metaWabaId: string | null
   displayName: string | null
   status: $Enums.WhatsAppConnectionStatus | null
+  metaAccountStatus: string | null
+  metaAccountReviewStatus: string | null
+  metaBusinessVerificationStatus: string | null
+  metaStatusCheckedAt: Date | null
   encryptedAccessToken: string | null
   tokenExpiresAt: Date | null
   connectedAt: Date | null
@@ -50,6 +54,10 @@ export type WhatsAppBusinessAccountMaxAggregateOutputType = {
   metaWabaId: string | null
   displayName: string | null
   status: $Enums.WhatsAppConnectionStatus | null
+  metaAccountStatus: string | null
+  metaAccountReviewStatus: string | null
+  metaBusinessVerificationStatus: string | null
+  metaStatusCheckedAt: Date | null
   encryptedAccessToken: string | null
   tokenExpiresAt: Date | null
   connectedAt: Date | null
@@ -69,6 +77,10 @@ export type WhatsAppBusinessAccountCountAggregateOutputType = {
   metaWabaId: number
   displayName: number
   status: number
+  metaAccountStatus: number
+  metaAccountReviewStatus: number
+  metaBusinessVerificationStatus: number
+  metaStatusCheckedAt: number
   encryptedAccessToken: number
   tokenExpiresAt: number
   connectedAt: number
@@ -90,6 +102,10 @@ export type WhatsAppBusinessAccountMinAggregateInputType = {
   metaWabaId?: true
   displayName?: true
   status?: true
+  metaAccountStatus?: true
+  metaAccountReviewStatus?: true
+  metaBusinessVerificationStatus?: true
+  metaStatusCheckedAt?: true
   encryptedAccessToken?: true
   tokenExpiresAt?: true
   connectedAt?: true
@@ -109,6 +125,10 @@ export type WhatsAppBusinessAccountMaxAggregateInputType = {
   metaWabaId?: true
   displayName?: true
   status?: true
+  metaAccountStatus?: true
+  metaAccountReviewStatus?: true
+  metaBusinessVerificationStatus?: true
+  metaStatusCheckedAt?: true
   encryptedAccessToken?: true
   tokenExpiresAt?: true
   connectedAt?: true
@@ -128,6 +148,10 @@ export type WhatsAppBusinessAccountCountAggregateInputType = {
   metaWabaId?: true
   displayName?: true
   status?: true
+  metaAccountStatus?: true
+  metaAccountReviewStatus?: true
+  metaBusinessVerificationStatus?: true
+  metaStatusCheckedAt?: true
   encryptedAccessToken?: true
   tokenExpiresAt?: true
   connectedAt?: true
@@ -220,6 +244,10 @@ export type WhatsAppBusinessAccountGroupByOutputType = {
   metaWabaId: string | null
   displayName: string | null
   status: $Enums.WhatsAppConnectionStatus
+  metaAccountStatus: string | null
+  metaAccountReviewStatus: string | null
+  metaBusinessVerificationStatus: string | null
+  metaStatusCheckedAt: Date | null
   encryptedAccessToken: string | null
   tokenExpiresAt: Date | null
   connectedAt: Date | null
@@ -260,6 +288,10 @@ export type WhatsAppBusinessAccountWhereInput = {
   metaWabaId?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
   displayName?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
   status?: Prisma.EnumWhatsAppConnectionStatusFilter<"WhatsAppBusinessAccount"> | $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
+  metaAccountReviewStatus?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
+  metaBusinessVerificationStatus?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
+  metaStatusCheckedAt?: Prisma.DateTimeNullableFilter<"WhatsAppBusinessAccount"> | Date | string | null
   encryptedAccessToken?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
   tokenExpiresAt?: Prisma.DateTimeNullableFilter<"WhatsAppBusinessAccount"> | Date | string | null
   connectedAt?: Prisma.DateTimeNullableFilter<"WhatsAppBusinessAccount"> | Date | string | null
@@ -281,6 +313,10 @@ export type WhatsAppBusinessAccountOrderByWithRelationInput = {
   metaWabaId?: Prisma.SortOrderInput | Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  metaAccountStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaAccountReviewStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaBusinessVerificationStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaStatusCheckedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   encryptedAccessToken?: Prisma.SortOrderInput | Prisma.SortOrder
   tokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   connectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -306,6 +342,10 @@ export type WhatsAppBusinessAccountWhereUniqueInput = Prisma.AtLeast<{
   metaWabaId?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
   displayName?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
   status?: Prisma.EnumWhatsAppConnectionStatusFilter<"WhatsAppBusinessAccount"> | $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
+  metaAccountReviewStatus?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
+  metaBusinessVerificationStatus?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
+  metaStatusCheckedAt?: Prisma.DateTimeNullableFilter<"WhatsAppBusinessAccount"> | Date | string | null
   encryptedAccessToken?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
   tokenExpiresAt?: Prisma.DateTimeNullableFilter<"WhatsAppBusinessAccount"> | Date | string | null
   connectedAt?: Prisma.DateTimeNullableFilter<"WhatsAppBusinessAccount"> | Date | string | null
@@ -327,6 +367,10 @@ export type WhatsAppBusinessAccountOrderByWithAggregationInput = {
   metaWabaId?: Prisma.SortOrderInput | Prisma.SortOrder
   displayName?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  metaAccountStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaAccountReviewStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaBusinessVerificationStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  metaStatusCheckedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   encryptedAccessToken?: Prisma.SortOrderInput | Prisma.SortOrder
   tokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   connectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -352,6 +396,10 @@ export type WhatsAppBusinessAccountScalarWhereWithAggregatesInput = {
   metaWabaId?: Prisma.StringNullableWithAggregatesFilter<"WhatsAppBusinessAccount"> | string | null
   displayName?: Prisma.StringNullableWithAggregatesFilter<"WhatsAppBusinessAccount"> | string | null
   status?: Prisma.EnumWhatsAppConnectionStatusWithAggregatesFilter<"WhatsAppBusinessAccount"> | $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: Prisma.StringNullableWithAggregatesFilter<"WhatsAppBusinessAccount"> | string | null
+  metaAccountReviewStatus?: Prisma.StringNullableWithAggregatesFilter<"WhatsAppBusinessAccount"> | string | null
+  metaBusinessVerificationStatus?: Prisma.StringNullableWithAggregatesFilter<"WhatsAppBusinessAccount"> | string | null
+  metaStatusCheckedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WhatsAppBusinessAccount"> | Date | string | null
   encryptedAccessToken?: Prisma.StringNullableWithAggregatesFilter<"WhatsAppBusinessAccount"> | string | null
   tokenExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WhatsAppBusinessAccount"> | Date | string | null
   connectedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"WhatsAppBusinessAccount"> | Date | string | null
@@ -370,6 +418,10 @@ export type WhatsAppBusinessAccountCreateInput = {
   metaWabaId?: string | null
   displayName?: string | null
   status?: $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: string | null
+  metaAccountReviewStatus?: string | null
+  metaBusinessVerificationStatus?: string | null
+  metaStatusCheckedAt?: Date | string | null
   encryptedAccessToken?: string | null
   tokenExpiresAt?: Date | string | null
   connectedAt?: Date | string | null
@@ -391,6 +443,10 @@ export type WhatsAppBusinessAccountUncheckedCreateInput = {
   metaWabaId?: string | null
   displayName?: string | null
   status?: $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: string | null
+  metaAccountReviewStatus?: string | null
+  metaBusinessVerificationStatus?: string | null
+  metaStatusCheckedAt?: Date | string | null
   encryptedAccessToken?: string | null
   tokenExpiresAt?: Date | string | null
   connectedAt?: Date | string | null
@@ -410,6 +466,10 @@ export type WhatsAppBusinessAccountUpdateInput = {
   metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumWhatsAppConnectionStatusFieldUpdateOperationsInput | $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaAccountReviewStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaBusinessVerificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatusCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   encryptedAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -431,6 +491,10 @@ export type WhatsAppBusinessAccountUncheckedUpdateInput = {
   metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumWhatsAppConnectionStatusFieldUpdateOperationsInput | $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaAccountReviewStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaBusinessVerificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatusCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   encryptedAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -451,6 +515,10 @@ export type WhatsAppBusinessAccountCreateManyInput = {
   metaWabaId?: string | null
   displayName?: string | null
   status?: $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: string | null
+  metaAccountReviewStatus?: string | null
+  metaBusinessVerificationStatus?: string | null
+  metaStatusCheckedAt?: Date | string | null
   encryptedAccessToken?: string | null
   tokenExpiresAt?: Date | string | null
   connectedAt?: Date | string | null
@@ -469,6 +537,10 @@ export type WhatsAppBusinessAccountUpdateManyMutationInput = {
   metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumWhatsAppConnectionStatusFieldUpdateOperationsInput | $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaAccountReviewStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaBusinessVerificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatusCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   encryptedAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -488,6 +560,10 @@ export type WhatsAppBusinessAccountUncheckedUpdateManyInput = {
   metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumWhatsAppConnectionStatusFieldUpdateOperationsInput | $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaAccountReviewStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaBusinessVerificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatusCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   encryptedAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -522,6 +598,10 @@ export type WhatsAppBusinessAccountCountOrderByAggregateInput = {
   metaWabaId?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  metaAccountStatus?: Prisma.SortOrder
+  metaAccountReviewStatus?: Prisma.SortOrder
+  metaBusinessVerificationStatus?: Prisma.SortOrder
+  metaStatusCheckedAt?: Prisma.SortOrder
   encryptedAccessToken?: Prisma.SortOrder
   tokenExpiresAt?: Prisma.SortOrder
   connectedAt?: Prisma.SortOrder
@@ -541,6 +621,10 @@ export type WhatsAppBusinessAccountMaxOrderByAggregateInput = {
   metaWabaId?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  metaAccountStatus?: Prisma.SortOrder
+  metaAccountReviewStatus?: Prisma.SortOrder
+  metaBusinessVerificationStatus?: Prisma.SortOrder
+  metaStatusCheckedAt?: Prisma.SortOrder
   encryptedAccessToken?: Prisma.SortOrder
   tokenExpiresAt?: Prisma.SortOrder
   connectedAt?: Prisma.SortOrder
@@ -560,6 +644,10 @@ export type WhatsAppBusinessAccountMinOrderByAggregateInput = {
   metaWabaId?: Prisma.SortOrder
   displayName?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  metaAccountStatus?: Prisma.SortOrder
+  metaAccountReviewStatus?: Prisma.SortOrder
+  metaBusinessVerificationStatus?: Prisma.SortOrder
+  metaStatusCheckedAt?: Prisma.SortOrder
   encryptedAccessToken?: Prisma.SortOrder
   tokenExpiresAt?: Prisma.SortOrder
   connectedAt?: Prisma.SortOrder
@@ -643,6 +731,10 @@ export type WhatsAppBusinessAccountCreateWithoutWorkspaceInput = {
   metaWabaId?: string | null
   displayName?: string | null
   status?: $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: string | null
+  metaAccountReviewStatus?: string | null
+  metaBusinessVerificationStatus?: string | null
+  metaStatusCheckedAt?: Date | string | null
   encryptedAccessToken?: string | null
   tokenExpiresAt?: Date | string | null
   connectedAt?: Date | string | null
@@ -662,6 +754,10 @@ export type WhatsAppBusinessAccountUncheckedCreateWithoutWorkspaceInput = {
   metaWabaId?: string | null
   displayName?: string | null
   status?: $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: string | null
+  metaAccountReviewStatus?: string | null
+  metaBusinessVerificationStatus?: string | null
+  metaStatusCheckedAt?: Date | string | null
   encryptedAccessToken?: string | null
   tokenExpiresAt?: Date | string | null
   connectedAt?: Date | string | null
@@ -711,6 +807,10 @@ export type WhatsAppBusinessAccountScalarWhereInput = {
   metaWabaId?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
   displayName?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
   status?: Prisma.EnumWhatsAppConnectionStatusFilter<"WhatsAppBusinessAccount"> | $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
+  metaAccountReviewStatus?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
+  metaBusinessVerificationStatus?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
+  metaStatusCheckedAt?: Prisma.DateTimeNullableFilter<"WhatsAppBusinessAccount"> | Date | string | null
   encryptedAccessToken?: Prisma.StringNullableFilter<"WhatsAppBusinessAccount"> | string | null
   tokenExpiresAt?: Prisma.DateTimeNullableFilter<"WhatsAppBusinessAccount"> | Date | string | null
   connectedAt?: Prisma.DateTimeNullableFilter<"WhatsAppBusinessAccount"> | Date | string | null
@@ -729,6 +829,10 @@ export type WhatsAppBusinessAccountCreateWithoutPhoneNumbersInput = {
   metaWabaId?: string | null
   displayName?: string | null
   status?: $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: string | null
+  metaAccountReviewStatus?: string | null
+  metaBusinessVerificationStatus?: string | null
+  metaStatusCheckedAt?: Date | string | null
   encryptedAccessToken?: string | null
   tokenExpiresAt?: Date | string | null
   connectedAt?: Date | string | null
@@ -749,6 +853,10 @@ export type WhatsAppBusinessAccountUncheckedCreateWithoutPhoneNumbersInput = {
   metaWabaId?: string | null
   displayName?: string | null
   status?: $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: string | null
+  metaAccountReviewStatus?: string | null
+  metaBusinessVerificationStatus?: string | null
+  metaStatusCheckedAt?: Date | string | null
   encryptedAccessToken?: string | null
   tokenExpiresAt?: Date | string | null
   connectedAt?: Date | string | null
@@ -783,6 +891,10 @@ export type WhatsAppBusinessAccountUpdateWithoutPhoneNumbersInput = {
   metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumWhatsAppConnectionStatusFieldUpdateOperationsInput | $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaAccountReviewStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaBusinessVerificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatusCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   encryptedAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -803,6 +915,10 @@ export type WhatsAppBusinessAccountUncheckedUpdateWithoutPhoneNumbersInput = {
   metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumWhatsAppConnectionStatusFieldUpdateOperationsInput | $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaAccountReviewStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaBusinessVerificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatusCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   encryptedAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -821,6 +937,10 @@ export type WhatsAppBusinessAccountCreateManyWorkspaceInput = {
   metaWabaId?: string | null
   displayName?: string | null
   status?: $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: string | null
+  metaAccountReviewStatus?: string | null
+  metaBusinessVerificationStatus?: string | null
+  metaStatusCheckedAt?: Date | string | null
   encryptedAccessToken?: string | null
   tokenExpiresAt?: Date | string | null
   connectedAt?: Date | string | null
@@ -839,6 +959,10 @@ export type WhatsAppBusinessAccountUpdateWithoutWorkspaceInput = {
   metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumWhatsAppConnectionStatusFieldUpdateOperationsInput | $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaAccountReviewStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaBusinessVerificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatusCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   encryptedAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -858,6 +982,10 @@ export type WhatsAppBusinessAccountUncheckedUpdateWithoutWorkspaceInput = {
   metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumWhatsAppConnectionStatusFieldUpdateOperationsInput | $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaAccountReviewStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaBusinessVerificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatusCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   encryptedAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -877,6 +1005,10 @@ export type WhatsAppBusinessAccountUncheckedUpdateManyWithoutWorkspaceInput = {
   metaWabaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumWhatsAppConnectionStatusFieldUpdateOperationsInput | $Enums.WhatsAppConnectionStatus
+  metaAccountStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaAccountReviewStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaBusinessVerificationStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metaStatusCheckedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   encryptedAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -927,6 +1059,10 @@ export type WhatsAppBusinessAccountSelect<ExtArgs extends runtime.Types.Extensio
   metaWabaId?: boolean
   displayName?: boolean
   status?: boolean
+  metaAccountStatus?: boolean
+  metaAccountReviewStatus?: boolean
+  metaBusinessVerificationStatus?: boolean
+  metaStatusCheckedAt?: boolean
   encryptedAccessToken?: boolean
   tokenExpiresAt?: boolean
   connectedAt?: boolean
@@ -949,6 +1085,10 @@ export type WhatsAppBusinessAccountSelectCreateManyAndReturn<ExtArgs extends run
   metaWabaId?: boolean
   displayName?: boolean
   status?: boolean
+  metaAccountStatus?: boolean
+  metaAccountReviewStatus?: boolean
+  metaBusinessVerificationStatus?: boolean
+  metaStatusCheckedAt?: boolean
   encryptedAccessToken?: boolean
   tokenExpiresAt?: boolean
   connectedAt?: boolean
@@ -969,6 +1109,10 @@ export type WhatsAppBusinessAccountSelectUpdateManyAndReturn<ExtArgs extends run
   metaWabaId?: boolean
   displayName?: boolean
   status?: boolean
+  metaAccountStatus?: boolean
+  metaAccountReviewStatus?: boolean
+  metaBusinessVerificationStatus?: boolean
+  metaStatusCheckedAt?: boolean
   encryptedAccessToken?: boolean
   tokenExpiresAt?: boolean
   connectedAt?: boolean
@@ -989,6 +1133,10 @@ export type WhatsAppBusinessAccountSelectScalar = {
   metaWabaId?: boolean
   displayName?: boolean
   status?: boolean
+  metaAccountStatus?: boolean
+  metaAccountReviewStatus?: boolean
+  metaBusinessVerificationStatus?: boolean
+  metaStatusCheckedAt?: boolean
   encryptedAccessToken?: boolean
   tokenExpiresAt?: boolean
   connectedAt?: boolean
@@ -1001,7 +1149,7 @@ export type WhatsAppBusinessAccountSelectScalar = {
   updatedAt?: boolean
 }
 
-export type WhatsAppBusinessAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "metaBusinessId" | "metaWabaId" | "displayName" | "status" | "encryptedAccessToken" | "tokenExpiresAt" | "connectedAt" | "lastSyncedAt" | "lastError" | "sharedBillingStatus" | "sharedBillingAllocationId" | "sharedBillingError" | "createdAt" | "updatedAt", ExtArgs["result"]["whatsAppBusinessAccount"]>
+export type WhatsAppBusinessAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "metaBusinessId" | "metaWabaId" | "displayName" | "status" | "metaAccountStatus" | "metaAccountReviewStatus" | "metaBusinessVerificationStatus" | "metaStatusCheckedAt" | "encryptedAccessToken" | "tokenExpiresAt" | "connectedAt" | "lastSyncedAt" | "lastError" | "sharedBillingStatus" | "sharedBillingAllocationId" | "sharedBillingError" | "createdAt" | "updatedAt", ExtArgs["result"]["whatsAppBusinessAccount"]>
 export type WhatsAppBusinessAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   phoneNumbers?: boolean | Prisma.WhatsAppBusinessAccount$phoneNumbersArgs<ExtArgs>
@@ -1027,6 +1175,10 @@ export type $WhatsAppBusinessAccountPayload<ExtArgs extends runtime.Types.Extens
     metaWabaId: string | null
     displayName: string | null
     status: $Enums.WhatsAppConnectionStatus
+    metaAccountStatus: string | null
+    metaAccountReviewStatus: string | null
+    metaBusinessVerificationStatus: string | null
+    metaStatusCheckedAt: Date | null
     encryptedAccessToken: string | null
     tokenExpiresAt: Date | null
     connectedAt: Date | null
@@ -1468,6 +1620,10 @@ export interface WhatsAppBusinessAccountFieldRefs {
   readonly metaWabaId: Prisma.FieldRef<"WhatsAppBusinessAccount", 'String'>
   readonly displayName: Prisma.FieldRef<"WhatsAppBusinessAccount", 'String'>
   readonly status: Prisma.FieldRef<"WhatsAppBusinessAccount", 'WhatsAppConnectionStatus'>
+  readonly metaAccountStatus: Prisma.FieldRef<"WhatsAppBusinessAccount", 'String'>
+  readonly metaAccountReviewStatus: Prisma.FieldRef<"WhatsAppBusinessAccount", 'String'>
+  readonly metaBusinessVerificationStatus: Prisma.FieldRef<"WhatsAppBusinessAccount", 'String'>
+  readonly metaStatusCheckedAt: Prisma.FieldRef<"WhatsAppBusinessAccount", 'DateTime'>
   readonly encryptedAccessToken: Prisma.FieldRef<"WhatsAppBusinessAccount", 'String'>
   readonly tokenExpiresAt: Prisma.FieldRef<"WhatsAppBusinessAccount", 'DateTime'>
   readonly connectedAt: Prisma.FieldRef<"WhatsAppBusinessAccount", 'DateTime'>

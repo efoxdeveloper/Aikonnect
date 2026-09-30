@@ -49,3 +49,12 @@ export type WorkspaceSetupData = {
     pendingInvitationCount: number;
   };
 };
+
+export type WhatsAppStatusData = {
+  wabaId: string;
+  name: string | null;
+  status: string | null;
+  accountReviewStatus: string | null;
+  businessVerificationStatus: string | null;
+  checkedAt: string | null;
+};

@@ -14,13 +14,14 @@ Object.assign(process.env, {
   META_GRAPH_API_VERSION: "v25.0",
   LOG_LEVEL: "silent",
 });
-const { completeEmbeddedSignup } = await import("../src/modules/whatsapp/whatsapp.service.js");
+const { completeEmbeddedSignup, getWhatsAppStatus, refreshWhatsAppStatus } = await import("../src/modules/whatsapp/whatsapp.service.js");
 const { env } = await import("../src/config/env.js");
 const { prisma } = await import("../src/database/prisma.js");
 const { AppError } = await import("../src/middleware/error-handler.js");
 const { embeddedSignupSchema } = await import("../src/modules/whatsapp/whatsapp.schemas.js");
 const { requireWorkspacePermission } = await import("../src/middleware/workspace-access.js");
 const { PERMISSIONS } = await import("../src/modules/workspaces/permissions.js");
+const { encryptSecret } = await import("../src/utils/crypto.js");
 
 const signup = { code: "test-code", wabaId: "test-waba", phoneNumberId: "test-phone" };
 const supportedFields = ["id", "display_phone_number", "verified_name", "quality_rating", "is_on_biz_app", "platform_type"];
@@ -235,6 +236,73 @@ test("configured provider credit line is attached to the newly connected WABA", 
   assert.deepEqual(result.sharedBilling, { status: "ATTACHED", allocationConfigId: "allocation-config-id" });
   assert.equal(state.steps.at(-1), "credit-line");
   assert.equal(state.warnings.length, 0);
+});
+
+test("returns the saved Meta WABA verification fields without calling Meta", async (t) => {
+  const checkedAt = new Date("2026-09-30T08:00:00.000Z");
+  stubDelegate(t, prisma.whatsAppBusinessAccount, "findFirst", async () => ({
+    metaWabaId: "status-waba",
+    displayName: "Test Business",
+    metaAccountStatus: "ACTIVE",
+    metaAccountReviewStatus: "APPROVED",
+    metaBusinessVerificationStatus: "VERIFIED",
+    metaStatusCheckedAt: checkedAt,
+  }));
+  t.mock.method(globalThis, "fetch", async () => assert.fail("The cached status endpoint must not call Meta"));
+
+  const result = await getWhatsAppStatus("workspace-id");
+
+  assert.deepEqual(result, {
+    wabaId: "status-waba",
+    name: "Test Business",
+    status: "ACTIVE",
+    accountReviewStatus: "APPROVED",
+    businessVerificationStatus: "VERIFIED",
+    checkedAt: checkedAt.toISOString(),
+  });
+});
+
+test("loads and saves live Meta WABA verification fields when refreshed", async (t) => {
+  const wabaId = "status-waba";
+  const encryptedAccessToken = encryptSecret("test-business-token", env.META_TOKEN_ENCRYPTION_KEY);
+  stubDelegate(t, prisma.whatsAppBusinessAccount, "findFirst", async () => ({
+    id: "account-id",
+    metaWabaId: wabaId,
+    encryptedAccessToken,
+  }));
+  let savedData: Record<string, unknown> | undefined;
+  stubDelegate(t, prisma.whatsAppBusinessAccount, "update", async (args: Record<string, any>) => {
+    savedData = args.data;
+    return {};
+  });
+  t.mock.method(globalThis, "fetch", async (input: string | URL, init?: RequestInit) => {
+    const url = new URL(String(input));
+    assert.equal(url.pathname, "/v25.0/status-waba");
+    assert.equal(url.searchParams.get("fields"), "id,name,status,account_review_status,business_verification_status");
+    assert.equal((init?.headers as Record<string, string>).authorization, "Bearer test-business-token");
+    return json({
+      id: wabaId,
+      name: "Test Business",
+      status: "ACTIVE",
+      account_review_status: "APPROVED",
+      business_verification_status: "VERIFIED",
+    });
+  });
+
+  const result = await refreshWhatsAppStatus("workspace-id");
+
+  assert.deepEqual(result, {
+    wabaId,
+    name: "Test Business",
+    status: "ACTIVE",
+    accountReviewStatus: "APPROVED",
+    businessVerificationStatus: "VERIFIED",
+    checkedAt: result.checkedAt,
+  });
+  assert.equal(savedData?.metaAccountStatus, "ACTIVE");
+  assert.equal(savedData?.metaAccountReviewStatus, "APPROVED");
+  assert.equal(savedData?.metaBusinessVerificationStatus, "VERIFIED");
+  assert.ok(savedData?.metaStatusCheckedAt instanceof Date);
 });
 
 for (const subscriptionOptions of [{ subscriptionFails: true }, { subscription: { success: false } }, { subscription: {} }]) {

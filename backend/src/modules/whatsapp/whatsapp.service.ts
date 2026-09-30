@@ -430,7 +430,7 @@ async function workspaceMetaCredentials(workspaceId: string) {
   const account = await prisma.whatsAppBusinessAccount.findFirst({
     where: { workspaceId, status: "CONNECTED", metaWabaId: { not: null }, encryptedAccessToken: { not: null } },
     orderBy: [{ connectedAt: "desc" }, { updatedAt: "desc" }],
-    select: { metaWabaId: true, encryptedAccessToken: true },
+    select: { id: true, metaWabaId: true, encryptedAccessToken: true },
   });
   if (!account?.metaWabaId || !account.encryptedAccessToken) {
     throw new AppError(409, "Connect WhatsApp before managing Meta templates", "WHATSAPP_NOT_CONNECTED");
@@ -441,9 +441,74 @@ async function workspaceMetaCredentials(workspaceId: string) {
   // configured, but production template operations should use the System User
   // token assigned to the connected WABA.
   return {
+    accountId: account.id,
     wabaId: account.metaWabaId,
     accessToken: env.META_SYSTEM_USER_ACCESS_TOKEN ?? decryptSecret(account.encryptedAccessToken, encryptionKey),
     tokenSource: env.META_SYSTEM_USER_ACCESS_TOKEN ? "system_user" as const : "embedded_signup" as const,
+  };
+}
+
+function optionalMetaString(value: unknown) {
+  return typeof value === "string" && value.trim() ? value : null;
+}
+
+export async function getWhatsAppStatus(workspaceId: string) {
+  const account = await prisma.whatsAppBusinessAccount.findFirst({
+    where: { workspaceId, status: "CONNECTED", metaWabaId: { not: null } },
+    orderBy: [{ connectedAt: "desc" }, { updatedAt: "desc" }],
+    select: {
+      metaWabaId: true,
+      displayName: true,
+      metaAccountStatus: true,
+      metaAccountReviewStatus: true,
+      metaBusinessVerificationStatus: true,
+      metaStatusCheckedAt: true,
+    },
+  });
+  if (!account?.metaWabaId) {
+    throw new AppError(409, "Connect WhatsApp before checking Meta account status", "WHATSAPP_NOT_CONNECTED");
+  }
+  return {
+    wabaId: account.metaWabaId,
+    name: account.displayName,
+    status: account.metaAccountStatus,
+    accountReviewStatus: account.metaAccountReviewStatus,
+    businessVerificationStatus: account.metaBusinessVerificationStatus,
+    checkedAt: account.metaStatusCheckedAt?.toISOString() ?? null,
+  };
+}
+
+export async function refreshWhatsAppStatus(workspaceId: string) {
+  const { accountId, wabaId, accessToken } = await workspaceMetaCredentials(workspaceId);
+  const waba = await fetchMeta<MetaResponse & { id?: string; name?: string }>(
+    `/${encodeURIComponent(wabaId)}?fields=id,name,status,account_review_status,business_verification_status`,
+    accessToken,
+    "load_business_account",
+    { attempts: 1, timeoutMs: META_OPTIONAL_REQUEST_TIMEOUT_MS },
+  );
+  if (waba.id !== wabaId) {
+    throw new AppError(502, "Meta returned a different WhatsApp Business Account", "META_WABA_MISMATCH");
+  }
+  const checkedAt = new Date();
+  const status = optionalMetaString(waba.status);
+  const accountReviewStatus = optionalMetaString(waba.account_review_status);
+  const businessVerificationStatus = optionalMetaString(waba.business_verification_status);
+  await prisma.whatsAppBusinessAccount.update({
+    where: { id: accountId },
+    data: {
+      metaAccountStatus: status,
+      metaAccountReviewStatus: accountReviewStatus,
+      metaBusinessVerificationStatus: businessVerificationStatus,
+      metaStatusCheckedAt: checkedAt,
+    },
+  });
+  return {
+    wabaId,
+    name: optionalMetaString(waba.name),
+    status,
+    accountReviewStatus,
+    businessVerificationStatus,
+    checkedAt: checkedAt.toISOString(),
   };
 }
 

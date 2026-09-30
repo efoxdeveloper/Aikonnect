@@ -160,7 +160,15 @@ describe("workspace setup experience", () => {
         }],
       },
     };
-    vi.mocked(apiRequest).mockReset().mockResolvedValue(completed);
+    const metaStatus = {
+      wabaId: "waba-1",
+      name: "Acme Business",
+      status: "ACTIVE",
+      accountReviewStatus: "APPROVED",
+      businessVerificationStatus: "VERIFIED",
+      checkedAt: "2026-08-22T00:05:00.000Z",
+    };
+    vi.mocked(apiRequest).mockReset().mockResolvedValueOnce(completed).mockResolvedValueOnce(metaStatus).mockResolvedValueOnce(metaStatus);
     renderWithAuth(<WorkspaceSetupDashboard />, "/dashboard");
 
     expect(await screen.findByRole("heading", { name: "Your workspace is ready", level: 2 })).toBeInTheDocument();
@@ -169,6 +177,14 @@ describe("workspace setup experience", () => {
     expect(screen.queryByText("Quick actions")).not.toBeInTheDocument();
     expect(screen.getByText("App + Cloud API")).toBeInTheDocument();
     expect(screen.getByText("All systems operational")).toBeInTheDocument();
+    expect(await screen.findByText("Verified")).toBeInTheDocument();
+    expect(screen.getByText("Approved")).toBeInTheDocument();
+    expect(screen.getByText("Active")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Meta business verification/i })).toHaveAttribute("href", "https://business.facebook.com/settings/info");
+    expect(screen.getByRole("link", { name: /WABA review/i })).toHaveAttribute("href", "https://business.facebook.com/wa/manage/accounts");
+    expect(apiRequest).toHaveBeenCalledWith("/workspaces/workspace-1/whatsapp/status", { headers: { authorization: "Bearer access-token" } });
+    fireEvent.click(screen.getByRole("button", { name: "Refresh Meta status" }));
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith("/workspaces/workspace-1/whatsapp/status/refresh", expect.objectContaining({ method: "POST" })));
   });
 
   it("launches Meta Embedded Signup instead of asking for credentials", async () => {

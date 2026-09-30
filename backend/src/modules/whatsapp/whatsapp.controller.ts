@@ -10,6 +10,14 @@ export async function completeEmbeddedSignup(request: Request, response: Respons
   });
 }
 
+export async function status(request: Request, response: Response) {
+  response.status(200).json({ success: true, data: await whatsappService.getWhatsAppStatus(request.params.workspaceId as string) });
+}
+
+export async function refreshStatus(request: Request, response: Response) {
+  response.status(200).json({ success: true, data: await whatsappService.refreshWhatsAppStatus(request.params.workspaceId as string) });
+}
+
 export async function sendTestMessage(request: Request, response: Response) {
   response.status(200).json({ success: true, data: await whatsappService.sendTestMessage(request.params.workspaceId as string, request.body.to) });
 }

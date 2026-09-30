@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import {
   ArrowRightIcon as ArrowRight,
   CheckIcon as Check,
+  ExternalLinkIcon as ExternalLink,
   MessageSquareIcon as MessageSquare,
   PhoneIcon as Phone,
+  RefreshCwIcon as RefreshCw,
   SendIcon as Send,
   StoreIcon as Store,
 } from "@animateicons/react/lucide";
@@ -13,6 +15,7 @@ import type { AnimatedIcon } from "@/config/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAnimatedIcon } from "@/hooks/use-animated-icon";
 import { useWorkspaceSetup } from "@/hooks/use-workspace-setup";
+import { useWhatsAppStatus } from "@/hooks/use-whatsapp-status";
 import { useWhatsAppEmbeddedSignup } from "@/hooks/use-whatsapp-embedded-signup";
 import { cn } from "@/lib/utils";
 import { getActiveMembership } from "@/lib/workspace";
@@ -70,6 +73,15 @@ function SetupLoading() {
   return <div className="mx-auto max-w-[1180px] animate-pulse px-5 py-7 sm:px-8"><div className="h-8 w-64 rounded-md bg-[var(--gray-200)]" /><div className="mt-6 h-36 rounded-md bg-[var(--gray-200)]" /><div className="mt-5 h-96 rounded-md bg-[var(--gray-200)]" /></div>;
 }
 
+function metaStatusLabel(value: string | null | undefined) {
+  return value ? value.toLowerCase().replace(/_/g, " ").replace(/\b\w/g, (character) => character.toUpperCase()) : "—";
+}
+
+function metaStatusClass(value: string | null | undefined) {
+  if (!value) return "text-[var(--text-muted)]";
+  return ["APPROVED", "VERIFIED", "ACTIVE"].includes(value.toUpperCase()) ? "text-[var(--success)]" : "text-amber-700";
+}
+
 export function WorkspaceSetupDashboard() {
   const { accessToken, user } = useAuth();
   const membership = getActiveMembership(user);
@@ -77,6 +89,11 @@ export function WorkspaceSetupDashboard() {
     membership?.workspace.id,
     accessToken,
     membership?.workspace.onboardingCompletedAt,
+  );
+  const { data: metaStatus, loading: metaStatusLoading, error: metaStatusError, refresh: refreshMetaStatus } = useWhatsAppStatus(
+    data?.whatsapp.status === "CONNECTED" ? membership?.workspace.id : undefined,
+    accessToken,
+    data?.whatsapp.status,
   );
   const { connecting, error: connectionError, pinRequired, submitRegistrationPin, cancelRegistrationPin, start } = useWhatsAppEmbeddedSignup({ workspaceId: membership?.workspace.id, accessToken, onConnected: refresh });
   const [connectionGuideOpen, setConnectionGuideOpen] = useState(false);
@@ -173,8 +190,12 @@ export function WorkspaceSetupDashboard() {
               {connectedAccount?.displayName && <div className="flex items-center justify-between border-t border-[var(--border-soft)] pt-3"><dt className="text-[var(--text-muted)]">Business account</dt><dd className="max-w-[170px] truncate font-medium text-[var(--text-primary)]">{connectedAccount.displayName}</dd></div>}
               {connectedPhone?.displayPhoneNumber && <div className="flex items-center justify-between border-t border-[var(--border-soft)] pt-3"><dt className="text-[var(--text-muted)]">Phone number</dt><dd className="font-medium text-[var(--text-primary)]">{connectedPhone.displayPhoneNumber}</dd></div>}
               <div className="flex items-center justify-between border-t border-[var(--border-soft)] pt-3"><dt className="text-[var(--text-muted)]">Phone numbers</dt><dd className="font-medium text-[var(--text-primary)]">{data.whatsapp.phoneNumberCount}</dd></div>
+              <div className="flex items-center justify-between border-t border-[var(--border-soft)] pt-3"><dt><a href="https://business.facebook.com/settings/info" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[var(--text-muted)] hover:text-[var(--brand)]">Meta business verification <ExternalLink size={11} aria-hidden="true" /></a></dt><dd className={cn("font-medium", metaStatusError ? "text-amber-700" : metaStatusLoading ? "text-[var(--text-muted)]" : metaStatusClass(metaStatus?.businessVerificationStatus))}>{metaStatusLoading ? "Checking…" : metaStatusError ? "Unavailable" : metaStatusLabel(metaStatus?.businessVerificationStatus)}</dd></div>
+              <div className="flex items-center justify-between border-t border-[var(--border-soft)] pt-3"><dt><a href="https://business.facebook.com/wa/manage/accounts" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[var(--text-muted)] hover:text-[var(--brand)]">WABA review <ExternalLink size={11} aria-hidden="true" /></a></dt><dd className={cn("font-medium", metaStatusError ? "text-amber-700" : metaStatusLoading ? "text-[var(--text-muted)]" : metaStatusClass(metaStatus?.accountReviewStatus))}>{metaStatusLoading ? "Checking…" : metaStatusError ? "Unavailable" : metaStatusLabel(metaStatus?.accountReviewStatus)}</dd></div>
+              <div className="flex items-center justify-between border-t border-[var(--border-soft)] pt-3"><dt className="text-[var(--text-muted)]">Meta account status</dt><dd className={cn("font-medium", metaStatusError ? "text-amber-700" : metaStatusLoading ? "text-[var(--text-muted)]" : metaStatusClass(metaStatus?.status))}>{metaStatusLoading ? "Checking…" : metaStatusError ? "Unavailable" : metaStatusLabel(metaStatus?.status)}</dd></div>
               <div className="flex items-center justify-between border-t border-[var(--border-soft)] pt-3"><dt className="text-[var(--text-muted)]">Team members</dt><dd className="font-medium text-[var(--text-primary)]">{data.team.memberCount}</dd></div>
             </dl>
+            {data.whatsapp.status === "CONNECTED" && <div className="mt-4 flex items-center justify-between gap-3 border-t border-[var(--border-soft)] pt-3 text-[11px] text-[var(--text-muted)]"><span>{metaStatus?.checkedAt ? `Last checked ${new Intl.DateTimeFormat("en-IN", { hour: "numeric", minute: "2-digit" }).format(new Date(metaStatus.checkedAt))}` : "Status not checked yet"}</span><button type="button" aria-label="Refresh Meta status" onClick={() => void refreshMetaStatus()} disabled={metaStatusLoading} className="inline-flex items-center gap-1 font-medium text-[var(--brand)] hover:text-[var(--brand-hover)] disabled:opacity-50"><RefreshCw size={12} className={metaStatusLoading ? "animate-spin" : undefined} />Refresh</button></div>}
             {data.whatsapp.status === "DISCONNECTED" && <div className="mt-4 rounded-md bg-[var(--brand-soft)] px-3 py-2.5 text-xs text-[var(--brand)]">Connect WhatsApp to unlock phone number setup.</div>}
           </section>
           {allComplete ? <section className="rounded-md border border-[var(--green-100)] bg-[var(--brand-subtle)] p-5"><div className="flex items-center gap-2 text-[var(--brand)]"><BarChart3 size={16} /><h2 className="text-sm font-medium">Workspace health</h2></div><div className="mt-4 flex items-center gap-2 text-xs font-medium text-[var(--success)]"><span className="size-2 rounded-full bg-[var(--success)]" /> All systems operational</div></section> : <section className="rounded-md border border-[var(--green-100)] bg-[var(--brand-subtle)] p-5"><h2 className="text-sm font-medium text-[var(--brand)]">Need help?</h2><p className="mt-2">You will need access to your Meta Business portfolio before connecting WhatsApp.</p><Link to="/whatsapp-account" className="mt-3 inline-flex items-center text-xs font-medium text-[var(--brand)] hover:text-[var(--brand-hover)]">View requirements <ArrowRight size={13} duration={0.55} className="ml-1" aria-hidden="true" /></Link></section>}

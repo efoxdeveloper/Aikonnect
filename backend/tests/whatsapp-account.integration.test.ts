@@ -34,6 +34,10 @@ after(async () => {
 test("embedded signup requires workspace authentication and validates its callback data", async () => {
   const anonymous = await fetch(`${apiBaseUrl}/workspaces/00000000-0000-0000-0000-000000000000/whatsapp/embedded-signup`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({}) });
   assert.equal(anonymous.status, 401);
+  const anonymousStatus = await fetch(`${apiBaseUrl}/workspaces/00000000-0000-0000-0000-000000000000/whatsapp/status`);
+  assert.equal(anonymousStatus.status, 401);
+  const anonymousStatusRefresh = await fetch(`${apiBaseUrl}/workspaces/00000000-0000-0000-0000-000000000000/whatsapp/status/refresh`, { method: "POST" });
+  assert.equal(anonymousStatusRefresh.status, 401);
   const contentSecurityPolicy = anonymous.headers.get("content-security-policy") ?? "";
   assert.match(contentSecurityPolicy, /script-src[^;]*https:\/\/connect\.facebook\.net/);
   assert.match(contentSecurityPolicy, /frame-src[^;]*https:\/\/www\.facebook\.com/);
