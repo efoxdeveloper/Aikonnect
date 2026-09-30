@@ -6,9 +6,15 @@ import { verifyTurnstileToken } from "../src/services/turnstile.service.js";
 
 test("validates the Turnstile token through Cloudflare Siteverify", async () => {
   const originalFetch = globalThis.fetch;
+  const originalAbortSignalTimeout = AbortSignal.timeout;
   const originalSecret = env.CLOUDFLARE_TURNSTILE_SECRET_KEY;
   let requestBody: Record<string, string> | undefined;
+  let timeoutMilliseconds: number | undefined;
   env.CLOUDFLARE_TURNSTILE_SECRET_KEY = "test-secret";
+  AbortSignal.timeout = ((milliseconds: number) => {
+    timeoutMilliseconds = milliseconds;
+    return originalAbortSignalTimeout(milliseconds);
+  }) as typeof AbortSignal.timeout;
   globalThis.fetch = (async (_input, init) => {
     requestBody = JSON.parse(String(init?.body)) as Record<string, string>;
     return new Response(JSON.stringify({ success: true, hostname: new URL(env.APP_URL).hostname, action: "signup" }), { status: 200, headers: { "content-type": "application/json" } });
@@ -17,6 +23,7 @@ test("validates the Turnstile token through Cloudflare Siteverify", async () => 
   try {
     await verifyTurnstileToken("turnstile-token");
     assert.deepEqual(requestBody, { secret: "test-secret", response: "turnstile-token" });
+    assert.equal(timeoutMilliseconds, 10_000);
 
     globalThis.fetch = (async () => new Response(JSON.stringify({ success: false, "error-codes": ["timeout-or-duplicate"] }), { status: 200 })) as typeof fetch;
     await assert.rejects(
@@ -25,6 +32,7 @@ test("validates the Turnstile token through Cloudflare Siteverify", async () => 
     );
   } finally {
     globalThis.fetch = originalFetch;
+    AbortSignal.timeout = originalAbortSignalTimeout;
     env.CLOUDFLARE_TURNSTILE_SECRET_KEY = originalSecret;
   }
 });

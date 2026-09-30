@@ -159,6 +159,27 @@ test("AI preflight reports Groq quota failures clearly", { concurrency: false },
   );
 });
 
+test("template submission continues when AI preflight is unavailable", { concurrency: false }, async (t) => {
+  env.GROQ_API_KEY = "test-groq-key";
+  t.after(() => { env.GROQ_API_KEY = undefined; });
+  stub(t, prisma.template, "findFirst", async () => null);
+  stub(t, prisma.whatsAppBusinessAccount, "findFirst", async () => account());
+  const requests: string[] = [];
+  stub(t, globalThis, "fetch", async (input: string | URL) => {
+    requests.push(String(input));
+    if (String(input).includes("api.groq.com")) return new Response(JSON.stringify({ error: { message: "Rate limit reached" } }), { status: 429 });
+    return new Response(JSON.stringify({ id: "meta-after-ai-failure", status: "PENDING" }), { status: 200 });
+  });
+  stub(t, prisma.template, "create", async (args: any) => ({ id: "template-after-ai-failure", ...args.data, createdAt: new Date(), updatedAt: new Date(), deletedAt: null, createdBy: null, updatedBy: null }));
+
+  const result = await createTemplate("workspace", "user", {
+    saveAs: "submit", name: "AI unavailable", category: "Marketing", language: "en_US", templateType: "standard", headerType: "none", body: "Hello", content: {},
+  });
+
+  assert.equal(result.metaTemplateId, "meta-after-ai-failure");
+  assert.deepEqual(requests, ["https://api.groq.com/openai/v1/chat/completions", "https://graph.facebook.com/v25.0/waba-1/message_templates"]);
+});
+
 test("AI preflight retries with JSON object mode when Groq rejects structured output", { concurrency: false }, async (t) => {
   env.GROQ_API_KEY = "test-groq-key";
   t.after(() => { env.GROQ_API_KEY = undefined; });

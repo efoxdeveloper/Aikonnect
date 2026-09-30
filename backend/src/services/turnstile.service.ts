@@ -2,6 +2,7 @@ import { env } from "../config/env.js";
 import { AppError } from "../middleware/error-handler.js";
 
 const TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+const TURNSTILE_VERIFY_TIMEOUT_MS = 10_000;
 
 type TurnstileResponse = {
   success?: boolean;
@@ -19,7 +20,7 @@ export async function verifyTurnstileToken(token: string): Promise<void> {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ secret, response: token }),
-      signal: AbortSignal.timeout(5_000),
+      signal: AbortSignal.timeout(TURNSTILE_VERIFY_TIMEOUT_MS),
     });
     if (!response.ok) throw new Error(`Turnstile returned HTTP ${response.status}`);
     const result = await response.json() as TurnstileResponse;

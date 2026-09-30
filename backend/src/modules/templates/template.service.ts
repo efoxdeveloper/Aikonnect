@@ -1,6 +1,7 @@
 import type { Prisma } from "../../generated/prisma/client.js";
 import { TemplateStatus } from "../../generated/prisma/enums.js";
 import { prisma } from "../../database/prisma.js";
+import { logger } from "../../config/logger.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { toSlug } from "../../utils/slug.js";
 import { addWhatsAppTemplateFromLibrary, assertWhatsAppCatalogReady, connectedWhatsAppWabaId, createWhatsAppTemplate, listWhatsAppTemplateLibrary, listWhatsAppTemplates, updateWhatsAppTemplate } from "../whatsapp/whatsapp.service.js";
@@ -92,6 +93,15 @@ function aiReviewInput(input: CreateTemplateInput) {
 
 function aiRejectionReason(review: TemplateAIReview) {
   return [`AI preflight: ${review.summary}`, ...review.issues.map((issue) => `${issue.field}: ${issue.message}${issue.suggestion ? ` ${issue.suggestion}` : ""}`)].join("\n").slice(0, 10_000);
+}
+
+async function runAIReview(input: Parameters<typeof reviewTemplateWithAI>[0]): Promise<TemplateAIReview | null> {
+  try {
+    return await reviewTemplateWithAI(input);
+  } catch (error) {
+    logger.warn({ err: error instanceof Error ? error : new Error(String(error)) }, "Template AI preflight failed; continuing with Meta submission");
+    return null;
+  }
 }
 
 function localTemplateFromMeta(template: MetaTemplate) {
@@ -293,7 +303,7 @@ export async function createTemplate(workspaceId: string, actorUserId: string, i
   if (submitted) {
     const payload = metaTemplatePayload(input);
     if (contentUsesCatalog(input)) await assertWhatsAppCatalogReady(workspaceId);
-    aiReview = await reviewTemplateWithAI(aiReviewInput(input));
+    aiReview = await runAIReview(aiReviewInput(input));
     if (!aiReview || aiReview.decision === "pass") remote = await createWhatsAppTemplate(workspaceId, payload);
   }
   if (submitted && aiReview?.decision !== "block" && !remote?.id) throw new AppError(502, "Meta accepted the template but did not return a template ID", "META_TEMPLATE_RESPONSE_INVALID");
@@ -352,7 +362,7 @@ export async function updateTemplate(workspaceId: string, templateId: string, ac
     footer: input.footer === undefined ? existing.footer : input.footer,
     content: input.content ?? (existing.content as Record<string, unknown>),
   } as CreateTemplateInput;
-  const aiReview = input.saveAs === "submit" ? await reviewTemplateWithAI(aiReviewInput(merged)) : null;
+  const aiReview = input.saveAs === "submit" ? await runAIReview(aiReviewInput(merged)) : null;
   const aiRejected = aiReview?.decision === "block";
   if (input.saveAs === "submit" && contentUsesCatalog(merged)) await assertWhatsAppCatalogReady(workspaceId);
   const remote = !aiRejected && existing.metaTemplateId ? await updateWhatsAppTemplate(workspaceId, existing.metaTemplateId, buildMetaTemplateUpdatePayload(merged)) : null;
