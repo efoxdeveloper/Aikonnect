@@ -100,13 +100,34 @@ describe("ApiWebhooks", () => {
     );
     expect(screen.getByTestId("api-endpoint-docs")).toBeInTheDocument();
     expect(screen.getByTestId("api-doc-public-message")).toHaveTextContent(
-      "Interakt-compatible",
+      "Marento-compatible",
     );
     expect(screen.getByTestId("api-doc-public-message")).toHaveTextContent(
       "callbackData",
     );
+    expect(screen.getByTestId("api-doc-public-message")).toHaveTextContent(
+      "Message queued for sending via Marento",
+    );
+    expect(screen.getByTestId("api-doc-public-message")).toHaveTextContent(
+      "HTTP 202 Accepted",
+    );
     expect(screen.getByTestId("api-doc-public-image-message")).toHaveTextContent(
       "mediaUrl",
+    );
+    expect(screen.getByTestId("api-doc-public-document-message")).toHaveTextContent(
+      "fileName",
+    );
+    expect(screen.getByTestId("api-doc-public-video-message")).toHaveTextContent(
+      "update.mp4",
+    );
+    expect(screen.getByTestId("api-doc-public-audio-message")).toHaveTextContent(
+      "update.mp3",
+    );
+    expect(
+      screen.getByTestId("api-doc-public-interactive-button-message"),
+    ).toHaveTextContent("InteractiveButton");
+    expect(screen.getByTestId("api-doc-public-sticker-message")).toHaveTextContent(
+      "hello.webp",
     );
     fireEvent.click(screen.getByRole("tab", { name: "Webhooks" }));
     expect(screen.getByTestId("webhooks-section")).toHaveTextContent(

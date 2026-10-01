@@ -860,6 +860,230 @@ export async function sendWhatsAppImageMessage(workspaceId: string, to: string, 
   return { metaMessageId, phoneNumberId: phone.id, sentAt: new Date() };
 }
 
+/** Sends a document message using a public URL that Meta can download. */
+export async function sendWhatsAppDocumentMessage(workspaceId: string, to: string, mediaUrl: string, caption?: string, fileName?: string) {
+  const { encryptionKey } = requireMetaConfiguration();
+  const connection = await prisma.whatsAppBusinessAccount.findFirst({
+    where: {
+      workspaceId,
+      status: "CONNECTED",
+      encryptedAccessToken: { not: null },
+      phoneNumbers: { some: { status: "ACTIVE" } },
+    },
+    orderBy: [{ connectedAt: "desc" }, { createdAt: "asc" }],
+    select: {
+      encryptedAccessToken: true,
+      phoneNumbers: {
+        where: { status: "ACTIVE" },
+        orderBy: { createdAt: "asc" },
+        take: 1,
+        select: { id: true, metaPhoneNumberId: true },
+      },
+    },
+  });
+  const phone = connection?.phoneNumbers[0];
+  if (!connection?.encryptedAccessToken || !phone) {
+    throw new AppError(503, "Connect an active WhatsApp phone number before sending messages", "WHATSAPP_NOT_CONNECTED");
+  }
+  const normalizedTo = to.replace(/\D/g, "");
+  if (!normalizedTo) throw new AppError(422, "The recipient does not have a valid WhatsApp number", "CONTACT_PHONE_INVALID");
+  if (!mediaUrl.trim()) throw new AppError(422, "Document media URL cannot be empty", "MEDIA_URL_REQUIRED");
+
+  const accessToken = env.META_SYSTEM_USER_ACCESS_TOKEN ?? decryptSecret(connection.encryptedAccessToken, encryptionKey);
+  const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(phone.metaPhoneNumberId)}/messages`, accessToken, {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: normalizedTo,
+    type: "document",
+    document: {
+      link: mediaUrl,
+      ...(caption?.trim() ? { caption: caption.trim() } : {}),
+      ...(fileName?.trim() ? { filename: fileName.trim() } : {}),
+    },
+  }, "send_message");
+  const metaMessageId = sent.messages?.[0]?.id;
+  if (!metaMessageId) throw new AppError(502, "Meta accepted the document but did not return a message ID. Please try again.", "META_RESPONSE_INVALID", { stage: "send_message" });
+  return { metaMessageId, phoneNumberId: phone.id, sentAt: new Date() };
+}
+
+/** Sends a video message using a public URL that Meta can download. */
+export async function sendWhatsAppVideoMessage(workspaceId: string, to: string, mediaUrl: string, caption?: string) {
+  const { encryptionKey } = requireMetaConfiguration();
+  const connection = await prisma.whatsAppBusinessAccount.findFirst({
+    where: {
+      workspaceId,
+      status: "CONNECTED",
+      encryptedAccessToken: { not: null },
+      phoneNumbers: { some: { status: "ACTIVE" } },
+    },
+    orderBy: [{ connectedAt: "desc" }, { createdAt: "asc" }],
+    select: {
+      encryptedAccessToken: true,
+      phoneNumbers: {
+        where: { status: "ACTIVE" },
+        orderBy: { createdAt: "asc" },
+        take: 1,
+        select: { id: true, metaPhoneNumberId: true },
+      },
+    },
+  });
+  const phone = connection?.phoneNumbers[0];
+  if (!connection?.encryptedAccessToken || !phone) {
+    throw new AppError(503, "Connect an active WhatsApp phone number before sending messages", "WHATSAPP_NOT_CONNECTED");
+  }
+  const normalizedTo = to.replace(/\D/g, "");
+  if (!normalizedTo) throw new AppError(422, "The recipient does not have a valid WhatsApp number", "CONTACT_PHONE_INVALID");
+  if (!mediaUrl.trim()) throw new AppError(422, "Video media URL cannot be empty", "MEDIA_URL_REQUIRED");
+
+  const accessToken = env.META_SYSTEM_USER_ACCESS_TOKEN ?? decryptSecret(connection.encryptedAccessToken, encryptionKey);
+  const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(phone.metaPhoneNumberId)}/messages`, accessToken, {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: normalizedTo,
+    type: "video",
+    video: { link: mediaUrl, ...(caption?.trim() ? { caption: caption.trim() } : {}) },
+  }, "send_message");
+  const metaMessageId = sent.messages?.[0]?.id;
+  if (!metaMessageId) throw new AppError(502, "Meta accepted the video but did not return a message ID. Please try again.", "META_RESPONSE_INVALID", { stage: "send_message" });
+  return { metaMessageId, phoneNumberId: phone.id, sentAt: new Date() };
+}
+
+/** Sends an audio message using a public URL that Meta can download. */
+export async function sendWhatsAppAudioMessage(workspaceId: string, to: string, mediaUrl: string) {
+  const { encryptionKey } = requireMetaConfiguration();
+  const connection = await prisma.whatsAppBusinessAccount.findFirst({
+    where: {
+      workspaceId,
+      status: "CONNECTED",
+      encryptedAccessToken: { not: null },
+      phoneNumbers: { some: { status: "ACTIVE" } },
+    },
+    orderBy: [{ connectedAt: "desc" }, { createdAt: "asc" }],
+    select: {
+      encryptedAccessToken: true,
+      phoneNumbers: {
+        where: { status: "ACTIVE" },
+        orderBy: { createdAt: "asc" },
+        take: 1,
+        select: { id: true, metaPhoneNumberId: true },
+      },
+    },
+  });
+  const phone = connection?.phoneNumbers[0];
+  if (!connection?.encryptedAccessToken || !phone) {
+    throw new AppError(503, "Connect an active WhatsApp phone number before sending messages", "WHATSAPP_NOT_CONNECTED");
+  }
+  const normalizedTo = to.replace(/\D/g, "");
+  if (!normalizedTo) throw new AppError(422, "The recipient does not have a valid WhatsApp number", "CONTACT_PHONE_INVALID");
+  if (!mediaUrl.trim()) throw new AppError(422, "Audio media URL cannot be empty", "MEDIA_URL_REQUIRED");
+
+  const accessToken = env.META_SYSTEM_USER_ACCESS_TOKEN ?? decryptSecret(connection.encryptedAccessToken, encryptionKey);
+  const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(phone.metaPhoneNumberId)}/messages`, accessToken, {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: normalizedTo,
+    type: "audio",
+    audio: { link: mediaUrl },
+  }, "send_message");
+  const metaMessageId = sent.messages?.[0]?.id;
+  if (!metaMessageId) throw new AppError(502, "Meta accepted the audio but did not return a message ID. Please try again.", "META_RESPONSE_INVALID", { stage: "send_message" });
+  return { metaMessageId, phoneNumberId: phone.id, sentAt: new Date() };
+}
+
+export type WhatsAppInteractiveButton = {
+  type: "button";
+  body: { text: string };
+  action: {
+    buttons: Array<{
+      type: "reply";
+      reply: { id: string; title: string };
+    }>;
+  };
+};
+
+/** Sends an interactive reply-button message through Meta. */
+export async function sendWhatsAppInteractiveButtonMessage(workspaceId: string, to: string, interactive: WhatsAppInteractiveButton) {
+  const { encryptionKey } = requireMetaConfiguration();
+  const connection = await prisma.whatsAppBusinessAccount.findFirst({
+    where: {
+      workspaceId,
+      status: "CONNECTED",
+      encryptedAccessToken: { not: null },
+      phoneNumbers: { some: { status: "ACTIVE" } },
+    },
+    orderBy: [{ connectedAt: "desc" }, { createdAt: "asc" }],
+    select: {
+      encryptedAccessToken: true,
+      phoneNumbers: {
+        where: { status: "ACTIVE" },
+        orderBy: { createdAt: "asc" },
+        take: 1,
+        select: { id: true, metaPhoneNumberId: true },
+      },
+    },
+  });
+  const phone = connection?.phoneNumbers[0];
+  if (!connection?.encryptedAccessToken || !phone) {
+    throw new AppError(503, "Connect an active WhatsApp phone number before sending messages", "WHATSAPP_NOT_CONNECTED");
+  }
+  const normalizedTo = to.replace(/\D/g, "");
+  if (!normalizedTo) throw new AppError(422, "The recipient does not have a valid WhatsApp number", "CONTACT_PHONE_INVALID");
+
+  const accessToken = env.META_SYSTEM_USER_ACCESS_TOKEN ?? decryptSecret(connection.encryptedAccessToken, encryptionKey);
+  const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(phone.metaPhoneNumberId)}/messages`, accessToken, {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: normalizedTo,
+    type: "interactive",
+    interactive,
+  }, "send_message");
+  const metaMessageId = sent.messages?.[0]?.id;
+  if (!metaMessageId) throw new AppError(502, "Meta accepted the interactive message but did not return a message ID. Please try again.", "META_RESPONSE_INVALID", { stage: "send_message" });
+  return { metaMessageId, phoneNumberId: phone.id, sentAt: new Date() };
+}
+
+/** Sends a sticker message using a public WebP URL that Meta can download. */
+export async function sendWhatsAppStickerMessage(workspaceId: string, to: string, mediaUrl: string) {
+  const { encryptionKey } = requireMetaConfiguration();
+  const connection = await prisma.whatsAppBusinessAccount.findFirst({
+    where: {
+      workspaceId,
+      status: "CONNECTED",
+      encryptedAccessToken: { not: null },
+      phoneNumbers: { some: { status: "ACTIVE" } },
+    },
+    orderBy: [{ connectedAt: "desc" }, { createdAt: "asc" }],
+    select: {
+      encryptedAccessToken: true,
+      phoneNumbers: {
+        where: { status: "ACTIVE" },
+        orderBy: { createdAt: "asc" },
+        take: 1,
+        select: { id: true, metaPhoneNumberId: true },
+      },
+    },
+  });
+  const phone = connection?.phoneNumbers[0];
+  if (!connection?.encryptedAccessToken || !phone) {
+    throw new AppError(503, "Connect an active WhatsApp phone number before sending messages", "WHATSAPP_NOT_CONNECTED");
+  }
+  const normalizedTo = to.replace(/\D/g, "");
+  if (!normalizedTo) throw new AppError(422, "The recipient does not have a valid WhatsApp number", "CONTACT_PHONE_INVALID");
+  if (!mediaUrl.trim()) throw new AppError(422, "Sticker media URL cannot be empty", "MEDIA_URL_REQUIRED");
+
+  const accessToken = env.META_SYSTEM_USER_ACCESS_TOKEN ?? decryptSecret(connection.encryptedAccessToken, encryptionKey);
+  const sent = await postMeta<{ messages?: Array<{ id?: string }> }>(`/${encodeURIComponent(phone.metaPhoneNumberId)}/messages`, accessToken, {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: normalizedTo,
+    type: "sticker",
+    sticker: { link: mediaUrl },
+  }, "send_message");
+  const metaMessageId = sent.messages?.[0]?.id;
+  if (!metaMessageId) throw new AppError(502, "Meta accepted the sticker but did not return a message ID. Please try again.", "META_RESPONSE_INVALID", { stage: "send_message" });
+  return { metaMessageId, phoneNumberId: phone.id, sentAt: new Date() };
+}
+
 type WhatsAppMediaType = "IMAGE" | "VIDEO" | "AUDIO" | "DOCUMENT";
 
 export type WhatsAppCampaignMediaType = "image" | "video" | "document";

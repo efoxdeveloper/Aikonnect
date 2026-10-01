@@ -4,8 +4,8 @@ import { AppError } from "../../middleware/error-handler.js";
 import { hashToken } from "../../utils/crypto.js";
 import { reserveMessageBilling, releaseMessageBilling } from "../billing/billing.service.js";
 import { resolveMessagePricing, type PricingSnapshot, messagePricingSnapshot } from "../whatsapp-pricing/pricing.service.js";
-import { sendWhatsAppImageMessage, sendWhatsAppTemplateMessage, sendWhatsAppTextMessage, type WhatsAppTemplateParameter } from "../whatsapp/whatsapp.service.js";
-import type { PublicMessageInput, PublicTextMessageInput, SendMessageInput } from "./developer-api.schemas.js";
+import { sendWhatsAppAudioMessage, sendWhatsAppDocumentMessage, sendWhatsAppImageMessage, sendWhatsAppInteractiveButtonMessage, sendWhatsAppStickerMessage, sendWhatsAppTemplateMessage, sendWhatsAppTextMessage, sendWhatsAppVideoMessage, type WhatsAppTemplateParameter } from "../whatsapp/whatsapp.service.js";
+import { publicMessageSchema, type PublicMessageInput, type PublicTextMessageInput, type SendMessageInput } from "./developer-api.schemas.js";
 
 function normalizedPhone(value: string) {
   const digits = value.replace(/\D/g, "");
@@ -45,6 +45,13 @@ export async function serializeMessage(messageId: string) {
 
 function publicMessageKey(workspaceId: string, input: PublicMessageInput, to: string) {
   return `public:${hashToken(JSON.stringify({ workspaceId, to, callbackData: input.callbackData, userId: input.userId ?? null, type: input.type, data: input.data }))}`;
+}
+
+function publicMessageText(input: PublicMessageInput) {
+  if (input.type === "Text") return input.data.message;
+  if (input.type === "InteractiveButton") return input.data.message.body.text;
+  if (input.type === "Sticker") return undefined;
+  return input.data.message;
 }
 
 async function findExisting(workspaceId: string, idempotencyKey: string) {
@@ -165,19 +172,22 @@ export async function sendPublicMessage(workspaceId: string, input: PublicMessag
           conversationId: conversation.id,
           contactId: contact.id,
           direction: "OUTGOING",
-          type: input.type === "Image" ? "IMAGE" : "TEXT",
+          type: input.type === "Image" ? "IMAGE" : input.type === "Document" ? "DOCUMENT" : input.type === "Video" ? "VIDEO" : input.type === "Audio" ? "AUDIO" : input.type === "InteractiveButton" ? "INTERACTIVE" : input.type === "Sticker" ? "STICKER" : "TEXT",
           status: "QUEUED",
-          text: input.data.message ?? null,
-          mediaUrl: input.type === "Image" ? input.data.mediaUrl : null,
+          text: publicMessageText(input) ?? null,
+          mediaUrl: input.type === "Text" || input.type === "InteractiveButton" ? null : input.data.mediaUrl,
           apiIdempotencyKey: idempotencyKey,
           ...messagePricingSnapshot(pricing),
           payload: {
             source: "public_api",
+            request: input,
             userId: input.userId ?? null,
             callbackData: input.callbackData ?? null,
             clientReference: input.callbackData ?? null,
             messageType: input.type,
-            ...(input.type === "Image" ? { mediaUrl: input.data.mediaUrl } : {}),
+            ...(input.type !== "Text" && input.type !== "InteractiveButton" ? { mediaUrl: input.data.mediaUrl } : {}),
+            ...((input.type === "Document" || input.type === "Video" || input.type === "Audio") && input.data.fileName ? { fileName: input.data.fileName } : {}),
+            ...(input.type === "InteractiveButton" ? { interactive: input.data.message } : {}),
           },
           sentAt: new Date(),
         },
@@ -193,27 +203,99 @@ export async function sendPublicMessage(workspaceId: string, input: PublicMessag
     throw error;
   }
 
-  let reservationId: string | null = null;
-  let billingResolved = false;
-  let metaAccepted: { metaMessageId: string; phoneNumberId: string; sentAt: Date } | null = null;
   try {
     const billing = await reserveMessageBilling({ workspaceId, messageId: created.messageId, pricing, clientReference: input.callbackData, idempotencyKey: `public:${workspaceId}:${hashToken(idempotencyKey)}` });
-    billingResolved = true;
-    reservationId = billing.reservation?.id ?? null;
-    metaAccepted = input.type === "Image"
-      ? await sendWhatsAppImageMessage(workspaceId, to, input.data.mediaUrl, input.data.message)
-      : await sendWhatsAppTextMessage(workspaceId, to, input.data.message);
-    const preview = input.type === "Image" ? input.data.message ? `You: ${input.data.message}` : "You: Image" : `You: ${input.data.message}`;
-    await prisma.$transaction(async (transaction) => {
-      await transaction.message.update({ where: { id: created.messageId }, data: { metaMessageId: metaAccepted!.metaMessageId, status: "SENT", sentAt: metaAccepted!.sentAt } });
-      await transaction.conversation.update({ where: { id: created.conversationId }, data: { lastMessagePreview: preview, lastMessageAt: metaAccepted!.sentAt, phoneNumberId: metaAccepted!.phoneNumberId } });
-    });
     return { replayed: false, data: { ...(await serializeMessage(created.messageId)), userId: input.userId ?? null, callbackData: input.callbackData ?? null, billing: billing.billing } };
   } catch (error) {
-    if (reservationId && !metaAccepted) await releaseMessageBilling(created.messageId, error instanceof Error ? error.message : "Meta rejected the message").catch(() => undefined);
-    await prisma.message.update({ where: { id: created.messageId }, data: metaAccepted
-      ? { metaMessageId: metaAccepted.metaMessageId, status: "SENT", sentAt: metaAccepted.sentAt, billingError: "Meta accepted the message but the response could not be persisted" }
-      : { status: "FAILED", failedAt: new Date(), failureReason: error instanceof Error ? error.message : "Public API send failed", billingStatus: reservationId ? "RELEASED" : billingResolved ? "NOT_APPLICABLE" : "BILLING_ERROR", billingError: error instanceof Error ? error.message : "Public API billing/send failed" } }).catch(() => undefined);
+    await prisma.message.update({ where: { id: created.messageId }, data: { status: "FAILED", failedAt: new Date(), failureReason: error instanceof Error ? error.message : "Public API billing failed", billingStatus: "BILLING_ERROR", billingError: error instanceof Error ? error.message : "Public API billing failed" } }).catch(() => undefined);
+    throw error;
+  }
+}
+
+type QueuedPublicMessage = {
+  id: string;
+  workspaceId: string;
+  conversationId: string;
+  status: string;
+  queueProcessingToken: string | null;
+  payload: unknown;
+  rateCardId: string | null;
+  pricingCountry: string | null;
+  pricingCategory: string | null;
+  pricingType: string | null;
+  metaCost: Prisma.Decimal | null;
+  platformFee: Prisma.Decimal | null;
+  customerCost: Prisma.Decimal | null;
+  pricingCurrency: string | null;
+  pricingEffectiveDate: Date | null;
+};
+
+function queuedPublicInput(payload: unknown) {
+  const request = payload && typeof payload === "object" && !Array.isArray(payload) ? (payload as Record<string, unknown>).request : undefined;
+  const parsed = publicMessageSchema.safeParse(request);
+  if (!parsed.success) throw new AppError(500, "The queued public message payload is invalid", "PUBLIC_MESSAGE_QUEUE_PAYLOAD_INVALID");
+  return parsed.data;
+}
+
+function pricingFromMessage(message: QueuedPublicMessage): PricingSnapshot {
+  if (!message.rateCardId || !message.pricingCountry || !message.pricingCategory || !message.pricingType || !message.metaCost || !message.platformFee || !message.customerCost || !message.pricingCurrency || !message.pricingEffectiveDate) {
+    throw new AppError(500, "The queued public message is missing its pricing snapshot", "PUBLIC_MESSAGE_PRICING_MISSING");
+  }
+  return {
+    rateCardId: message.rateCardId,
+    countryCode: message.pricingCountry,
+    countryName: message.pricingCountry,
+    category: message.pricingCategory,
+    pricingType: message.pricingType,
+    metaRate: message.metaCost.toFixed(6),
+    platformFee: message.platformFee.toFixed(6),
+    customerRate: message.customerCost.toFixed(6),
+    currency: message.pricingCurrency,
+    effectiveFrom: message.pricingEffectiveDate.toISOString().slice(0, 10),
+  };
+}
+
+export async function deliverPublicMessage(messageId: string, queueProcessingToken: string) {
+  const message = await prisma.message.findUnique({
+    where: { id: messageId },
+    select: {
+      id: true, workspaceId: true, conversationId: true, status: true, queueProcessingToken: true,
+      payload: true, rateCardId: true, pricingCountry: true, pricingCategory: true, pricingType: true,
+      metaCost: true, platformFee: true, customerCost: true, pricingCurrency: true, pricingEffectiveDate: true,
+    },
+  });
+  if (!message || message.status !== "QUEUED" || message.queueProcessingToken !== queueProcessingToken) return false;
+
+  const input = queuedPublicInput(message.payload);
+  const to = normalizedPhone(input.fullPhoneNumber);
+  const pricing = pricingFromMessage(message);
+  let metaAccepted: { metaMessageId: string; phoneNumberId: string; sentAt: Date } | null = null;
+  try {
+    await reserveMessageBilling({ workspaceId: message.workspaceId, messageId: message.id, pricing, clientReference: input.callbackData, idempotencyKey: `public:${message.workspaceId}:${hashToken(publicMessageKey(message.workspaceId, input, to))}` });
+    metaAccepted = input.type === "Image"
+      ? await sendWhatsAppImageMessage(message.workspaceId, to, input.data.mediaUrl, input.data.message)
+      : input.type === "Document"
+        ? await sendWhatsAppDocumentMessage(message.workspaceId, to, input.data.mediaUrl, input.data.message, input.data.fileName)
+        : input.type === "Video"
+          ? await sendWhatsAppVideoMessage(message.workspaceId, to, input.data.mediaUrl, input.data.message)
+          : input.type === "Audio"
+            ? await sendWhatsAppAudioMessage(message.workspaceId, to, input.data.mediaUrl)
+            : input.type === "InteractiveButton"
+              ? await sendWhatsAppInteractiveButtonMessage(message.workspaceId, to, input.data.message)
+              : input.type === "Sticker"
+                ? await sendWhatsAppStickerMessage(message.workspaceId, to, input.data.mediaUrl)
+                : await sendWhatsAppTextMessage(message.workspaceId, to, input.data.message);
+    const messageText = publicMessageText(input);
+    const preview = messageText ? `You: ${messageText}` : `You: ${input.type}`;
+    await prisma.$transaction(async (transaction) => {
+      await transaction.message.update({ where: { id: message.id }, data: { metaMessageId: metaAccepted!.metaMessageId, status: "SENT", sentAt: metaAccepted!.sentAt, queueProcessingToken: null, queueProcessingAt: null, queueNextAttemptAt: null } });
+      await transaction.conversation.update({ where: { id: message.conversationId }, data: { lastMessagePreview: preview, lastMessageAt: metaAccepted!.sentAt, phoneNumberId: metaAccepted!.phoneNumberId } });
+    });
+    return true;
+  } catch (error) {
+    if (metaAccepted) {
+      await prisma.message.update({ where: { id: message.id }, data: { metaMessageId: metaAccepted.metaMessageId, status: "SENT", sentAt: metaAccepted.sentAt, queueProcessingToken: null, queueProcessingAt: null, queueNextAttemptAt: null, billingError: "Meta accepted the message but the response could not be persisted" } }).catch(() => undefined);
+    }
     throw error;
   }
 }

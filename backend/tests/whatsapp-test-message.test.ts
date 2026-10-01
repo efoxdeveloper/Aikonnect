@@ -10,7 +10,7 @@ Object.assign(process.env, {
   META_TOKEN_ENCRYPTION_KEY: "test-token-encryption-key-for-tests-32chars",
   META_GRAPH_API_VERSION: "v25.0", LOG_LEVEL: "silent",
 });
-const { sendTestMessage, sendWhatsAppImageMessage, sendWhatsAppTemplateMessage, buildWhatsAppTemplateComponents, disconnectWhatsApp, downloadWhatsAppMedia } = await import("../src/modules/whatsapp/whatsapp.service.js");
+const { sendTestMessage, sendWhatsAppAudioMessage, sendWhatsAppDocumentMessage, sendWhatsAppImageMessage, sendWhatsAppInteractiveButtonMessage, sendWhatsAppStickerMessage, sendWhatsAppTemplateMessage, sendWhatsAppVideoMessage, buildWhatsAppTemplateComponents, disconnectWhatsApp, downloadWhatsAppMedia } = await import("../src/modules/whatsapp/whatsapp.service.js");
 const { env } = await import("../src/config/env.js");
 const { createMessage } = await import("../src/modules/conversations/conversation.service.js");
 const { createMessageSchema } = await import("../src/modules/conversations/conversation.schemas.js");
@@ -235,6 +235,162 @@ test("public image messages send a Meta-downloadable link with an optional capti
     image: { link: "https://cdn.example.com/receipt.jpg", caption: "Your receipt" },
   });
   assert.equal(result.metaMessageId, "wamid.public-image");
+  assert.equal(result.phoneNumberId, "phone");
+});
+
+test("public document messages send a Meta-downloadable link with caption and filename", async (t) => {
+  const { encryptSecret } = await import("../src/utils/crypto.js");
+  const previousSystemToken = env.META_SYSTEM_USER_ACCESS_TOKEN;
+  delete (env as any).META_SYSTEM_USER_ACCESS_TOKEN;
+  t.after(() => {
+    if (previousSystemToken) env.META_SYSTEM_USER_ACCESS_TOKEN = previousSystemToken;
+  });
+  let requestBody: unknown;
+  stub(t, prisma.whatsAppBusinessAccount, "findFirst", async () => ({
+    encryptedAccessToken: encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars"),
+    phoneNumbers: [{ id: "phone", metaPhoneNumberId: "meta-phone" }],
+  }));
+  stub(t, globalThis, "fetch", async (_input: string | URL, init?: RequestInit) => {
+    requestBody = JSON.parse(String(init?.body));
+    return new Response(JSON.stringify({ messages: [{ id: "wamid.public-document" }] }), { status: 200 });
+  });
+
+  const result = await sendWhatsAppDocumentMessage("workspace", "+919876543210", "https://cdn.example.com/invoice.pdf", "Your invoice", "invoice-123.pdf");
+  assert.deepEqual(requestBody, {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: "919876543210",
+    type: "document",
+    document: { link: "https://cdn.example.com/invoice.pdf", caption: "Your invoice", filename: "invoice-123.pdf" },
+  });
+  assert.equal(result.metaMessageId, "wamid.public-document");
+  assert.equal(result.phoneNumberId, "phone");
+});
+
+test("public video messages send a Meta-downloadable link with an optional caption", async (t) => {
+  const { encryptSecret } = await import("../src/utils/crypto.js");
+  const previousSystemToken = env.META_SYSTEM_USER_ACCESS_TOKEN;
+  delete (env as any).META_SYSTEM_USER_ACCESS_TOKEN;
+  t.after(() => {
+    if (previousSystemToken) env.META_SYSTEM_USER_ACCESS_TOKEN = previousSystemToken;
+  });
+  let requestBody: unknown;
+  stub(t, prisma.whatsAppBusinessAccount, "findFirst", async () => ({
+    encryptedAccessToken: encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars"),
+    phoneNumbers: [{ id: "phone", metaPhoneNumberId: "meta-phone" }],
+  }));
+  stub(t, globalThis, "fetch", async (_input: string | URL, init?: RequestInit) => {
+    requestBody = JSON.parse(String(init?.body));
+    return new Response(JSON.stringify({ messages: [{ id: "wamid.public-video" }] }), { status: 200 });
+  });
+
+  const result = await sendWhatsAppVideoMessage("workspace", "+919876543210", "https://cdn.example.com/update.mp4", "Watch this update");
+  assert.deepEqual(requestBody, {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: "919876543210",
+    type: "video",
+    video: { link: "https://cdn.example.com/update.mp4", caption: "Watch this update" },
+  });
+  assert.equal(result.metaMessageId, "wamid.public-video");
+  assert.equal(result.phoneNumberId, "phone");
+});
+
+test("public audio messages send a Meta-downloadable link without unsupported caption fields", async (t) => {
+  const { encryptSecret } = await import("../src/utils/crypto.js");
+  const previousSystemToken = env.META_SYSTEM_USER_ACCESS_TOKEN;
+  delete (env as any).META_SYSTEM_USER_ACCESS_TOKEN;
+  t.after(() => {
+    if (previousSystemToken) env.META_SYSTEM_USER_ACCESS_TOKEN = previousSystemToken;
+  });
+  let requestBody: unknown;
+  stub(t, prisma.whatsAppBusinessAccount, "findFirst", async () => ({
+    encryptedAccessToken: encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars"),
+    phoneNumbers: [{ id: "phone", metaPhoneNumberId: "meta-phone" }],
+  }));
+  stub(t, globalThis, "fetch", async (_input: string | URL, init?: RequestInit) => {
+    requestBody = JSON.parse(String(init?.body));
+    return new Response(JSON.stringify({ messages: [{ id: "wamid.public-audio" }] }), { status: 200 });
+  });
+
+  const result = await sendWhatsAppAudioMessage("workspace", "+919876543210", "https://cdn.example.com/update.mp3");
+  assert.deepEqual(requestBody, {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: "919876543210",
+    type: "audio",
+    audio: { link: "https://cdn.example.com/update.mp3" },
+  });
+  assert.equal(result.metaMessageId, "wamid.public-audio");
+  assert.equal(result.phoneNumberId, "phone");
+});
+
+test("public interactive button messages send Meta reply buttons", async (t) => {
+  const { encryptSecret } = await import("../src/utils/crypto.js");
+  const previousSystemToken = env.META_SYSTEM_USER_ACCESS_TOKEN;
+  delete (env as any).META_SYSTEM_USER_ACCESS_TOKEN;
+  t.after(() => {
+    if (previousSystemToken) env.META_SYSTEM_USER_ACCESS_TOKEN = previousSystemToken;
+  });
+  let requestBody: unknown;
+  stub(t, prisma.whatsAppBusinessAccount, "findFirst", async () => ({
+    encryptedAccessToken: encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars"),
+    phoneNumbers: [{ id: "phone", metaPhoneNumberId: "meta-phone" }],
+  }));
+  stub(t, globalThis, "fetch", async (_input: string | URL, init?: RequestInit) => {
+    requestBody = JSON.parse(String(init?.body));
+    return new Response(JSON.stringify({ messages: [{ id: "wamid.public-buttons" }] }), { status: 200 });
+  });
+
+  const interactive = {
+    type: "button" as const,
+    body: { text: "Hello, please give your feedback." },
+    action: {
+      buttons: [
+        { type: "reply" as const, reply: { id: "id1", title: "Ok" } },
+        { type: "reply" as const, reply: { id: "id2", title: "Good" } },
+        { type: "reply" as const, reply: { id: "id3", title: "Bad" } },
+      ],
+    },
+  };
+  const result = await sendWhatsAppInteractiveButtonMessage("workspace", "+919876543210", interactive);
+  assert.deepEqual(requestBody, {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: "919876543210",
+    type: "interactive",
+    interactive,
+  });
+  assert.equal(result.metaMessageId, "wamid.public-buttons");
+  assert.equal(result.phoneNumberId, "phone");
+});
+
+test("public sticker messages send a Meta-downloadable WebP link", async (t) => {
+  const { encryptSecret } = await import("../src/utils/crypto.js");
+  const previousSystemToken = env.META_SYSTEM_USER_ACCESS_TOKEN;
+  delete (env as any).META_SYSTEM_USER_ACCESS_TOKEN;
+  t.after(() => {
+    if (previousSystemToken) env.META_SYSTEM_USER_ACCESS_TOKEN = previousSystemToken;
+  });
+  let requestBody: unknown;
+  stub(t, prisma.whatsAppBusinessAccount, "findFirst", async () => ({
+    encryptedAccessToken: encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars"),
+    phoneNumbers: [{ id: "phone", metaPhoneNumberId: "meta-phone" }],
+  }));
+  stub(t, globalThis, "fetch", async (_input: string | URL, init?: RequestInit) => {
+    requestBody = JSON.parse(String(init?.body));
+    return new Response(JSON.stringify({ messages: [{ id: "wamid.public-sticker" }] }), { status: 200 });
+  });
+
+  const result = await sendWhatsAppStickerMessage("workspace", "+919876543210", "https://cdn.example.com/stickers/hello.webp");
+  assert.deepEqual(requestBody, {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: "919876543210",
+    type: "sticker",
+    sticker: { link: "https://cdn.example.com/stickers/hello.webp" },
+  });
+  assert.equal(result.metaMessageId, "wamid.public-sticker");
   assert.equal(result.phoneNumberId, "phone");
 });
 

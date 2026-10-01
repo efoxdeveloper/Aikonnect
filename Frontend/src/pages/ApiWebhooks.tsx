@@ -62,13 +62,19 @@ type ApiDoc = {
   notes: string[];
 };
 
+const queuedMessageResponse = `{
+  "result": true,
+  "message": "Message queued for sending via Marento. Check webhook for delivery status",
+  "id": "message_123"
+}`;
+
 const apiDocs: ApiDoc[] = [
   {
     id: "public-message",
     method: "POST",
     path: "/message",
     title: "Send a WhatsApp text message",
-    summary: "Send a simple text message using the Interakt-compatible request format.",
+    summary: "Send a simple text message using the Marento-compatible request format.",
     request: `{
   "userId": "customer-123",
   "fullPhoneNumber": "+919876543210",
@@ -78,16 +84,7 @@ const apiDocs: ApiDoc[] = [
     "message": "This msg is sent via API"
   }
 }`,
-    response: `{
-  "success": true,
-  "data": {
-    "messageId": "message_123",
-    "metaMessageId": "wamid.HBgMOTE5ODc2NTQzMjEwFQIAERgS...",
-    "userId": "customer-123",
-    "callbackData": "order-12345",
-    "status": "sent"
-  }
-}`,
+    response: queuedMessageResponse,
     notes: [
       "Use Authorization: Basic sk_live_... or X-API-Key: sk_live_....",
       "Keep callbackData unique for each message; it is used to prevent duplicate retries.",
@@ -99,7 +96,7 @@ const apiDocs: ApiDoc[] = [
     method: "POST",
     path: "/message",
     title: "Send a WhatsApp image message",
-    summary: "Send an image with an optional caption using the same Interakt-compatible endpoint.",
+    summary: "Send an image with an optional caption using the same Marento-compatible endpoint.",
     request: `{
   "userId": "customer-123",
   "fullPhoneNumber": "+919876543210",
@@ -110,20 +107,137 @@ const apiDocs: ApiDoc[] = [
     "mediaUrl": "https://cdn.example.com/receipt.jpg"
   }
 }`,
-    response: `{
-  "success": true,
-  "data": {
-    "messageId": "message_123",
-    "metaMessageId": "wamid.HBgMOTE5ODc2NTQzMjEwFQIAERgS...",
-    "userId": "customer-123",
-    "callbackData": "order-12345-image-1",
-    "status": "sent"
-  }
-}`,
+    response: queuedMessageResponse,
     notes: [
       "mediaUrl must be a publicly reachable http or https image URL that Meta can download.",
       "The image caption is optional; use callbackData once per new image message.",
       "The image is billed and tracked in the same workspace wallet as text messages.",
+    ],
+  },
+  {
+    id: "public-document-message",
+    method: "POST",
+    path: "/message",
+    title: "Send a WhatsApp document message",
+    summary: "Send a PDF or supported document with an optional caption using the same Marento-compatible endpoint.",
+    request: `{
+  "userId": "customer-123",
+  "fullPhoneNumber": "+919876543210",
+  "callbackData": "order-12345-document-1",
+  "type": "Document",
+  "data": {
+    "message": "Your invoice",
+    "mediaUrl": "https://cdn.example.com/invoices/invoice-123.pdf",
+    "fileName": "invoice-123.pdf"
+  }
+}`,
+    response: queuedMessageResponse,
+    notes: [
+      "mediaUrl must be a publicly reachable http or https document URL that Meta can download.",
+      "message and fileName are optional; fileName controls the name shown to the recipient when supported by Meta.",
+      "The document is billed and tracked in the same workspace wallet as text and image messages.",
+    ],
+  },
+  {
+    id: "public-video-message",
+    method: "POST",
+    path: "/message",
+    title: "Send a WhatsApp video message",
+    summary: "Send a video with an optional caption using the same Marento-compatible endpoint.",
+    request: `{
+  "userId": "customer-123",
+  "fullPhoneNumber": "+919876543210",
+  "callbackData": "order-12345-video-1",
+  "type": "Video",
+  "data": {
+    "message": "Watch this update",
+    "mediaUrl": "https://cdn.example.com/videos/update.mp4",
+    "fileName": "update.mp4"
+  }
+}`,
+    response: queuedMessageResponse,
+    notes: [
+      "mediaUrl must be a publicly reachable http or https video URL that Meta can download.",
+      "message and fileName are optional; Meta receives the caption, while fileName is retained for integration compatibility.",
+      "The video is billed and tracked in the same workspace wallet as other public messages.",
+    ],
+  },
+  {
+    id: "public-audio-message",
+    method: "POST",
+    path: "/message",
+    title: "Send a WhatsApp audio message",
+    summary: "Send an audio file using the same Marento-compatible endpoint.",
+    request: `{
+  "userId": "customer-123",
+  "fullPhoneNumber": "+919876543210",
+  "callbackData": "order-12345-audio-1",
+  "type": "Audio",
+  "data": {
+    "message": "This is an audio update",
+    "mediaUrl": "https://cdn.example.com/audio/update.mp3",
+    "fileName": "update.mp3"
+  }
+}`,
+    response: queuedMessageResponse,
+    notes: [
+      "mediaUrl must be a publicly reachable http or https audio URL that Meta can download.",
+      "message and fileName are retained for integration compatibility; WhatsApp audio messages do not support captions or filenames in Meta's media payload.",
+      "The audio is billed and tracked in the same workspace wallet as other public messages.",
+    ],
+  },
+  {
+    id: "public-interactive-button-message",
+    method: "POST",
+    path: "/message",
+    title: "Send WhatsApp reply buttons",
+    summary: "Send an interactive WhatsApp message with up to three reply buttons.",
+    request: `{
+  "userId": "customer-123",
+  "fullPhoneNumber": "+919876543210",
+  "callbackData": "feedback-123",
+  "type": "InteractiveButton",
+  "data": {
+    "message": {
+      "type": "button",
+      "body": { "text": "Hello, please give your feedback." },
+      "action": {
+        "buttons": [
+          { "type": "reply", "reply": { "id": "id1", "title": "Ok" } },
+          { "type": "reply", "reply": { "id": "id2", "title": "Good" } },
+          { "type": "reply", "reply": { "id": "id3", "title": "Bad" } }
+        ]
+      }
+    }
+  }
+}`,
+    response: queuedMessageResponse,
+    notes: [
+      "Use one to three reply buttons; each title is limited to 20 characters.",
+      "Button reply IDs must be unique in the message and are returned by WhatsApp when the user taps a button.",
+      "The interactive message is billed and tracked in the same workspace wallet as other public messages.",
+    ],
+  },
+  {
+    id: "public-sticker-message",
+    method: "POST",
+    path: "/message",
+    title: "Send a WhatsApp sticker",
+    summary: "Send a sticker using a public WebP URL through the same Marento-compatible endpoint.",
+    request: `{
+  "userId": "customer-123",
+  "fullPhoneNumber": "+919876543210",
+  "callbackData": "sticker-123",
+  "type": "Sticker",
+  "data": {
+    "mediaUrl": "https://cdn.example.com/stickers/hello.webp"
+  }
+}`,
+    response: queuedMessageResponse,
+    notes: [
+      "mediaUrl must be a publicly reachable http or https WebP sticker URL that Meta can download.",
+      "Use a unique callbackData value for each new sticker message.",
+      "The sticker is billed and tracked in the same workspace wallet as other public messages.",
     ],
   },
 ];
@@ -187,6 +301,9 @@ function ApiDocumentation() {
             <div>
               <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[.03em] text-[var(--text-muted)]">
                 Success response
+              </p>
+              <p className="mb-2 text-xs text-[var(--text-secondary)]">
+                HTTP 202 Accepted: the message is queued immediately and delivery is reported through the webhook.
               </p>
               <pre className="overflow-x-auto rounded-md bg-slate-950 px-3 py-2.5 font-mono text-[11px] leading-5 text-slate-100">
                 {doc.response}

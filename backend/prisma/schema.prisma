@@ -96,6 +96,7 @@ enum MessageType {
   VIDEO
   AUDIO
   DOCUMENT
+  STICKER
   LOCATION
   CONTACT
   INTERACTIVE
@@ -549,6 +550,10 @@ model Message {
   walletChargeAmount   Decimal?            @map("wallet_charge_amount") @db.Decimal(18, 6)
   billingCurrency      String?             @map("billing_currency") @db.Char(3)
   billingError         String?             @map("billing_error") @db.Text
+  queueAttemptCount    Int                 @default(0) @map("queue_attempt_count")
+  queueProcessingToken String?             @map("queue_processing_token") @db.Uuid
+  queueProcessingAt    DateTime?           @map("queue_processing_at") @db.Timestamptz(3)
+  queueNextAttemptAt   DateTime?           @map("queue_next_attempt_at") @db.Timestamptz(3)
   estimatedMetaCost    Decimal?            @map("estimated_meta_cost") @db.Decimal(18, 6)
   actualMetaCost       Decimal?            @map("actual_meta_cost") @db.Decimal(18, 6)
   costDifference       Decimal?            @map("cost_difference") @db.Decimal(18, 6)
@@ -572,6 +577,7 @@ model Message {
   @@index([workspaceId, conversationId, deletedAt])
   @@index([createdById])
   @@index([workspaceId, billingStatus, sentAt])
+  @@index([status, queueNextAttemptAt, queueProcessingAt, createdAt], map: "messages_delivery_queue_idx")
   @@index([rateCardId])
   @@map("messages")
 }

@@ -31,6 +31,7 @@ export type MessageAvgAggregateOutputType = {
   platformFee: runtime.Decimal | null
   customerCost: runtime.Decimal | null
   walletChargeAmount: runtime.Decimal | null
+  queueAttemptCount: number | null
   estimatedMetaCost: runtime.Decimal | null
   actualMetaCost: runtime.Decimal | null
   costDifference: runtime.Decimal | null
@@ -41,6 +42,7 @@ export type MessageSumAggregateOutputType = {
   platformFee: runtime.Decimal | null
   customerCost: runtime.Decimal | null
   walletChargeAmount: runtime.Decimal | null
+  queueAttemptCount: number | null
   estimatedMetaCost: runtime.Decimal | null
   actualMetaCost: runtime.Decimal | null
   costDifference: runtime.Decimal | null
@@ -78,6 +80,10 @@ export type MessageMinAggregateOutputType = {
   walletChargeAmount: runtime.Decimal | null
   billingCurrency: string | null
   billingError: string | null
+  queueAttemptCount: number | null
+  queueProcessingToken: string | null
+  queueProcessingAt: Date | null
+  queueNextAttemptAt: Date | null
   estimatedMetaCost: runtime.Decimal | null
   actualMetaCost: runtime.Decimal | null
   costDifference: runtime.Decimal | null
@@ -120,6 +126,10 @@ export type MessageMaxAggregateOutputType = {
   walletChargeAmount: runtime.Decimal | null
   billingCurrency: string | null
   billingError: string | null
+  queueAttemptCount: number | null
+  queueProcessingToken: string | null
+  queueProcessingAt: Date | null
+  queueNextAttemptAt: Date | null
   estimatedMetaCost: runtime.Decimal | null
   actualMetaCost: runtime.Decimal | null
   costDifference: runtime.Decimal | null
@@ -163,6 +173,10 @@ export type MessageCountAggregateOutputType = {
   walletChargeAmount: number
   billingCurrency: number
   billingError: number
+  queueAttemptCount: number
+  queueProcessingToken: number
+  queueProcessingAt: number
+  queueNextAttemptAt: number
   estimatedMetaCost: number
   actualMetaCost: number
   costDifference: number
@@ -180,6 +194,7 @@ export type MessageAvgAggregateInputType = {
   platformFee?: true
   customerCost?: true
   walletChargeAmount?: true
+  queueAttemptCount?: true
   estimatedMetaCost?: true
   actualMetaCost?: true
   costDifference?: true
@@ -190,6 +205,7 @@ export type MessageSumAggregateInputType = {
   platformFee?: true
   customerCost?: true
   walletChargeAmount?: true
+  queueAttemptCount?: true
   estimatedMetaCost?: true
   actualMetaCost?: true
   costDifference?: true
@@ -227,6 +243,10 @@ export type MessageMinAggregateInputType = {
   walletChargeAmount?: true
   billingCurrency?: true
   billingError?: true
+  queueAttemptCount?: true
+  queueProcessingToken?: true
+  queueProcessingAt?: true
+  queueNextAttemptAt?: true
   estimatedMetaCost?: true
   actualMetaCost?: true
   costDifference?: true
@@ -269,6 +289,10 @@ export type MessageMaxAggregateInputType = {
   walletChargeAmount?: true
   billingCurrency?: true
   billingError?: true
+  queueAttemptCount?: true
+  queueProcessingToken?: true
+  queueProcessingAt?: true
+  queueNextAttemptAt?: true
   estimatedMetaCost?: true
   actualMetaCost?: true
   costDifference?: true
@@ -312,6 +336,10 @@ export type MessageCountAggregateInputType = {
   walletChargeAmount?: true
   billingCurrency?: true
   billingError?: true
+  queueAttemptCount?: true
+  queueProcessingToken?: true
+  queueProcessingAt?: true
+  queueNextAttemptAt?: true
   estimatedMetaCost?: true
   actualMetaCost?: true
   costDifference?: true
@@ -442,6 +470,10 @@ export type MessageGroupByOutputType = {
   walletChargeAmount: runtime.Decimal | null
   billingCurrency: string | null
   billingError: string | null
+  queueAttemptCount: number
+  queueProcessingToken: string | null
+  queueProcessingAt: Date | null
+  queueNextAttemptAt: Date | null
   estimatedMetaCost: runtime.Decimal | null
   actualMetaCost: runtime.Decimal | null
   costDifference: runtime.Decimal | null
@@ -508,6 +540,10 @@ export type MessageWhereInput = {
   walletChargeAmount?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.StringNullableFilter<"Message"> | string | null
   billingError?: Prisma.StringNullableFilter<"Message"> | string | null
+  queueAttemptCount?: Prisma.IntFilter<"Message"> | number
+  queueProcessingToken?: Prisma.UuidNullableFilter<"Message"> | string | null
+  queueProcessingAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
+  queueNextAttemptAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   estimatedMetaCost?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -558,6 +594,10 @@ export type MessageOrderByWithRelationInput = {
   walletChargeAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   billingCurrency?: Prisma.SortOrderInput | Prisma.SortOrder
   billingError?: Prisma.SortOrderInput | Prisma.SortOrder
+  queueAttemptCount?: Prisma.SortOrder
+  queueProcessingToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  queueProcessingAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  queueNextAttemptAt?: Prisma.SortOrderInput | Prisma.SortOrder
   estimatedMetaCost?: Prisma.SortOrderInput | Prisma.SortOrder
   actualMetaCost?: Prisma.SortOrderInput | Prisma.SortOrder
   costDifference?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -613,6 +653,10 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
   walletChargeAmount?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.StringNullableFilter<"Message"> | string | null
   billingError?: Prisma.StringNullableFilter<"Message"> | string | null
+  queueAttemptCount?: Prisma.IntFilter<"Message"> | number
+  queueProcessingToken?: Prisma.UuidNullableFilter<"Message"> | string | null
+  queueProcessingAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
+  queueNextAttemptAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   estimatedMetaCost?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -663,6 +707,10 @@ export type MessageOrderByWithAggregationInput = {
   walletChargeAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   billingCurrency?: Prisma.SortOrderInput | Prisma.SortOrder
   billingError?: Prisma.SortOrderInput | Prisma.SortOrder
+  queueAttemptCount?: Prisma.SortOrder
+  queueProcessingToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  queueProcessingAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  queueNextAttemptAt?: Prisma.SortOrderInput | Prisma.SortOrder
   estimatedMetaCost?: Prisma.SortOrderInput | Prisma.SortOrder
   actualMetaCost?: Prisma.SortOrderInput | Prisma.SortOrder
   costDifference?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -714,6 +762,10 @@ export type MessageScalarWhereWithAggregatesInput = {
   walletChargeAmount?: Prisma.DecimalNullableWithAggregatesFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
   billingError?: Prisma.StringNullableWithAggregatesFilter<"Message"> | string | null
+  queueAttemptCount?: Prisma.IntWithAggregatesFilter<"Message"> | number
+  queueProcessingToken?: Prisma.UuidNullableWithAggregatesFilter<"Message"> | string | null
+  queueProcessingAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
+  queueNextAttemptAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Message"> | Date | string | null
   estimatedMetaCost?: Prisma.DecimalNullableWithAggregatesFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.DecimalNullableWithAggregatesFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.DecimalNullableWithAggregatesFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -753,6 +805,10 @@ export type MessageCreateInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -802,6 +858,10 @@ export type MessageUncheckedCreateInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -843,6 +903,10 @@ export type MessageUpdateInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -892,6 +956,10 @@ export type MessageUncheckedUpdateInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -937,6 +1005,10 @@ export type MessageCreateManyInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -976,6 +1048,10 @@ export type MessageUpdateManyMutationInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1018,6 +1094,10 @@ export type MessageUncheckedUpdateManyInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1081,6 +1161,10 @@ export type MessageCountOrderByAggregateInput = {
   walletChargeAmount?: Prisma.SortOrder
   billingCurrency?: Prisma.SortOrder
   billingError?: Prisma.SortOrder
+  queueAttemptCount?: Prisma.SortOrder
+  queueProcessingToken?: Prisma.SortOrder
+  queueProcessingAt?: Prisma.SortOrder
+  queueNextAttemptAt?: Prisma.SortOrder
   estimatedMetaCost?: Prisma.SortOrder
   actualMetaCost?: Prisma.SortOrder
   costDifference?: Prisma.SortOrder
@@ -1096,6 +1180,7 @@ export type MessageAvgOrderByAggregateInput = {
   platformFee?: Prisma.SortOrder
   customerCost?: Prisma.SortOrder
   walletChargeAmount?: Prisma.SortOrder
+  queueAttemptCount?: Prisma.SortOrder
   estimatedMetaCost?: Prisma.SortOrder
   actualMetaCost?: Prisma.SortOrder
   costDifference?: Prisma.SortOrder
@@ -1133,6 +1218,10 @@ export type MessageMaxOrderByAggregateInput = {
   walletChargeAmount?: Prisma.SortOrder
   billingCurrency?: Prisma.SortOrder
   billingError?: Prisma.SortOrder
+  queueAttemptCount?: Prisma.SortOrder
+  queueProcessingToken?: Prisma.SortOrder
+  queueProcessingAt?: Prisma.SortOrder
+  queueNextAttemptAt?: Prisma.SortOrder
   estimatedMetaCost?: Prisma.SortOrder
   actualMetaCost?: Prisma.SortOrder
   costDifference?: Prisma.SortOrder
@@ -1175,6 +1264,10 @@ export type MessageMinOrderByAggregateInput = {
   walletChargeAmount?: Prisma.SortOrder
   billingCurrency?: Prisma.SortOrder
   billingError?: Prisma.SortOrder
+  queueAttemptCount?: Prisma.SortOrder
+  queueProcessingToken?: Prisma.SortOrder
+  queueProcessingAt?: Prisma.SortOrder
+  queueNextAttemptAt?: Prisma.SortOrder
   estimatedMetaCost?: Prisma.SortOrder
   actualMetaCost?: Prisma.SortOrder
   costDifference?: Prisma.SortOrder
@@ -1190,6 +1283,7 @@ export type MessageSumOrderByAggregateInput = {
   platformFee?: Prisma.SortOrder
   customerCost?: Prisma.SortOrder
   walletChargeAmount?: Prisma.SortOrder
+  queueAttemptCount?: Prisma.SortOrder
   estimatedMetaCost?: Prisma.SortOrder
   actualMetaCost?: Prisma.SortOrder
   costDifference?: Prisma.SortOrder
@@ -1486,6 +1580,10 @@ export type MessageCreateWithoutCreatedByInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1534,6 +1632,10 @@ export type MessageUncheckedCreateWithoutCreatedByInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1607,6 +1709,10 @@ export type MessageScalarWhereInput = {
   walletChargeAmount?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.StringNullableFilter<"Message"> | string | null
   billingError?: Prisma.StringNullableFilter<"Message"> | string | null
+  queueAttemptCount?: Prisma.IntFilter<"Message"> | number
+  queueProcessingToken?: Prisma.UuidNullableFilter<"Message"> | string | null
+  queueProcessingAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
+  queueNextAttemptAt?: Prisma.DateTimeNullableFilter<"Message"> | Date | string | null
   estimatedMetaCost?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.DecimalNullableFilter<"Message"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1646,6 +1752,10 @@ export type MessageCreateWithoutWorkspaceInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1693,6 +1803,10 @@ export type MessageUncheckedCreateWithoutWorkspaceInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1760,6 +1874,10 @@ export type MessageCreateWithoutContactInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1807,6 +1925,10 @@ export type MessageUncheckedCreateWithoutContactInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1874,6 +1996,10 @@ export type MessageCreateWithoutConversationInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1921,6 +2047,10 @@ export type MessageUncheckedCreateWithoutConversationInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -1988,6 +2118,10 @@ export type MessageCreateWithoutRateCardInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2035,6 +2169,10 @@ export type MessageUncheckedCreateWithoutRateCardInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2102,6 +2240,10 @@ export type MessageCreateWithoutWalletLedgerEntriesInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2150,6 +2292,10 @@ export type MessageUncheckedCreateWithoutWalletLedgerEntriesInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2206,6 +2352,10 @@ export type MessageUpdateWithoutWalletLedgerEntriesInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2254,6 +2404,10 @@ export type MessageUncheckedUpdateWithoutWalletLedgerEntriesInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2294,6 +2448,10 @@ export type MessageCreateWithoutWalletReservationsInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2342,6 +2500,10 @@ export type MessageUncheckedCreateWithoutWalletReservationsInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2398,6 +2560,10 @@ export type MessageUpdateWithoutWalletReservationsInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2446,6 +2612,10 @@ export type MessageUncheckedUpdateWithoutWalletReservationsInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2490,6 +2660,10 @@ export type MessageCreateManyCreatedByInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2528,6 +2702,10 @@ export type MessageUpdateWithoutCreatedByInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2576,6 +2754,10 @@ export type MessageUncheckedUpdateWithoutCreatedByInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2620,6 +2802,10 @@ export type MessageUncheckedUpdateManyWithoutCreatedByInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2661,6 +2847,10 @@ export type MessageCreateManyWorkspaceInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2700,6 +2890,10 @@ export type MessageUpdateWithoutWorkspaceInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2747,6 +2941,10 @@ export type MessageUncheckedUpdateWithoutWorkspaceInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2791,6 +2989,10 @@ export type MessageUncheckedUpdateManyWithoutWorkspaceInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2833,6 +3035,10 @@ export type MessageCreateManyContactInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2872,6 +3078,10 @@ export type MessageUpdateWithoutContactInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2919,6 +3129,10 @@ export type MessageUncheckedUpdateWithoutContactInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -2963,6 +3177,10 @@ export type MessageUncheckedUpdateManyWithoutContactInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3005,6 +3223,10 @@ export type MessageCreateManyConversationInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3044,6 +3266,10 @@ export type MessageUpdateWithoutConversationInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3091,6 +3317,10 @@ export type MessageUncheckedUpdateWithoutConversationInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3135,6 +3365,10 @@ export type MessageUncheckedUpdateManyWithoutConversationInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3177,6 +3411,10 @@ export type MessageCreateManyRateCardInput = {
   walletChargeAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: string | null
   billingError?: string | null
+  queueAttemptCount?: number
+  queueProcessingToken?: string | null
+  queueProcessingAt?: Date | string | null
+  queueNextAttemptAt?: Date | string | null
   estimatedMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3216,6 +3454,10 @@ export type MessageUpdateWithoutRateCardInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3263,6 +3505,10 @@ export type MessageUncheckedUpdateWithoutRateCardInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3307,6 +3553,10 @@ export type MessageUncheckedUpdateManyWithoutRateCardInput = {
   walletChargeAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   billingCurrency?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billingError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueAttemptCount?: Prisma.IntFieldUpdateOperationsInput | number
+  queueProcessingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  queueProcessingAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  queueNextAttemptAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estimatedMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   actualMetaCost?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   costDifference?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -3390,6 +3640,10 @@ export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   walletChargeAmount?: boolean
   billingCurrency?: boolean
   billingError?: boolean
+  queueAttemptCount?: boolean
+  queueProcessingToken?: boolean
+  queueProcessingAt?: boolean
+  queueNextAttemptAt?: boolean
   estimatedMetaCost?: boolean
   actualMetaCost?: boolean
   costDifference?: boolean
@@ -3441,6 +3695,10 @@ export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   walletChargeAmount?: boolean
   billingCurrency?: boolean
   billingError?: boolean
+  queueAttemptCount?: boolean
+  queueProcessingToken?: boolean
+  queueProcessingAt?: boolean
+  queueNextAttemptAt?: boolean
   estimatedMetaCost?: boolean
   actualMetaCost?: boolean
   costDifference?: boolean
@@ -3489,6 +3747,10 @@ export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   walletChargeAmount?: boolean
   billingCurrency?: boolean
   billingError?: boolean
+  queueAttemptCount?: boolean
+  queueProcessingToken?: boolean
+  queueProcessingAt?: boolean
+  queueNextAttemptAt?: boolean
   estimatedMetaCost?: boolean
   actualMetaCost?: boolean
   costDifference?: boolean
@@ -3537,6 +3799,10 @@ export type MessageSelectScalar = {
   walletChargeAmount?: boolean
   billingCurrency?: boolean
   billingError?: boolean
+  queueAttemptCount?: boolean
+  queueProcessingToken?: boolean
+  queueProcessingAt?: boolean
+  queueNextAttemptAt?: boolean
   estimatedMetaCost?: boolean
   actualMetaCost?: boolean
   costDifference?: boolean
@@ -3547,7 +3813,7 @@ export type MessageSelectScalar = {
   updatedAt?: boolean
 }
 
-export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "conversationId" | "contactId" | "metaMessageId" | "apiIdempotencyKey" | "direction" | "type" | "status" | "text" | "mediaId" | "mediaUrl" | "payload" | "sentAt" | "deliveredAt" | "readAt" | "failedAt" | "failureReason" | "rateCardId" | "pricingCountry" | "pricingCategory" | "pricingType" | "metaCost" | "platformFee" | "customerCost" | "pricingCurrency" | "pricingEffectiveDate" | "billingStatus" | "billingMode" | "walletChargeAmount" | "billingCurrency" | "billingError" | "estimatedMetaCost" | "actualMetaCost" | "costDifference" | "reconciledAt" | "deletedAt" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["message"]>
+export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "conversationId" | "contactId" | "metaMessageId" | "apiIdempotencyKey" | "direction" | "type" | "status" | "text" | "mediaId" | "mediaUrl" | "payload" | "sentAt" | "deliveredAt" | "readAt" | "failedAt" | "failureReason" | "rateCardId" | "pricingCountry" | "pricingCategory" | "pricingType" | "metaCost" | "platformFee" | "customerCost" | "pricingCurrency" | "pricingEffectiveDate" | "billingStatus" | "billingMode" | "walletChargeAmount" | "billingCurrency" | "billingError" | "queueAttemptCount" | "queueProcessingToken" | "queueProcessingAt" | "queueNextAttemptAt" | "estimatedMetaCost" | "actualMetaCost" | "costDifference" | "reconciledAt" | "deletedAt" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["message"]>
 export type MessageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   conversation?: boolean | Prisma.ConversationDefaultArgs<ExtArgs>
@@ -3617,6 +3883,10 @@ export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     walletChargeAmount: runtime.Decimal | null
     billingCurrency: string | null
     billingError: string | null
+    queueAttemptCount: number
+    queueProcessingToken: string | null
+    queueProcessingAt: Date | null
+    queueNextAttemptAt: Date | null
     estimatedMetaCost: runtime.Decimal | null
     actualMetaCost: runtime.Decimal | null
     costDifference: runtime.Decimal | null
@@ -4087,6 +4357,10 @@ export interface MessageFieldRefs {
   readonly walletChargeAmount: Prisma.FieldRef<"Message", 'Decimal'>
   readonly billingCurrency: Prisma.FieldRef<"Message", 'String'>
   readonly billingError: Prisma.FieldRef<"Message", 'String'>
+  readonly queueAttemptCount: Prisma.FieldRef<"Message", 'Int'>
+  readonly queueProcessingToken: Prisma.FieldRef<"Message", 'String'>
+  readonly queueProcessingAt: Prisma.FieldRef<"Message", 'DateTime'>
+  readonly queueNextAttemptAt: Prisma.FieldRef<"Message", 'DateTime'>
   readonly estimatedMetaCost: Prisma.FieldRef<"Message", 'Decimal'>
   readonly actualMetaCost: Prisma.FieldRef<"Message", 'Decimal'>
   readonly costDifference: Prisma.FieldRef<"Message", 'Decimal'>
