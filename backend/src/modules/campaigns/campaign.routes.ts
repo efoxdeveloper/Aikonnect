@@ -1,4 +1,5 @@
 import { Router, type RequestHandler } from "express";
+import express from "express";
 import { asyncHandler } from "../../middleware/async-handler.js";
 import { validateBody, validateParams, validateQuery } from "../../middleware/validate.js";
 import { requireWorkspacePermission } from "../../middleware/workspace-access.js";
@@ -17,6 +18,7 @@ const requireSendPermissionForLive: RequestHandler = (request, _response, next) 
 };
 campaignRouter.use(validateParams(campaignWorkspaceParamsSchema));
 campaignRouter.get("/", requireWorkspacePermission(PERMISSIONS.CAMPAIGNS_READ), validateQuery(campaignListQuerySchema), asyncHandler(controller.list));
+campaignRouter.post("/media", requireWorkspacePermission(PERMISSIONS.CAMPAIGNS_CREATE), express.raw({ type: "application/octet-stream", limit: "100mb" }), asyncHandler(controller.uploadMedia));
 campaignRouter.post("/", requireWorkspacePermission(PERMISSIONS.CAMPAIGNS_CREATE), validateBody(createCampaignSchema), requireSendPermissionForLive, asyncHandler(controller.create));
 campaignRouter.get("/:campaignId", requireWorkspacePermission(PERMISSIONS.CAMPAIGNS_READ), validateParams(campaignIdParamsSchema), asyncHandler(controller.get));
 campaignRouter.post("/:campaignId/duplicate", requireWorkspacePermission(PERMISSIONS.CAMPAIGNS_CREATE), validateParams(campaignIdParamsSchema), asyncHandler(controller.duplicate));

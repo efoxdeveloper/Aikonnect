@@ -5,7 +5,7 @@ import { requirePlatformRole, type PlatformRole } from "../../middleware/platfor
 import * as controller from "./admin.controller.js";
 import * as service from "./admin.service.js";
 import { validateBody, validateParams, validateQuery } from "../../middleware/validate.js";
-import { adminAuditQuerySchema, adminListQuerySchema, adminUserActionSchema, adminUserParamsSchema, adminWalletAdjustmentSchema } from "./admin.schemas.js";
+import { adminAuditQuerySchema, adminListQuerySchema, adminUserActionSchema, adminUserParamsSchema, adminUserWalletAdjustmentSchema, adminWalletAdjustmentSchema } from "./admin.schemas.js";
 import * as rateCardController from "../whatsapp-pricing/pricing.controller.js";
 import { rateCardIdParamsSchema, rateCardInputSchema, rateCardListQuerySchema, rateCardStatusSchema, ratePreviewSchema } from "../whatsapp-pricing/pricing.schemas.js";
 import * as walletController from "../wallet/wallet.controller.js";
@@ -22,6 +22,7 @@ const auditAccess = asyncHandler(async (request, _response, next) => {
 const access = (...roles: PlatformRole[]) => [requirePlatformRole(...roles), auditAccess] as const;
 const allRoles: PlatformRole[] = ["SUPPORT", "OPERATIONS", "BILLING", "ADMIN", "SUPER_ADMIN"];
 const customerRoles: PlatformRole[] = ["SUPPORT", "OPERATIONS", "ADMIN", "SUPER_ADMIN"];
+const customerBillingRoles: PlatformRole[] = ["SUPPORT", "OPERATIONS", "BILLING", "ADMIN", "SUPER_ADMIN"];
 const operationsRoles: PlatformRole[] = ["OPERATIONS", "ADMIN", "SUPER_ADMIN"];
 const billingRoles: PlatformRole[] = ["BILLING", "ADMIN", "SUPER_ADMIN"];
 const auditRoles: PlatformRole[] = ["SUPPORT", "ADMIN", "SUPER_ADMIN"];
@@ -29,8 +30,9 @@ const administratorRoles: PlatformRole[] = ["ADMIN", "SUPER_ADMIN"];
 
 adminRouter.get("/overview", ...access(...allRoles), asyncHandler(controller.overview));
 adminRouter.get("/workspaces", ...access(...customerRoles), validateQuery(adminListQuerySchema), asyncHandler(controller.workspaces));
-adminRouter.get("/users", ...access(...customerRoles), validateQuery(adminListQuerySchema), asyncHandler(controller.users));
+adminRouter.get("/users", ...access(...customerBillingRoles), validateQuery(adminListQuerySchema), asyncHandler(controller.users));
 adminRouter.post("/users/:userId/actions", ...access(...administratorRoles), validateParams(adminUserParamsSchema), validateBody(adminUserActionSchema), asyncHandler(controller.userAction));
+adminRouter.post("/users/:userId/wallet-adjustments", ...access(...billingRoles), validateParams(adminUserParamsSchema), validateBody(adminUserWalletAdjustmentSchema), asyncHandler(controller.userWalletAdjustment));
 adminRouter.get("/platform-admins", ...access(...administratorRoles), validateQuery(adminListQuerySchema), asyncHandler(controller.platformAdmins));
 adminRouter.get("/whatsapp", ...access(...customerRoles), validateQuery(adminListQuerySchema), asyncHandler(controller.whatsapp));
 adminRouter.get("/billing", ...access(...billingRoles), asyncHandler(controller.billing));

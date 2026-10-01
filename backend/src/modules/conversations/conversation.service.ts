@@ -1,7 +1,9 @@
 import type { Prisma } from "../../generated/prisma/client.js";
 import { prisma } from "../../database/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
+import { reserveMessageBilling, releaseMessageBilling } from "../billing/billing.service.js";
 import { downloadWhatsAppMedia, sendWhatsAppConversationMedia, sendWhatsAppConversationText } from "../whatsapp/whatsapp.service.js";
+import { messagePricingSnapshot, resolveMessagePricing } from "../whatsapp-pricing/pricing.service.js";
 import { publishInboxRefresh } from "../../realtime/inbox.js";
 import type { ConversationListQuery, CreateConversationInput, CreateMessageInput, ForwardTargetListQuery, InboxConversationListQuery } from "./conversation.schemas.js";
 
@@ -236,6 +238,93 @@ export async function deleteMessage(workspaceId: string, contactId: string, conv
 
 export async function createMessage(workspaceId: string, contactId: string, conversationId: string, actorUserId: string, input: CreateMessageInput) {
   const conversation = await requireConversation(workspaceId, contactId, conversationId);
+  const isWhatsAppText = input.direction === "OUTGOING" && input.type === "TEXT" && conversation.channelKey === "whatsapp";
+  const isWhatsAppMedia = input.direction === "OUTGOING" && ["IMAGE", "VIDEO", "AUDIO", "DOCUMENT"].includes(input.type) && conversation.channelKey === "whatsapp";
+
+  if (isWhatsAppText || isWhatsAppMedia) {
+    if (isWhatsAppText && (typeof input.text !== "string" || !input.text.trim())) throw new AppError(422, "Message text cannot be empty", "MESSAGE_TEXT_REQUIRED");
+
+    const contact = await prisma.contact.findFirst({ where: { id: contactId, workspaceId, deletedAt: null }, select: { phoneE164: true } });
+    if (!contact) throw new AppError(404, "Contact was not found", "CONTACT_NOT_FOUND");
+    const pricing = await resolveMessagePricing({ phoneNumber: contact.phoneE164, category: "UTILITY", pricingType: "REGULAR" });
+    const payload = { ...(input.payload && typeof input.payload === "object" && !Array.isArray(input.payload) ? input.payload as Record<string, unknown> : {}) } as Prisma.InputJsonValue;
+    const createdAt = input.sentAt ? new Date(input.sentAt) : new Date();
+    const initial = await prisma.$transaction(async (transaction) => {
+      if (input.metaMessageId) {
+        const existing = await transaction.message.findUnique({ where: { workspaceId_metaMessageId: { workspaceId, metaMessageId: input.metaMessageId } }, select: messageSelect });
+        if (existing) return { message: existing, deduplicated: true };
+      }
+      const message = await transaction.message.create({
+        data: {
+          workspaceId, contactId, conversationId, metaMessageId: input.metaMessageId, direction: input.direction, type: input.type,
+          status: input.status, text: input.text, mediaId: input.mediaId, mediaUrl: input.mediaUrl, payload,
+          sentAt: createdAt, createdById: actorUserId, ...messagePricingSnapshot(pricing),
+        },
+        select: { id: true },
+      });
+      return { message, deduplicated: false };
+    });
+    if (initial.deduplicated) return { message: initial.message, deduplicated: true };
+
+    const messageId = initial.message.id;
+    let billingCompleted = false;
+    let reservationId: string | undefined;
+    let acceptedMetaMessageId: string | undefined;
+    let acceptedSentAt: Date | undefined;
+    let acceptedMediaId: string | undefined;
+    try {
+      const billing = await reserveMessageBilling({ workspaceId, messageId, pricing, clientReference: `inbox:${messageId}`, idempotencyKey: `message:${messageId}` });
+      billingCompleted = true;
+      reservationId = billing.reservation?.id;
+
+      let sentAt = createdAt;
+      let metaMessageId = input.metaMessageId;
+      let mediaId = input.mediaId;
+      let mediaUrl = input.mediaUrl;
+      let routedPhoneNumberId: string | undefined;
+      if (isWhatsAppText) {
+        const sent = await sendWhatsAppConversationText(workspaceId, conversationId, input.text!);
+        metaMessageId = sent.metaMessageId;
+        acceptedMetaMessageId = sent.metaMessageId;
+        routedPhoneNumberId = sent.phoneNumberId;
+        sentAt = sent.sentAt;
+        acceptedSentAt = sent.sentAt;
+      } else {
+        const sent = await sendWhatsAppConversationMedia(workspaceId, conversationId, input.type as "IMAGE" | "VIDEO" | "AUDIO" | "DOCUMENT", input.mediaData, input.mediaId ?? undefined, input.text?.trim() || undefined, input.mediaFileName);
+        metaMessageId = sent.metaMessageId;
+        acceptedMetaMessageId = sent.metaMessageId;
+        routedPhoneNumberId = sent.phoneNumberId;
+        mediaId = sent.mediaId;
+        acceptedMediaId = sent.mediaId;
+        mediaUrl = input.mediaUrl;
+        sentAt = sent.sentAt;
+        acceptedSentAt = sent.sentAt;
+      }
+
+      const result = await prisma.$transaction(async (transaction) => {
+        const message = await transaction.message.update({
+          where: { id: messageId },
+          data: { metaMessageId, status: input.status, text: input.text, mediaId, mediaUrl, sentAt, ...(input.status === "DELIVERED" ? { deliveredAt: sentAt } : {}), ...(input.status === "READ" ? { deliveredAt: sentAt, readAt: sentAt } : {}) },
+          select: messageSelect,
+        });
+        await transaction.conversation.update({ where: { id: conversationId, workspaceId, contactId }, data: { lastMessagePreview: `You: ${input.text ?? input.type}`, lastMessageAt: sentAt, ...(routedPhoneNumberId ? { phoneNumberId: routedPhoneNumberId } : {}) } });
+        return { message, deduplicated: false };
+      });
+      publishInboxRefresh(workspaceId, conversationId);
+      return result;
+    } catch (error) {
+      if (reservationId && !acceptedMetaMessageId) await releaseMessageBilling(messageId, error instanceof Error ? error.message : "WhatsApp message failed").catch(() => undefined);
+      if (acceptedMetaMessageId) {
+        await prisma.message.update({ where: { id: messageId }, data: { metaMessageId: acceptedMetaMessageId, ...(acceptedMediaId ? { mediaId: acceptedMediaId } : {}), ...(acceptedSentAt ? { sentAt: acceptedSentAt } : {}), status: "SENT", billingError: "Meta accepted the message but the response could not be persisted" } }).catch(() => undefined);
+      } else if (billingCompleted) {
+        await prisma.message.update({ where: { id: messageId }, data: { status: "FAILED", failedAt: new Date(), failureReason: error instanceof Error ? error.message : "WhatsApp message failed" } }).catch(() => undefined);
+      } else {
+        await prisma.message.delete({ where: { id: messageId } }).catch(() => undefined);
+      }
+      throw error;
+    }
+  }
+
   let sentAt = input.sentAt ? new Date(input.sentAt) : new Date();
   let metaMessageId = input.metaMessageId;
   let mediaId = input.mediaId;

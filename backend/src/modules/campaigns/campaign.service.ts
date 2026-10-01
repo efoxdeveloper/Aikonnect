@@ -3,7 +3,7 @@ import { prisma } from "../../database/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { contactWhereForSegment } from "../contacts/contact.service.js";
 import type { SegmentCondition } from "../contacts/contact.schemas.js";
-import type { CampaignListQuery, CreateCampaignInput } from "./campaign.schemas.js";
+import { campaignTemplateMediaSchema, type CampaignListQuery, type CreateCampaignInput } from "./campaign.schemas.js";
 
 const campaignSelect = {
   id: true, workspaceId: true, name: true, channelKey: true, kind: true, category: true,
@@ -108,6 +108,10 @@ function templateVariableCount(body: string) {
   return Math.max(0, ...[...body.matchAll(/\{\{\s*(\d+)\s*\}\}/g)].map((match) => Number(match[1])));
 }
 
+function campaignTemplateMedia(value: unknown) {
+  return campaignTemplateMediaSchema.safeParse(value).success ? campaignTemplateMediaSchema.parse(value) : null;
+}
+
 export async function listCampaigns(workspaceId: string, query: CampaignListQuery) {
   const where = whereFor(workspaceId, query);
   const [total, items] = await prisma.$transaction([
@@ -131,13 +135,24 @@ export async function createCampaign(workspaceId: string, actorUserId: string, i
     let templateBody: string | null = null;
     let buttonTracking: Prisma.InputJsonValue = [];
     if (input.templateKey) {
-      const template = await transaction.template.findFirst({ where: { workspaceId, templateKey: input.templateKey, deletedAt: null }, select: { name: true, metaTemplateName: true, metaLanguageCode: true, language: true, body: true, content: true, status: true } });
+      const template = await transaction.template.findFirst({ where: { workspaceId, templateKey: input.templateKey, deletedAt: null }, select: { name: true, metaTemplateName: true, metaLanguageCode: true, language: true, templateType: true, headerType: true, body: true, content: true, status: true } });
       if (!template) throw new AppError(404, "The selected template was not found", "CAMPAIGN_TEMPLATE_NOT_FOUND");
       if (input.launchMode !== "draft" && template.status !== "APPROVED") throw new AppError(422, "Only approved templates can be sent", "CAMPAIGN_TEMPLATE_NOT_APPROVED");
       templateName = template.name;
       remoteTemplateName = template.metaTemplateName ?? metaTemplateName(template.name);
       templateLanguageCode = template.metaLanguageCode ?? languageCode(template.language);
       templateBody = template.body;
+      const media = campaignTemplateMedia(input.audienceConfig.templateMedia);
+      if (input.launchMode !== "draft" && template.headerType && ["image", "video", "doc"].includes(template.headerType) && (!media || media.kind !== "single" || !media.items.length)) {
+        throw new AppError(422, "Upload the campaign media required by this template before sending", "CAMPAIGN_TEMPLATE_MEDIA_REQUIRED", { headerType: template.headerType });
+      }
+      if (input.launchMode !== "draft" && media && media.kind === "single" && template.headerType && ["image", "video", "doc"].includes(template.headerType)) {
+        const expectedType = template.headerType === "doc" ? "document" : template.headerType;
+        if (media.items.some((item) => item.type !== expectedType)) throw new AppError(422, `This template requires ${expectedType} campaign media`, "CAMPAIGN_TEMPLATE_MEDIA_TYPE_INVALID", { expectedType });
+      }
+      if (input.launchMode !== "draft" && template.templateType === "carousel" && (!media || media.kind !== "carousel" || !media.items.length)) {
+        throw new AppError(422, "Upload at least one media item for every carousel campaign", "CAMPAIGN_CAROUSEL_MEDIA_REQUIRED");
+      }
       const variableCount = templateVariableCount(template.body);
       if (input.launchMode !== "draft" && input.templateVariables.length !== variableCount) throw new AppError(422, "Map every WhatsApp template variable before sending", "CAMPAIGN_TEMPLATE_VARIABLES_REQUIRED", { variableCount, mappedCount: input.templateVariables.length });
       if (template.content && typeof template.content === "object" && !Array.isArray(template.content) && "buttons" in template.content) {

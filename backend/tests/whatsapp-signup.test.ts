@@ -101,7 +101,9 @@ function fixture(t: TestContext, options: {
       if (fields.some((field) => !supportedFields.includes(field)) || options.phoneFails) {
         return json({ error: { message: "(#100) Tried accessing nonexisting field (messaging_limit)", code: 100 } }, 400);
       }
-      const expectedFields = supportedFields;
+      const expectedFields = fields.includes("is_on_biz_app")
+        ? supportedFields
+        : ["id", "display_phone_number", "verified_name", "quality_rating"];
       assert.deepEqual(fields, expectedFields);
       return json(url.pathname.endsWith("/phone_numbers") ? { data: options.list ?? [options.phone ?? phone] } : options.phone ?? phone);
     }
@@ -161,15 +163,16 @@ for (const omitPhoneId of [false, true]) {
   });
 }
 
-test("fresh-number signup registers the selected ID without a blocking phone lookup", async (t) => {
+test("fresh-number signup stores Meta's customer-facing phone number after registration", async (t) => {
   const state = fixture(t);
   const result = await completeEmbeddedSignup("workspace-id", { ...signup, mode: "new-number", pin: "123456" });
   assert.equal(result.coexistence, false);
   assert.deepEqual(result.syncWarnings, []);
   assert.deepEqual(result.syncRequestIds, []);
-  assert.deepEqual(state.steps, ["exchange", "register", "persist", "subscribe-start", "subscribed"]);
+  assert.deepEqual(state.steps, ["exchange", "register", "phone", "persist", "subscribe-start", "subscribed"]);
   assert.equal(state.accountWrites[0]?.create.workspaceId, "workspace-id");
   assert.equal(state.phoneWrites[0]?.create.isOnBusinessApp, false);
+  assert.equal(state.phoneWrites[0]?.create.displayPhoneNumber, phone.display_phone_number);
 });
 
 test("WABA subscription applies the configured webhook callback override", async (t) => {
@@ -303,6 +306,40 @@ test("loads and saves live Meta WABA verification fields when refreshed", async 
   assert.equal(savedData?.metaAccountReviewStatus, "APPROVED");
   assert.equal(savedData?.metaBusinessVerificationStatus, "VERIFIED");
   assert.ok(savedData?.metaStatusCheckedAt instanceof Date);
+});
+
+test("refreshes a saved phone ID into Meta's customer-facing number", async (t) => {
+  const wabaId = "status-waba";
+  const encryptedAccessToken = encryptSecret("test-business-token", env.META_TOKEN_ENCRYPTION_KEY);
+  let phoneSavedData: Record<string, unknown> | undefined;
+  stubDelegate(t, prisma.whatsAppBusinessAccount, "findFirst", async () => ({
+    id: "account-id",
+    metaWabaId: wabaId,
+    encryptedAccessToken,
+    phoneNumbers: [{ id: "phone-record-id", metaPhoneNumberId: "test-phone" }],
+  }));
+  stubDelegate(t, prisma.whatsAppBusinessAccount, "update", async () => ({}));
+  stubDelegate(t, prisma.whatsAppPhoneNumber, "update", async (args: Record<string, any>) => {
+    phoneSavedData = args.data;
+    return {};
+  });
+  t.mock.method(globalThis, "fetch", async (input: string | URL) => {
+    const url = new URL(String(input));
+    if (url.pathname === "/v25.0/status-waba") {
+      return json({ id: wabaId, name: "Test Business", status: "ACTIVE" });
+    }
+    if (url.pathname === "/v25.0/status-waba/phone_numbers") {
+      return json({ data: [phone] });
+    }
+    assert.fail(`Unexpected request: ${url.pathname}`);
+  });
+
+  await refreshWhatsAppStatus("workspace-id");
+
+  assert.equal(phoneSavedData?.displayPhoneNumber, phone.display_phone_number);
+  assert.equal(phoneSavedData?.verifiedName, phone.verified_name);
+  assert.equal(phoneSavedData?.qualityRating, phone.quality_rating);
+  assert.ok(phoneSavedData?.lastSyncedAt instanceof Date);
 });
 
 for (const subscriptionOptions of [{ subscriptionFails: true }, { subscription: { success: false } }, { subscription: {} }]) {

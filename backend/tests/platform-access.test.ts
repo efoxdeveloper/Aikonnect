@@ -11,7 +11,7 @@ Object.assign(process.env, {
 });
 
 const { prisma } = await import("../src/database/prisma.js");
-const { getOverview, listUsers, performUserAction } = await import("../src/modules/admin/admin.service.js");
+const { getOverview, getUserWalletTarget, listUsers, performUserAction } = await import("../src/modules/admin/admin.service.js");
 const { requirePlatformRole } = await import("../src/middleware/platform-access.js");
 const { AppError } = await import("../src/middleware/error-handler.js");
 
@@ -116,4 +116,18 @@ test("admin user actions protect platform admins, self-actions, and unconfirmed 
   await assert.rejects(() => performUserAction("admin-1", "admin-1", "ADMIN", "SUSPEND"), (error: unknown) => error instanceof AppError && error.code === "SELF_ACTION_DENIED");
   await assert.rejects(() => performUserAction("customer-1", "admin-1", "ADMIN", "DELETE"), (error: unknown) => error instanceof AppError && error.code === "DELETE_CONFIRMATION_REQUIRED");
   await assert.rejects(() => performUserAction("customer-1", "support-1", "SUPPORT", "SUSPEND"), (error: unknown) => error instanceof AppError && error.code === "PLATFORM_USER_ACTION_DENIED");
+});
+
+test("user funding resolves the user's owned account and rejects users without one", async (t) => {
+  stubDelegate(t, prisma.user, "findUnique", async (args) => args.where.id === "customer-1"
+    ? { id: "customer-1", email: "customer@example.com", platformRole: "NONE", ownedTenants: [{ id: "tenant-1" }] }
+    : { id: "customer-2", email: "no-account@example.com", platformRole: "NONE", ownedTenants: [] });
+
+  assert.deepEqual(await getUserWalletTarget("customer-1"), { userId: "customer-1", email: "customer@example.com", tenantId: "tenant-1" });
+  await assert.rejects(() => getUserWalletTarget("customer-2"), (error: unknown) => error instanceof AppError && error.code === "USER_ACCOUNT_NOT_FOUND");
+});
+
+test("user funding cannot target a platform administrator account", async (t) => {
+  stubDelegate(t, prisma.user, "findUnique", async () => ({ id: "platform-1", email: "platform@example.com", platformRole: "ADMIN", ownedTenants: [{ id: "tenant-1" }] }));
+  await assert.rejects(() => getUserWalletTarget("platform-1"), (error: unknown) => error instanceof AppError && error.code === "PLATFORM_ADMIN_FUNDING_DENIED");
 });

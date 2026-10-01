@@ -10,6 +10,15 @@ const templateVariable = z.object({
   field: z.string().trim().max(160).default(""),
   fallback: z.string().max(500).default(""),
 });
+const campaignMediaItem = z.object({
+  mediaId: z.string().trim().min(1).max(512),
+  type: z.enum(["image", "video", "document"]).default("image"),
+  fileName: z.string().trim().max(255).optional(),
+});
+export const campaignTemplateMediaSchema = z.object({
+  kind: z.enum(["single", "carousel"]),
+  items: z.array(campaignMediaItem).min(1).max(10),
+});
 
 export const campaignWorkspaceParamsSchema = z.object({ workspaceId: z.uuid() });
 export const campaignIdParamsSchema = campaignWorkspaceParamsSchema.extend({ campaignId: z.uuid() });
@@ -36,6 +45,10 @@ export const createCampaignSchema = z.object({
   if (value.audienceType === "contacts" && !value.contactIds.length) context.addIssue({ code: "custom", path: ["contactIds"], message: "Select at least one contact" });
   if ((value.audienceType === "manual" || value.audienceType === "csv") && !value.phoneNumbers.length) context.addIssue({ code: "custom", path: ["phoneNumbers"], message: "Add at least one phone number" });
   if (value.audienceType === "segment" && !value.segmentId) context.addIssue({ code: "custom", path: ["segmentId"], message: "Choose a saved segment" });
+  if (value.audienceConfig.templateMedia !== undefined) {
+    const media = campaignTemplateMediaSchema.safeParse(value.audienceConfig.templateMedia);
+    if (!media.success) context.addIssue({ code: "custom", path: ["audienceConfig", "templateMedia"], message: "Campaign media must contain at least one uploaded media item" });
+  }
   if (value.launchMode !== "draft") value.templateVariables.forEach((variable, index) => {
     if ((variable.source === "contact" || variable.source === "custom") && !variable.field) context.addIssue({ code: "custom", path: ["templateVariables", index, "field"], message: "Choose a field for this variable" });
     if (variable.source === "constant" && !variable.field && !variable.fallback) context.addIssue({ code: "custom", path: ["templateVariables", index], message: "Enter a constant value" });

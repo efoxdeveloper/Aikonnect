@@ -18,6 +18,13 @@ export const adminUserActionSchema = z.object({
 
 export const adminUserParamsSchema = z.object({ userId: z.string().uuid() });
 
+export const adminUserWalletAdjustmentSchema = z.object({
+  amountMinorUnits: z.string().regex(/^[1-9]\d*$/, "Enter a positive amount in the currency's minor units").transform((value) => BigInt(value)),
+  idempotencyKey: z.string().trim().min(8).max(255),
+  reason: z.string().trim().min(1).max(80),
+  description: z.string().trim().max(500).optional(),
+});
+
 export const adminWalletAdjustmentSchema = z.object({
   tenantId: z.uuid(),
   direction: z.enum(["CREDIT", "DEBIT"]),
@@ -31,3 +38,4 @@ export type AdminListQuery = z.infer<typeof adminListQuerySchema>;
 export type AdminAuditQuery = z.infer<typeof adminAuditQuerySchema>;
 export type AdminUserAction = z.infer<typeof adminUserActionSchema>["action"];
 export type AdminWalletAdjustment = z.infer<typeof adminWalletAdjustmentSchema>;
+export type AdminUserWalletAdjustment = z.infer<typeof adminUserWalletAdjustmentSchema>;

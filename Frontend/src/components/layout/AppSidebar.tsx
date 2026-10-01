@@ -68,11 +68,12 @@ export function AppSidebar({ platformOnly = false }: { platformOnly?: boolean })
     sx={{
       width,
       flexShrink: 0,
+      zIndex: 10,
       "& .MuiDrawer-paper": {
         width,
         boxSizing: "border-box",
-        top: "var(--header-height)",
-        height: "calc(100% - var(--header-height))",
+        top: "calc(var(--header-height) + var(--notification-strip-height, 0px))",
+        height: "calc(100% - var(--header-height) - var(--notification-strip-height, 0px))",
         overflow: "hidden",
         borderRight: "none",
         backgroundImage: sidebarBackground,

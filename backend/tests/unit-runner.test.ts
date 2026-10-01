@@ -1,0 +1,35 @@
+process.env.DATABASE_URL = "postgresql://test:test@127.0.0.1:1/test";
+
+const unitTests = [
+  "./admin-schemas.test.ts",
+  "./automation.executor.test.ts",
+  "./automation.schemas.test.ts",
+  "./campaign.schemas.test.ts",
+  "./crypto.test.ts",
+  "./developer-api.test.ts",
+  "./email-branding.test.ts",
+  "./google-oauth.test.ts",
+  "./inbox-realtime.test.ts",
+  "./logger.test.ts",
+  "./meta-template-payload.test.ts",
+  "./network.test.ts",
+  "./platform-access.test.ts",
+  "./rate-limit.test.ts",
+  "./slug.test.ts",
+  "./template-deletion.worker.test.ts",
+  "./templates-meta.test.ts",
+  "./turnstile.test.ts",
+  "./usage-wallet.test.ts",
+  "./wallet.access.test.ts",
+  "./wallet.billing.test.ts",
+  "./wallet.service.test.ts",
+  "./whatsapp-pricing.test.ts",
+  "./whatsapp-signup.test.ts",
+  "./whatsapp-test-message.test.ts",
+  "./whatsapp-webhook.unit.test.ts",
+  "./workflow.executor.test.ts",
+  "./workflow.schemas.test.ts",
+  "./workspace-setup.test.ts",
+] as const;
+
+for (const testFile of unitTests) await import(testFile);

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { PlatformAdminSection } from "@/pages/PlatformAdminSection";
@@ -102,5 +102,27 @@ describe("platform admin sections", () => {
     await waitFor(() => expect(apiRequest).toHaveBeenCalledWith("/admin/billing/wallet-adjustments", expect.objectContaining({ method: "POST", body: expect.stringContaining('"tenantId":"00000000-0000-4000-8000-000000000001"') })));
     expect(vi.mocked(apiRequest).mock.calls.some(([, options]) => String(options?.body).includes('"amountMinorUnits":"12550"'))).toBe(true);
     expect(await screen.findByRole("status")).toHaveTextContent("Credited INR 125.50");
+  });
+
+  it("allows an administrator to add funds from a user row", async () => {
+    vi.mocked(apiRequest).mockReset().mockResolvedValueOnce({
+      items: [{ id: "user-1", email: "owner@example.com", firstName: "Lotus", lastName: "Owner", phone: null, status: "ACTIVE", platformRole: "NONE", signupSource: "Manual signup", emailVerifiedAt: null, lastLoginAt: null, createdAt: "2026-09-18T00:00:00.000Z", account: { tenantId: "tenant-1", currency: "INR", totalBalance: "100.000000", availableBalance: "100.000000" }, memberships: [], _count: { memberships: 0, sessions: 1 } }],
+      pagination: { page: 1, pageSize: 25, total: 1, totalPages: 1, hasNext: false, hasPrevious: false },
+      summary: { total: 1, active: 1, verified: 0, googleSignups: 0 },
+    }).mockResolvedValueOnce({}).mockResolvedValueOnce({
+      items: [],
+      pagination: { page: 1, pageSize: 25, total: 0, totalPages: 1, hasNext: false, hasPrevious: false },
+      summary: { total: 0, active: 0, verified: 0, googleSignups: 0 },
+    });
+    const auth = { status: "authenticated", accessToken: "token", user: { id: "admin-1", email: "admin@example.com", firstName: "Platform", lastName: "Admin", emailVerifiedAt: "2026-09-18T00:00:00.000Z", platformRole: "ADMIN", memberships: [] }, login: vi.fn(), register: vi.fn(), verifyEmail: vi.fn(), resendVerification: vi.fn(), changeEmail: vi.fn(), refreshUser: vi.fn(), logout: vi.fn() } as unknown as AuthContextValue;
+
+    render(<AuthContext.Provider value={auth}><MemoryRouter initialEntries={["/admin/users"]}><PlatformAdminSection /></MemoryRouter></AuthContext.Provider>);
+    expect(await screen.findByText("INR 100.000000")).toBeInTheDocument();
+    fireEvent.click(within(screen.getByRole("row", { name: /Lotus Owner/ })).getByRole("button"));
+    fireEvent.click(await screen.findByText("Add funds"));
+    fireEvent.change(screen.getByLabelText("Amount"), { target: { value: "50.25" } });
+    fireEvent.click(screen.getByRole("button", { name: "Add funds" }));
+
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith("/admin/users/user-1/wallet-adjustments", expect.objectContaining({ method: "POST", body: expect.stringContaining('"amountMinorUnits":"5025"') })));
   });
 });

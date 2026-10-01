@@ -44,9 +44,18 @@ export async function listUsers(query: AdminListQuery, baseWhere: PrismaTypes.Us
     prisma.user.count({ where: { AND: [where, { status: "ACTIVE" }] } }),
     prisma.user.count({ where: { AND: [where, { emailVerifiedAt: { not: null } }] } }),
     prisma.user.count({ where: { AND: [where, { oauthAccounts: { some: { provider: "google" } } }] } }),
-    prisma.user.findMany({ where, orderBy: { createdAt: "desc" }, skip: (query.page - 1) * query.pageSize, take: query.pageSize, select: { id: true, email: true, firstName: true, lastName: true, phone: true, status: true, platformRole: true, emailVerifiedAt: true, lastLoginAt: true, createdAt: true, oauthAccounts: { select: { provider: true }, orderBy: { createdAt: "asc" }, take: 1 }, memberships: { select: { status: true, workspace: { select: { id: true, name: true } }, role: { select: { name: true, slug: true } } } }, _count: { select: { memberships: true, sessions: true } } } }),
+    prisma.user.findMany({ where, orderBy: { createdAt: "desc" }, skip: (query.page - 1) * query.pageSize, take: query.pageSize, select: { id: true, email: true, firstName: true, lastName: true, phone: true, status: true, platformRole: true, emailVerifiedAt: true, lastLoginAt: true, createdAt: true, oauthAccounts: { select: { provider: true }, orderBy: { createdAt: "asc" }, take: 1 }, ownedTenants: { orderBy: { createdAt: "asc" }, take: 1, select: { id: true, wallet: { select: { currency: true, totalBalance: true, reservedBalance: true } } } }, memberships: { select: { status: true, workspace: { select: { id: true, name: true } }, role: { select: { name: true, slug: true } } } }, _count: { select: { memberships: true, sessions: true } } } }),
   ]);
-  return { items: items.map(({ oauthAccounts, ...user }) => ({ ...user, signupSource: oauthAccounts[0]?.provider === "google" ? "Google signup" : "Manual signup", emailVerifiedAt: user.emailVerifiedAt?.toISOString() ?? null, lastLoginAt: user.lastLoginAt?.toISOString() ?? null, createdAt: user.createdAt.toISOString() })), pagination: pagination(total, query), summary: { total, active, verified, googleSignups } };
+  return { items: items.map(({ oauthAccounts, ownedTenants, ...user }) => { const wallet = ownedTenants?.[0]?.wallet; const totalBalance = wallet?.totalBalance?.toFixed(6) ?? "0.000000"; const reservedBalance = wallet?.reservedBalance?.toFixed(6) ?? "0.000000"; return { ...user, signupSource: oauthAccounts[0]?.provider === "google" ? "Google signup" : "Manual signup", emailVerifiedAt: user.emailVerifiedAt?.toISOString() ?? null, lastLoginAt: user.lastLoginAt?.toISOString() ?? null, createdAt: user.createdAt.toISOString(), account: ownedTenants?.[0] ? { tenantId: ownedTenants[0].id, currency: wallet?.currency ?? env.WALLET_CURRENCY, totalBalance, availableBalance: new Prisma.Decimal(totalBalance).sub(new Prisma.Decimal(reservedBalance)).toFixed(6) } : null }; }), pagination: pagination(total, query), summary: { total, active, verified, googleSignups } };
+}
+
+export async function getUserWalletTarget(userId: string) {
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, email: true, platformRole: true, ownedTenants: { orderBy: { createdAt: "asc" }, take: 1, select: { id: true } } } });
+  if (!user) throw new AppError(404, "The user was not found", "USER_NOT_FOUND");
+  if (user.platformRole !== "NONE") throw new AppError(403, "Platform administrator accounts cannot receive customer funds", "PLATFORM_ADMIN_FUNDING_DENIED");
+  const tenant = user.ownedTenants[0];
+  if (!tenant) throw new AppError(409, "This user does not have a customer account yet", "USER_ACCOUNT_NOT_FOUND");
+  return { userId: user.id, email: user.email, tenantId: tenant.id };
 }
 
 export async function listPlatformAdmins(query: AdminListQuery) {

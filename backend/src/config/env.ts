@@ -13,7 +13,8 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().positive().max(65535).default(5006),
   API_PREFIX: z.string().startsWith("/").default("/api/v1"),
   CORS_ORIGIN: z.string().default("http://localhost:5173"),
-  LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
+  // Keep local backend processes quiet unless logging is explicitly enabled.
+  LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("silent"),
   TRUST_PROXY: booleanFromString,
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(defaultRateLimitConfig.windowMs),
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(defaultRateLimitConfig.limit),

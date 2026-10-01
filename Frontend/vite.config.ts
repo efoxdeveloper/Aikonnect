@@ -20,12 +20,15 @@ export default defineConfig({
     "import.meta.env.VITE_APP_VERSION": JSON.stringify(packageJson.version),
     "import.meta.env.VITE_APP_BUILD": JSON.stringify(buildCommit()),
   },
+  logLevel: "silent",
   resolve: { alias: { "@": path.resolve(__dirname, "./src") } },
   server: {
     port: 5173,
     proxy: {
       "/api": {
-        target: "http://localhost:5006",
+        // Keep the dev proxy on IPv4; Node may resolve localhost to ::1 while
+        // the backend listens on 0.0.0.0, which causes intermittent ECONNREFUSED.
+        target: "http://127.0.0.1:5006",
         changeOrigin: true,
         ws: true,
       },

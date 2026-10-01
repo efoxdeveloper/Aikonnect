@@ -22,6 +22,7 @@ import {
   Search,
   Send,
   Tag,
+  Upload,
   UserRound,
   Users,
 } from "lucide-react";
@@ -85,7 +86,12 @@ type CampaignTemplate = {
   category: string;
   language: string;
   body: string;
+  templateType?: "standard" | "carousel" | "limited" | "multi-product" | string;
+  headerType?: "none" | "text" | "image" | "video" | "doc" | "location" | string;
+  content?: { carouselCards?: unknown[] } | null;
 };
+type CampaignMediaItem = { mediaId: string; type: "image" | "video" | "document"; fileName?: string };
+type CampaignTemplateMedia = { kind: "single" | "carousel"; items: CampaignMediaItem[] };
 type CampaignTemplateListResponse = {
   items: CampaignTemplate[];
 };
@@ -350,6 +356,8 @@ function CreateCampaignDrawer({
     useState<Exclude<LaunchMode, "draft">>("send");
   const [scheduledAt, setScheduledAt] = useState("");
   const [retryFailed, setRetryFailed] = useState(false);
+  const [templateMedia, setTemplateMedia] = useState<CampaignTemplateMedia | null>(null);
+  const [mediaUploading, setMediaUploading] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -367,6 +375,8 @@ function CreateCampaignDrawer({
     setLaunchMode("send");
     setScheduledAt("");
     setRetryFailed(false);
+    setTemplateMedia(null);
+    setMediaUploading(null);
     setError(null);
   }, [kind, open, selectedContactCount]);
 
@@ -437,6 +447,14 @@ function CreateCampaignDrawer({
   );
   const selectedTemplate = templates.find((item) => item.key === template);
   const requiredVariableCount = templateVariableCount(selectedTemplate?.body);
+  const carouselTemplate = selectedTemplate?.templateType === "carousel";
+  const mediaHeaderType = selectedTemplate?.headerType === "image" || selectedTemplate?.headerType === "video" || selectedTemplate?.headerType === "doc"
+    ? selectedTemplate.headerType
+    : null;
+  const mediaRequired = Boolean(mediaHeaderType || carouselTemplate);
+  const mediaSlotCount = carouselTemplate
+    ? Math.max(1, Math.min(10, selectedTemplate?.content?.carouselCards?.length ?? 1))
+    : mediaRequired ? 1 : 0;
 
   useEffect(() => {
     if (!template) {
@@ -446,6 +464,41 @@ function CreateCampaignDrawer({
     const count = templateVariableCount(templates.find((item) => item.key === template)?.body);
     setVariables((current) => Array.from({ length: count }, (_, index) => current[index] ?? { source: "", field: "", fallback: "" }));
   }, [template, templates]);
+
+  useEffect(() => {
+    setTemplateMedia(null);
+    setMediaUploading(null);
+  }, [template]);
+
+  const handleCampaignMediaChange = async (file: File | undefined, index: number) => {
+    if (!file || !workspaceId || !accessToken) return;
+    setError(null);
+    setMediaUploading(index);
+    try {
+      const uploaded = await apiRequest<{ mediaId?: string; type?: CampaignMediaItem["type"]; fileName?: string }>(`/workspaces/${workspaceId}/campaigns/media`, {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+          "content-type": "application/octet-stream",
+          "x-file-type": file.type,
+          "x-file-name": file.name,
+        },
+        body: await file.arrayBuffer(),
+      });
+      if (!uploaded?.mediaId) throw new Error("Meta did not return a media ID for the selected campaign media.");
+      const item: CampaignMediaItem = { mediaId: uploaded.mediaId, type: uploaded.type ?? (file.type.startsWith("video/") ? "video" : file.type.startsWith("application/") ? "document" : "image"), fileName: uploaded.fileName ?? file.name };
+      setTemplateMedia((current) => {
+        const kind = carouselTemplate ? "carousel" : "single";
+        const items = [...(current?.items ?? [])];
+        items[index] = item;
+        return { kind, items: items.filter(Boolean) };
+      });
+    } catch (caughtError) {
+      setError(caughtError instanceof ApiError ? caughtError.message : "Campaign media could not be uploaded.");
+    } finally {
+      setMediaUploading(null);
+    }
+  };
 
   const submit = async (action: "draft" | "live") => {
     if (!name.trim()) {
@@ -458,6 +511,10 @@ function CreateCampaignDrawer({
     }
     if (action === "live" && !template) {
       setError("Choose an approved WhatsApp template.");
+      return;
+    }
+    if (action === "live" && mediaRequired && (!templateMedia || templateMedia.items.length < mediaSlotCount)) {
+      setError(carouselTemplate ? "Upload one media item for every carousel card." : "Upload the image or media required by this template.");
       return;
     }
     if (action === "live" && launchMode === "schedule" && !scheduledAt) {
@@ -508,7 +565,10 @@ function CreateCampaignDrawer({
       retryFailed,
       segmentId: audience === "segment" ? segmentId : undefined,
       templateVariables: variables.filter((variable) => variable.source && (variable.field.trim() || variable.fallback.trim())).map((variable) => ({ source: variable.source as "contact" | "custom" | "constant", field: variable.field.trim(), fallback: variable.fallback.trim() })),
-      audienceConfig: audience === "csv" ? { csvFileName } : {},
+      audienceConfig: {
+        ...(audience === "csv" ? { csvFileName } : {}),
+        ...(templateMedia ? { templateMedia } : {}),
+      },
     });
   };
 
@@ -631,6 +691,36 @@ function CreateCampaignDrawer({
                 </span>
               )}
             </div>
+            {mediaRequired && (
+              <div className="border-t border-[var(--border-soft)] pt-5">
+                <h3 className="mb-1 text-sm font-medium">Campaign media</h3>
+                <p className="mb-3 text-xs leading-5 text-[var(--text-secondary)]">
+                  {carouselTemplate
+                    ? "Upload the sendable media for each carousel card. The template approval image is not reused for delivery."
+                    : "Upload the media that will be sent in this template header. This is separate from the template approval sample."}
+                </p>
+                <div className="space-y-2">
+                  {Array.from({ length: mediaSlotCount }, (_, index) => {
+                    const item = templateMedia?.items[index];
+                    const label = carouselTemplate ? `Carousel card ${index + 1}` : "Header media";
+                    const accept = mediaHeaderType === "video" ? "video/mp4,video/3gpp" : mediaHeaderType === "doc" ? ".pdf,.doc,.docx,application/pdf" : "image/jpeg,image/png";
+                    return (
+                      <div key={index} className="flex items-center gap-3 rounded-md border border-dashed border-[var(--border)] bg-[#fbfcfc] px-3 py-3">
+                        <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><Upload size={15} /></span>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xs font-medium text-[var(--text-primary)]">{label}</div>
+                          <div className="mt-0.5 truncate text-[11px] text-[var(--text-secondary)]">{item?.fileName ?? "No media uploaded"}</div>
+                        </div>
+                        <label htmlFor={`campaign-media-${index}`} className="flex h-8 shrink-0 cursor-pointer items-center rounded-md bg-[var(--brand)] px-3 text-[11px] font-medium text-white hover:bg-[var(--brand-hover)] disabled:opacity-50">
+                          {mediaUploading === index ? "Uploading…" : item ? "Replace" : "Choose file"}
+                          <input id={`campaign-media-${index}`} type="file" accept={accept} disabled={mediaUploading !== null} onChange={(event) => void handleCampaignMediaChange(event.target.files?.[0], index)} className="sr-only" />
+                        </label>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
             <div className="border-t border-[var(--border-soft)] pt-5">
               <h3 className="mb-3 text-sm font-medium">
                 Map Template Variables

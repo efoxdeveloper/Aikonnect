@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { test, type TestContext } from "node:test";
+import { Prisma } from "../src/generated/prisma/client.js";
 
 Object.assign(process.env, {
   NODE_ENV: "test", APP_URL: "http://localhost:5173",
@@ -9,7 +10,7 @@ Object.assign(process.env, {
   META_TOKEN_ENCRYPTION_KEY: "test-token-encryption-key-for-tests-32chars",
   META_GRAPH_API_VERSION: "v25.0", LOG_LEVEL: "silent",
 });
-const { sendTestMessage, sendWhatsAppTemplateMessage, disconnectWhatsApp, downloadWhatsAppMedia } = await import("../src/modules/whatsapp/whatsapp.service.js");
+const { sendTestMessage, sendWhatsAppTemplateMessage, buildWhatsAppTemplateComponents, disconnectWhatsApp, downloadWhatsAppMedia } = await import("../src/modules/whatsapp/whatsapp.service.js");
 const { createMessage } = await import("../src/modules/conversations/conversation.service.js");
 const { createMessageSchema } = await import("../src/modules/conversations/conversation.schemas.js");
 const { prisma } = await import("../src/database/prisma.js");
@@ -18,6 +19,42 @@ const { testMessageSchema } = await import("../src/modules/whatsapp/whatsapp.sch
 
 function stub(t: TestContext, target: any, method: string, implementation: (...args: any[]) => any) {
   const original = target[method]; target[method] = implementation; t.after(() => { target[method] = original; });
+}
+
+function stubConversationBilling(t: TestContext, total = "100.000000") {
+  const wallet: any = {
+    id: "wallet-1", tenantId: "tenant-1", currency: "INR", totalBalance: new Prisma.Decimal(total), reservedBalance: new Prisma.Decimal("0"),
+    balanceMinorUnits: BigInt(Math.round(Number(total) * 100)), status: "ACTIVE", lowBalanceThreshold: new Prisma.Decimal("0"), autoRechargeEnabled: false,
+    createdAt: new Date(), updatedAt: new Date(),
+  };
+  const message: any = { id: "message", billingStatus: "ESTIMATED" };
+  const reservations: any[] = [];
+  let ledgerSequence = 0;
+  const rateCard = {
+    id: "rate-card-1", countryCode: "IN", countryName: "India", currency: "INR", category: "UTILITY", pricingType: "REGULAR", status: "ACTIVE",
+    metaRate: new Prisma.Decimal("0.100000"), platformFee: new Prisma.Decimal("0.050000"), customerRate: new Prisma.Decimal("0.150000"),
+    volumeTierFrom: null, volumeTierTo: null, effectiveFrom: new Date("2026-01-01T00:00:00.000Z"), effectiveTo: null, source: "MANUAL", notes: null,
+    createdById: null, updatedById: null, createdAt: new Date(), updatedAt: new Date(),
+  };
+  stub(t, prisma.contact, "findFirst", async () => ({ phoneE164: "+919876543210" }));
+  stub(t, prisma.whatsAppRateCard, "findMany", async () => [rateCard]);
+  stub(t, prisma.workspaceBillingSettings, "upsert", async () => ({ id: "billing-1", workspaceId: "workspace", billingMode: "CUSTOMER_META_BILLING", billingType: "PREPAID", currency: "INR", walletRequired: true, allowNegativeBalance: false, creditLimit: new Prisma.Decimal("0"), status: "ACTIVE", createdAt: new Date(), updatedAt: new Date() }));
+  stub(t, prisma.workspace, "findUnique", async () => ({ tenantId: "tenant-1" }));
+  stub(t, prisma.wallet, "upsert", async () => wallet);
+  stub(t, prisma.wallet, "findUnique", async () => wallet);
+  stub(t, prisma.wallet, "findUniqueOrThrow", async () => wallet);
+  stub(t, prisma.wallet, "update", async ({ data }: any) => { if (data.totalBalance !== undefined) wallet.totalBalance = data.totalBalance; if (data.reservedBalance !== undefined) wallet.reservedBalance = data.reservedBalance; if (data.balanceMinorUnits !== undefined) wallet.balanceMinorUnits = data.balanceMinorUnits; wallet.updatedAt = new Date(); return wallet; });
+  stub(t, prisma.walletReservation, "findUnique", async ({ where }: any) => where.messageId ? reservations.find((item) => item.messageId === where.messageId) ?? null : reservations.find((item) => item.idempotencyKey === where.idempotencyKey) ?? null);
+  stub(t, prisma.walletReservation, "findUniqueOrThrow", async ({ where }: any) => reservations.find((item) => item.id === where.id));
+  stub(t, prisma.walletReservation, "create", async ({ data }: any) => { const reservation = { id: `reservation-${reservations.length + 1}`, ...data }; reservations.push(reservation); return reservation; });
+  stub(t, prisma.walletReservation, "update", async ({ where, data }: any) => { const reservation = reservations.find((item) => item.id === where.id); Object.assign(reservation, data); return reservation; });
+  stub(t, prisma.walletLedgerEntry, "findUnique", async () => null);
+  stub(t, prisma.walletLedgerEntry, "findMany", async () => []);
+  stub(t, prisma.walletLedgerEntry, "create", async ({ data }: any) => ({ id: `ledger-${++ledgerSequence}`, createdAt: new Date(), ...data }));
+  stub(t, prisma.message, "findFirst", async () => ({ id: "message" }));
+  stub(t, prisma.message, "update", async ({ data }: any) => { Object.assign(message, data); return { ...message, ...data }; });
+  stub(t, prisma.message, "delete", async () => message);
+  stub(t, prisma, "$queryRaw", async () => []);
 }
 
 test("test message sends through the saved active phone and records setup progress", async (t) => {
@@ -69,6 +106,7 @@ test("disconnect removes workspace credentials and marks numbers inactive", asyn
 });
 
 test("conversation replies are sent through Meta before being saved", async (t) => {
+  stubConversationBilling(t);
   const { encryptSecret } = await import("../src/utils/crypto.js");
   const encryptedAccessToken = encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars");
   const sentAt = new Date("2026-09-08T06:00:00.000Z");
@@ -99,7 +137,26 @@ test("conversation replies are sent through Meta before being saved", async (t) 
   assert.equal(created, 1);
 });
 
+test("conversation replies are blocked before Meta when the wallet has no available balance", async (t) => {
+  stubConversationBilling(t, "0.000000");
+  stub(t, prisma.conversation, "findFirst", async () => ({
+    id: "conversation", workspaceId: "workspace", contactId: "contact", phoneNumberId: "phone", channelKey: "whatsapp",
+    contact: { phoneE164: "+919876543210" }, phoneNumber: null,
+  }));
+  stub(t, prisma.message, "create", async () => ({ id: "message" }));
+  stub(t, prisma, "$transaction", async (callback: (client: any) => Promise<unknown>) => callback(prisma));
+  let metaCalled = false;
+  stub(t, globalThis, "fetch", async () => { metaCalled = true; return new Response("{}", { status: 500 }); });
+
+  await assert.rejects(
+    createMessage("workspace", "contact", "conversation", "user", { direction: "OUTGOING", type: "TEXT", status: "SENT", text: "Hello from Inbox", payload: {} }),
+    (error: unknown) => error instanceof AppError && error.statusCode === 402 && error.code === "INSUFFICIENT_WALLET_BALANCE",
+  );
+  assert.equal(metaCalled, false);
+});
+
 test("conversation replies rebind an unassigned conversation to the newest active workspace phone", async (t) => {
+  stubConversationBilling(t);
   const { encryptSecret } = await import("../src/utils/crypto.js");
   const conversation = {
     id: "conversation", workspaceId: "workspace", contactId: "contact", phoneNumberId: null, channelKey: "whatsapp",
@@ -146,6 +203,7 @@ test("campaign template messages use the approved Meta template payload", async 
 });
 
 test("media replies upload the file and send the returned media ID through Meta", async (t) => {
+  stubConversationBilling(t);
   const { encryptSecret } = await import("../src/utils/crypto.js");
   const conversation = {
     id: "conversation",
@@ -210,7 +268,8 @@ test("media downloads use the stored Meta media ID and preserve the provider con
   assert.deepEqual([...file.body], [1, 2, 3]);
 });
 
-test("a rejected Meta reply is not saved locally", async (t) => {
+test("a rejected Meta reply is saved as failed and its wallet hold is released", async (t) => {
+  stubConversationBilling(t);
   const { encryptSecret } = await import("../src/utils/crypto.js");
   stub(t, prisma.conversation, "findFirst", async () => ({
     id: "conversation", workspaceId: "workspace", contactId: "contact", phoneNumberId: "phone", channelKey: "whatsapp",
@@ -218,21 +277,63 @@ test("a rejected Meta reply is not saved locally", async (t) => {
     phoneNumber: { metaPhoneNumberId: "meta-phone", status: "ACTIVE", businessAccount: { status: "CONNECTED", encryptedAccessToken: encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars") } },
   }));
   let created = 0;
-  stub(t, prisma.message, "create", async () => { created += 1; return {}; });
+  stub(t, prisma.message, "create", async () => { created += 1; return { id: "message" }; });
+  stub(t, prisma, "$transaction", async (callback: (client: any) => Promise<unknown>) => callback(prisma));
   stub(t, globalThis, "fetch", async () => new Response(JSON.stringify({ error: { message: "(#131047) Re-engagement message" } }), { status: 400 }));
   await assert.rejects(
     createMessage("workspace", "contact", "conversation", "user", { direction: "OUTGOING", type: "TEXT", status: "SENT", text: "Hello from Inbox", payload: {} }),
     (error: unknown) => { assert.ok(error instanceof AppError); assert.equal(error.statusCode, 502); assert.match(error.message, /Meta rejected.*sending the WhatsApp message/i); return true; },
   );
-  assert.equal(created, 0);
+  assert.equal(created, 1);
+});
+
+test("campaign image media is sent as a template header parameter", async (t) => {
+  const { encryptSecret } = await import("../src/utils/crypto.js");
+  stub(t, prisma.whatsAppBusinessAccount, "findFirst", async () => ({
+    encryptedAccessToken: encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars"),
+    phoneNumbers: [{ id: "phone", metaPhoneNumberId: "meta-phone" }],
+  }));
+  stub(t, globalThis, "fetch", async (_input: string | URL, init?: RequestInit) => {
+    const body = JSON.parse(String(init?.body));
+    assert.deepEqual(body.template.components, [
+      { type: "header", parameters: [{ type: "image", image: { id: "meta-image-1" } }] },
+      { type: "body", parameters: [{ type: "text", text: "Pawan" }] },
+    ]);
+    return new Response(JSON.stringify({ messages: [{ id: "wamid.campaign-image" }] }), { status: 200 });
+  });
+
+  const result = await sendWhatsAppTemplateMessage("workspace", "+919876543210", "promotional_growth", "en_US", [{ type: "text", text: "Pawan" }], undefined, {
+    kind: "single",
+    items: [{ mediaId: "meta-image-1", type: "image" }],
+  });
+  assert.equal(result.metaMessageId, "wamid.campaign-image");
+});
+
+test("carousel campaign media is mapped to one header per card", () => {
+  assert.deepEqual(buildWhatsAppTemplateComponents([], {
+    kind: "carousel",
+    items: [
+      { mediaId: "meta-image-1", type: "image" },
+      { mediaId: "meta-image-2", type: "image" },
+    ],
+  }), [{
+    type: "carousel",
+    cards: [
+      { card_index: 0, components: [{ type: "header", parameters: [{ type: "image", image: { id: "meta-image-1" } }] }] },
+      { card_index: 1, components: [{ type: "header", parameters: [{ type: "image", image: { id: "meta-image-2" } }] }] },
+    ],
+  }]);
 });
 
 test("a re-engagement rejection explains that an approved template is required", async (t) => {
+  stubConversationBilling(t);
   const { encryptSecret } = await import("../src/utils/crypto.js");
   stub(t, prisma.conversation, "findFirst", async () => ({
     id: "conversation", workspaceId: "workspace", contactId: "contact", phoneNumberId: "phone", channelKey: "whatsapp",
     contact: { phoneE164: "+919876543210" }, phoneNumber: { id: "phone", metaPhoneNumberId: "meta-phone", status: "ACTIVE", businessAccount: { status: "CONNECTED", encryptedAccessToken: encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars") } },
   }));
+  stub(t, prisma.message, "create", async () => ({ id: "message" }));
+  stub(t, prisma, "$transaction", async (callback: (client: any) => Promise<unknown>) => callback(prisma));
   stub(t, globalThis, "fetch", async () => new Response(JSON.stringify({ error: { message: "(#131047) Re-engagement message" } }), { status: 400 }));
   await assert.rejects(
     createMessage("workspace", "contact", "conversation", "user", { direction: "OUTGOING", type: "TEXT", status: "SENT", text: "Hello", payload: {} }),

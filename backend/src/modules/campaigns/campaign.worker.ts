@@ -1,7 +1,7 @@
 import { prisma } from "../../database/prisma.js";
 import { logger } from "../../config/logger.js";
 import { AppError } from "../../middleware/error-handler.js";
-import { sendWhatsAppTemplateMessage, type WhatsAppTemplateParameter } from "../whatsapp/whatsapp.service.js";
+import { sendWhatsAppTemplateMessage, type WhatsAppTemplateMedia, type WhatsAppTemplateParameter } from "../whatsapp/whatsapp.service.js";
 import { refreshCampaignMetrics } from "./campaign.metrics.js";
 import { templateVariableCount } from "./campaign.service.js";
 import { messagePricingSnapshot, resolveMessagePricing } from "../whatsapp-pricing/pricing.service.js";
@@ -34,6 +34,23 @@ function templateParameters(body: string, mappings: CampaignVariable[], contact:
   const count = templateVariableCount(body);
   if (!count) return [];
   return Array.from({ length: count }, (_, index) => ({ type: "text", text: parameterValue(mappings[index] ?? { source: "constant", field: "", fallback: "" }, contact) }));
+}
+
+function templateMedia(value: unknown): WhatsAppTemplateMedia | undefined {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return undefined;
+  const media = (value as Record<string, unknown>).templateMedia;
+  if (!media || typeof media !== "object" || Array.isArray(media)) return undefined;
+  const record = media as Record<string, unknown>;
+  if (record.kind !== "single" && record.kind !== "carousel") return undefined;
+  if (!Array.isArray(record.items)) return undefined;
+  const items = record.items.flatMap((item) => {
+    if (!item || typeof item !== "object" || Array.isArray(item)) return [];
+    const recordItem = item as Record<string, unknown>;
+    if (typeof recordItem.mediaId !== "string" || !recordItem.mediaId.trim()) return [];
+    const type: "image" | "video" | "document" = recordItem.type === "video" || recordItem.type === "document" ? recordItem.type : "image";
+    return [{ mediaId: recordItem.mediaId, type, ...(typeof recordItem.fileName === "string" ? { fileName: recordItem.fileName } : {}) }];
+  });
+  return items.length ? { kind: record.kind, items } : undefined;
 }
 
 function failureMessage(error: unknown) {
@@ -72,7 +89,7 @@ async function markFailed(campaignId: string, recipientId: string, reason: strin
 async function sendRecipient(campaignId: string, recipientId: string) {
   const campaign = await prisma.campaign.findUnique({
     where: { id: campaignId },
-    select: { id: true, workspaceId: true, category: true, templateBody: true, metaTemplateName: true, templateLanguageCode: true, templateVariables: true },
+    select: { id: true, workspaceId: true, category: true, templateBody: true, metaTemplateName: true, templateLanguageCode: true, templateVariables: true, audienceConfig: true },
   });
   const recipient = await prisma.campaignRecipient.findUnique({
     where: { id: recipientId },
@@ -103,7 +120,7 @@ async function sendRecipient(campaignId: string, recipientId: string) {
   try {
     const billing = await reserveMessageBilling({ workspaceId: campaign.workspaceId, messageId: conversation.messageId, pricing, clientReference: `campaign:${campaign.id}:recipient:${recipient.id}`, idempotencyKey: `campaign:${campaign.id}:recipient:${recipient.id}` });
     reservation = billing.reservation;
-    const sent = await sendWhatsAppTemplateMessage(campaign.workspaceId, recipient.phoneE164, campaign.metaTemplateName, campaign.templateLanguageCode, templateParameters(campaign.templateBody, variables(campaign.templateVariables), recipient.contact), `campaign:${campaign.id}:recipient:${recipient.id}`);
+    const sent = await sendWhatsAppTemplateMessage(campaign.workspaceId, recipient.phoneE164, campaign.metaTemplateName, campaign.templateLanguageCode, templateParameters(campaign.templateBody, variables(campaign.templateVariables), recipient.contact), `campaign:${campaign.id}:recipient:${recipient.id}`, templateMedia(campaign.audienceConfig));
     await prisma.$transaction(async (transaction) => {
       await transaction.message.update({ where: { id: conversation.messageId }, data: { metaMessageId: sent.metaMessageId, status: "SENT" } });
       await transaction.campaignRecipient.updateMany({ where: { id: recipient.id, status: "ATTEMPTED" }, data: { status: "SENT", metaMessageId: sent.metaMessageId, sentAt: sent.sentAt, failedAt: null, failureReason: null } });
