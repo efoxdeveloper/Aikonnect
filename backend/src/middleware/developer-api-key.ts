@@ -8,6 +8,18 @@ function suppliedKey(request: Parameters<RequestHandler>[0]) {
   if (header) return header;
   const authorization = request.headers.authorization;
   if (authorization?.startsWith("Bearer ")) return authorization.slice(7).trim();
+  if (authorization?.startsWith("Basic ")) {
+    const value = authorization.slice(6).trim();
+    if (value.startsWith("sk_live_")) return value;
+    try {
+      const decoded = Buffer.from(value, "base64").toString("utf8");
+      if (decoded.startsWith("sk_live_")) return decoded;
+      if (decoded.endsWith(":")) return decoded.slice(0, -1);
+    } catch {
+      // The raw Basic token is validated below and produces the normal API-key error.
+    }
+    return value;
+  }
   return "";
 }
 

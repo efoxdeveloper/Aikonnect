@@ -7,6 +7,7 @@ import { checkDatabaseConnection, closeDatabaseConnection } from "./database/pri
 import { attachInboxRealtime } from "./realtime/inbox.js";
 import { startCampaignWorker } from "./modules/campaigns/campaign.worker.js";
 import { startTemplateDeletionWorker } from "./modules/templates/template-deletion.worker.js";
+import { startWalletReservationWorker } from "./modules/wallet/wallet-reservation.worker.js";
 
 // Meta advertises IPv6 and IPv4 endpoints. Some Windows hosts resolve IPv6 first
 // even when their IPv6 route is unavailable, causing fetch() to hang until timeout.
@@ -20,6 +21,7 @@ async function startServer(): Promise<void> {
   const database = await checkDatabaseConnection();
   startCampaignWorker();
   startTemplateDeletionWorker();
+  startWalletReservationWorker();
   logger.info(
     { database: database.database, databaseUser: database.user },
     "PostgreSQL connection established",

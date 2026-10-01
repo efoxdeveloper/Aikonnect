@@ -96,20 +96,14 @@ describe("ApiWebhooks", () => {
     expect(screen.queryByTestId("api-docs-section")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("tab", { name: "API Docs" }));
     expect(screen.getByTestId("api-docs-section")).toHaveTextContent(
-      "Authorization: Bearer sk_live_...",
+      "Authorization: Basic sk_live_...",
     );
     expect(screen.getByTestId("api-endpoint-docs")).toBeInTheDocument();
-    expect(screen.getByTestId("api-doc-contacts")).toHaveTextContent(
-      "contacts.write",
+    expect(screen.getByTestId("api-doc-public-message")).toHaveTextContent(
+      "Interakt-compatible",
     );
-    expect(screen.getByTestId("api-doc-events")).toHaveTextContent(
-      "Idempotency-Key",
-    );
-    expect(screen.getByTestId("api-doc-template-messages")).toHaveTextContent(
-      "approved WhatsApp template",
-    );
-    expect(screen.getByTestId("api-doc-conversations")).toHaveTextContent(
-      "conversations.read",
+    expect(screen.getByTestId("api-doc-public-message")).toHaveTextContent(
+      "callbackData",
     );
     fireEvent.click(screen.getByRole("tab", { name: "Webhooks" }));
     expect(screen.getByTestId("webhooks-section")).toHaveTextContent(

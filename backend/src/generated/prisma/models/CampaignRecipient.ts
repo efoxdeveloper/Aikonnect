@@ -46,6 +46,8 @@ export type CampaignRecipientMinAggregateOutputType = {
   metaMessageId: string | null
   attemptCount: number | null
   attemptedAt: Date | null
+  processingToken: string | null
+  processingExpiresAt: Date | null
   sentAt: Date | null
   deliveredAt: Date | null
   readAt: Date | null
@@ -67,6 +69,8 @@ export type CampaignRecipientMaxAggregateOutputType = {
   metaMessageId: string | null
   attemptCount: number | null
   attemptedAt: Date | null
+  processingToken: string | null
+  processingExpiresAt: Date | null
   sentAt: Date | null
   deliveredAt: Date | null
   readAt: Date | null
@@ -88,6 +92,8 @@ export type CampaignRecipientCountAggregateOutputType = {
   metaMessageId: number
   attemptCount: number
   attemptedAt: number
+  processingToken: number
+  processingExpiresAt: number
   sentAt: number
   deliveredAt: number
   readAt: number
@@ -121,6 +127,8 @@ export type CampaignRecipientMinAggregateInputType = {
   metaMessageId?: true
   attemptCount?: true
   attemptedAt?: true
+  processingToken?: true
+  processingExpiresAt?: true
   sentAt?: true
   deliveredAt?: true
   readAt?: true
@@ -142,6 +150,8 @@ export type CampaignRecipientMaxAggregateInputType = {
   metaMessageId?: true
   attemptCount?: true
   attemptedAt?: true
+  processingToken?: true
+  processingExpiresAt?: true
   sentAt?: true
   deliveredAt?: true
   readAt?: true
@@ -163,6 +173,8 @@ export type CampaignRecipientCountAggregateInputType = {
   metaMessageId?: true
   attemptCount?: true
   attemptedAt?: true
+  processingToken?: true
+  processingExpiresAt?: true
   sentAt?: true
   deliveredAt?: true
   readAt?: true
@@ -271,6 +283,8 @@ export type CampaignRecipientGroupByOutputType = {
   metaMessageId: string | null
   attemptCount: number
   attemptedAt: Date | null
+  processingToken: string | null
+  processingExpiresAt: Date | null
   sentAt: Date | null
   deliveredAt: Date | null
   readAt: Date | null
@@ -315,6 +329,8 @@ export type CampaignRecipientWhereInput = {
   metaMessageId?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
   attemptCount?: Prisma.IntFilter<"CampaignRecipient"> | number
   attemptedAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
+  processingToken?: Prisma.UuidNullableFilter<"CampaignRecipient"> | string | null
+  processingExpiresAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   sentAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   readAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
@@ -339,6 +355,8 @@ export type CampaignRecipientOrderByWithRelationInput = {
   metaMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
   attemptCount?: Prisma.SortOrder
   attemptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  processingToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  processingExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   readAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -367,6 +385,8 @@ export type CampaignRecipientWhereUniqueInput = Prisma.AtLeast<{
   metaMessageId?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
   attemptCount?: Prisma.IntFilter<"CampaignRecipient"> | number
   attemptedAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
+  processingToken?: Prisma.UuidNullableFilter<"CampaignRecipient"> | string | null
+  processingExpiresAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   sentAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   readAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
@@ -391,6 +411,8 @@ export type CampaignRecipientOrderByWithAggregationInput = {
   metaMessageId?: Prisma.SortOrderInput | Prisma.SortOrder
   attemptCount?: Prisma.SortOrder
   attemptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  processingToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  processingExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deliveredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   readAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -420,6 +442,8 @@ export type CampaignRecipientScalarWhereWithAggregatesInput = {
   metaMessageId?: Prisma.StringNullableWithAggregatesFilter<"CampaignRecipient"> | string | null
   attemptCount?: Prisma.IntWithAggregatesFilter<"CampaignRecipient"> | number
   attemptedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
+  processingToken?: Prisma.UuidNullableWithAggregatesFilter<"CampaignRecipient"> | string | null
+  processingExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
   sentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
   readAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CampaignRecipient"> | Date | string | null
@@ -438,6 +462,8 @@ export type CampaignRecipientCreateInput = {
   metaMessageId?: string | null
   attemptCount?: number
   attemptedAt?: Date | string | null
+  processingToken?: string | null
+  processingExpiresAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -462,6 +488,8 @@ export type CampaignRecipientUncheckedCreateInput = {
   metaMessageId?: string | null
   attemptCount?: number
   attemptedAt?: Date | string | null
+  processingToken?: string | null
+  processingExpiresAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -480,6 +508,8 @@ export type CampaignRecipientUpdateInput = {
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processingExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -504,6 +534,8 @@ export type CampaignRecipientUncheckedUpdateInput = {
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processingExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -525,6 +557,8 @@ export type CampaignRecipientCreateManyInput = {
   metaMessageId?: string | null
   attemptCount?: number
   attemptedAt?: Date | string | null
+  processingToken?: string | null
+  processingExpiresAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -543,6 +577,8 @@ export type CampaignRecipientUpdateManyMutationInput = {
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processingExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -564,6 +600,8 @@ export type CampaignRecipientUncheckedUpdateManyInput = {
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processingExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -600,6 +638,8 @@ export type CampaignRecipientCountOrderByAggregateInput = {
   metaMessageId?: Prisma.SortOrder
   attemptCount?: Prisma.SortOrder
   attemptedAt?: Prisma.SortOrder
+  processingToken?: Prisma.SortOrder
+  processingExpiresAt?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
   deliveredAt?: Prisma.SortOrder
   readAt?: Prisma.SortOrder
@@ -626,6 +666,8 @@ export type CampaignRecipientMaxOrderByAggregateInput = {
   metaMessageId?: Prisma.SortOrder
   attemptCount?: Prisma.SortOrder
   attemptedAt?: Prisma.SortOrder
+  processingToken?: Prisma.SortOrder
+  processingExpiresAt?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
   deliveredAt?: Prisma.SortOrder
   readAt?: Prisma.SortOrder
@@ -647,6 +689,8 @@ export type CampaignRecipientMinOrderByAggregateInput = {
   metaMessageId?: Prisma.SortOrder
   attemptCount?: Prisma.SortOrder
   attemptedAt?: Prisma.SortOrder
+  processingToken?: Prisma.SortOrder
+  processingExpiresAt?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
   deliveredAt?: Prisma.SortOrder
   readAt?: Prisma.SortOrder
@@ -800,6 +844,8 @@ export type CampaignRecipientCreateWithoutWorkspaceInput = {
   metaMessageId?: string | null
   attemptCount?: number
   attemptedAt?: Date | string | null
+  processingToken?: string | null
+  processingExpiresAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -822,6 +868,8 @@ export type CampaignRecipientUncheckedCreateWithoutWorkspaceInput = {
   metaMessageId?: string | null
   attemptCount?: number
   attemptedAt?: Date | string | null
+  processingToken?: string | null
+  processingExpiresAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -872,6 +920,8 @@ export type CampaignRecipientScalarWhereInput = {
   metaMessageId?: Prisma.StringNullableFilter<"CampaignRecipient"> | string | null
   attemptCount?: Prisma.IntFilter<"CampaignRecipient"> | number
   attemptedAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
+  processingToken?: Prisma.UuidNullableFilter<"CampaignRecipient"> | string | null
+  processingExpiresAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   sentAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   deliveredAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
   readAt?: Prisma.DateTimeNullableFilter<"CampaignRecipient"> | Date | string | null
@@ -890,6 +940,8 @@ export type CampaignRecipientCreateWithoutContactInput = {
   metaMessageId?: string | null
   attemptCount?: number
   attemptedAt?: Date | string | null
+  processingToken?: string | null
+  processingExpiresAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -912,6 +964,8 @@ export type CampaignRecipientUncheckedCreateWithoutContactInput = {
   metaMessageId?: string | null
   attemptCount?: number
   attemptedAt?: Date | string | null
+  processingToken?: string | null
+  processingExpiresAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -956,6 +1010,8 @@ export type CampaignRecipientCreateWithoutCampaignInput = {
   metaMessageId?: string | null
   attemptCount?: number
   attemptedAt?: Date | string | null
+  processingToken?: string | null
+  processingExpiresAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -978,6 +1034,8 @@ export type CampaignRecipientUncheckedCreateWithoutCampaignInput = {
   metaMessageId?: string | null
   attemptCount?: number
   attemptedAt?: Date | string | null
+  processingToken?: string | null
+  processingExpiresAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -1024,6 +1082,8 @@ export type CampaignRecipientCreateManyWorkspaceInput = {
   metaMessageId?: string | null
   attemptCount?: number
   attemptedAt?: Date | string | null
+  processingToken?: string | null
+  processingExpiresAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -1042,6 +1102,8 @@ export type CampaignRecipientUpdateWithoutWorkspaceInput = {
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processingExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1064,6 +1126,8 @@ export type CampaignRecipientUncheckedUpdateWithoutWorkspaceInput = {
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processingExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1084,6 +1148,8 @@ export type CampaignRecipientUncheckedUpdateManyWithoutWorkspaceInput = {
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processingExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1104,6 +1170,8 @@ export type CampaignRecipientCreateManyContactInput = {
   metaMessageId?: string | null
   attemptCount?: number
   attemptedAt?: Date | string | null
+  processingToken?: string | null
+  processingExpiresAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -1122,6 +1190,8 @@ export type CampaignRecipientUpdateWithoutContactInput = {
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processingExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1144,6 +1214,8 @@ export type CampaignRecipientUncheckedUpdateWithoutContactInput = {
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processingExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1164,6 +1236,8 @@ export type CampaignRecipientUncheckedUpdateManyWithoutContactInput = {
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processingExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1184,6 +1258,8 @@ export type CampaignRecipientCreateManyCampaignInput = {
   metaMessageId?: string | null
   attemptCount?: number
   attemptedAt?: Date | string | null
+  processingToken?: string | null
+  processingExpiresAt?: Date | string | null
   sentAt?: Date | string | null
   deliveredAt?: Date | string | null
   readAt?: Date | string | null
@@ -1202,6 +1278,8 @@ export type CampaignRecipientUpdateWithoutCampaignInput = {
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processingExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1224,6 +1302,8 @@ export type CampaignRecipientUncheckedUpdateWithoutCampaignInput = {
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processingExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1244,6 +1324,8 @@ export type CampaignRecipientUncheckedUpdateManyWithoutCampaignInput = {
   metaMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attemptCount?: Prisma.IntFieldUpdateOperationsInput | number
   attemptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  processingToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processingExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deliveredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   readAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1267,6 +1349,8 @@ export type CampaignRecipientSelect<ExtArgs extends runtime.Types.Extensions.Int
   metaMessageId?: boolean
   attemptCount?: boolean
   attemptedAt?: boolean
+  processingToken?: boolean
+  processingExpiresAt?: boolean
   sentAt?: boolean
   deliveredAt?: boolean
   readAt?: boolean
@@ -1291,6 +1375,8 @@ export type CampaignRecipientSelectCreateManyAndReturn<ExtArgs extends runtime.T
   metaMessageId?: boolean
   attemptCount?: boolean
   attemptedAt?: boolean
+  processingToken?: boolean
+  processingExpiresAt?: boolean
   sentAt?: boolean
   deliveredAt?: boolean
   readAt?: boolean
@@ -1315,6 +1401,8 @@ export type CampaignRecipientSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   metaMessageId?: boolean
   attemptCount?: boolean
   attemptedAt?: boolean
+  processingToken?: boolean
+  processingExpiresAt?: boolean
   sentAt?: boolean
   deliveredAt?: boolean
   readAt?: boolean
@@ -1339,6 +1427,8 @@ export type CampaignRecipientSelectScalar = {
   metaMessageId?: boolean
   attemptCount?: boolean
   attemptedAt?: boolean
+  processingToken?: boolean
+  processingExpiresAt?: boolean
   sentAt?: boolean
   deliveredAt?: boolean
   readAt?: boolean
@@ -1350,7 +1440,7 @@ export type CampaignRecipientSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CampaignRecipientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "campaignId" | "workspaceId" | "contactId" | "phoneE164" | "status" | "metaMessageId" | "attemptCount" | "attemptedAt" | "sentAt" | "deliveredAt" | "readAt" | "repliedAt" | "failedAt" | "failureReason" | "clickCount" | "createdAt" | "updatedAt", ExtArgs["result"]["campaignRecipient"]>
+export type CampaignRecipientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "campaignId" | "workspaceId" | "contactId" | "phoneE164" | "status" | "metaMessageId" | "attemptCount" | "attemptedAt" | "processingToken" | "processingExpiresAt" | "sentAt" | "deliveredAt" | "readAt" | "repliedAt" | "failedAt" | "failureReason" | "clickCount" | "createdAt" | "updatedAt", ExtArgs["result"]["campaignRecipient"]>
 export type CampaignRecipientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   campaign?: boolean | Prisma.CampaignDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
@@ -1384,6 +1474,8 @@ export type $CampaignRecipientPayload<ExtArgs extends runtime.Types.Extensions.I
     metaMessageId: string | null
     attemptCount: number
     attemptedAt: Date | null
+    processingToken: string | null
+    processingExpiresAt: Date | null
     sentAt: Date | null
     deliveredAt: Date | null
     readAt: Date | null
@@ -1828,6 +1920,8 @@ export interface CampaignRecipientFieldRefs {
   readonly metaMessageId: Prisma.FieldRef<"CampaignRecipient", 'String'>
   readonly attemptCount: Prisma.FieldRef<"CampaignRecipient", 'Int'>
   readonly attemptedAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>
+  readonly processingToken: Prisma.FieldRef<"CampaignRecipient", 'String'>
+  readonly processingExpiresAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>
   readonly sentAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>
   readonly deliveredAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>
   readonly readAt: Prisma.FieldRef<"CampaignRecipient", 'DateTime'>

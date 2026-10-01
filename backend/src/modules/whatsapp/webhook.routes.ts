@@ -403,7 +403,7 @@ async function ingestMessageStatuses(workspaceId: string, statuses: WhatsAppStat
     }
     if (existing && existing.billingStatus === "RESERVED") {
       try {
-        if (messageStatus === "DELIVERED") await captureMessageBilling(existing.id, metaMessageId);
+        if (messageStatus === "DELIVERED" || messageStatus === "READ") await captureMessageBilling(existing.id, metaMessageId);
         if (messageStatus === "FAILED") await releaseMessageBilling(existing.id, failureReason ?? "Meta reported message delivery failure");
       } catch (error) {
         logger.error({ workspaceId, messageId: existing.id, metaMessageId, messageStatus, error }, "WhatsApp billing settlement failed");

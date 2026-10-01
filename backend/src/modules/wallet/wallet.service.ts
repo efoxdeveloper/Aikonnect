@@ -87,8 +87,36 @@ export async function captureReservation(input: { reservationId?: string; messag
   return prisma.$transaction(async (transaction) => { const reservation = await findReservationForUpdate(transaction, input.reservationId, input.messageId); if (["CHARGED", "RELEASED", "CANCELLED", "EXPIRED"].includes(reservation.status)) return { reservation, replayed: true }; const wallet = await transaction.wallet.findUniqueOrThrow({ where: { id: reservation.walletId } }); await lockWallet(transaction, wallet.id); const balances = walletBalances(wallet); const amount = money(reservation.walletChargeAmount); const closingTotal = balances.total.sub(amount); const closingReserved = balances.reserved.sub(amount); if (closingReserved.lt(0)) throw new AppError(409, "The wallet reservation is inconsistent with the wallet balance", "BILLING_TRANSACTION_FAILED"); if (closingTotal.lt(0)) { const settings = await transaction.workspaceBillingSettings.findUnique({ where: { workspaceId: reservation.workspaceId }, select: { allowNegativeBalance: true, creditLimit: true } }); if (!settings?.allowNegativeBalance || closingTotal.lt(money(settings.creditLimit).neg())) throw new AppError(409, "The wallet credit limit does not cover this charge", "BILLING_TRANSACTION_FAILED"); } const updated = await updateWalletTotal(transaction, wallet.id, closingTotal, closingReserved); const entry = await createLedgerEntry(transaction, { wallet: updated, workspaceId: reservation.workspaceId, direction: "DEBIT", transactionType: "CHARGE", amount, opening: balances, closing: { total: closingTotal, reserved: closingReserved, available: closingTotal.sub(closingReserved) }, idempotencyKey: `charge:${reservation.id}`, description: "WhatsApp message delivered", metadata: { billingStatus: "CHARGED" }, messageId: reservation.messageId, reservationId: reservation.id, externalReference: input.externalReference }); const completed = await transaction.walletReservation.update({ where: { id: reservation.id }, data: { status: "CHARGED", completedAt: new Date() } }); await transaction.message.update({ where: { id: reservation.messageId }, data: { billingStatus: "CHARGED", billingError: null } }); return { reservation: completed, entry: entryResponse(entry), wallet: walletResponse(updated), replayed: false }; });
 }
 
-export async function releaseReservation(input: { reservationId?: string; messageId?: string; reason?: string }) {
-  return prisma.$transaction(async (transaction) => { const reservation = await findReservationForUpdate(transaction, input.reservationId, input.messageId); if (["RELEASED", "CANCELLED", "EXPIRED", "CHARGED"].includes(reservation.status)) return { reservation, replayed: true }; const wallet = await transaction.wallet.findUniqueOrThrow({ where: { id: reservation.walletId } }); await lockWallet(transaction, wallet.id); const balances = walletBalances(wallet); const amount = money(reservation.walletChargeAmount); const closingReserved = balances.reserved.sub(amount); if (closingReserved.lt(0)) throw new AppError(409, "The wallet reservation is inconsistent with the wallet balance", "BILLING_TRANSACTION_FAILED"); const updated = await updateWalletTotal(transaction, wallet.id, balances.total, closingReserved); const entry = await createLedgerEntry(transaction, { wallet: updated, workspaceId: reservation.workspaceId, direction: "RELEASE", transactionType: "RELEASE", amount, opening: balances, closing: { total: balances.total, reserved: closingReserved, available: balances.total.sub(closingReserved) }, idempotencyKey: `release:${reservation.id}`, description: input.reason ?? "WhatsApp message billing reservation released", metadata: { reason: input.reason ?? "provider_failure" }, messageId: reservation.messageId, reservationId: reservation.id }); const released = await transaction.walletReservation.update({ where: { id: reservation.id }, data: { status: "RELEASED", releasedAt: new Date() } }); await transaction.message.update({ where: { id: reservation.messageId }, data: { billingStatus: "RELEASED", billingError: input.reason ?? null } }); return { reservation: released, entry: entryResponse(entry), wallet: walletResponse(updated), replayed: false }; });
+export async function releaseReservation(input: { reservationId?: string; messageId?: string; reason?: string; finalStatus?: "RELEASED" | "EXPIRED" }) {
+  return prisma.$transaction(async (transaction) => { const reservation = await findReservationForUpdate(transaction, input.reservationId, input.messageId); if (["RELEASED", "CANCELLED", "EXPIRED", "CHARGED"].includes(reservation.status)) return { reservation, replayed: true }; const finalStatus = input.finalStatus ?? "RELEASED"; const transactionType = finalStatus === "EXPIRED" ? "EXPIRE" : "RELEASE"; const wallet = await transaction.wallet.findUniqueOrThrow({ where: { id: reservation.walletId } }); await lockWallet(transaction, wallet.id); const balances = walletBalances(wallet); const amount = money(reservation.walletChargeAmount); const closingReserved = balances.reserved.sub(amount); if (closingReserved.lt(0)) throw new AppError(409, "The wallet reservation is inconsistent with the wallet balance", "BILLING_TRANSACTION_FAILED"); const updated = await updateWalletTotal(transaction, wallet.id, balances.total, closingReserved); const entry = await createLedgerEntry(transaction, { wallet: updated, workspaceId: reservation.workspaceId, direction: "RELEASE", transactionType, amount, opening: balances, closing: { total: balances.total, reserved: closingReserved, available: balances.total.sub(closingReserved) }, idempotencyKey: `${transactionType.toLowerCase()}:${reservation.id}`, description: input.reason ?? "WhatsApp message billing reservation released", metadata: { reason: input.reason ?? "provider_failure" }, messageId: reservation.messageId, reservationId: reservation.id }); const released = await transaction.walletReservation.update({ where: { id: reservation.id }, data: { status: finalStatus, releasedAt: new Date() } }); await transaction.message.update({ where: { id: reservation.messageId }, data: { billingStatus: "RELEASED", billingError: input.reason ?? null } }); return { reservation: released, entry: entryResponse(entry), wallet: walletResponse(updated), replayed: false }; });
+}
+
+/** Reconciles reservations that outlived their delivery-confirmation window. */
+export async function expireDueMessageReservations(limit = 100) {
+  const due = await prisma.walletReservation.findMany({
+    where: { status: "ACTIVE", expiresAt: { not: null, lte: new Date() } },
+    orderBy: [{ expiresAt: "asc" }, { id: "asc" }],
+    take: limit,
+    select: { id: true },
+  });
+  let processed = 0;
+  let failed = 0;
+  for (const reservation of due) {
+    try {
+      const current = await prisma.walletReservation.findUnique({ where: { id: reservation.id }, select: { id: true, status: true, messageId: true } });
+      if (!current || current.status !== "ACTIVE") continue;
+      const message = await prisma.message.findUnique({ where: { id: current.messageId }, select: { metaMessageId: true, status: true } });
+      if (message?.metaMessageId && message.status !== "FAILED") {
+        await captureReservation({ reservationId: current.id, externalReference: "reservation_expiry_reconciliation" });
+      } else {
+        await releaseReservation({ reservationId: current.id, finalStatus: "EXPIRED", reason: "Message delivery was not accepted before the billing reservation expired" });
+      }
+      processed += 1;
+    } catch {
+      failed += 1;
+    }
+  }
+  return { processed, failed };
 }
 
 export async function refundReservation(input: { reservationId: string; amount?: string | Prisma.Decimal; createdById?: string; reason?: string }) {

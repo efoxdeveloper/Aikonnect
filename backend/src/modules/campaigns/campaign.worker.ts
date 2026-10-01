@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { prisma } from "../../database/prisma.js";
 import { logger } from "../../config/logger.js";
 import { AppError } from "../../middleware/error-handler.js";
@@ -10,6 +11,9 @@ import { reserveMessageBilling, releaseMessageBilling } from "../billing/billing
 const MAX_ATTEMPTS = 3;
 const BATCH_SIZE = 25;
 const POLL_INTERVAL_MS = 10_000;
+// A Meta request is bounded to 60 seconds. Keep the lease much longer so a slow
+// request cannot be picked up by another worker while the first one is active.
+const RECIPIENT_LEASE_MS = 5 * 60_000;
 
 type CampaignVariable = { source: "contact" | "custom" | "constant"; field: string; fallback: string };
 
@@ -58,49 +62,83 @@ function failureMessage(error: unknown) {
   return error instanceof Error ? error.message : "The campaign message could not be sent";
 }
 
-async function claimRecipient(campaignId: string) {
-  const cutoff = new Date(Date.now() - 1_000);
+export async function claimRecipient(campaignId: string) {
+  const now = new Date();
+  const retryCutoff = new Date(now.getTime() - 1_000);
+  const legacyCutoff = new Date(now.getTime() - RECIPIENT_LEASE_MS);
   const candidate = await prisma.campaignRecipient.findFirst({
     where: {
       campaignId,
       OR: [
-        { status: "PENDING" },
-        { status: "FAILED", attemptCount: { lt: MAX_ATTEMPTS }, updatedAt: { lte: cutoff } },
-        { status: "ATTEMPTED", attemptCount: { lt: MAX_ATTEMPTS }, attemptedAt: { lt: cutoff } },
+        { status: "PENDING", processingToken: null },
+        { status: "FAILED", attemptCount: { lt: MAX_ATTEMPTS }, updatedAt: { lte: retryCutoff }, processingToken: null },
+        {
+          status: "ATTEMPTED",
+          attemptCount: { lt: MAX_ATTEMPTS },
+          OR: [
+            { processingExpiresAt: { lte: now } },
+            // Recover rows created before recipient leases were deployed, but
+            // never reclaim a current in-flight attempt after one second.
+            { processingToken: null, attemptedAt: { lte: legacyCutoff } },
+          ],
+        },
       ],
     },
     orderBy: [{ status: "asc" }, { createdAt: "asc" }, { id: "asc" }],
     select: { id: true, contactId: true, phoneE164: true, status: true, attemptCount: true },
   });
   if (!candidate) return null;
+  const leaseToken = randomUUID();
+  const leaseExpiresAt = new Date(now.getTime() + RECIPIENT_LEASE_MS);
   const claimed = await prisma.campaignRecipient.updateMany({
-    where: { id: candidate.id, status: candidate.status, ...(candidate.attemptCount > 0 ? { attemptCount: { lt: MAX_ATTEMPTS } } : {}) },
-    data: { status: "ATTEMPTED", attemptedAt: new Date(), attemptCount: { increment: 1 } },
+    where: {
+      id: candidate.id,
+      status: candidate.status,
+      ...(candidate.attemptCount > 0 ? { attemptCount: { lt: MAX_ATTEMPTS } } : {}),
+      ...(candidate.status === "ATTEMPTED"
+        ? { OR: [{ processingExpiresAt: { lte: now } }, { processingToken: null, attemptedAt: { lte: legacyCutoff } }] }
+        : { processingToken: null }),
+    },
+    data: { status: "ATTEMPTED", attemptedAt: now, processingToken: leaseToken, processingExpiresAt: leaseExpiresAt, attemptCount: { increment: 1 } },
   });
-  return claimed.count === 1 ? candidate : null;
+  return claimed.count === 1 ? { ...candidate, leaseToken } : null;
 }
 
-async function markFailed(campaignId: string, recipientId: string, reason: string) {
-  await prisma.campaignRecipient.updateMany({ where: { id: recipientId, campaignId, status: "ATTEMPTED" }, data: { status: "FAILED", failedAt: new Date(), failureReason: reason } });
+async function markFailed(campaignId: string, recipientId: string, leaseToken: string, reason: string) {
+  await prisma.campaignRecipient.updateMany({ where: { id: recipientId, campaignId, status: "ATTEMPTED", processingToken: leaseToken }, data: { status: "FAILED", failedAt: new Date(), failureReason: reason, processingToken: null, processingExpiresAt: null } });
   const recipient = await prisma.campaign.findUnique({ where: { id: campaignId }, select: { workspaceId: true } });
   if (recipient) await refreshCampaignMetrics(recipient.workspaceId, campaignId);
 }
 
-async function sendRecipient(campaignId: string, recipientId: string) {
+async function sendRecipient(campaignId: string, recipientId: string, leaseToken: string) {
   const campaign = await prisma.campaign.findUnique({
     where: { id: campaignId },
     select: { id: true, workspaceId: true, category: true, templateBody: true, metaTemplateName: true, templateLanguageCode: true, templateVariables: true, audienceConfig: true },
   });
   const recipient = await prisma.campaignRecipient.findUnique({
     where: { id: recipientId },
-    select: { id: true, contactId: true, phoneE164: true, status: true, contact: { select: { id: true, name: true, phoneE164: true, email: true, source: true, status: true, customAttributes: true, whatsappOpted: true, marketingBlocked: true, deletedAt: true } } },
+    select: { id: true, contactId: true, phoneE164: true, status: true, processingToken: true, contact: { select: { id: true, name: true, phoneE164: true, email: true, source: true, status: true, customAttributes: true, whatsappOpted: true, marketingBlocked: true, deletedAt: true } } },
   });
-  if (!campaign || !recipient || recipient.status !== "ATTEMPTED") return;
+  if (!campaign || !recipient || recipient.status !== "ATTEMPTED" || recipient.processingToken !== leaseToken) return;
   if (!recipient.contactId || !recipient.contact) throw new AppError(422, "The campaign recipient no longer has an eligible contact", "CAMPAIGN_CONTACT_NOT_ELIGIBLE");
   if (recipient.contact.deletedAt || !recipient.contact.whatsappOpted || recipient.contact.marketingBlocked) throw new AppError(422, "The recipient is no longer eligible for WhatsApp marketing", "CAMPAIGN_CONSENT_REVOKED");
   if (!campaign.metaTemplateName || !campaign.templateLanguageCode || !campaign.templateBody) throw new AppError(422, "The campaign template snapshot is incomplete", "CAMPAIGN_TEMPLATE_IDENTITY_INVALID");
 
   const pricing = await resolveMessagePricing({ phoneNumber: recipient.phoneE164, category: campaign.category, pricingType: "REGULAR" });
+
+  const idempotencyKey = `campaign:${campaign.id}:recipient:${recipient.id}`;
+  const existingMessage = await prisma.message.findUnique({
+    where: { workspaceId_apiIdempotencyKey: { workspaceId: campaign.workspaceId, apiIdempotencyKey: idempotencyKey } },
+    select: { id: true, conversationId: true, metaMessageId: true, sentAt: true },
+  });
+  if (existingMessage?.metaMessageId) {
+    await prisma.$transaction(async (transaction) => {
+      await transaction.campaignRecipient.updateMany({ where: { id: recipient.id, campaignId, status: "ATTEMPTED", processingToken: leaseToken }, data: { status: "SENT", metaMessageId: existingMessage.metaMessageId, sentAt: existingMessage.sentAt, processingToken: null, processingExpiresAt: null, failedAt: null, failureReason: null } });
+      await transaction.conversation.update({ where: { id: existingMessage.conversationId }, data: { lastMessagePreview: `You: ${campaign.templateBody}`, lastMessageAt: existingMessage.sentAt } });
+    });
+    await refreshCampaignMetrics(campaign.workspaceId, campaignId);
+    return;
+  }
 
   const sentAt = new Date();
   const conversation = await prisma.$transaction(async (transaction) => {
@@ -110,20 +148,22 @@ async function sendRecipient(campaignId: string, recipientId: string) {
       update: { deletedAt: null },
       select: { id: true },
     });
-    const message = await transaction.message.create({
-      data: { workspaceId: campaign.workspaceId, conversationId: conversation.id, contactId: recipient.contact!.id, direction: "OUTGOING", type: "TEXT", status: "QUEUED", text: campaign.templateBody, ...messagePricingSnapshot(pricing), payload: { source: "campaign", campaignId: campaign.id }, sentAt },
+    const message = await transaction.message.upsert({
+      where: { workspaceId_apiIdempotencyKey: { workspaceId: campaign.workspaceId, apiIdempotencyKey: idempotencyKey } },
+      create: { workspaceId: campaign.workspaceId, conversationId: conversation.id, contactId: recipient.contact!.id, apiIdempotencyKey: idempotencyKey, direction: "OUTGOING", type: "TEXT", status: "QUEUED", text: campaign.templateBody, ...messagePricingSnapshot(pricing), payload: { source: "campaign", campaignId: campaign.id }, sentAt },
+      update: { status: "QUEUED", failedAt: null, failureReason: null },
       select: { id: true },
     });
     return { id: conversation.id, messageId: message.id };
   });
   let reservation: { id: string } | null = null;
   try {
-    const billing = await reserveMessageBilling({ workspaceId: campaign.workspaceId, messageId: conversation.messageId, pricing, clientReference: `campaign:${campaign.id}:recipient:${recipient.id}`, idempotencyKey: `campaign:${campaign.id}:recipient:${recipient.id}` });
+    const billing = await reserveMessageBilling({ workspaceId: campaign.workspaceId, messageId: conversation.messageId, pricing, clientReference: idempotencyKey, idempotencyKey });
     reservation = billing.reservation;
-    const sent = await sendWhatsAppTemplateMessage(campaign.workspaceId, recipient.phoneE164, campaign.metaTemplateName, campaign.templateLanguageCode, templateParameters(campaign.templateBody, variables(campaign.templateVariables), recipient.contact), `campaign:${campaign.id}:recipient:${recipient.id}`, templateMedia(campaign.audienceConfig));
+    const sent = await sendWhatsAppTemplateMessage(campaign.workspaceId, recipient.phoneE164, campaign.metaTemplateName, campaign.templateLanguageCode, templateParameters(campaign.templateBody, variables(campaign.templateVariables), recipient.contact), idempotencyKey, templateMedia(campaign.audienceConfig));
     await prisma.$transaction(async (transaction) => {
       await transaction.message.update({ where: { id: conversation.messageId }, data: { metaMessageId: sent.metaMessageId, status: "SENT" } });
-      await transaction.campaignRecipient.updateMany({ where: { id: recipient.id, status: "ATTEMPTED" }, data: { status: "SENT", metaMessageId: sent.metaMessageId, sentAt: sent.sentAt, failedAt: null, failureReason: null } });
+      await transaction.campaignRecipient.updateMany({ where: { id: recipient.id, status: "ATTEMPTED", processingToken: leaseToken }, data: { status: "SENT", metaMessageId: sent.metaMessageId, sentAt: sent.sentAt, processingToken: null, processingExpiresAt: null, failedAt: null, failureReason: null } });
       await transaction.conversation.update({ where: { id: conversation.id }, data: { lastMessagePreview: `You: ${campaign.templateBody}`, lastMessageAt: sent.sentAt } });
     });
   } catch (error) {
@@ -142,11 +182,11 @@ export async function processCampaign(campaignId: string) {
     const candidate = await claimRecipient(campaignId);
     if (!candidate) break;
     try {
-      await sendRecipient(campaignId, candidate.id);
+      await sendRecipient(campaignId, candidate.id, candidate.leaseToken);
     } catch (error) {
       const reason = failureMessage(error);
       logger.error({ campaignId, recipientId: candidate.id, error }, "WhatsApp campaign recipient failed");
-      await markFailed(campaignId, candidate.id, reason);
+      await markFailed(campaignId, candidate.id, candidate.leaseToken, reason);
     }
   }
   await refreshCampaignMetrics(campaign.workspaceId, campaignId);
@@ -154,7 +194,7 @@ export async function processCampaign(campaignId: string) {
 
 export async function processDueCampaigns() {
   const now = new Date();
-  await prisma.campaignRecipient.updateMany({ where: { status: "ATTEMPTED", attemptCount: { gte: MAX_ATTEMPTS }, attemptedAt: { lt: new Date(now.getTime() - 5 * 60_000) } }, data: { status: "FAILED", failedAt: now, failureReason: "The delivery worker stopped before completing this attempt" } });
+  await prisma.campaignRecipient.updateMany({ where: { status: "ATTEMPTED", attemptCount: { gte: MAX_ATTEMPTS }, OR: [{ processingExpiresAt: { lte: now } }, { processingToken: null, attemptedAt: { lt: new Date(now.getTime() - RECIPIENT_LEASE_MS) } }] }, data: { status: "FAILED", failedAt: now, failureReason: "The delivery worker stopped before completing this attempt", processingToken: null, processingExpiresAt: null } });
   await prisma.campaign.updateMany({ where: { status: "SCHEDULED", scheduledAt: { lte: now } }, data: { status: "RUNNING", setLiveAt: now } });
   const campaigns = await prisma.campaign.findMany({ where: { status: "RUNNING" }, orderBy: [{ updatedAt: "asc" }, { id: "asc" }], take: 20, select: { id: true } });
   for (const campaign of campaigns) await processCampaign(campaign.id);

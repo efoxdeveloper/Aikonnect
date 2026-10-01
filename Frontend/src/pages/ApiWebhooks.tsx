@@ -64,103 +64,34 @@ type ApiDoc = {
 
 const apiDocs: ApiDoc[] = [
   {
-    id: "contacts",
+    id: "public-message",
     method: "POST",
-    path: "/contacts",
-    title: "Create or update a contact",
-    summary: "Upsert a contact using its phone number.",
+    path: "/message",
+    title: "Send a WhatsApp text message",
+    summary: "Send a simple text message using the Interakt-compatible request format.",
     request: `{
-  "phone": "+919876543210",
-  "firstName": "Asha",
-  "lastName": "Sharma",
-  "email": "asha@example.com",
-  "attributes": { "source": "shopify" }
-}`,
-    response: `{
-  "success": true,
+  "userId": "customer-123",
+  "fullPhoneNumber": "+919876543210",
+  "callbackData": "order-12345",
+  "type": "Text",
   "data": {
-    "id": "contact_123",
-    "phone": "+919876543210",
-    "firstName": "Asha",
-    "lastName": "Sharma"
+    "message": "This msg is sent via API"
   }
-}`,
-    notes: [
-      "phone is required and must be a complete E.164 number.",
-      "Send the same phone again to update the existing contact.",
-      "Required scope: contacts.write.",
-    ],
-  },
-  {
-    id: "events",
-    method: "POST",
-    path: "/events",
-    title: "Track a customer event",
-    summary: "Send an event from your website or business system.",
-    request: `{
-  "phone": "+919876543210",
-  "event": "order.created",
-  "data": { "orderId": "order_123", "amount": 1499 }
-}`,
-    response: `{
-  "success": true,
-  "data": { "eventId": "event_123", "accepted": true }
-}`,
-    notes: [
-      "Use a stable Idempotency-Key header when retrying the same event.",
-      "event is your application event name; data can contain your event properties.",
-      "Required scope: events.write.",
-    ],
-  },
-  {
-    id: "template-messages",
-    method: "POST",
-    path: "/messages/template",
-    title: "Send a template message",
-    summary: "Send an approved WhatsApp template to a contact.",
-    request: `{
-  "to": "+919876543210",
-  "templateName": "order_confirmation",
-  "languageCode": "en",
-  "parameters": ["Asha", "order_123"]
 }`,
     response: `{
   "success": true,
   "data": {
     "messageId": "message_123",
-    "status": "queued"
+    "metaMessageId": "wamid.HBgMOTE5ODc2NTQzMjEwFQIAERgS...",
+    "userId": "customer-123",
+    "callbackData": "order-12345",
+    "status": "sent"
   }
 }`,
     notes: [
-      "The recipient number must be in E.164 format.",
-      "The template must already be approved and its parameters must match.",
-      "Required scope: messages.send.",
-    ],
-  },
-  {
-    id: "conversations",
-    method: "GET",
-    path: "/conversations",
-    title: "List conversations",
-    summary: "Read recent conversations and message history.",
-    request: `GET /api/v1/public/conversations?phone=%2B919876543210&page=1&pageSize=25`,
-    response: `{
-  "success": true,
-  "data": {
-    "items": [{
-      "id": "conversation_123",
-      "phone": "+919876543210",
-      "status": "OPEN",
-      "lastMessageAt": "2026-09-12T10:30:00Z"
-    }],
-    "page": 1,
-    "pageSize": 25
-  }
-}`,
-    notes: [
-      "phone is optional; omit it to list conversations for the workspace.",
-      "pageSize defaults to 25 and is capped at 100.",
-      "Required scope: conversations.read.",
+      "Use Authorization: Basic sk_live_... or X-API-Key: sk_live_....",
+      "Keep callbackData unique for each message; it is used to prevent duplicate retries.",
+      "The type must be Text and fullPhoneNumber must include the country code.",
     ],
   },
 ];
@@ -211,7 +142,7 @@ function ApiDocumentation() {
               <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[.03em] text-[var(--text-muted)]">
                 Request headers
               </p>
-              <pre className="overflow-x-auto rounded-md bg-slate-950 px-3 py-2.5 font-mono text-[11px] leading-5 text-slate-100">{`Authorization: Bearer sk_live_...\nContent-Type: application/json${doc.method === "POST" ? "\nIdempotency-Key: your-unique-key" : ""}`}</pre>
+              <pre className="overflow-x-auto rounded-md bg-slate-950 px-3 py-2.5 font-mono text-[11px] leading-5 text-slate-100">{`Authorization: Basic sk_live_...\nContent-Type: application/json`}</pre>
             </div>
             <div>
               <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[.03em] text-[var(--text-muted)]">
@@ -790,12 +721,13 @@ export function ApiWebhooks() {
                   <p className="mb-1.5 text-xs font-medium text-[var(--text-primary)]">
                     Authentication
                   </p>
-                  <pre className="overflow-x-auto rounded-md bg-slate-950 px-3 py-2.5 font-mono text-xs leading-5 text-slate-100">{`Authorization: Bearer sk_live_...\nContent-Type: application/json`}</pre>
+                  <pre className="overflow-x-auto rounded-md bg-slate-950 px-3 py-2.5 font-mono text-xs leading-5 text-slate-100">{`Authorization: Basic sk_live_...\nContent-Type: application/json`}</pre>
                 </div>
                 <div className="rounded-md bg-[var(--gray-100)] p-3 text-[11px] leading-5 text-[var(--text-secondary)]">
                   <Code2 size={14} className="mb-1 text-[var(--brand)]" />
-                  Keep API keys on your server and add an{" "}
-                  <code>Idempotency-Key</code> when retrying writes.
+                  Keep API keys on your server. Use a unique{" "}
+                  <code>callbackData</code> for each message so retries do not
+                  send duplicates.
                 </div>
               </div>
             </section>

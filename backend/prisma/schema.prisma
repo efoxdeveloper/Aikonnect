@@ -992,6 +992,8 @@ model CampaignRecipient {
   metaMessageId String?                 @map("meta_message_id") @db.VarChar(200)
   attemptCount  Int                     @default(0) @map("attempt_count")
   attemptedAt   DateTime?               @map("attempted_at") @db.Timestamptz(3)
+  processingToken       String?          @map("processing_token") @db.Uuid
+  processingExpiresAt   DateTime?        @map("processing_expires_at") @db.Timestamptz(3)
   sentAt        DateTime?               @map("sent_at") @db.Timestamptz(3)
   deliveredAt   DateTime?               @map("delivered_at") @db.Timestamptz(3)
   readAt        DateTime?               @map("read_at") @db.Timestamptz(3)
@@ -1008,6 +1010,7 @@ model CampaignRecipient {
   @@unique([campaignId, phoneE164])
   @@index([workspaceId, status, updatedAt])
   @@index([campaignId, status])
+  @@index([campaignId, status, processingExpiresAt])
   @@index([contactId])
   @@map("campaign_recipients")
 }

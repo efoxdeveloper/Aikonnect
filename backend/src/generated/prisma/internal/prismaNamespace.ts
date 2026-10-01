@@ -4201,6 +4201,8 @@ export const CampaignRecipientScalarFieldEnum = {
   metaMessageId: 'metaMessageId',
   attemptCount: 'attemptCount',
   attemptedAt: 'attemptedAt',
+  processingToken: 'processingToken',
+  processingExpiresAt: 'processingExpiresAt',
   sentAt: 'sentAt',
   deliveredAt: 'deliveredAt',
   readAt: 'readAt',

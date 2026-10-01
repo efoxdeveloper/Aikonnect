@@ -14,7 +14,21 @@ export const sendMessageSchema = z.object({
   clientReference: z.string().trim().max(255).optional(),
 });
 
+const publicTextValue = z.string().trim().max(255).optional().transform((value) => value || undefined);
+const publicCallbackData = z.string().trim().min(1, "callbackData is required").max(255);
+
+export const publicTextMessageSchema = z.object({
+  userId: publicTextValue,
+  fullPhoneNumber: phone,
+  callbackData: publicCallbackData,
+  type: z.enum(["Text", "text"]).transform(() => "Text" as const),
+  data: z.object({
+    message: z.string().trim().min(1, "Message text cannot be empty").max(100_000),
+  }),
+});
+
 export type SendMessageInput = z.infer<typeof sendMessageSchema>;
+export type PublicTextMessageInput = z.infer<typeof publicTextMessageSchema>;
 
 export function requestIdempotencyKey(value: string | string[] | undefined) {
   const key = Array.isArray(value) ? value[0] : value;
