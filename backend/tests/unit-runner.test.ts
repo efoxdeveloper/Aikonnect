@@ -4,6 +4,7 @@ const unitTests = [
   "./admin-schemas.test.ts",
   "./automation.executor.test.ts",
   "./automation.schemas.test.ts",
+  "./billing.service.test.ts",
   "./campaign.schemas.test.ts",
   "./campaign.worker.test.ts",
   "./crypto.test.ts",

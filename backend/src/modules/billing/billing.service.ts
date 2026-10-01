@@ -6,6 +6,15 @@ import type { PricingSnapshot } from "../whatsapp-pricing/pricing.service.js";
 export const BILLING_MODES = ["CUSTOMER_META_BILLING", "MARRENTO_SHARED_BILLING"] as const;
 export type BillingMode = (typeof BILLING_MODES)[number];
 
+/**
+ * Marento's customer wallet funds the message cost in both provider billing
+ * modes. Meta settlement is handled separately by the connected WABA billing
+ * account; this value is the amount Marento must reserve from the customer.
+ */
+export function walletChargeAmount(input: { walletRequired: boolean; customerAmount: Prisma.Decimal }) {
+  return input.walletRequired ? input.customerAmount : new Prisma.Decimal(0);
+}
+
 function decimal(value: string | Prisma.Decimal) { return value instanceof Prisma.Decimal ? value : new Prisma.Decimal(value); }
 function fixed(value: Prisma.Decimal) { return value.toFixed(6); }
 
@@ -17,7 +26,7 @@ export async function resolveBilling(workspaceId: string, pricing: PricingSnapsh
   const meta = decimal(pricing.metaRate);
   const platform = decimal(pricing.platformFee);
   const customer = decimal(pricing.customerRate);
-  const walletCharge = settings.walletRequired === false ? new Prisma.Decimal(0) : mode === "CUSTOMER_META_BILLING" ? platform : customer;
+  const walletCharge = walletChargeAmount({ walletRequired: settings.walletRequired, customerAmount: customer });
   return { settings, mode, metaAmount: meta, platformFee: platform, customerAmount: customer, walletChargeAmount: walletCharge, currency: settings.currency, walletRequired: settings.walletRequired };
 }
 
