@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { logger } from "../../config/logger.js";
 import { prisma } from "../../database/prisma.js";
 import { releaseMessageBilling } from "../billing/billing.service.js";
+import { enqueueMessageWebhook } from "../webhooks/webhook.service.js";
 import { deliverPublicMessage } from "./developer-api.service.js";
 
 const POLL_INTERVAL_MS = 1_000;
@@ -49,11 +50,15 @@ async function claimPublicMessage() {
 async function markRetry(messageId: string, queueProcessingToken: string, attempt: number, reason: string) {
   const exhausted = attempt >= MAX_ATTEMPTS;
   const nextAttemptAt = exhausted ? null : new Date(Date.now() + (RETRY_DELAYS_MS[attempt - 1] ?? RETRY_DELAYS_MS.at(-1)!));
-  const updated = await prisma.message.updateMany({
-    where: { id: messageId, status: "QUEUED", queueProcessingToken },
-    data: exhausted
-      ? { status: "FAILED", failedAt: new Date(), failureReason: reason, queueProcessingToken: null, queueProcessingAt: null, queueNextAttemptAt: null }
-      : { queueProcessingToken: null, queueProcessingAt: null, queueNextAttemptAt: nextAttemptAt },
+  const updated = await prisma.$transaction(async (transaction) => {
+    const result = await transaction.message.updateMany({
+      where: { id: messageId, status: "QUEUED", queueProcessingToken },
+      data: exhausted
+        ? { status: "FAILED", failedAt: new Date(), failureReason: reason, queueProcessingToken: null, queueProcessingAt: null, queueNextAttemptAt: null }
+        : { queueProcessingToken: null, queueProcessingAt: null, queueNextAttemptAt: nextAttemptAt },
+    });
+    if (result.count && exhausted) await enqueueMessageWebhook(messageId, "message.failed", transaction);
+    return result;
   });
   if (updated.count === 1 && exhausted) {
     await releaseMessageBilling(messageId, reason).catch((releaseError) => {

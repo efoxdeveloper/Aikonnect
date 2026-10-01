@@ -1018,7 +1018,9 @@ export function ApiWebhooks() {
                         size={14}
                         className="mt-0.5 shrink-0 text-[var(--brand)]"
                       />
-                      Use HTTPS and verify the HMAC signature.
+                      Use HTTPS and verify <code>x-marento-signature</code> with
+                      HMAC-SHA256 over <code>timestamp.rawBody</code> using the
+                      webhook secret.
                     </li>
                     <li className="flex gap-2">
                       <RefreshCw
@@ -1037,8 +1039,9 @@ export function ApiWebhooks() {
                   </ul>
                 </div>
                 <p className="rounded-md bg-[var(--gray-100)] p-3 text-[11px] leading-5 text-[var(--text-secondary)]">
-                  Endpoint registration is ready. Event delivery will be
-                  connected to the platform event stream next.
+                  Endpoint registration and event delivery are active. Sent,
+                  delivered, read, and failed message events are signed and
+                  retried automatically when your endpoint is unavailable.
                 </p>
               </div>
             </section>

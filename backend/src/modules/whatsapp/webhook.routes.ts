@@ -4,6 +4,7 @@ import type { Prisma } from "../../generated/prisma/client.js";
 import { env } from "../../config/env.js";
 import { logger } from "../../config/logger.js";
 import { captureMessageBilling, releaseMessageBilling } from "../billing/billing.service.js";
+import { enqueueMessageWebhook } from "../webhooks/webhook.service.js";
 import { publishInboxMessageStatus, publishInboxRefresh } from "../../realtime/inbox.js";
 import { prisma } from "../../database/prisma.js";
 import { runAutomationsForEvent } from "../automations/automation.executor.js";
@@ -244,7 +245,7 @@ async function ingestIncomingMessage(
       update: { phoneNumberId, deletedAt: null },
       select: { id: true },
     });
-    await transaction.message.create({
+    const createdMessage = await transaction.message.create({
       data: {
         workspaceId,
         conversationId: conversation.id,
@@ -258,12 +259,13 @@ async function ingestIncomingMessage(
         payload,
         sentAt,
       },
+      select: { id: true },
     });
     await transaction.conversation.update({
       where: { id: conversation.id },
       data: { lastMessagePreview: text ?? type, lastMessageAt: sentAt, unreadCount: { increment: 1 } },
     });
-    return { contactId: contact.id, conversationId: conversation.id, messageId: metaMessageId, text, type, phoneNumber: normalizedPhone, sentAt };
+    return { contactId: contact.id, conversationId: conversation.id, messageId: createdMessage.id, metaMessageId, text, type, phoneNumber: normalizedPhone, sentAt };
   });
 }
 
@@ -387,14 +389,18 @@ async function ingestMessageStatuses(workspaceId: string, statuses: WhatsAppStat
     if (existing && existing.status !== "FAILED") {
       const statusRank = { SENT: 1, DELIVERED: 2, READ: 3, FAILED: 4 } as const;
       if (messageStatus === "FAILED" || statusRank[messageStatus] > statusRank[existing.status as keyof typeof statusRank]) {
-        updated = await prisma.message.updateMany({
-          where: { id: existing.id, status: existing.status },
-          data: {
-            status: messageStatus,
-            ...(state === "DELIVERED" ? { deliveredAt: occurredAt } : {}),
-            ...(state === "READ" ? { deliveredAt: occurredAt, readAt: occurredAt } : {}),
-            ...(state === "FAILED" ? { failedAt: occurredAt, failureReason } : {}),
-          },
+        updated = await prisma.$transaction(async (transaction) => {
+          const result = await transaction.message.updateMany({
+            where: { id: existing.id, status: existing.status },
+            data: {
+              status: messageStatus,
+              ...(state === "DELIVERED" ? { deliveredAt: occurredAt } : {}),
+              ...(state === "READ" ? { deliveredAt: occurredAt, readAt: occurredAt } : {}),
+              ...(state === "FAILED" ? { failedAt: occurredAt, failureReason } : {}),
+            },
+          });
+          if (result.count) await enqueueMessageWebhook(existing.id, `message.${messageStatus.toLowerCase()}` as "message.delivered" | "message.read" | "message.failed", transaction);
+          return result;
         });
       }
     }
@@ -503,6 +509,7 @@ async function processPayload(payload: WhatsAppWebhookPayload) {
         const contactProfile = contactProfiles.get(asString(message.from));
         const result = await ingestIncomingMessage(phoneNumber.businessAccount.workspaceId, phoneNumber.id, message, contactProfile?.name, contactProfile?.profileImageUrl);
         if (result) {
+          await enqueueMessageWebhook(result.messageId, "message.received");
           publishInboxRefresh(phoneNumber.businessAccount.workspaceId, result.conversationId);
           await markCampaignReply(phoneNumber.businessAccount.workspaceId, result.phoneNumber, result.sentAt);
           try {

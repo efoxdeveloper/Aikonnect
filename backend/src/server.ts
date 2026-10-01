@@ -9,6 +9,7 @@ import { startCampaignWorker } from "./modules/campaigns/campaign.worker.js";
 import { startTemplateDeletionWorker } from "./modules/templates/template-deletion.worker.js";
 import { startWalletReservationWorker } from "./modules/wallet/wallet-reservation.worker.js";
 import { startPublicMessageWorker } from "./modules/developer-api/public-message.worker.js";
+import { startWebhookDeliveryWorker } from "./modules/webhooks/webhook-delivery.worker.js";
 
 // Meta advertises IPv6 and IPv4 endpoints. Some Windows hosts resolve IPv6 first
 // even when their IPv6 route is unavailable, causing fetch() to hang until timeout.
@@ -24,6 +25,7 @@ async function startServer(): Promise<void> {
   startTemplateDeletionWorker();
   startWalletReservationWorker();
   startPublicMessageWorker();
+  startWebhookDeliveryWorker();
   logger.info(
     { database: database.database, databaseUser: database.user },
     "PostgreSQL connection established",

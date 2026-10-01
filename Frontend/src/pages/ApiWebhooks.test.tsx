@@ -131,7 +131,10 @@ describe("ApiWebhooks", () => {
     );
     fireEvent.click(screen.getByRole("tab", { name: "Webhooks" }));
     expect(screen.getByTestId("webhooks-section")).toHaveTextContent(
-      "verify the HMAC signature",
+      "Use HTTPS and verify x-marento-signature",
+    );
+    expect(screen.getByTestId("webhooks-section")).toHaveTextContent(
+      "Endpoint registration and event delivery are active",
     );
   });
 

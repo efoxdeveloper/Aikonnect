@@ -1,10 +1,12 @@
 import { Prisma } from "../../generated/prisma/client.js";
 import { prisma } from "../../database/prisma.js";
+import { logger } from "../../config/logger.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { hashToken } from "../../utils/crypto.js";
 import { reserveMessageBilling, releaseMessageBilling } from "../billing/billing.service.js";
 import { resolveMessagePricing, type PricingSnapshot, messagePricingSnapshot } from "../whatsapp-pricing/pricing.service.js";
 import { sendWhatsAppAudioMessage, sendWhatsAppDocumentMessage, sendWhatsAppImageMessage, sendWhatsAppInteractiveButtonMessage, sendWhatsAppStickerMessage, sendWhatsAppTemplateMessage, sendWhatsAppTextMessage, sendWhatsAppVideoMessage, type WhatsAppTemplateParameter } from "../whatsapp/whatsapp.service.js";
+import { enqueueMessageWebhook } from "../webhooks/webhook.service.js";
 import { publicMessageSchema, type PublicMessageInput, type PublicTextMessageInput, type SendMessageInput } from "./developer-api.schemas.js";
 
 function normalizedPhone(value: string) {
@@ -112,6 +114,7 @@ export async function sendTemplateMessage(workspaceId: string, input: SendMessag
     await prisma.$transaction(async (transaction) => {
       await transaction.message.update({ where: { id: created.messageId }, data: { metaMessageId: metaAccepted!.metaMessageId, status: "SENT", sentAt: metaAccepted!.sentAt } });
       await transaction.conversation.update({ where: { id: created.conversationId }, data: { lastMessagePreview: `You: ${template.body}`, lastMessageAt: metaAccepted!.sentAt, phoneNumberId: metaAccepted!.phoneNumberId } });
+      await enqueueMessageWebhook(created.messageId, "message.sent", transaction);
     });
     return { replayed: false, data: { ...(await serializeMessage(created.messageId)), clientReference: input.clientReference ?? null, billing: billing.billing } };
   } catch (error) {
@@ -119,6 +122,7 @@ export async function sendTemplateMessage(workspaceId: string, input: SendMessag
     await prisma.message.update({ where: { id: created.messageId }, data: metaAccepted
       ? { metaMessageId: metaAccepted.metaMessageId, status: "SENT", sentAt: metaAccepted.sentAt, billingError: "Meta accepted the message but the response could not be persisted" }
       : { status: "FAILED", failedAt: new Date(), failureReason: error instanceof Error ? error.message : "Developer API send failed", billingStatus: reservationId ? "RELEASED" : billingResolved ? "NOT_APPLICABLE" : "BILLING_ERROR", billingError: error instanceof Error ? error.message : "Developer API billing/send failed" } }).catch(() => undefined);
+    if (metaAccepted) await enqueueMessageWebhook(created.messageId, "message.sent").catch((webhookError) => logger.error({ messageId: created.messageId, error: webhookError }, "Failed to queue the developer API sent webhook"));
     throw error;
   }
 }
@@ -207,7 +211,10 @@ export async function sendPublicMessage(workspaceId: string, input: PublicMessag
     const billing = await reserveMessageBilling({ workspaceId, messageId: created.messageId, pricing, clientReference: input.callbackData, idempotencyKey: `public:${workspaceId}:${hashToken(idempotencyKey)}` });
     return { replayed: false, data: { ...(await serializeMessage(created.messageId)), userId: input.userId ?? null, callbackData: input.callbackData ?? null, billing: billing.billing } };
   } catch (error) {
-    await prisma.message.update({ where: { id: created.messageId }, data: { status: "FAILED", failedAt: new Date(), failureReason: error instanceof Error ? error.message : "Public API billing failed", billingStatus: "BILLING_ERROR", billingError: error instanceof Error ? error.message : "Public API billing failed" } }).catch(() => undefined);
+    await prisma.$transaction(async (transaction) => {
+      const updated = await transaction.message.updateMany({ where: { id: created.messageId, status: "QUEUED" }, data: { status: "FAILED", failedAt: new Date(), failureReason: error instanceof Error ? error.message : "Public API billing failed", billingStatus: "BILLING_ERROR", billingError: error instanceof Error ? error.message : "Public API billing failed" } });
+      if (updated.count) await enqueueMessageWebhook(created.messageId, "message.failed", transaction);
+    }).catch(() => undefined);
     throw error;
   }
 }
@@ -290,11 +297,14 @@ export async function deliverPublicMessage(messageId: string, queueProcessingTok
     await prisma.$transaction(async (transaction) => {
       await transaction.message.update({ where: { id: message.id }, data: { metaMessageId: metaAccepted!.metaMessageId, status: "SENT", sentAt: metaAccepted!.sentAt, queueProcessingToken: null, queueProcessingAt: null, queueNextAttemptAt: null } });
       await transaction.conversation.update({ where: { id: message.conversationId }, data: { lastMessagePreview: preview, lastMessageAt: metaAccepted!.sentAt, phoneNumberId: metaAccepted!.phoneNumberId } });
+      await enqueueMessageWebhook(message.id, "message.sent", transaction);
     });
     return true;
   } catch (error) {
     if (metaAccepted) {
       await prisma.message.update({ where: { id: message.id }, data: { metaMessageId: metaAccepted.metaMessageId, status: "SENT", sentAt: metaAccepted.sentAt, queueProcessingToken: null, queueProcessingAt: null, queueNextAttemptAt: null, billingError: "Meta accepted the message but the response could not be persisted" } }).catch(() => undefined);
+      await enqueueMessageWebhook(message.id, "message.sent").catch((webhookError) => logger.error({ messageId: message.id, error: webhookError }, "Failed to queue the public API sent webhook"));
+      return true;
     }
     throw error;
   }

@@ -53,6 +53,11 @@ export type PublicApiKey = Prisma.PublicApiKeyModel
  */
 export type WebhookEndpoint = Prisma.WebhookEndpointModel
 /**
+ * Model WebhookDelivery
+ * 
+ */
+export type WebhookDelivery = Prisma.WebhookDeliveryModel
+/**
  * Model Contact
  * 
  */

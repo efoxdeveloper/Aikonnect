@@ -305,6 +305,7 @@ model Workspace {
   campaignRecipients       CampaignRecipient[]
   apiKeys                  PublicApiKey[]
   webhookEndpoints         WebhookEndpoint[]
+  webhookDeliveries        WebhookDelivery[]
   walletLedgerEntries      WalletLedgerEntry[]
   walletReservations       WalletReservation[]
   billingSettings          WorkspaceBillingSettings?
@@ -397,10 +398,37 @@ model WebhookEndpoint {
   updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
   workspace       Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   createdBy       User?     @relation("WebhookEndpointCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  deliveries      WebhookDelivery[]
 
   @@index([workspaceId, active, createdAt])
   @@index([createdById])
   @@map("webhook_endpoints")
+}
+
+model WebhookDelivery {
+  id                String          @id @default(uuid()) @db.Uuid
+  endpointId        String          @map("endpoint_id") @db.Uuid
+  workspaceId       String          @map("workspace_id") @db.Uuid
+  messageId         String?         @map("message_id") @db.Uuid
+  eventId           String          @map("event_id") @db.VarChar(180)
+  eventType         String          @map("event_type") @db.VarChar(80)
+  payload           Json            @db.JsonB
+  status            String          @default("PENDING") @db.VarChar(20)
+  attemptCount      Int             @default(0) @map("attempt_count")
+  nextAttemptAt     DateTime        @default(now()) @map("next_attempt_at") @db.Timestamptz(3)
+  processingToken   String?         @map("processing_token") @db.Uuid
+  processingAt      DateTime?       @map("processing_at") @db.Timestamptz(3)
+  lastError         String?         @map("last_error") @db.Text
+  deliveredAt       DateTime?       @map("delivered_at") @db.Timestamptz(3)
+  createdAt         DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+  endpoint          WebhookEndpoint @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+  workspace         Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([endpointId, eventId])
+  @@index([status, nextAttemptAt, processingAt, createdAt], map: "webhook_deliveries_queue_idx")
+  @@index([workspaceId, messageId, createdAt])
+  @@map("webhook_deliveries")
 }
 
 model Contact {
