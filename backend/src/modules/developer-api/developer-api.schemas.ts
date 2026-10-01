@@ -16,19 +16,35 @@ export const sendMessageSchema = z.object({
 
 const publicTextValue = z.string().trim().max(255).optional().transform((value) => value || undefined);
 const publicCallbackData = z.string().trim().min(1, "callbackData is required").max(255);
+const publicMediaUrl = z.string().trim().max(2_048).url("mediaUrl must be a valid URL").refine((value) => /^https?:\/\//i.test(value), "mediaUrl must use http or https");
 
-export const publicTextMessageSchema = z.object({
+const publicMessageBase = z.object({
   userId: publicTextValue,
   fullPhoneNumber: phone,
   callbackData: publicCallbackData,
+});
+
+export const publicTextMessageSchema = publicMessageBase.extend({
   type: z.enum(["Text", "text"]).transform(() => "Text" as const),
   data: z.object({
     message: z.string().trim().min(1, "Message text cannot be empty").max(100_000),
   }),
 });
 
+export const publicImageMessageSchema = publicMessageBase.extend({
+  type: z.enum(["Image", "image"]).transform(() => "Image" as const),
+  data: z.object({
+    message: z.string().trim().max(1_024).optional().transform((value) => value || undefined),
+    mediaUrl: publicMediaUrl,
+  }),
+});
+
+export const publicMessageSchema = z.union([publicTextMessageSchema, publicImageMessageSchema]);
+
 export type SendMessageInput = z.infer<typeof sendMessageSchema>;
 export type PublicTextMessageInput = z.infer<typeof publicTextMessageSchema>;
+export type PublicImageMessageInput = z.infer<typeof publicImageMessageSchema>;
+export type PublicMessageInput = z.infer<typeof publicMessageSchema>;
 
 export function requestIdempotencyKey(value: string | string[] | undefined) {
   const key = Array.isArray(value) ? value[0] : value;

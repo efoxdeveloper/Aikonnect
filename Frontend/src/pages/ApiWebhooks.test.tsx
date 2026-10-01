@@ -105,6 +105,9 @@ describe("ApiWebhooks", () => {
     expect(screen.getByTestId("api-doc-public-message")).toHaveTextContent(
       "callbackData",
     );
+    expect(screen.getByTestId("api-doc-public-image-message")).toHaveTextContent(
+      "mediaUrl",
+    );
     fireEvent.click(screen.getByRole("tab", { name: "Webhooks" }));
     expect(screen.getByTestId("webhooks-section")).toHaveTextContent(
       "verify the HMAC signature",

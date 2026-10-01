@@ -12,7 +12,7 @@ Object.assign(process.env, {
 
 const { prisma } = await import("../src/database/prisma.js");
 const { authenticateDeveloperApiKey, requireDeveloperScope } = await import("../src/middleware/developer-api-key.js");
-const { publicTextMessageSchema, requestIdempotencyKey, sendMessageSchema } = await import("../src/modules/developer-api/developer-api.schemas.js");
+const { publicImageMessageSchema, publicMessageSchema, publicTextMessageSchema, requestIdempotencyKey, sendMessageSchema } = await import("../src/modules/developer-api/developer-api.schemas.js");
 
 test("developer send schema accepts a template request and rejects malformed recipients", () => {
   const parsed = sendMessageSchema.parse({ to: "919876543210", templateKey: "order-update", parameters: ["123"] });
@@ -34,6 +34,16 @@ test("Interakt-compatible public message schema accepts the simple text payload"
   assert.equal(publicTextMessageSchema.safeParse({ fullPhoneNumber: "+919876543210", type: "Text", data: { message: "Hello" } }).success, false);
   assert.equal(publicTextMessageSchema.safeParse({ fullPhoneNumber: "+919876543210", type: "Image", data: { message: "Hello" } }).success, false);
   assert.equal(publicTextMessageSchema.safeParse({ fullPhoneNumber: "+919876543210", type: "Text", data: { message: "" } }).success, false);
+});
+
+test("Interakt-compatible public message schema accepts an image URL and optional caption", () => {
+  const input = { fullPhoneNumber: "+919876543210", callbackData: "order-image-123", type: "Image", data: { message: "Your receipt", mediaUrl: "https://cdn.example.com/receipt.jpg" } };
+  const parsed = publicImageMessageSchema.parse(input);
+  assert.equal(parsed.type, "Image");
+  assert.equal(parsed.data.mediaUrl, input.data.mediaUrl);
+  assert.equal(publicMessageSchema.safeParse(input).success, true);
+  assert.equal(publicMessageSchema.safeParse({ ...input, data: { ...input.data, mediaUrl: "file:///receipt.jpg" } }).success, false);
+  assert.equal(publicMessageSchema.safeParse({ ...input, data: { ...input.data, mediaUrl: "not-a-url" } }).success, false);
 });
 
 test("developer API key authentication enforces validity and scopes", async () => {

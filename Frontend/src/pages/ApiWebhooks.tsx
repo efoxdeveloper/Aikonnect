@@ -94,6 +94,38 @@ const apiDocs: ApiDoc[] = [
       "The type must be Text and fullPhoneNumber must include the country code.",
     ],
   },
+  {
+    id: "public-image-message",
+    method: "POST",
+    path: "/message",
+    title: "Send a WhatsApp image message",
+    summary: "Send an image with an optional caption using the same Interakt-compatible endpoint.",
+    request: `{
+  "userId": "customer-123",
+  "fullPhoneNumber": "+919876543210",
+  "callbackData": "order-12345-image-1",
+  "type": "Image",
+  "data": {
+    "message": "Your receipt",
+    "mediaUrl": "https://cdn.example.com/receipt.jpg"
+  }
+}`,
+    response: `{
+  "success": true,
+  "data": {
+    "messageId": "message_123",
+    "metaMessageId": "wamid.HBgMOTE5ODc2NTQzMjEwFQIAERgS...",
+    "userId": "customer-123",
+    "callbackData": "order-12345-image-1",
+    "status": "sent"
+  }
+}`,
+    notes: [
+      "mediaUrl must be a publicly reachable http or https image URL that Meta can download.",
+      "The image caption is optional; use callbackData once per new image message.",
+      "The image is billed and tracked in the same workspace wallet as text messages.",
+    ],
+  },
 ];
 
 function ApiDocumentation() {

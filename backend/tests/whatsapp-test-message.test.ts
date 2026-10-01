@@ -10,7 +10,8 @@ Object.assign(process.env, {
   META_TOKEN_ENCRYPTION_KEY: "test-token-encryption-key-for-tests-32chars",
   META_GRAPH_API_VERSION: "v25.0", LOG_LEVEL: "silent",
 });
-const { sendTestMessage, sendWhatsAppTemplateMessage, buildWhatsAppTemplateComponents, disconnectWhatsApp, downloadWhatsAppMedia } = await import("../src/modules/whatsapp/whatsapp.service.js");
+const { sendTestMessage, sendWhatsAppImageMessage, sendWhatsAppTemplateMessage, buildWhatsAppTemplateComponents, disconnectWhatsApp, downloadWhatsAppMedia } = await import("../src/modules/whatsapp/whatsapp.service.js");
+const { env } = await import("../src/config/env.js");
 const { createMessage } = await import("../src/modules/conversations/conversation.service.js");
 const { createMessageSchema } = await import("../src/modules/conversations/conversation.schemas.js");
 const { prisma } = await import("../src/database/prisma.js");
@@ -199,6 +200,41 @@ test("campaign template messages use the approved Meta template payload", async 
   });
   const result = await sendWhatsAppTemplateMessage("workspace", "+919876543210", "welcome_customer", "en_US", [{ type: "text", text: "Pawan" }]);
   assert.equal(result.metaMessageId, "wamid.campaign");
+  assert.equal(result.phoneNumberId, "phone");
+});
+
+test("public image messages send a Meta-downloadable link with an optional caption", async (t) => {
+  const { encryptSecret } = await import("../src/utils/crypto.js");
+  const previousSystemToken = env.META_SYSTEM_USER_ACCESS_TOKEN;
+  delete (env as any).META_SYSTEM_USER_ACCESS_TOKEN;
+  t.after(() => {
+    if (previousSystemToken) env.META_SYSTEM_USER_ACCESS_TOKEN = previousSystemToken;
+  });
+  let requestUrl = "";
+  let requestHeaders: Record<string, string> | undefined;
+  let requestBody: unknown;
+  stub(t, prisma.whatsAppBusinessAccount, "findFirst", async () => ({
+    encryptedAccessToken: encryptSecret("business-token", "test-token-encryption-key-for-tests-32chars"),
+    phoneNumbers: [{ id: "phone", metaPhoneNumberId: "meta-phone" }],
+  }));
+  stub(t, globalThis, "fetch", async (input: string | URL, init?: RequestInit) => {
+    requestUrl = String(input);
+    requestHeaders = init?.headers as Record<string, string>;
+    requestBody = JSON.parse(String(init?.body));
+    return new Response(JSON.stringify({ messages: [{ id: "wamid.public-image" }] }), { status: 200 });
+  });
+
+  const result = await sendWhatsAppImageMessage("workspace", "+919876543210", "https://cdn.example.com/receipt.jpg", "Your receipt");
+  assert.match(requestUrl, /\/v25\.0\/meta-phone\/messages$/);
+  assert.equal(requestHeaders?.authorization, "Bearer business-token");
+  assert.deepEqual(requestBody, {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: "919876543210",
+    type: "image",
+    image: { link: "https://cdn.example.com/receipt.jpg", caption: "Your receipt" },
+  });
+  assert.equal(result.metaMessageId, "wamid.public-image");
   assert.equal(result.phoneNumberId, "phone");
 });
 
