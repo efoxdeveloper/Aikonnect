@@ -58,7 +58,7 @@ const disconnectedData = {
 describe("WhatsAppAccountSetup", () => {
   beforeEach(() => {
     vi.mocked(useWorkspaceSetup).mockReturnValue({ data: connectedData, loading: false, error: null, refresh: vi.fn() });
-    vi.mocked(useWhatsAppEmbeddedSignup).mockReturnValue({ connecting: false, error: null, pinRequired: false, submitRegistrationPin: vi.fn(), cancelRegistrationPin: vi.fn(), start: vi.fn() });
+    vi.mocked(useWhatsAppEmbeddedSignup).mockReturnValue({ connecting: false, syncing: false, error: null, pinRequired: false, submitRegistrationPin: vi.fn(), cancelRegistrationPin: vi.fn(), start: vi.fn() });
   });
 
   it("uses the authenticated page frame and concise connected account content", () => {
@@ -75,7 +75,7 @@ describe("WhatsAppAccountSetup", () => {
   it("opens the connection comparison and launches Meta from Proceed", async () => {
     const start = vi.fn();
     vi.mocked(useWorkspaceSetup).mockReturnValue({ data: disconnectedData, loading: false, error: null, refresh: vi.fn() });
-    vi.mocked(useWhatsAppEmbeddedSignup).mockReturnValue({ connecting: false, error: null, pinRequired: false, submitRegistrationPin: vi.fn(), cancelRegistrationPin: vi.fn(), start });
+    vi.mocked(useWhatsAppEmbeddedSignup).mockReturnValue({ connecting: false, syncing: false, error: null, pinRequired: false, submitRegistrationPin: vi.fn(), cancelRegistrationPin: vi.fn(), start });
     render(<AuthContext.Provider value={auth}><MemoryRouter><WhatsAppAccountSetup /></MemoryRouter></AuthContext.Provider>);
 
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
@@ -87,5 +87,12 @@ describe("WhatsAppAccountSetup", () => {
     fireEvent.click(screen.getByRole("button", { name: "Proceed with New Number" }));
     expect(start).toHaveBeenCalledWith("new-number");
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  });
+
+  it("shows a separate progress dialog while the finished Meta signup is being saved", () => {
+    vi.mocked(useWhatsAppEmbeddedSignup).mockReturnValue({ connecting: true, syncing: true, error: null, pinRequired: false, submitRegistrationPin: vi.fn(), cancelRegistrationPin: vi.fn(), start: vi.fn() });
+    render(<AuthContext.Provider value={auth}><MemoryRouter><WhatsAppAccountSetup /></MemoryRouter></AuthContext.Provider>);
+
+    expect(screen.getByRole("dialog", { name: "Connecting Marento to Meta" })).toHaveTextContent("setting up your WhatsApp account");
   });
 });

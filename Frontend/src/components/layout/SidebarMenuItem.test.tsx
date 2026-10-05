@@ -1,6 +1,8 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
+import { useEffect } from "react";
+import type { ReactNode } from "react";
 import { House } from "@animateicons/react/lucide";
 import { SidebarMenuItem } from "@/components/layout/SidebarMenuItem";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -16,6 +18,12 @@ function MobileState() {
   return <><button type="button" onClick={() => setOpenMobile(true)}>Open mobile navigation</button><output data-testid="mobile-state">{String(openMobile)}</output></>;
 }
 
+function ExpandedState({ children }: { children: ReactNode }) {
+  const { setSidebarHovered } = useSidebar();
+  useEffect(() => setSidebarHovered(true), [setSidebarHovered]);
+  return children;
+}
+
 describe("SidebarMenuItem", () => {
   const originalWidth = window.innerWidth;
 
@@ -29,7 +37,7 @@ describe("SidebarMenuItem", () => {
   });
 
   it("marks the current route immediately and exposes the page relationship", () => {
-    render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><SidebarMenuItem item={item} /></SidebarProvider></MemoryRouter>);
+    render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><ExpandedState><SidebarMenuItem item={item} /></ExpandedState></SidebarProvider></MemoryRouter>);
 
     const link = screen.getByRole("link", { name: "Dashboard" });
     expect(link).toHaveAttribute("aria-current", "page");
@@ -60,7 +68,7 @@ describe("SidebarMenuItem", () => {
 
   it("uses the application Inter font variable for sidebar labels", () => {
     Object.defineProperty(window, "innerWidth", { configurable: true, value: 1280, writable: true });
-    render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><SidebarMenuItem item={item} /></SidebarProvider></MemoryRouter>);
+    render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><ExpandedState><SidebarMenuItem item={item} /></ExpandedState></SidebarProvider></MemoryRouter>);
 
     expect(screen.getByText("Dashboard")).toHaveStyle({ fontFamily: "var(--font-sans)" });
   });
@@ -76,7 +84,7 @@ describe("SidebarMenuItem", () => {
 
   it("keeps submenu rows compact without a vertical rail", () => {
     Object.defineProperty(window, "innerWidth", { configurable: true, value: 1280, writable: true });
-    render(<MemoryRouter initialEntries={["/reports"]}><SidebarProvider><SidebarMenuItem item={nestedItem} /></SidebarProvider></MemoryRouter>);
+    render(<MemoryRouter initialEntries={["/reports"]}><SidebarProvider><ExpandedState><SidebarMenuItem item={nestedItem} /></ExpandedState></SidebarProvider></MemoryRouter>);
 
     const child = screen.getByRole("link", { name: "Overview" });
     expect(child).toHaveStyle({ minHeight: "28px" });

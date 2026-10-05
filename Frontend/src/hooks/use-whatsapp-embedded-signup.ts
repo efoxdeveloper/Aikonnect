@@ -15,6 +15,7 @@ type UseWhatsAppEmbeddedSignupOptions = {
 
 export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnected }: UseWhatsAppEmbeddedSignupOptions) {
   const [connecting, setConnecting] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const codeRef = useRef<string | null>(null);
   const signupDataRef = useRef<SignupData | null>(null);
@@ -34,6 +35,7 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
     if (!workspaceId || !accessToken || !code || !signupData || submittedRef.current) return;
     if (mode === "new-number" && !/^\d{6}$/.test(registrationPin ?? "")) return;
     setConnecting(true);
+    setSyncing(true);
     setError(null);
     submittedRef.current = true;
     try {
@@ -54,10 +56,12 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
       setError(message);
       toast.error(message);
       setConnecting(false);
+      setSyncing(false);
       return;
     }
     // A refresh failure must not turn a successful Meta connection into a connection error.
     try { await onConnected?.(); } catch { /* The next page refresh can retry loading workspace status. */ }
+    setSyncing(false);
   }, [accessToken, onConnected, workspaceId]);
 
   useEffect(() => {
@@ -76,6 +80,7 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
         const providerMessage = typeof details?.error_message === "string" ? details.error_message : undefined;
         setError(providerMessage ?? (eventName === "ERROR" ? "Meta could not complete WhatsApp Business App onboarding." : "WhatsApp Embedded Signup was cancelled."));
         setConnecting(false);
+        setSyncing(false);
         return;
       }
       if (!eventName.startsWith("FINISH")) return;
@@ -85,6 +90,7 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
       if (!wabaId) {
         setError("Meta did not return a WhatsApp Business Account.");
         setConnecting(false);
+        setSyncing(false);
         return;
       }
       signupDataRef.current = { wabaId, ...(phoneNumberId ? { phoneNumberId } : {}), ...(typeof details?.business_id === "string" ? { businessId: details.business_id } : {}) };
@@ -103,6 +109,7 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
     modeRef.current = mode;
     setError(null);
     setConnecting(true);
+    setSyncing(false);
     setPinRequired(false);
     codeRef.current = null;
     signupDataRef.current = null;
@@ -120,6 +127,7 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
         if (!code) {
           setError("Meta sign-in was cancelled or did not return an authorization code.");
           setConnecting(false);
+          setSyncing(false);
           return;
         }
         codeRef.current = code;
@@ -135,6 +143,7 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : "Meta Embedded Signup could not be started.");
       setConnecting(false);
+      setSyncing(false);
     }
   }, [submitSignup]);
 
@@ -147,5 +156,5 @@ export function useWhatsAppEmbeddedSignup({ workspaceId, accessToken, onConnecte
     setError(null);
   }, []);
 
-  return { connecting, error, pinRequired, submitRegistrationPin, cancelRegistrationPin, start };
+  return { connecting, syncing, error, pinRequired, submitRegistrationPin, cancelRegistrationPin, start };
 }

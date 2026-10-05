@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { WhatsAppAccountSetup } from "@/pages/WhatsAppAccountSetup";
-import { WorkspaceSetupDashboard } from "@/pages/WorkspaceSetupDashboard";
+import { DashboardOverview } from "@/pages/DashboardOverview";
 import { RoleManagement } from "@/pages/RoleManagement";
 import { TeamMembers } from "@/pages/TeamMembers";
 import { WorkspaceSettings } from "@/pages/WorkspaceSettings";
@@ -16,7 +16,7 @@ import { Integrations } from "@/pages/Integrations";
 
 export function Dashboard() {
   const { pathname } = useLocation();
-  if (pathname === "/dashboard") return <WorkspaceSetupDashboard />;
+  if (pathname === "/dashboard") return <DashboardOverview />;
   if (pathname === "/whatsapp-account") return <WhatsAppAccountSetup />;
   if (pathname === "/team-members") return <TeamMembers />;
   if (pathname === "/team-members/roles") return <RoleManagement />;

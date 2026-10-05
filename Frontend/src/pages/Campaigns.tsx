@@ -245,7 +245,12 @@ function FilterMultiSelect({
         aria-label={`${label} filter`}
         aria-expanded={open}
         onClick={() => setOpen((current) => !current)}
-        className="flex h-10 items-center gap-1.5 rounded-md px-2 text-[13px] text-[var(--text-primary)] hover:bg-[var(--brand-soft)]"
+        className={cn(
+          "flex h-10 items-center gap-1.5 rounded-md border px-2 text-[13px] transition-colors",
+          values.length || open
+            ? "border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--brand-hover)] hover:bg-[var(--brand-soft)]"
+            : "border-[var(--border)] bg-white text-[var(--text-primary)] hover:bg-[#f7f8f7]",
+        )}
       >
         <span className="text-[var(--text-secondary)]">{icon}</span>
         <span>{displayLabel}</span>
@@ -1141,7 +1146,7 @@ export function Campaigns() {
   };
   return (
     <div
-      className="flex h-full flex-col overflow-hidden bg-white"
+      className="flex h-full flex-col overflow-hidden bg-[var(--page-background)]"
       data-testid="campaign-page"
     >
       <div
@@ -1199,7 +1204,7 @@ export function Campaigns() {
               {search.length}/200
             </span>
           </div>
-          <div className="flex h-10 items-center rounded-md bg-[var(--brand-soft)] px-2.5 text-[13px] font-medium text-[var(--brand-hover)]">
+          <div className="flex h-10 items-center rounded-md border border-[var(--border)] bg-white px-2.5 text-[13px] font-medium text-[var(--brand-hover)]">
             <MessageCircle size={15} className="mr-1.5" />
             WhatsApp
             <ChevronDown size={13} className="ml-1.5" />
@@ -1243,7 +1248,7 @@ export function Campaigns() {
           />
         </div>
         <div
-          className="mt-3 flex flex-none border border-[var(--border)]"
+          className="mt-3 flex flex-none divide-x divide-[var(--border-soft)] overflow-hidden rounded-md border border-[var(--border)] bg-white shadow-[0_1px_3px_rgba(31,42,55,.06)]"
           role="tablist"
           aria-label="Campaign type"
         >
@@ -1253,10 +1258,10 @@ export function Campaigns() {
             aria-selected={kind === "one_time"}
             onClick={() => setKind("one_time")}
             className={cn(
-              "h-[51px] flex-1 border-b-2 px-4 text-sm",
+              "h-[51px] flex-1 border-b-2 px-4 text-sm font-medium transition-colors",
               kind === "one_time"
                 ? "border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--brand)]"
-                : "border-transparent text-[var(--text-secondary)] hover:bg-[var(--page-background)]",
+                : "border-transparent bg-white text-[var(--text-secondary)] hover:bg-[#f7f8f7] hover:text-[var(--text-primary)]",
             )}
           >
             One Time Campaigns
@@ -1267,10 +1272,10 @@ export function Campaigns() {
             aria-selected={kind === "ongoing"}
             onClick={() => setKind("ongoing")}
             className={cn(
-              "h-[51px] flex-1 border-b-2 px-4 text-sm",
+              "h-[51px] flex-1 border-b-2 px-4 text-sm font-medium transition-colors",
               kind === "ongoing"
                 ? "border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--brand)]"
-                : "border-transparent text-[var(--text-secondary)] hover:bg-[var(--page-background)]",
+                : "border-transparent bg-white text-[var(--text-secondary)] hover:bg-[#f7f8f7] hover:text-[var(--text-primary)]",
             )}
           >
             Ongoing Campaigns
@@ -1281,10 +1286,10 @@ export function Campaigns() {
             aria-selected={kind === "api"}
             onClick={() => setKind("api")}
             className={cn(
-              "h-[51px] flex-1 border-b-2 px-4 text-sm",
+              "h-[51px] flex-1 border-b-2 px-4 text-sm font-medium transition-colors",
               kind === "api"
                 ? "border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--brand)]"
-                : "border-transparent text-[var(--text-secondary)] hover:bg-[var(--page-background)]",
+                : "border-transparent bg-white text-[var(--text-secondary)] hover:bg-[#f7f8f7] hover:text-[var(--text-primary)]",
             )}
           >
             API campaigns

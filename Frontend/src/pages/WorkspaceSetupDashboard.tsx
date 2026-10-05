@@ -70,7 +70,7 @@ function SetupStep({ icon: Icon, title, description, complete, available, active
 }
 
 function SetupLoading() {
-  return <div className="mx-auto max-w-[1180px] animate-pulse px-5 py-7 sm:px-8"><div className="h-8 w-64 rounded-md bg-[var(--gray-200)]" /><div className="mt-6 h-36 rounded-md bg-[var(--gray-200)]" /><div className="mt-5 h-96 rounded-md bg-[var(--gray-200)]" /></div>;
+  return <div className="mx-auto w-full max-w-[1400px] animate-pulse px-5 py-7 sm:px-8"><div className="h-8 w-64 rounded-md bg-[var(--gray-200)]" /><div className="mt-6 h-36 rounded-md bg-[var(--gray-200)]" /><div className="mt-5 h-96 rounded-md bg-[var(--gray-200)]" /></div>;
 }
 
 function metaStatusLabel(value: string | null | undefined) {
@@ -114,7 +114,7 @@ export function WorkspaceSetupDashboard() {
 
   if (loading) return <SetupLoading />;
   if (!membership) return <div className="p-8 text-sm text-[var(--text-secondary)]">No workspace is available for this account.</div>;
-  if (error || !data) return <div className="mx-auto max-w-[1180px] px-5 py-10 sm:px-8"><div className="rounded-md border border-[#f5dada] bg-[var(--danger-soft)] p-5 text-sm text-[var(--danger)]">{error ?? "Workspace setup is unavailable."}<button type="button" onClick={() => void refresh()} className="ml-3 font-medium underline">Try again</button></div></div>;
+  if (error || !data) return <div className="mx-auto w-full max-w-[1400px] px-5 py-10 sm:px-8"><div className="rounded-md border border-[#f5dada] bg-[var(--danger-soft)] p-5 text-sm text-[var(--danger)]">{error ?? "Workspace setup is unavailable."}<button type="button" onClick={() => void refresh()} className="ml-3 font-medium underline">Try again</button></div></div>;
 
   const { progress } = data;
   const steps: StepProps[] = [
@@ -134,7 +134,7 @@ export function WorkspaceSetupDashboard() {
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden bg-[var(--page-background)]">
       <div className="min-h-0 flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-[1180px] px-5 py-6 sm:px-8 sm:py-8">
+        <div data-testid="workspace-setup-content" className="mx-auto w-full max-w-[1400px] px-5 py-6 sm:px-8 sm:py-8">
       <section className="relative isolate min-h-[190px] overflow-hidden rounded-xl border border-[#d8f0e5] bg-gradient-to-br from-[#f0fcf7] via-[#e2f8ef] to-[#f8fcfa] shadow-[0_3px_12px_rgba(30,40,55,.045)]">
         <div className="pointer-events-none absolute -left-16 -top-20 size-56 rounded-full bg-[#c9f1df]/60 blur-2xl" />
         <div className="pointer-events-none absolute right-44 top-[-100px] size-64 rounded-full bg-[#d5f7e8]/80 blur-2xl" />

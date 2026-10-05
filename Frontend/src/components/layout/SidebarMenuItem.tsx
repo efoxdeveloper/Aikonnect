@@ -60,7 +60,7 @@ export function SidebarMenuItem({ item }: { item: NavigationItem }) {
       {hasChildren && (open ? <ChevronDown size={16} duration={0.6} /> : <ChevronRight size={16} duration={0.6} />)}
     </span>
   );
-  const label = state === "collapsed" ? null : <ListItemText primary={item.title} slotProps={{ primary: { noWrap: true, sx: { fontSize: 14, lineHeight: "20px", fontFamily: "var(--font-sans)" } } }} />;
+  const label = state === "collapsed" ? null : <ListItemText primary={item.title} slotProps={{ primary: { className: "truncate leading-5", noWrap: true, sx: { fontSize: 14, lineHeight: "20px", fontFamily: "var(--font-sans)" } } }} />;
   const common = {
     "data-active": active ? "true" : undefined,
     onMouseEnter: () => iconRef.current?.startAnimation(),

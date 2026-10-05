@@ -86,6 +86,7 @@ describe("workspace setup experience", () => {
     renderWithAuth(<WorkspaceSetupDashboard />, "/dashboard");
 
     expect(await screen.findByRole("heading", { name: "Welcome back, Pawan!" })).toBeInTheDocument();
+    expect(screen.getByTestId("workspace-setup-content")).toHaveClass("w-full", "max-w-[1400px]");
     expect(screen.getByText("25%")).toBeInTheDocument();
     expect(screen.getByRole("progressbar", { name: "Workspace setup progress" })).toHaveAttribute("aria-valuenow", "25");
     expect(screen.getByText("Your setup progress")).toBeInTheDocument();

@@ -19,8 +19,22 @@ describe("SidebarVersion", () => {
     render(<SidebarProvider><SidebarVersion /></SidebarProvider>);
 
     const version = screen.getByTestId("app-version");
-    expect(version).toHaveTextContent(/^Version \d+\.\d+\.\d+$/);
+    expect(version).toHaveTextContent(/^v$/);
     expect(version).toHaveAttribute("title", expect.stringMatching(/^Application version \d+\.\d+\.\d+ · build /));
+  });
+
+  it("expands the collapsed rail on hover without changing its navigation contract", () => {
+    render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><AppSidebar /></SidebarProvider></MemoryRouter>);
+
+    const sidebar = screen.getByTestId("app-sidebar");
+    expect(sidebar).toHaveAttribute("data-state", "collapsed");
+    expect(screen.queryByText("Dashboard")).not.toBeInTheDocument();
+    fireEvent.mouseEnter(sidebar);
+    expect(screen.getByText("Dashboard")).toBeInTheDocument();
+    expect(sidebar).toHaveAttribute("data-state", "expanded");
+    fireEvent.mouseLeave(sidebar);
+    expect(sidebar).toHaveAttribute("data-state", "collapsed");
+    expect(screen.queryByText("Dashboard")).not.toBeInTheDocument();
   });
 
   it("does not render the workspace switcher", () => {
@@ -89,6 +103,7 @@ describe("SidebarVersion", () => {
 
     render(<AuthContext.Provider value={auth}><MemoryRouter initialEntries={["/admin/workspaces"]}><SidebarProvider><AppSidebar platformOnly /></SidebarProvider></MemoryRouter></AuthContext.Provider>);
 
+    fireEvent.mouseEnter(screen.getByTestId("app-sidebar"));
     expect(screen.getByText("Workspaces")).toBeInTheDocument();
     expect(screen.getByText("Users")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Operations" }));

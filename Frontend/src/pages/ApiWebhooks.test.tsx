@@ -85,6 +85,9 @@ describe("ApiWebhooks", () => {
     expect(screen.getByTestId("api-webhooks-page")).toHaveClass(
       "overflow-hidden",
     );
+    expect(screen.getByTestId("api-webhooks-header").firstElementChild).toHaveClass("max-w-[1400px]");
+    expect(screen.getByTestId("api-webhooks-tabs").firstElementChild).toHaveClass("max-w-[1400px]", "bg-white", "divide-x", "divide-[var(--border-soft)]");
+    expect(screen.getByTestId("api-webhooks-scroll-region").firstElementChild).toHaveClass("w-full", "max-w-[1400px]");
     expect(await screen.findByText("Shopify integration")).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "API Keys" })).toHaveAttribute(
       "aria-selected",

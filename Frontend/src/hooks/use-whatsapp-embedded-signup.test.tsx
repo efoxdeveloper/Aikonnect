@@ -80,12 +80,35 @@ test("launches standard signup for a new number and registers it after PIN entry
   }));
   act(() => { void result.current.submitRegistrationPin("123456"); });
   await waitFor(() => expect(result.current.connecting).toBe(true));
+  await waitFor(() => expect(result.current.syncing).toBe(true));
   await waitFor(() => expect(vi.mocked(apiRequest)).toHaveBeenCalledWith(
     "/workspaces/workspace-1/whatsapp/embedded-signup",
     expect.objectContaining({ method: "POST", body: JSON.stringify({ code: "new-number-code", mode: "new-number", wabaId: "waba-1", phoneNumberId: "phone-1", businessId: "business-1", pin: "123456" }) }),
   ));
   resolveRequest(undefined);
   await waitFor(() => expect(result.current.connecting).toBe(false));
+  await waitFor(() => expect(result.current.syncing).toBe(false));
+});
+
+test("shows the syncing state only after Meta finishes and while Marento saves the connection", async () => {
+  let resolveRequest: (value: undefined) => void = () => undefined;
+  vi.mocked(apiRequest).mockImplementationOnce(() => new Promise<undefined>((resolve) => {
+    resolveRequest = resolve;
+  }));
+  const { result } = renderHook(() => useWhatsAppEmbeddedSignup({ workspaceId: "workspace-1", accessToken: "access-token" }));
+
+  await result.current.start();
+  await waitFor(() => expect(result.current.connecting).toBe(true));
+  expect(result.current.syncing).toBe(false);
+  login.mock.calls[0]?.[0]({ authResponse: { code: "signup-code" } });
+  window.dispatchEvent(new MessageEvent("message", {
+    origin: "https://www.facebook.com",
+    data: JSON.stringify({ type: "WA_EMBEDDED_SIGNUP", event: "FINISH", data: { waba_id: "waba-1" } }),
+  }));
+
+  await waitFor(() => expect(result.current.syncing).toBe(true));
+  resolveRequest(undefined);
+  await waitFor(() => expect(result.current.syncing).toBe(false));
 });
 
 test("falls back to the existing Meta config for a new number when no separate config is set", async () => {

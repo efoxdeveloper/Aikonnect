@@ -45,7 +45,7 @@ describe("AppHeader", () => {
     window.localStorage.clear();
   });
 
-  it("places the compact workspace switcher in the navbar", () => {
+  it("keeps the navbar aligned to the collapsed sidebar rail", () => {
     render(
       <AuthContext.Provider value={auth}>
         <MemoryRouter initialEntries={["/dashboard"]}>
@@ -64,13 +64,10 @@ describe("AppHeader", () => {
     expect(screen.getByTestId("sidebar-brand-header")).toBeInTheDocument();
     expect(screen.getByTestId("sidebar-brand-header")).toHaveAttribute("aria-label", "Marento");
     expect(document.querySelector("[data-sidebar-workspace]")).not.toBeInTheDocument();
-    expect(screen.getByRole("banner")).toHaveClass("shadow-[0_4px_12px_rgba(16,24,20,0.10)]");
-    expect(screen.getByRole("banner")).not.toHaveClass("border-b");
+    expect(screen.getByRole("banner")).toHaveClass("border-b", "border-[var(--header-border)]");
   });
 
-  it("keeps the full brand header when the navigation is collapsed", () => {
-    window.localStorage.setItem("interakt-sidebar", "collapsed");
-
+  it("uses a compact brand mark because the navigation is collapsed by default", () => {
     render(
       <AuthContext.Provider value={auth}>
         <MemoryRouter initialEntries={["/dashboard"]}>
@@ -82,7 +79,7 @@ describe("AppHeader", () => {
     );
 
     const brandHeader = screen.getByTestId("sidebar-brand-header");
-    expect(brandHeader.parentElement).toHaveClass("w-[var(--sidebar-width)]");
-    expect(screen.getByRole("img", { name: "Marento" })).toHaveClass("h-10", "w-[220px]");
+    expect(brandHeader.parentElement).toHaveClass("w-[var(--sidebar-collapsed-width)]");
+    expect(screen.getByRole("img", { name: "Marento" })).toHaveClass("size-10");
   });
 });

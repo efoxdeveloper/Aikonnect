@@ -1,9 +1,7 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { AppHeader } from "./AppHeader";
-import { useSidebar } from "@/hooks/use-sidebar";
-import { cn } from "@/lib/utils";
 import { RequestProgress } from "./RequestProgress";
 
-function AppShellContent({ children }: { children: React.ReactNode }) { const { state } = useSidebar(); return <><AppSidebar /><AppHeader /><RequestProgress /><div className={cn("transition-[margin-left] duration-200 ease-out", state === "expanded" ? "md:ml-[var(--sidebar-collapsed-width)] xl:ml-[var(--sidebar-width)]" : "md:ml-[var(--sidebar-collapsed-width)]")}>{children}</div></>; }
+function AppShellContent({ children }: { children: React.ReactNode }) { return <><AppSidebar /><AppHeader /><RequestProgress /><div data-testid="app-shell-content" className="h-full min-h-0 min-w-0 md:ml-[var(--sidebar-collapsed-width)]">{children}</div></>; }
 export function AppShell({ children }: { children: React.ReactNode }) { return <SidebarProvider><AppShellContent>{children}</AppShellContent></SidebarProvider>; }

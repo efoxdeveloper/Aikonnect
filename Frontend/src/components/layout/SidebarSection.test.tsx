@@ -1,10 +1,19 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it } from "vitest";
 import { useState } from "react";
+import { useEffect } from "react";
+import type { ReactNode } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { useSidebar } from "@/hooks/use-sidebar";
 import { navigationGroups } from "@/config/navigation";
 import { SidebarSection } from "./SidebarSection";
+
+function ExpandedState({ children }: { children: ReactNode }) {
+  const { setSidebarHovered } = useSidebar();
+  useEffect(() => setSidebarHovered(true), [setSidebarHovered]);
+  return children;
+}
 
 describe("SidebarSection", () => {
   beforeEach(() => {
@@ -13,7 +22,7 @@ describe("SidebarSection", () => {
   });
 
   it("opens the active section automatically", () => {
-    render(<MemoryRouter initialEntries={["/campaigns"]}><SidebarProvider><SidebarSection group={navigationGroups[1]} /></SidebarProvider></MemoryRouter>);
+    render(<MemoryRouter initialEntries={["/campaigns"]}><SidebarProvider><ExpandedState><SidebarSection group={navigationGroups[1]} /></ExpandedState></SidebarProvider></MemoryRouter>);
 
     expect(screen.getByRole("link", { name: "Campaigns" })).toBeInTheDocument();
     const trigger = screen.getByRole("button", { name: /Marketing/ });
@@ -23,19 +32,19 @@ describe("SidebarSection", () => {
   });
 
   it("renders the primary Dashboard and Inbox items without a parent heading", () => {
-    render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><SidebarSection group={navigationGroups[0]} /></SidebarProvider></MemoryRouter>);
+    render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><ExpandedState><SidebarSection group={navigationGroups[0]} /></ExpandedState></SidebarProvider></MemoryRouter>);
 
     expect(screen.getByRole("link", { name: "Dashboard" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Inbox" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Main/ })).not.toBeInTheDocument();
   });
 
-  it("allows an inactive section to reveal its submenu", () => {
-    render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><SidebarSection group={navigationGroups[1]} /></SidebarProvider></MemoryRouter>);
+  it("allows an inactive section to reveal its submenu", async () => {
+    render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><ExpandedState><SidebarSection group={navigationGroups[1]} /></ExpandedState></SidebarProvider></MemoryRouter>);
 
     const trigger = screen.getByRole("button", { name: /Marketing/ });
     expect(trigger).toHaveAttribute("aria-expanded", "false");
-    expect(screen.queryByRole("link", { name: "Campaigns" })).not.toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole("link", { name: "Campaigns" })).not.toBeInTheDocument());
     fireEvent.click(trigger);
     expect(screen.getByRole("link", { name: "Campaigns" })).toBeInTheDocument();
   });
@@ -49,7 +58,7 @@ describe("SidebarSection", () => {
       </>;
     }
 
-    render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><Accordion /></SidebarProvider></MemoryRouter>);
+    render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><ExpandedState><Accordion /></ExpandedState></SidebarProvider></MemoryRouter>);
     fireEvent.click(screen.getByRole("button", { name: /Sales & CRM/ }));
     expect(screen.getByRole("button", { name: /Marketing/ })).toHaveAttribute("aria-expanded", "false");
     expect(screen.getByRole("button", { name: /Sales & CRM/ })).toHaveAttribute("aria-expanded", "true");

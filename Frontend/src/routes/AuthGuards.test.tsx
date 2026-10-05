@@ -117,6 +117,72 @@ describe("ProtectedRoute", () => {
     );
     expect(screen.getByRole("heading", { name: "Onboarding" })).toBeInTheDocument();
   });
+
+  it("does not re-run organization onboarding when switching to another workspace in the same tenant", () => {
+    const auth = authValue("authenticated");
+    if (!auth.user) throw new Error("Expected an authenticated test user");
+    auth.user.memberships = [
+      {
+        id: "membership-1",
+        workspace: { id: "workspace-1", tenantId: "tenant-1", name: "Lotus College", slug: "lotus-college", country: "India", timezone: "Asia/Kolkata", onboardingCompletedAt: "2026-08-22T00:00:00.000Z" },
+        role: { id: "role-1", name: "Owner", slug: "owner", permissions: ["workspace.update"] },
+      },
+      {
+        id: "membership-2",
+        workspace: { id: "workspace-2", tenantId: "tenant-1", name: "LKIS School", slug: "lkis-school", country: "India", timezone: "Asia/Kolkata", onboardingCompletedAt: null },
+        role: { id: "role-1", name: "Owner", slug: "owner", permissions: ["workspace.update"] },
+      },
+    ];
+    window.localStorage.setItem("interakt.activeWorkspaceId", "workspace-2");
+    render(
+      <AuthContext.Provider value={auth}>
+        <MemoryRouter initialEntries={["/dashboard"]}>
+          <Routes>
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<h1>Dashboard</h1>} />
+              <Route path="/onboarding" element={<h1>Onboarding</h1>} />
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </AuthContext.Provider>,
+    );
+    expect(screen.getByRole("heading", { name: "Dashboard" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Onboarding" })).not.toBeInTheDocument();
+    window.localStorage.removeItem("interakt.activeWorkspaceId");
+  });
+
+  it("redirects away from onboarding when the active workspace's organization is already onboarded", () => {
+    const auth = authValue("authenticated");
+    if (!auth.user) throw new Error("Expected an authenticated test user");
+    auth.user.memberships = [
+      {
+        id: "membership-1",
+        workspace: { id: "workspace-1", tenantId: "tenant-1", name: "Lotus College", slug: "lotus-college", country: "India", timezone: "Asia/Kolkata", onboardingCompletedAt: "2026-08-22T00:00:00.000Z" },
+        role: { id: "role-1", name: "Owner", slug: "owner", permissions: ["workspace.update"] },
+      },
+      {
+        id: "membership-2",
+        workspace: { id: "workspace-2", tenantId: "tenant-1", name: "LKIS School", slug: "lkis-school", country: "India", timezone: "Asia/Kolkata", onboardingCompletedAt: null },
+        role: { id: "role-1", name: "Owner", slug: "owner", permissions: ["workspace.update"] },
+      },
+    ];
+    window.localStorage.setItem("interakt.activeWorkspaceId", "workspace-2");
+    render(
+      <AuthContext.Provider value={auth}>
+        <MemoryRouter initialEntries={["/onboarding"]}>
+          <Routes>
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<h1>Dashboard</h1>} />
+              <Route path="/onboarding" element={<h1>Onboarding</h1>} />
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </AuthContext.Provider>,
+    );
+    expect(screen.getByRole("heading", { name: "Dashboard" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Onboarding" })).not.toBeInTheDocument();
+    window.localStorage.removeItem("interakt.activeWorkspaceId");
+  });
 });
 
 describe("PublicOnlyRoute", () => {

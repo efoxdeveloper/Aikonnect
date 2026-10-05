@@ -60,7 +60,9 @@ export function ProtectedRoute() {
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
   if (!user?.emailVerifiedAt) return <Navigate to="/verify-email" replace />;
-  if ((!user.platformRole || user.platformRole === "NONE") && needsWorkspaceOnboarding(user) && location.pathname !== "/onboarding" && location.pathname !== "/whatsapp-account") return <Navigate to="/onboarding" replace />;
+  const onboardingRequired = (!user.platformRole || user.platformRole === "NONE") && needsWorkspaceOnboarding(user);
+  if (onboardingRequired && location.pathname !== "/onboarding" && location.pathname !== "/whatsapp-account") return <Navigate to="/onboarding" replace />;
+  if (!onboardingRequired && location.pathname === "/onboarding") return <Navigate to="/dashboard" replace />;
   return <Outlet />;
 }
 

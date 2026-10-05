@@ -40,10 +40,14 @@ describe("Templates", () => {
     expect(screen.getByTestId("templates-page")).toHaveClass(
       "h-full",
       "overflow-hidden",
+      "bg-[var(--page-background)]",
     );
+    expect(screen.getByRole("tablist", { name: "Template views" })).toHaveClass("bg-white", "divide-x", "divide-[var(--border-soft)]");
     expect(screen.getByRole("heading", { name: "Templates" })).toBeInTheDocument();
     expect(screen.queryByText("Meta is the source of truth for submitted WhatsApp templates.")).not.toBeInTheDocument();
     expect(screen.getByTestId("templates-filter-toolbar")).toContainElement(screen.getByRole("button", { name: "Sync from Meta" }));
+    expect(screen.getByRole("combobox", { name: "Filter templates by status" })).toHaveClass("bg-white");
+    expect(screen.getByRole("combobox", { name: "Filter templates by category" })).toHaveClass("bg-white");
     expect(screen.getByRole("button", { name: "Sync from Meta" })).toHaveClass("ml-auto");
     expect(screen.getByRole("button", { name: "New Template" })).toHaveClass(
       "bg-[var(--brand)]",

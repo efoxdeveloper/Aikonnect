@@ -1,0 +1,105 @@
+.page { background: var(--page-background); color: var(--text-primary); }
+.scroll { min-height: 0; min-width: 0; flex: 1; overflow: auto; scrollbar-width: thin; }
+.content { display: flex; flex-direction: column; gap: 12px; width: 100%; min-width: 0; padding: 16px 20px; }
+.page [data-tone="green"] { --tone: var(--brand); --tone-soft: var(--brand-soft); }
+.page [data-tone="blue"] { --tone: var(--accent-blue); --tone-soft: var(--accent-blue-soft); }
+.page [data-tone="purple"] { --tone: var(--accent-purple); --tone-soft: var(--accent-purple-soft); }
+.page [data-tone="amber"] { --tone: var(--warning); --tone-soft: var(--warning-soft); }
+.page [data-tone="red"] { --tone: var(--danger); --tone-soft: var(--danger-soft); }
+.page [data-tone="neutral"] { --tone: var(--text-primary); --tone-soft: var(--surface-subtle); }
+.hero { display: flex; align-items: center; gap: 24px; min-height: 100px; padding: 10px 22px; border: 1px solid var(--green-100); border-radius: 10px; background: linear-gradient(115deg, var(--brand-soft), #d8f5e9); }
+.greeting { flex: 1; min-width: 0; }
+.greeting h1 { margin: 0; font-size: 23px; line-height: 30px; font-weight: 600; letter-spacing: -.035em; }
+.greeting p { margin-top: 3px; font-size: 14px; line-height: 20px; color: var(--text-secondary); }
+.dateFilters { display: flex; flex-wrap: wrap; gap: 5px; flex-shrink: 0; }
+.dateFilters button { height: 34px; padding: 0 12px; font-size: 13px; line-height: 18px; }
+.heroImage { width: 126px; height: 88px; flex-shrink: 0; object-fit: contain; align-self: flex-end; margin: -4px -6px -10px 0; }
+.customRange { display: flex; align-items: end; flex-wrap: wrap; gap: 12px; padding: 12px; border: 1px solid var(--border); background: var(--surface); border-radius: 8px; }
+.customRange label { font-size: 14px; min-width: 150px; }
+.customRange input { margin-top: 4px; }
+.customRange [role="alert"] { flex-basis: 100%; font-size: 14px; }
+.metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.metric, .panel { min-width: 0; background: var(--surface); border: 1px solid var(--border-soft); border-radius: 9px; box-shadow: 0 2px 8px rgb(30 40 55 / 3%); }
+.metric { display: flex; align-items: center; gap: 12px; min-height: 88px; padding: 12px 16px; }
+.iconTile { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; flex: 0 0 auto; border-radius: 8px; background: var(--tone-soft, var(--brand-soft)); color: var(--tone, var(--brand)); }
+.roundIcon { width: 44px; height: 44px; border-radius: 50%; }
+.roundIcon svg { width: 21px; height: 21px; }
+.metricText { min-width: 0; flex: 1; }
+.metricText > span { display: block; font-size: 13px; line-height: 18px; color: var(--text-secondary); }
+.metricText strong { display: block; margin-top: 2px; font-size: 24px; line-height: 30px; font-weight: 600; letter-spacing: -.025em; }
+.metricText small { display: block; margin-top: 2px; font-size: 12px; line-height: 18px; color: var(--text-secondary); }
+.sparkline { width: 56px; height: 32px; flex: 0 0 auto; color: var(--tone); }
+.walletButton { height: 34px; padding: 0 10px; font-size: 13px; line-height: 18px; gap: 5px; }
+.columns { display: grid; grid-template-columns: minmax(0, 1.38fr) minmax(0, 1fr); align-items: start; gap: 12px; }
+.column { display: flex; flex-direction: column; min-width: 0; gap: 12px; }
+.panel { overflow: hidden; }
+.importantPanel { border-color: #f0dfb9; box-shadow: 0 3px 12px rgb(166 106 0 / 8%); }
+.importantPanel .panelHeader { min-height: 52px; padding: 8px 14px; border-bottom: 1px solid #f0dfb9; background: linear-gradient(100deg, var(--warning-soft), #fffdf8); }
+.importantPanel .panelHeader h2 { color: #76500b; }
+.importantPanel .panelHeader h2 svg { box-sizing: content-box; width: 17px; height: 17px; padding: 7px; border-radius: 8px; background: white; color: var(--warning); }
+.panelHeader { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; min-height: 42px; padding: 9px 14px 5px; }
+.panelHeader h2 { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 16px; line-height: 22px; font-weight: 600; letter-spacing: -.015em; }
+.panelHeader h2 svg { color: var(--brand); flex-shrink: 0; }
+.panelHeader h2 .youtubeBrand { color: #ff0033; }
+.panelLink { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; line-height: 20px; color: var(--brand); white-space: nowrap; }
+.panelLink:hover { text-decoration: underline; }
+.healthPrimary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 4px 12px 0; padding: 9px 0; background: var(--surface-subtle); border-radius: 7px; }
+.healthSecondary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 10px 12px 13px; gap: 8px; }
+.healthDisconnected { display: flex; min-height: 120px; align-items: center; justify-content: center; padding: 12px; }
+.healthDisconnected > span { color: var(--text-secondary); font-size: 13px; }
+.healthDisconnected button > svg { margin-right: 8px; }
+.healthItem { display: flex; align-items: center; min-width: 0; gap: 8px; padding: 0 6px; }
+.healthItem > div { min-width: 0; }
+.healthItem strong { display: block; font-size: 13px; line-height: 19px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--tone, var(--text-primary)); }
+.healthItem small { display: block; font-size: 12px; line-height: 18px; color: var(--text-secondary); }
+.informationRules { padding: 6px 14px 13px; }
+.informationRules ul { list-style: none; margin: 0; padding: 0; }
+.informationRules li { display: flex; align-items: flex-start; gap: 9px; padding: 9px 0; border-bottom: 1px solid #f3e8d0; font-size: 13px; line-height: 19px; color: var(--text-primary); }
+.informationRules li:last-child { border-bottom: 0; }
+.informationRules li svg { flex: 0 0 auto; margin-top: 1px; color: var(--warning); }
+.informationRules > a { display: inline-flex; align-items: center; gap: 6px; margin-top: 5px; color: #805600; font-size: 12px; line-height: 19px; font-weight: 600; }
+.informationRules > a:hover { text-decoration: underline; }
+.quickActions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 4px 12px 12px; }
+.quickActions > a, .quickActions > button { display: flex; justify-content: start; gap: 10px; height: 44px; padding: 4px 8px; font-size: 13px; line-height: 18px; min-width: 0; }
+.quickActions > :disabled { opacity: .55; }
+.quickActions > :is(a, button) > span:nth-child(2) { overflow: hidden; text-overflow: ellipsis; }
+.quickActions > :is(a, button) > svg { margin-left: auto; color: var(--text-secondary); flex-shrink: 0; }
+@media (min-width: 1600px) {
+  .hero { min-height: 112px; }
+  .heroImage { width: 150px; height: 100px; }
+}
+@media (max-width: 1199px) {
+  .hero { flex-wrap: wrap; gap: 12px; }
+  .heroImage { display: none; }
+  .greeting { flex-basis: 45%; }
+  .metric { padding: 12px; gap: 8px; flex-wrap: wrap; }
+  .sparkline { display: none; }
+  .walletButton { margin-left: 52px; }
+  .healthSecondary { grid-template-columns: 1fr; gap: 10px; }
+  .healthPrimary { grid-template-columns: 1fr; gap: 10px; }
+}
+@media (max-width: 900px) {
+  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .columns { grid-template-columns: 1fr; }
+  .healthPrimary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .healthSecondary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .walletButton { margin-left: 0; }
+}
+@media (max-width: 600px) {
+  .content { padding: 12px; gap: 10px; }
+  .hero { padding: 16px; }
+  .greeting { flex-basis: 100%; }
+  .greeting h1 { font-size: 21px; line-height: 28px; }
+  .dateFilters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 6px; }
+  .dateFilters button { flex: 1; padding: 0 7px; min-width: 0; }
+  .metric { align-items: flex-start; }
+  .metric .roundIcon { width: 32px; height: 32px; }
+  .metricText { flex-basis: 100%; }
+  .metricText strong { font-size: 22px; }
+  .metrics { gap: 8px; }
+  .walletButton { width: 100%; }
+  .healthPrimary, .healthSecondary { grid-template-columns: 1fr; gap: 10px; }
+  .healthItem { gap: 6px; padding: 0 6px; }
+  .healthPrimary { padding: 10px 0; }
+  .healthItem small { font-size: 12px; }
+}

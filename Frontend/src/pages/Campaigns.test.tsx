@@ -147,8 +147,15 @@ describe("Campaigns", () => {
     expect(screen.getByTestId("campaign-page")).toHaveClass(
       "h-full",
       "overflow-hidden",
+      "bg-[var(--page-background)]",
     );
     expect(screen.getByTestId("campaign-page-header")).toBeInTheDocument();
+    const campaignTabs = screen.getByRole("tablist", { name: "Campaign type" });
+    expect(campaignTabs).toHaveClass("rounded-md", "bg-white", "overflow-hidden", "divide-x", "divide-[var(--border-soft)]");
+    expect(screen.getByRole("tab", { name: "One Time Campaigns" })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("tab", { name: "One Time Campaigns" })).toHaveClass("bg-[var(--brand-soft)]");
+    expect(screen.getByRole("button", { name: "Status filter" })).toHaveClass("border-[var(--border)]", "bg-white");
+    expect(screen.getByRole("button", { name: "Category filter" })).toHaveClass("border-[var(--border)]", "bg-white");
     expect(
       screen.getByRole("heading", { name: "Campaigns" }),
     ).toBeInTheDocument();

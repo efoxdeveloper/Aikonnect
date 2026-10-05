@@ -120,4 +120,33 @@ describe("WorkspaceOnboarding", () => {
     );
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
+
+  it("does not ask for workspace setup again after another workspace in the same organization completed onboarding", () => {
+    const auth = authValue();
+    if (!auth.user) throw new Error("Expected an authenticated test user");
+    auth.user.memberships = [
+      {
+        id: "membership-1",
+        workspace: {
+          ...workspace,
+          id: "workspace-1",
+          tenantId: "tenant-1",
+          onboardingCompletedAt: "2026-08-22T00:00:00.000Z",
+        },
+        role: { id: "owner-role", name: "Owner", slug: "owner", permissions: ["workspace.update"] },
+      },
+      {
+        id: "membership-2",
+        workspace: { ...workspace, id: "workspace-2", tenantId: "tenant-1", name: "LKIS School" },
+        role: { id: "owner-role", name: "Owner", slug: "owner", permissions: ["workspace.update"] },
+      },
+    ];
+    window.localStorage.setItem("interakt.activeWorkspaceId", "workspace-2");
+    window.sessionStorage.setItem("interakt.workspaceOnboardingPrompt", "workspace-2");
+    renderOnboarding(auth);
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    window.localStorage.removeItem("interakt.activeWorkspaceId");
+    window.sessionStorage.removeItem("interakt.workspaceOnboardingPrompt");
+  });
 });

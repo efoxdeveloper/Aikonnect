@@ -29,7 +29,7 @@ export function SidebarVersion() {
 }
 
 export function AppSidebar({ platformOnly = false }: { platformOnly?: boolean }) {
-  const { state, isMobile, openMobile, setOpenMobile } = useSidebar();
+  const { state, isMobile, openMobile, setOpenMobile, setSidebarHovered } = useSidebar();
   const pathname = useLocation().pathname;
   const auth = useContext(AuthContext);
   const membership = getActiveMembership(auth?.user ?? null);
@@ -61,9 +61,17 @@ export function AppSidebar({ platformOnly = false }: { platformOnly?: boolean })
   }, [activeSection]);
 
   return <Drawer
+    data-testid="app-sidebar"
+    data-state={state}
     variant={isMobile ? "temporary" : "permanent"}
     open={isMobile ? openMobile : true}
     onClose={() => setOpenMobile(false)}
+    onMouseEnter={() => {
+      if (!isMobile) setSidebarHovered(true);
+    }}
+    onMouseLeave={() => {
+      if (!isMobile) setSidebarHovered(false);
+    }}
     ModalProps={{ keepMounted: true }}
     sx={{
       width,

@@ -15,7 +15,15 @@ export function getActiveMembership(user: AuthUser | null) {
 
 export function needsWorkspaceOnboarding(user: AuthUser | null) {
   const membership = getActiveMembership(user);
-  return Boolean(membership?.role.slug === "owner" && !membership.workspace.onboardingCompletedAt);
+  if (!membership || membership.role.slug !== "owner") return false;
+
+  const tenantId = membership.workspace.tenantId;
+  const organizationOnboarded = user?.memberships.some(({ workspace }) =>
+    workspace.onboardingCompletedAt != null &&
+    (tenantId ? workspace.tenantId === tenantId : workspace.id === membership.workspace.id),
+  );
+
+  return !organizationOnboarded;
 }
 
 export function markWorkspaceForOnboarding(workspaceId: string) {
@@ -24,6 +32,14 @@ export function markWorkspaceForOnboarding(workspaceId: string) {
 
 export function shouldPromptWorkspaceOnboarding(user: AuthUser | null, workspaceId: string) {
   if (!user) return false;
+  const membership = user.memberships.find(({ workspace }) => workspace.id === workspaceId);
+  if (!membership) return false;
+  const tenantId = membership.workspace.tenantId;
+  const organizationOnboarded = user.memberships.some(({ workspace }) =>
+    workspace.onboardingCompletedAt != null &&
+    (tenantId ? workspace.tenantId === tenantId : workspace.id === workspaceId),
+  );
+  if (organizationOnboarded) return false;
   return user.memberships.length === 1 || window.sessionStorage.getItem(ONBOARDING_WORKSPACE_KEY) === workspaceId;
 }
 

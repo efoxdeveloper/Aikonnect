@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import {
   ArrowLeftIcon as ArrowLeft,
   CheckIcon as Check,
@@ -20,6 +20,7 @@ import { useWhatsAppEmbeddedSignup } from "@/hooks/use-whatsapp-embedded-signup"
 import { getActiveMembership } from "@/lib/workspace";
 import { apiRequest } from "@/lib/api";
 import { WhatsAppConnectionGuide, type ConnectionChoice } from "@/components/whatsapp/WhatsAppConnectionGuide";
+import { WhatsAppConnectingDialog } from "@/components/whatsapp/WhatsAppConnectingDialog";
 import { WhatsAppRegistrationPinDialog } from "@/components/whatsapp/WhatsAppRegistrationPinDialog";
 
 const requirements = [
@@ -43,7 +44,7 @@ export function WhatsAppAccountSetup() {
   const { accessToken, user } = useAuth();
   const membership = getActiveMembership(user);
   const { data, loading, error, refresh } = useWorkspaceSetup(membership?.workspace.id, accessToken);
-  const { connecting, error: connectionError, pinRequired, submitRegistrationPin, cancelRegistrationPin, start } = useWhatsAppEmbeddedSignup({
+  const { connecting, syncing, error: connectionError, pinRequired, submitRegistrationPin, cancelRegistrationPin, start } = useWhatsAppEmbeddedSignup({
     workspaceId: membership?.workspace.id,
     accessToken,
     onConnected: refresh,
@@ -54,7 +55,6 @@ export function WhatsAppAccountSetup() {
   const [attachingBilling, setAttachingBilling] = useState(false);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [connectionGuideOpen, setConnectionGuideOpen] = useState(false);
-  const [connectionLaunching, setConnectionLaunching] = useState(false);
   const [connectionChoice, setConnectionChoice] = useState<ConnectionChoice>("business-app");
   const messageIcon = useAnimatedIcon();
   const externalIcon = useAnimatedIcon();
@@ -63,13 +63,6 @@ export function WhatsAppAccountSetup() {
   const connectedPhone = connectedAccount?.phoneNumbers.find((phone) => phone.status === "ACTIVE") ?? connectedAccount?.phoneNumbers[0];
   const isConnected = data?.whatsapp.status === "CONNECTED" && Boolean(connectedPhone);
   const isCoexistence = Boolean(connectedPhone?.isOnBusinessApp && connectedPhone.platformType === "CLOUD_API");
-
-  useEffect(() => {
-    if (connectionLaunching && !connecting) {
-      setConnectionLaunching(false);
-      setConnectionGuideOpen(false);
-    }
-  }, [connecting, connectionLaunching]);
 
   async function sendTest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -204,7 +197,7 @@ export function WhatsAppAccountSetup() {
                       {coexistenceSteps.map(({ title, detail, icon: Icon }, index) => <li key={title} className="rounded-lg border border-white/80 bg-white/80 p-3 shadow-[0_2px_8px_rgba(4,63,50,.04)] sm:min-h-[112px]"><div className="flex items-center justify-between"><span className="flex size-7 items-center justify-center rounded-full bg-[var(--brand)] text-xs font-bold text-white">{index + 1}</span><Icon size={17} className="text-[var(--brand)]" /></div><div className="mt-3 text-xs font-semibold text-[var(--text-primary)]">{title}</div><div className="mt-1 text-[11px] leading-4 text-[var(--text-secondary)]">{detail}</div></li>)}
                     </ol>
                     <div className="mt-4 flex items-start gap-3 rounded-lg border border-emerald-200 bg-white/80 p-3.5"><QrCode size={22} className="mt-0.5 shrink-0 text-[var(--brand)]" /><div><div className="text-xs font-semibold text-[var(--text-primary)]">Scan the QR code in Meta’s flow</div><div className="mt-1 text-[11px] leading-4 text-[var(--text-secondary)]">Open the message in WhatsApp and scan the live code. Screenshots will not work.</div></div></div>
-                    <button type="button" disabled={connecting || loading} onClick={() => { setConnectionLaunching(false); setConnectionGuideOpen(true); }} onMouseEnter={externalIcon.onMouseEnter} onMouseLeave={externalIcon.onMouseLeave} className="mt-5 flex h-10 w-full items-center justify-center rounded-md bg-[var(--brand)] px-4 text-sm font-medium text-white transition-colors hover:bg-[var(--brand-hover)] disabled:cursor-not-allowed disabled:opacity-60">{connecting ? "Opening Meta…" : "Connect Number"}{connecting ? <LoaderCircle size={15} className="ml-2 animate-spin" aria-hidden="true" /> : <ExternalLink ref={externalIcon.ref} size={15} duration={0.6} className="ml-2" aria-hidden="true" />}</button>
+                    <button type="button" disabled={connecting || loading} onClick={() => setConnectionGuideOpen(true)} onMouseEnter={externalIcon.onMouseEnter} onMouseLeave={externalIcon.onMouseLeave} className="mt-5 flex h-10 w-full items-center justify-center rounded-md bg-[var(--brand)] px-4 text-sm font-medium text-white transition-colors hover:bg-[var(--brand-hover)] disabled:cursor-not-allowed disabled:opacity-60">{connecting ? "Opening Meta…" : "Connect Number"}{connecting ? <LoaderCircle size={15} className="ml-2 animate-spin" aria-hidden="true" /> : <ExternalLink ref={externalIcon.ref} size={15} duration={0.6} className="ml-2" aria-hidden="true" />}</button>
                     <div className="mt-2.5 text-center text-[11px] text-[var(--text-muted)]">Meta keeps your credentials secure.</div>
                   </div>
                 )}
@@ -221,15 +214,16 @@ export function WhatsAppAccountSetup() {
         </div>
       </main>
       {connectionGuideOpen && <WhatsAppConnectionGuide
-        choice={connectionChoice}
-        onChoiceChange={setConnectionChoice}
-        loading={connecting}
-        onClose={() => { setConnectionLaunching(false); setConnectionGuideOpen(false); }}
-        onNext={async (choice) => {
-          setConnectionLaunching(true);
+      choice={connectionChoice}
+      onChoiceChange={setConnectionChoice}
+      loading={connecting}
+      onClose={() => setConnectionGuideOpen(false)}
+      onNext={async (choice) => {
+          setConnectionGuideOpen(false);
           void start(choice === "new-number" ? "new-number" : "coexistence");
         }}
       />}
+      {syncing && <WhatsAppConnectingDialog />}
       {pinRequired && <WhatsAppRegistrationPinDialog
         submitting={connecting}
         error={connectionError}

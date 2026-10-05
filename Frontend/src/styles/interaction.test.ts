@@ -12,7 +12,7 @@ describe("global interaction accessibility", () => {
     expect(stylesheet).toContain("button:focus-visible");
   });
 
-  it("uses zinc-100 for the authenticated content background", () => {
-    expect(stylesheet).toMatch(/--page-background:\s*#f4f4f5;/);
+  it("uses a medium gray for the authenticated content background", () => {
+    expect(stylesheet).toMatch(/--page-background:\s*#e5e5e5;/);
   });
 });

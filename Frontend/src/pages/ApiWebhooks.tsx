@@ -630,7 +630,7 @@ export function ApiWebhooks() {
         data-testid="api-webhooks-header"
         className="flex flex-none items-center border-b border-[var(--border-soft)] bg-white px-5 py-4 shadow-[0_1px_3px_rgba(16,24,20,.035)] sm:px-8"
       >
-        <div className="mx-auto w-full max-w-[1100px]">
+        <div className="mx-auto w-full max-w-[1400px]">
           <h1 className="text-[19px] font-medium leading-tight text-[var(--text-primary)]">
             API &amp; Webhooks
           </h1>
@@ -639,11 +639,11 @@ export function ApiWebhooks() {
       <nav
         aria-label="API and webhook sections"
         data-testid="api-webhooks-tabs"
-        className="flex flex-none overflow-x-auto border-b border-[var(--border-soft)] bg-white px-5 sm:px-8"
+        className="flex flex-none overflow-x-auto bg-[var(--page-background)] px-5 sm:px-8"
       >
         <div
           role="tablist"
-          className="mx-auto flex w-full max-w-[1100px] gap-5"
+          className="mx-auto flex w-full max-w-[1400px] divide-x divide-[var(--border-soft)] overflow-hidden rounded-md border border-[var(--border)] bg-white shadow-[0_1px_3px_rgba(31,42,55,.06)]"
         >
           {tabs.map(({ id, label, icon: Icon }) => (
             <button
@@ -657,7 +657,7 @@ export function ApiWebhooks() {
                 setActiveTab(id);
                 setError(null);
               }}
-              className={`relative flex h-12 shrink-0 items-center gap-2 border-b-2 px-1 text-xs font-medium transition-colors ${activeTab === id ? "border-[var(--brand)] text-[var(--brand)]" : "border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)]"}`}
+              className={`relative flex h-12 min-w-[130px] flex-1 shrink-0 items-center justify-center gap-2 border-b-2 px-4 text-[13px] font-medium transition-colors ${activeTab === id ? "border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--brand)]" : "border-transparent bg-white text-[var(--text-secondary)] hover:bg-[#f7f8f7] hover:text-[var(--text-primary)]"}`}
             >
               <Icon size={15} />
               {label}
@@ -669,7 +669,7 @@ export function ApiWebhooks() {
         data-testid="api-webhooks-scroll-region"
         className="min-h-0 flex-1 overflow-y-auto"
       >
-        <div className="mx-auto max-w-[1100px] space-y-5 px-5 py-5 sm:px-8 sm:py-7">
+        <div className="mx-auto w-full max-w-[1400px] space-y-5 px-5 py-5 sm:px-8 sm:py-7">
           {!canManage && activeTab !== "docs" && (
             <div className="flex items-start gap-3 rounded-md border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-800">
               <ShieldCheck size={16} className="mt-0.5 shrink-0" />
