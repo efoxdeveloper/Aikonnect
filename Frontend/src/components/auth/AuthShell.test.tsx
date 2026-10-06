@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { AuthMark, AuthShell } from "@/components/auth/AuthShell";
 import { authTextFieldSx } from "@/components/auth/auth-text-field";
@@ -27,13 +27,18 @@ describe("AuthShell", () => {
     expect(screen.getByRole("region", { name: "Account access" })).toHaveClass("lg:order-2");
     expect(screen.getByRole("region", { name: "Account access" })).toHaveClass("lg:rounded-xl");
     expect(container.querySelector("[data-testid=auth-shell] > div")).toHaveClass("lg:gap-1.5", "lg:p-1.5");
-    expect(preview.querySelector("img")).toHaveAttribute("src", "/images/auth-side-visual-1.png");
-    expect(container.querySelector('img[src="/images/auth-side-visual-1.png"]')).toHaveAttribute("alt", "");
+    expect(preview.querySelector("img")).toHaveAttribute("src", "/images/auth-whatsapp-inbox.png");
+    expect(container.querySelector('img[src="/images/auth-whatsapp-inbox.png"]')).toHaveAttribute("alt", "");
     expect(screen.getByRole("button", { name: "Show product preview 1" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getAllByRole("button", { name: /Show product preview/ })).toHaveLength(3);
     expect(screen.getByText("Customer operations, simplified")).toBeInTheDocument();
     expect(screen.getByRole("blockquote")).toHaveTextContent("Keep every customer conversation moving with one clear, shared inbox.");
     expect(screen.getByTestId("auth-shell").querySelector(".auth-copy")).toHaveAttribute("aria-live", "polite");
+
+    fireEvent.click(screen.getByRole("button", { name: "Show product preview 2" }));
+    expect(preview.querySelector("img")).toHaveAttribute("src", "/images/auth-whatsapp-automation.png");
+    fireEvent.click(screen.getByRole("button", { name: "Show product preview 3" }));
+    expect(preview.querySelector("img")).toHaveAttribute("src", "/images/auth-whatsapp-campaigns.png");
   });
 
   it("keeps auth fields vertically centered with the shared rounded field treatment", () => {

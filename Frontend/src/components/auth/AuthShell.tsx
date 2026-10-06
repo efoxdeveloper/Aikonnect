@@ -8,19 +8,19 @@ type AuthShellProps = {
 
 const authSlides = [
   {
-    image: "/images/auth-side-visual-1.png",
+    image: "/images/auth-whatsapp-inbox.png",
     quote: "Keep every customer conversation moving with one clear, shared inbox.",
     title: "Customer operations, simplified",
     detail: "Unified inbox · Team collaboration · Faster replies",
   },
   {
-    image: "/images/auth-side-visual-2.png",
+    image: "/images/auth-whatsapp-automation.png",
     quote: "Turn repeatable work into reliable workflows your team can trust.",
     title: "Automation that scales",
     detail: "Triggers · Actions · Consistent customer journeys",
   },
   {
-    image: "/images/auth-side-visual-3.png",
+    image: "/images/auth-whatsapp-campaigns.png",
     quote: "See the signals that matter and make the next customer action count.",
     title: "Clarity for every decision",
     detail: "Insights · Team performance · Confident follow-through",
