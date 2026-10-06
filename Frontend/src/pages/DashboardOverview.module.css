@@ -1,105 +1,103 @@
 .page { background: var(--page-background); color: var(--text-primary); }
-.scroll { min-height: 0; min-width: 0; flex: 1; overflow: auto; scrollbar-width: thin; }
-.content { display: flex; flex-direction: column; gap: 12px; width: 100%; min-width: 0; padding: 16px 20px; }
 .page [data-tone="green"] { --tone: var(--brand); --tone-soft: var(--brand-soft); }
 .page [data-tone="blue"] { --tone: var(--accent-blue); --tone-soft: var(--accent-blue-soft); }
 .page [data-tone="purple"] { --tone: var(--accent-purple); --tone-soft: var(--accent-purple-soft); }
 .page [data-tone="amber"] { --tone: var(--warning); --tone-soft: var(--warning-soft); }
 .page [data-tone="red"] { --tone: var(--danger); --tone-soft: var(--danger-soft); }
 .page [data-tone="neutral"] { --tone: var(--text-primary); --tone-soft: var(--surface-subtle); }
-.hero { display: flex; align-items: center; gap: 24px; min-height: 100px; padding: 10px 22px; border: 1px solid var(--green-100); border-radius: 10px; background: linear-gradient(115deg, var(--brand-soft), #d8f5e9); }
-.greeting { flex: 1; min-width: 0; }
-.greeting h1 { margin: 0; font-size: 23px; line-height: 30px; font-weight: 600; letter-spacing: -.035em; }
-.greeting p { margin-top: 3px; font-size: 14px; line-height: 20px; color: var(--text-secondary); }
-.dateFilters { display: flex; flex-wrap: wrap; gap: 5px; flex-shrink: 0; }
-.dateFilters button { height: 34px; padding: 0 12px; font-size: 13px; line-height: 18px; }
-.heroImage { width: 126px; height: 88px; flex-shrink: 0; object-fit: contain; align-self: flex-end; margin: -4px -6px -10px 0; }
-.customRange { display: flex; align-items: end; flex-wrap: wrap; gap: 12px; padding: 12px; border: 1px solid var(--border); background: var(--surface); border-radius: 8px; }
-.customRange label { font-size: 14px; min-width: 150px; }
-.customRange input { margin-top: 4px; }
-.customRange [role="alert"] { flex-basis: 100%; font-size: 14px; }
-.metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.metric, .panel { min-width: 0; background: var(--surface); border: 1px solid var(--border-soft); border-radius: 9px; box-shadow: 0 2px 8px rgb(30 40 55 / 3%); }
-.metric { display: flex; align-items: center; gap: 12px; min-height: 88px; padding: 12px 16px; }
-.iconTile { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; flex: 0 0 auto; border-radius: 8px; background: var(--tone-soft, var(--brand-soft)); color: var(--tone, var(--brand)); }
-.roundIcon { width: 44px; height: 44px; border-radius: 50%; }
-.roundIcon svg { width: 21px; height: 21px; }
+.scroll { min-height: 0; min-width: 0; flex: 1; overflow: auto; scrollbar-width: thin; }
+.content { display: flex; flex-direction: column; gap: 18px; width: 100%; max-width: 1480px; min-width: 0; margin: 0 auto; padding: 24px 28px 32px; }
+.pageHeader { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 42px; }
+.pageTitle { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; min-width: 0; }
+.pageTitle h1 { margin: 0; font-size: 22px; line-height: 28px; font-weight: 600; letter-spacing: -.03em; }
+.pageTitle span { overflow: hidden; max-width: 240px; color: var(--text-muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.dateFilters { display: flex; flex: 0 0 auto; align-items: center; gap: 4px; padding: 4px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-subtle); }
+.dateFilters button { height: 32px; padding: 0 11px; border-color: transparent; box-shadow: none; font-size: 12px; }
+.dateFilters button[aria-pressed="true"] { border-color: var(--brand); }
+.dateFilters button svg { width: 14px; height: 14px; }
+.customRange { display: flex; align-items: end; flex-wrap: wrap; gap: 12px; padding: 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); box-shadow: 0 2px 8px rgb(30 40 55 / 3%); }
+.customRange label { min-width: 150px; color: var(--text-secondary); font-size: 12px; }
+.customRange input { margin-top: 5px; }
+.customRange [role="alert"] { flex-basis: 100%; color: var(--danger); font-size: 12px; }
+.metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.metric, .panel { min-width: 0; border: 1px solid var(--border); border-radius: 11px; background: var(--surface); box-shadow: 0 2px 7px rgb(30 40 55 / 3%); }
+.metric { display: flex; align-items: center; gap: 13px; min-height: 98px; padding: 16px 18px; }
+.iconTile { display: inline-flex; align-items: center; justify-content: center; width: 31px; height: 31px; flex: 0 0 auto; border-radius: 8px; background: var(--tone-soft, var(--brand-soft)); color: var(--tone, var(--brand)); }
+.roundIcon { width: 40px; height: 40px; border-radius: 12px; }
+.roundIcon svg { width: 19px; height: 19px; }
 .metricText { min-width: 0; flex: 1; }
-.metricText > span { display: block; font-size: 13px; line-height: 18px; color: var(--text-secondary); }
-.metricText strong { display: block; margin-top: 2px; font-size: 24px; line-height: 30px; font-weight: 600; letter-spacing: -.025em; }
-.metricText small { display: block; margin-top: 2px; font-size: 12px; line-height: 18px; color: var(--text-secondary); }
-.sparkline { width: 56px; height: 32px; flex: 0 0 auto; color: var(--tone); }
-.walletButton { height: 34px; padding: 0 10px; font-size: 13px; line-height: 18px; gap: 5px; }
-.columns { display: grid; grid-template-columns: minmax(0, 1.38fr) minmax(0, 1fr); align-items: start; gap: 12px; }
-.column { display: flex; flex-direction: column; min-width: 0; gap: 12px; }
+.metricText > span { display: block; color: var(--text-secondary); font-size: 12px; line-height: 18px; }
+.metricText strong { display: block; margin-top: 2px; font-size: 23px; line-height: 29px; font-weight: 600; letter-spacing: -.025em; font-variant-numeric: tabular-nums; }
+.metricText small { display: block; overflow: hidden; margin-top: 2px; color: var(--text-muted); font-size: 11px; line-height: 16px; text-overflow: ellipsis; white-space: nowrap; }
+.walletButton { height: 32px; padding: 0 9px; font-size: 12px; gap: 4px; }
+.primaryGrid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(340px, 1fr); align-items: stretch; gap: 16px; }
 .panel { overflow: hidden; }
-.importantPanel { border-color: #f0dfb9; box-shadow: 0 3px 12px rgb(166 106 0 / 8%); }
-.importantPanel .panelHeader { min-height: 52px; padding: 8px 14px; border-bottom: 1px solid #f0dfb9; background: linear-gradient(100deg, var(--warning-soft), #fffdf8); }
-.importantPanel .panelHeader h2 { color: #76500b; }
-.importantPanel .panelHeader h2 svg { box-sizing: content-box; width: 17px; height: 17px; padding: 7px; border-radius: 8px; background: white; color: var(--warning); }
-.panelHeader { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; min-height: 42px; padding: 9px 14px 5px; }
-.panelHeader h2 { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 16px; line-height: 22px; font-weight: 600; letter-spacing: -.015em; }
-.panelHeader h2 svg { color: var(--brand); flex-shrink: 0; }
-.panelHeader h2 .youtubeBrand { color: #ff0033; }
-.panelLink { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; line-height: 20px; color: var(--brand); white-space: nowrap; }
-.panelLink:hover { text-decoration: underline; }
-.healthPrimary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 4px 12px 0; padding: 9px 0; background: var(--surface-subtle); border-radius: 7px; }
-.healthSecondary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 10px 12px 13px; gap: 8px; }
-.healthDisconnected { display: flex; min-height: 120px; align-items: center; justify-content: center; padding: 12px; }
-.healthDisconnected > span { color: var(--text-secondary); font-size: 13px; }
-.healthDisconnected button > svg { margin-right: 8px; }
-.healthItem { display: flex; align-items: center; min-width: 0; gap: 8px; padding: 0 6px; }
+.panelHeader { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 50px; padding: 13px 16px 8px; }
+.panelHeader h2 { display: flex; align-items: center; gap: 8px; min-width: 0; margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: -.01em; }
+.panelHeader h2 svg { flex: 0 0 auto; color: var(--brand); }
+.panelLink { display: inline-flex; align-items: center; gap: 4px; color: var(--brand); font-size: 11px; line-height: 18px; font-weight: 500; white-space: nowrap; }
+.panelLink:hover { color: var(--brand-hover); text-decoration: underline; }
+.activityPanel { display: flex; flex-direction: column; min-height: 306px; }
+.chartLegend { display: flex; align-items: center; gap: 12px; color: var(--text-secondary); font-size: 10px; }
+.chartLegend span { display: inline-flex; align-items: center; gap: 5px; }
+.chartLegend i { width: 8px; height: 8px; border-radius: 3px; background: var(--brand); }
+.chartLegend i[data-series="delivered"] { background: #93cfa7; }
+.activityChart { display: flex; align-items: stretch; gap: 9px; min-height: 0; flex: 1; overflow-x: auto; padding: 8px 16px 14px; scrollbar-width: thin; }
+.chartDay { display: flex; flex: 1 0 38px; flex-direction: column; min-width: 0; max-width: 88px; gap: 8px; }
+.chartBars { display: flex; align-items: end; justify-content: center; gap: 4px; height: 204px; min-height: 120px; flex: 1; padding: 0 4px; border-bottom: 1px solid var(--border); background: repeating-linear-gradient(to top, transparent 0, transparent calc(25% - 1px), var(--border-soft) calc(25% - 1px), var(--border-soft) 25%); }
+.chartBars span { width: min(15px, 42%); min-height: 0; border-radius: 4px 4px 1px 1px; background: linear-gradient(180deg, #36b66a, var(--brand)); transition: height 180ms ease; }
+.chartBars span[data-series="delivered"] { background: linear-gradient(180deg, #b5dec2, #83c398); }
+.chartDate { color: var(--text-muted); font-size: 10px; line-height: 14px; text-align: center; white-space: nowrap; }
+.chartEmpty { display: flex; min-height: 220px; flex: 1; align-items: center; justify-content: center; padding: 24px; color: var(--text-muted); font-size: 12px; }
+.healthPrimary, .healthSecondary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 9px; padding: 8px 14px; }
+.healthPrimary { padding-top: 12px; }
+.healthSecondary { padding-bottom: 16px; }
+.healthItem { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.healthItem .iconTile { width: 29px; height: 29px; border-radius: 8px; }
+.healthItem .iconTile svg { width: 15px; height: 15px; }
 .healthItem > div { min-width: 0; }
-.healthItem strong { display: block; font-size: 13px; line-height: 19px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--tone, var(--text-primary)); }
-.healthItem small { display: block; font-size: 12px; line-height: 18px; color: var(--text-secondary); }
-.informationRules { padding: 6px 14px 13px; }
-.informationRules ul { list-style: none; margin: 0; padding: 0; }
-.informationRules li { display: flex; align-items: flex-start; gap: 9px; padding: 9px 0; border-bottom: 1px solid #f3e8d0; font-size: 13px; line-height: 19px; color: var(--text-primary); }
-.informationRules li:last-child { border-bottom: 0; }
-.informationRules li svg { flex: 0 0 auto; margin-top: 1px; color: var(--warning); }
-.informationRules > a { display: inline-flex; align-items: center; gap: 6px; margin-top: 5px; color: #805600; font-size: 12px; line-height: 19px; font-weight: 600; }
-.informationRules > a:hover { text-decoration: underline; }
-.quickActions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 4px 12px 12px; }
-.quickActions > a, .quickActions > button { display: flex; justify-content: start; gap: 10px; height: 44px; padding: 4px 8px; font-size: 13px; line-height: 18px; min-width: 0; }
+.healthItem strong { display: block; overflow: hidden; color: var(--text-primary); font-size: 13px; line-height: 18px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.healthItem strong[data-tone="green"] { color: var(--success); }
+.healthItem strong[data-tone="amber"] { color: var(--warning); }
+.healthItem strong[data-tone="red"] { color: var(--danger); }
+.healthItem small { display: block; overflow: hidden; color: var(--text-muted); font-size: 11px; line-height: 15px; text-overflow: ellipsis; white-space: nowrap; }
+.healthDisconnected { display: flex; min-height: 238px; align-items: center; justify-content: center; padding: 24px; }
+.healthDisconnected > span { color: var(--text-secondary); font-size: 12px; }
+.quickActions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; padding: 4px 14px 14px; }
+.quickActions > a, .quickActions > button { display: flex; justify-content: flex-start; gap: 10px; min-width: 0; height: 54px; padding: 6px 10px; border-color: var(--border-soft); border-radius: 8px; background: var(--surface); font-size: 12px; text-align: left; }
+.quickActions > :is(a, button):hover:not(:disabled) { border-color: var(--border-strong); background: var(--surface-subtle); }
 .quickActions > :disabled { opacity: .55; }
-.quickActions > :is(a, button) > span:nth-child(2) { overflow: hidden; text-overflow: ellipsis; }
-.quickActions > :is(a, button) > svg { margin-left: auto; color: var(--text-secondary); flex-shrink: 0; }
-@media (min-width: 1600px) {
-  .hero { min-height: 112px; }
-  .heroImage { width: 150px; height: 100px; }
-}
-@media (max-width: 1199px) {
-  .hero { flex-wrap: wrap; gap: 12px; }
-  .heroImage { display: none; }
-  .greeting { flex-basis: 45%; }
-  .metric { padding: 12px; gap: 8px; flex-wrap: wrap; }
-  .sparkline { display: none; }
-  .walletButton { margin-left: 52px; }
-  .healthSecondary { grid-template-columns: 1fr; gap: 10px; }
-  .healthPrimary { grid-template-columns: 1fr; gap: 10px; }
-}
-@media (max-width: 900px) {
+.quickActions > :is(a, button) > span:nth-child(2) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.quickActions > :is(a, button) > svg:last-child { margin-left: auto; color: var(--text-muted); flex-shrink: 0; }
+.quickActions .iconTile { width: 32px; height: 32px; border-radius: 8px; }
+.quickActions .iconTile svg { width: 16px; height: 16px; }
+@media (max-width: 1100px) {
+  .content { gap: 14px; padding: 20px 20px 28px; }
   .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .columns { grid-template-columns: 1fr; }
-  .healthPrimary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .healthSecondary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .walletButton { margin-left: 0; }
-}
-@media (max-width: 600px) {
-  .content { padding: 12px; gap: 10px; }
-  .hero { padding: 16px; }
-  .greeting { flex-basis: 100%; }
-  .greeting h1 { font-size: 21px; line-height: 28px; }
-  .dateFilters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; gap: 6px; }
-  .dateFilters button { flex: 1; padding: 0 7px; min-width: 0; }
-  .metric { align-items: flex-start; }
-  .metric .roundIcon { width: 32px; height: 32px; }
-  .metricText { flex-basis: 100%; }
-  .metricText strong { font-size: 22px; }
-  .metrics { gap: 8px; }
-  .walletButton { width: 100%; }
+  .primaryGrid { grid-template-columns: minmax(0, 1.3fr) minmax(290px, 1fr); gap: 12px; }
   .healthPrimary, .healthSecondary { grid-template-columns: 1fr; gap: 10px; }
-  .healthItem { gap: 6px; padding: 0 6px; }
-  .healthPrimary { padding: 10px 0; }
-  .healthItem small { font-size: 12px; }
+  .chartBars { height: 190px; }
+}
+@media (max-width: 760px) {
+  .content { gap: 12px; padding: 16px 14px 24px; }
+  .pageHeader { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .dateFilters { width: 100%; }
+  .dateFilters button { flex: 1; padding: 0 7px; }
+  .primaryGrid { grid-template-columns: 1fr; }
+  .healthPrimary, .healthSecondary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .activityPanel { min-height: 275px; }
+  .chartBars { height: 170px; }
+  .quickActions { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+}
+@media (max-width: 440px) {
+  .pageTitle { gap: 6px; }
+  .pageTitle h1 { font-size: 20px; }
+  .pageTitle span { max-width: 150px; }
+  .metric { align-items: flex-start; min-height: 98px; flex-wrap: wrap; gap: 8px; padding: 12px; }
+  .roundIcon { width: 32px; height: 32px; }
+  .metricText { flex-basis: calc(100% - 42px); }
+  .metricText strong { font-size: 20px; line-height: 25px; }
+  .walletButton { width: 100%; margin-left: 0; }
+  .healthPrimary, .healthSecondary { grid-template-columns: 1fr; }
+  .chartLegend { gap: 8px; }
 }

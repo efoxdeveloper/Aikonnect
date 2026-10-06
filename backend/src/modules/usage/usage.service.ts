@@ -1,6 +1,8 @@
 import { prisma } from "../../database/prisma.js";
 import type { UsageQuery } from "./usage.schemas.js";
 import { getWallet } from "../wallet/wallet.service.js";
+import { resolveWorkspaceEntitlements } from "../billing/entitlements.service.js";
+import { utcMonthRange } from "../campaigns/campaign-plan-limits.js";
 
 type UsageSource = "incoming" | "inbox" | "campaign" | "automation";
 
@@ -26,11 +28,20 @@ function sourceOf(message: { direction: string; payload: unknown }): UsageSource
 
 export async function getUsage(workspaceId: string, query: UsageQuery) {
   const dates = dateRange(query);
-  const [messages, wallet] = await Promise.all([prisma.message.findMany({
+  const now = new Date();
+  const { start: monthStart, end: monthEnd } = utcMonthRange(now);
+  const [messages, wallet, entitlements, contacts, members, invitations, campaignsThisMonth] = await Promise.all([prisma.message.findMany({
     where: { workspaceId, sentAt: { gte: dates.from, lte: dates.to } },
     select: { direction: true, status: true, type: true, sentAt: true, contactId: true, conversationId: true, payload: true },
     orderBy: [{ sentAt: "asc" }, { id: "asc" }],
-  }), getWallet(workspaceId)]);
+  }), getWallet(workspaceId), resolveWorkspaceEntitlements(workspaceId, now),
+  prisma.contact.count({ where: { workspaceId, deletedAt: null } }),
+  prisma.workspaceMember.count({ where: { workspaceId, status: "ACTIVE" } }),
+  prisma.workspaceInvitation.count({ where: { workspaceId, status: "PENDING", expiresAt: { gt: now } } }),
+  prisma.campaign.count({ where: { workspaceId, OR: [
+    { status: "SCHEDULED", scheduledAt: { gte: monthStart, lt: monthEnd } },
+    { setLiveAt: { gte: monthStart, lt: monthEnd } },
+  ] } })]);
   const outgoing = messages.filter((message) => message.direction === "OUTGOING");
   const sourceCounts = new Map<UsageSource, number>([["incoming", 0], ["inbox", 0], ["campaign", 0], ["automation", 0]]);
   const daily = new Map<string, { total: number; incoming: number; outgoing: number; delivered: number }>();
@@ -53,6 +64,22 @@ export async function getUsage(workspaceId: string, query: UsageQuery) {
     { key: "automation", label: "Automation messages", messages: sourceCounts.get("automation") ?? 0 },
   ].map((item) => ({ ...item, percentage: messages.length ? Math.round((item.messages / messages.length) * 100) : 0 }));
   return {
+    plan: {
+      name: entitlements.plan?.name ?? null,
+      status: entitlements.status,
+      trialEndsAt: entitlements.trialEndsAt?.toISOString() ?? null,
+      limits: {
+        contacts: entitlements.plan?.maxContacts ?? null,
+        seats: entitlements.plan?.maxSeats ?? null,
+        campaignsPerMonth: entitlements.plan?.maxCampaignsPerMonth ?? null,
+      },
+      usage: { contacts, seats: members + invitations, campaignsThisMonth },
+      features: entitlements.plan ? {
+        apiAccess: entitlements.plan.apiAccess,
+        webhooks: entitlements.plan.webhooks,
+        advancedReports: entitlements.plan.advancedReports,
+      } : { apiAccess: false, webhooks: false, advancedReports: false },
+    },
     wallet: {
       currency: wallet.currency,
       totalBalance: wallet.totalBalance,

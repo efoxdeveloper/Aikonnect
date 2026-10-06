@@ -39,6 +39,9 @@ describe("Login", () => {
     expect(header).toContainElement(screen.getByRole("heading", { name: "Login to your account" }));
     expect(header).toContainElement(screen.getByText("Use your work email to sign in to Marento."));
     expect(screen.getByRole("button", { name: "Login with Google" })).toBeInTheDocument();
+    expect(screen.getByText(/Don’t have an account\?/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Sign up" })).toHaveAttribute("href", "/register");
+    expect(screen.queryByRole("link", { name: "View plans" })).not.toBeInTheDocument();
     expect(screen.getByLabelText("Email")).toBeRequired();
     expect(screen.getByLabelText("Password")).toBeRequired();
     fireEvent.change(screen.getByLabelText("Email"), { target: { value: "owner@example.com" } });

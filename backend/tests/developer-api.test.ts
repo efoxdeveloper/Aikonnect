@@ -137,6 +137,8 @@ test("Marento-compatible public message schema accepts a sticker URL", () => {
 test("developer API key authentication enforces validity and scopes", async () => {
   const secret = "sk_live_unit_test_key_123456789";
   const original = (prisma as any).publicApiKey.findUnique;
+  const originalSubscriptionLookup = (prisma as any).workspaceSubscription.findFirst;
+  (prisma as any).workspaceSubscription.findFirst = async () => null;
   (prisma as any).publicApiKey.findUnique = async () => ({ id: "key-1", workspaceId: "workspace-1", scopes: ["messages.send"], revokedAt: null, expiresAt: null });
   const request: any = { headers: { "x-api-key": secret } };
   let authError: unknown;
@@ -153,11 +155,14 @@ test("developer API key authentication enforces validity and scopes", async () =
   assert.equal(missingScopeError.code, "API_KEY_SCOPE_REQUIRED");
 
   (prisma as any).publicApiKey.findUnique = original;
+  (prisma as any).workspaceSubscription.findFirst = originalSubscriptionLookup;
 });
 
 test("developer API accepts the raw Basic API-key format used by integrations", async () => {
   const secret = "sk_live_unit_test_basic_key_123456789";
   const original = (prisma as any).publicApiKey.findUnique;
+  const originalSubscriptionLookup = (prisma as any).workspaceSubscription.findFirst;
+  (prisma as any).workspaceSubscription.findFirst = async () => null;
   (prisma as any).publicApiKey.findUnique = async () => ({ id: "key-basic", workspaceId: "workspace-basic", scopes: ["messages.send"], revokedAt: null, expiresAt: null });
   const request: any = { headers: { authorization: `Basic ${secret}` } };
   let authError: unknown;
@@ -165,4 +170,24 @@ test("developer API accepts the raw Basic API-key format used by integrations", 
   assert.equal(authError, undefined);
   assert.equal(request.developerApiKey.workspaceId, "workspace-basic");
   (prisma as any).publicApiKey.findUnique = original;
+  (prisma as any).workspaceSubscription.findFirst = originalSubscriptionLookup;
+});
+
+test("developer API rejects a valid key when the workspace plan excludes API access", async () => {
+  const originalKeyLookup = (prisma as any).publicApiKey.findUnique;
+  const originalSubscriptionLookup = (prisma as any).workspaceSubscription.findFirst;
+  (prisma as any).publicApiKey.findUnique = async () => ({ id: "key-limited", workspaceId: "workspace-limited", scopes: ["messages.send"], revokedAt: null, expiresAt: null });
+  (prisma as any).workspaceSubscription.findFirst = async () => ({
+    id: "subscription-limited",
+    status: "ACTIVE",
+    trialEndsAt: null,
+    plan: { id: "plan-basic", slug: "basic", name: "Basic", maxSeats: 2, maxContacts: 100, maxCampaignsPerMonth: 5, maxAutomations: 1, maxWorkflows: 1, maxPipelines: 1, apiAccess: false, webhooks: false, advancedReports: false },
+  });
+  const request: any = { headers: { "x-api-key": "sk_live_limited_key_123456789" } };
+  let authError: any;
+  await authenticateDeveloperApiKey(request, {}, (error?: unknown) => { authError = error; });
+  assert.equal(authError.code, "PLAN_FEATURE_NOT_INCLUDED");
+  assert.equal(request.developerApiKey, undefined);
+  (prisma as any).publicApiKey.findUnique = originalKeyLookup;
+  (prisma as any).workspaceSubscription.findFirst = originalSubscriptionLookup;
 });

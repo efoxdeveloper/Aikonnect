@@ -4,6 +4,7 @@ import { AppError } from "../../middleware/error-handler.js";
 import { env } from "../../config/env.js";
 import { encryptSecret, generateSecureToken, hashToken } from "../../utils/crypto.js";
 import { webhookEventTypes, type CreateWebhookInput } from "./webhook.schemas.js";
+import { assertWorkspaceFeatureEnabled } from "../billing/entitlements.service.js";
 
 const webhookSelect = {
   id: true,
@@ -40,6 +41,12 @@ export async function enqueueMessageWebhook(messageId: string, eventType: Messag
     },
   });
   if (!message) return 0;
+  try {
+    await assertWorkspaceFeatureEnabled(message.workspaceId, "webhooks", database);
+  } catch (error) {
+    if (error instanceof AppError && ["PLAN_FEATURE_NOT_INCLUDED", "TRIAL_EXPIRED"].includes(error.code)) return 0;
+    throw error;
+  }
 
   const endpoints = await database.webhookEndpoint.findMany({
     where: { workspaceId: message.workspaceId, active: true, events: { has: eventType } },

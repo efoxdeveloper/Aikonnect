@@ -58,14 +58,11 @@ export function WorkspaceSwitcher() {
             aria-label={`Switch workspace: ${workspaceName}`}
             title={`Switch workspace: ${workspaceName}`}
             variant="ghost"
-            className="h-9 w-9 shrink-0 justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] px-1.5 text-[var(--text-primary)] shadow-none transition-colors hover:border-[var(--brand)]/30 hover:bg-white sm:w-[min(196px,28vw)] sm:justify-start sm:px-1.5"
+            className="h-9 w-9 shrink-0 justify-center gap-2 rounded-md border border-transparent bg-transparent px-1.5 text-[var(--text-primary)] shadow-none transition-colors hover:bg-[var(--surface-subtle)] lg:w-[min(196px,18vw)] lg:justify-start lg:border-[var(--border)] lg:bg-white lg:px-2.5 lg:hover:border-[var(--border-strong)]"
           >
-            <span className="relative shrink-0">
-              <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-[var(--brand-soft)] text-[var(--brand)]"><Building2 size={15} aria-hidden="true" /></span>
-              <span className="absolute -right-0.5 -top-0.5 size-2 rounded-full bg-[#34d399] ring-2 ring-[#f7f8f7]" />
-            </span>
-            <span className="hidden min-w-0 flex-1 truncate text-left text-xs font-medium text-[var(--text-primary)] sm:block">{workspaceName}</span>
-            <ChevronDown className="hidden size-4 shrink-0 text-[var(--text-muted)] sm:block" strokeWidth={1.9} />
+            <Building2 className="size-4 shrink-0 text-[var(--text-muted)]" aria-hidden="true" />
+            <span className="hidden min-w-0 flex-1 truncate text-left text-[13px] font-medium text-[var(--text-primary)] lg:block">{workspaceName}</span>
+            <ChevronDown className="hidden size-3.5 shrink-0 text-[var(--text-muted)] lg:block" strokeWidth={1.9} />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-[244px]">

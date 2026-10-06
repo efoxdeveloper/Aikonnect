@@ -22,7 +22,7 @@ export function HeaderSearch() {
   const normalizedQuery = query.trim().toLowerCase();
   const filteredResults = useMemo(() => searchResults.filter(({ item, groupTitle }) => {
     if (!normalizedQuery) return true;
-    return `${item.title} ${groupTitle ?? ""}`.toLowerCase().includes(normalizedQuery);
+    return `${item.title} ${groupTitle ?? ""} ${(item.keywords ?? []).join(" ")}`.toLowerCase().includes(normalizedQuery);
   }), [normalizedQuery]);
 
   const selectResult = (url?: string) => {
@@ -44,12 +44,12 @@ export function HeaderSearch() {
 
   return <Popover open={open} onOpenChange={setOpen}>
     <PopoverAnchor asChild>
-      <div onMouseEnter={searchIcon.onMouseEnter} onMouseLeave={searchIcon.onMouseLeave} className="group/search flex h-10 w-[min(320px,34vw)] items-center gap-2 rounded-lg border border-[#e4e8e5] bg-[#f7f8f7] px-3 transition-[border-color,box-shadow] focus-within:border-[var(--brand-accent)] focus-within:ring-2 focus-within:ring-[var(--brand-accent)]/10">
-        <Search ref={searchIcon.ref} size={18} duration={0.7} className="shrink-0 text-[#64726c] transition-colors duration-150 group-focus-within/search:text-[var(--brand)]" />
+      <div onMouseEnter={searchIcon.onMouseEnter} onMouseLeave={searchIcon.onMouseLeave} className="group/search flex h-9 w-full max-w-[420px] min-w-0 items-center gap-2 rounded-md border border-[var(--border)] bg-[var(--surface-subtle)] px-3 transition-[border-color,box-shadow] focus-within:border-[var(--brand-accent)] focus-within:ring-2 focus-within:ring-[var(--brand-accent)]/10">
+        <Search ref={searchIcon.ref} size={18} duration={0.7} className="shrink-0 text-[var(--icon-muted)] transition-colors duration-150 group-focus-within/search:text-[var(--brand)]" />
         <Input
           aria-label="Search"
           aria-expanded={open}
-          placeholder="Search workspace..."
+          placeholder="Search tools and settings..."
           value={query}
           onChange={(event) => { setQuery(event.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
@@ -64,7 +64,7 @@ export function HeaderSearch() {
           <CommandEmpty>No pages found.</CommandEmpty>
           <CommandGroup heading="Navigate to">
             {filteredResults.map(({ item, groupTitle }) => <CommandItem key={item.url} value={item.title} onSelect={() => selectResult(item.url)}>
-              <item.icon size={17} duration={0.7} className="shrink-0 text-[var(--text-muted)]" />
+              <item.icon size={17} duration={0.7} color={item.iconColor} className={item.iconColor ? "shrink-0" : "shrink-0 text-[var(--text-muted)]"} />
               <span className="min-w-0 flex-1 truncate">{item.title}</span>
               {groupTitle && <span className="shrink-0 text-[11px] text-[var(--text-muted)]">{groupTitle}</span>}
             </CommandItem>)}

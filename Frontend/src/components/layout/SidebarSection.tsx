@@ -32,7 +32,7 @@ export function SidebarSection({ group, open: controlledOpen, onToggle }: { grou
 
   const sectionId = `sidebar-section-${(group.title ?? "primary").replace(/[^a-z0-9]+/gi, "-").toLowerCase()}`;
 
-  return <Box component="section" sx={{ width: "100%", minWidth: 0, px: 1.5 }}>
+  return <Box component="section" sx={{ width: "100%", minWidth: 0, px: state === "collapsed" ? 0.5 : 1 }}>
     {isCollapsible && state !== "collapsed" && <ListItem disablePadding sx={{ display: "block", mt: 1.5, mb: 0.5 }}>
       <ListItemButton
         component="button"
@@ -40,7 +40,7 @@ export function SidebarSection({ group, open: controlledOpen, onToggle }: { grou
         aria-expanded={open}
         aria-controls={sectionId}
         onClick={toggle}
-        sx={{ minHeight: 40, width: "100%", borderRadius: 1, borderBottom: "1px solid rgba(255,255,255,.1)", px: 1.25, color: "rgba(255,255,255,.72)", fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 600, letterSpacing: "-.005em", lineHeight: "20px", textTransform: "none", justifyContent: "space-between", "&:hover": { backgroundColor: "rgba(255,255,255,.07)", color: "#fff", borderBottomColor: "rgba(255,255,255,.16)" } }}
+        sx={{ minHeight: 32, width: "100%", borderRadius: 1, px: 1.25, color: "var(--text-muted)", fontFamily: "var(--font-sans)", fontSize: 10, fontWeight: 700, letterSpacing: ".07em", lineHeight: "16px", textTransform: "uppercase", justifyContent: "space-between", "&:hover": { backgroundColor: "transparent", color: "var(--text-secondary)" }, "&:focus-visible": { outline: "2px solid var(--brand-accent)", outlineOffset: 1 } }}
       >
         <Typography component="span" sx={{ color: "inherit", fontFamily: "inherit", fontSize: "inherit", fontWeight: "inherit", letterSpacing: "inherit", lineHeight: 1 }}>{group.title}</Typography>
         {open ? <ChevronDown size={15} duration={0.6} /> : <ChevronRight size={15} duration={0.6} />}

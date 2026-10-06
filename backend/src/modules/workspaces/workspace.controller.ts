@@ -14,6 +14,10 @@ export async function get(request: Request, response: Response) {
   response.status(200).json({ success: true, data: await workspaceService.getWorkspace(request.params.workspaceId as string) });
 }
 
+export async function planStatus(request: Request, response: Response) {
+  response.status(200).json({ success: true, data: await workspaceService.getWorkspacePlanStatus(request.params.workspaceId as string) });
+}
+
 export async function setup(request: Request, response: Response) {
   response.status(200).json({
     success: true,

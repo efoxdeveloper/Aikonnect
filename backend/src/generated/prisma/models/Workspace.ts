@@ -345,6 +345,8 @@ export type WorkspaceWhereInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryListRelationFilter
   walletReservations?: Prisma.WalletReservationListRelationFilter
   billingSettings?: Prisma.XOR<Prisma.WorkspaceBillingSettingsNullableScalarRelationFilter, Prisma.WorkspaceBillingSettingsWhereInput> | null
+  subscriptions?: Prisma.WorkspaceSubscriptionListRelationFilter
+  planRequests?: Prisma.PlanRequestListRelationFilter
 }
 
 export type WorkspaceOrderByWithRelationInput = {
@@ -395,6 +397,8 @@ export type WorkspaceOrderByWithRelationInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryOrderByRelationAggregateInput
   walletReservations?: Prisma.WalletReservationOrderByRelationAggregateInput
   billingSettings?: Prisma.WorkspaceBillingSettingsOrderByWithRelationInput
+  subscriptions?: Prisma.WorkspaceSubscriptionOrderByRelationAggregateInput
+  planRequests?: Prisma.PlanRequestOrderByRelationAggregateInput
 }
 
 export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
@@ -448,6 +452,8 @@ export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
   walletLedgerEntries?: Prisma.WalletLedgerEntryListRelationFilter
   walletReservations?: Prisma.WalletReservationListRelationFilter
   billingSettings?: Prisma.XOR<Prisma.WorkspaceBillingSettingsNullableScalarRelationFilter, Prisma.WorkspaceBillingSettingsWhereInput> | null
+  subscriptions?: Prisma.WorkspaceSubscriptionListRelationFilter
+  planRequests?: Prisma.PlanRequestListRelationFilter
 }, "id" | "slug">
 
 export type WorkspaceOrderByWithAggregationInput = {
@@ -546,6 +552,8 @@ export type WorkspaceCreateInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateInput = {
@@ -594,6 +602,8 @@ export type WorkspaceUncheckedCreateInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUpdateInput = {
@@ -642,6 +652,8 @@ export type WorkspaceUpdateInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateInput = {
@@ -690,6 +702,8 @@ export type WorkspaceUncheckedUpdateInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateManyInput = {
@@ -1314,6 +1328,34 @@ export type WorkspaceUpdateOneRequiredWithoutBillingSettingsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutBillingSettingsInput, Prisma.WorkspaceUpdateWithoutBillingSettingsInput>, Prisma.WorkspaceUncheckedUpdateWithoutBillingSettingsInput>
 }
 
+export type WorkspaceCreateNestedOneWithoutSubscriptionsInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutSubscriptionsInput, Prisma.WorkspaceUncheckedCreateWithoutSubscriptionsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutSubscriptionsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+}
+
+export type WorkspaceUpdateOneRequiredWithoutSubscriptionsNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutSubscriptionsInput, Prisma.WorkspaceUncheckedCreateWithoutSubscriptionsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutSubscriptionsInput
+  upsert?: Prisma.WorkspaceUpsertWithoutSubscriptionsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutSubscriptionsInput, Prisma.WorkspaceUpdateWithoutSubscriptionsInput>, Prisma.WorkspaceUncheckedUpdateWithoutSubscriptionsInput>
+}
+
+export type WorkspaceCreateNestedOneWithoutPlanRequestsInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutPlanRequestsInput, Prisma.WorkspaceUncheckedCreateWithoutPlanRequestsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutPlanRequestsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+}
+
+export type WorkspaceUpdateOneRequiredWithoutPlanRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutPlanRequestsInput, Prisma.WorkspaceUncheckedCreateWithoutPlanRequestsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutPlanRequestsInput
+  upsert?: Prisma.WorkspaceUpsertWithoutPlanRequestsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutPlanRequestsInput, Prisma.WorkspaceUpdateWithoutPlanRequestsInput>, Prisma.WorkspaceUncheckedUpdateWithoutPlanRequestsInput>
+}
+
 export type WorkspaceCreateWithoutOwnerInput = {
   id?: string
   name: string
@@ -1359,6 +1401,8 @@ export type WorkspaceCreateWithoutOwnerInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutOwnerInput = {
@@ -1406,6 +1450,8 @@ export type WorkspaceUncheckedCreateWithoutOwnerInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutOwnerInput = {
@@ -1503,6 +1549,8 @@ export type WorkspaceCreateWithoutTenantInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutTenantInput = {
@@ -1550,6 +1598,8 @@ export type WorkspaceUncheckedCreateWithoutTenantInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutTenantInput = {
@@ -1623,6 +1673,8 @@ export type WorkspaceCreateWithoutTemplatesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutTemplatesInput = {
@@ -1670,6 +1722,8 @@ export type WorkspaceUncheckedCreateWithoutTemplatesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutTemplatesInput = {
@@ -1733,6 +1787,8 @@ export type WorkspaceUpdateWithoutTemplatesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutTemplatesInput = {
@@ -1780,6 +1836,8 @@ export type WorkspaceUncheckedUpdateWithoutTemplatesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutApiKeysInput = {
@@ -1827,6 +1885,8 @@ export type WorkspaceCreateWithoutApiKeysInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutApiKeysInput = {
@@ -1874,6 +1934,8 @@ export type WorkspaceUncheckedCreateWithoutApiKeysInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutApiKeysInput = {
@@ -1937,6 +1999,8 @@ export type WorkspaceUpdateWithoutApiKeysInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutApiKeysInput = {
@@ -1984,6 +2048,8 @@ export type WorkspaceUncheckedUpdateWithoutApiKeysInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutWebhookEndpointsInput = {
@@ -2031,6 +2097,8 @@ export type WorkspaceCreateWithoutWebhookEndpointsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutWebhookEndpointsInput = {
@@ -2078,6 +2146,8 @@ export type WorkspaceUncheckedCreateWithoutWebhookEndpointsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutWebhookEndpointsInput = {
@@ -2141,6 +2211,8 @@ export type WorkspaceUpdateWithoutWebhookEndpointsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutWebhookEndpointsInput = {
@@ -2188,6 +2260,8 @@ export type WorkspaceUncheckedUpdateWithoutWebhookEndpointsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutWebhookDeliveriesInput = {
@@ -2235,6 +2309,8 @@ export type WorkspaceCreateWithoutWebhookDeliveriesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutWebhookDeliveriesInput = {
@@ -2282,6 +2358,8 @@ export type WorkspaceUncheckedCreateWithoutWebhookDeliveriesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutWebhookDeliveriesInput = {
@@ -2345,6 +2423,8 @@ export type WorkspaceUpdateWithoutWebhookDeliveriesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutWebhookDeliveriesInput = {
@@ -2392,6 +2472,8 @@ export type WorkspaceUncheckedUpdateWithoutWebhookDeliveriesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutContactsInput = {
@@ -2439,6 +2521,8 @@ export type WorkspaceCreateWithoutContactsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutContactsInput = {
@@ -2486,6 +2570,8 @@ export type WorkspaceUncheckedCreateWithoutContactsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutContactsInput = {
@@ -2549,6 +2635,8 @@ export type WorkspaceUpdateWithoutContactsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutContactsInput = {
@@ -2596,6 +2684,8 @@ export type WorkspaceUncheckedUpdateWithoutContactsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutContactConsentEventsInput = {
@@ -2643,6 +2733,8 @@ export type WorkspaceCreateWithoutContactConsentEventsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutContactConsentEventsInput = {
@@ -2690,6 +2782,8 @@ export type WorkspaceUncheckedCreateWithoutContactConsentEventsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutContactConsentEventsInput = {
@@ -2753,6 +2847,8 @@ export type WorkspaceUpdateWithoutContactConsentEventsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutContactConsentEventsInput = {
@@ -2800,6 +2896,8 @@ export type WorkspaceUncheckedUpdateWithoutContactConsentEventsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutConversationsInput = {
@@ -2847,6 +2945,8 @@ export type WorkspaceCreateWithoutConversationsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutConversationsInput = {
@@ -2894,6 +2994,8 @@ export type WorkspaceUncheckedCreateWithoutConversationsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutConversationsInput = {
@@ -2957,6 +3059,8 @@ export type WorkspaceUpdateWithoutConversationsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutConversationsInput = {
@@ -3004,6 +3108,8 @@ export type WorkspaceUncheckedUpdateWithoutConversationsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutMessagesInput = {
@@ -3051,6 +3157,8 @@ export type WorkspaceCreateWithoutMessagesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutMessagesInput = {
@@ -3098,6 +3206,8 @@ export type WorkspaceUncheckedCreateWithoutMessagesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutMessagesInput = {
@@ -3161,6 +3271,8 @@ export type WorkspaceUpdateWithoutMessagesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutMessagesInput = {
@@ -3208,6 +3320,8 @@ export type WorkspaceUncheckedUpdateWithoutMessagesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutContactCustomFieldsInput = {
@@ -3255,6 +3369,8 @@ export type WorkspaceCreateWithoutContactCustomFieldsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutContactCustomFieldsInput = {
@@ -3302,6 +3418,8 @@ export type WorkspaceUncheckedCreateWithoutContactCustomFieldsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutContactCustomFieldsInput = {
@@ -3365,6 +3483,8 @@ export type WorkspaceUpdateWithoutContactCustomFieldsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutContactCustomFieldsInput = {
@@ -3412,6 +3532,8 @@ export type WorkspaceUncheckedUpdateWithoutContactCustomFieldsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutContactSegmentsInput = {
@@ -3459,6 +3581,8 @@ export type WorkspaceCreateWithoutContactSegmentsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutContactSegmentsInput = {
@@ -3506,6 +3630,8 @@ export type WorkspaceUncheckedCreateWithoutContactSegmentsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutContactSegmentsInput = {
@@ -3569,6 +3695,8 @@ export type WorkspaceUpdateWithoutContactSegmentsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutContactSegmentsInput = {
@@ -3616,6 +3744,8 @@ export type WorkspaceUncheckedUpdateWithoutContactSegmentsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutContactTasksInput = {
@@ -3663,6 +3793,8 @@ export type WorkspaceCreateWithoutContactTasksInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutContactTasksInput = {
@@ -3710,6 +3842,8 @@ export type WorkspaceUncheckedCreateWithoutContactTasksInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutContactTasksInput = {
@@ -3773,6 +3907,8 @@ export type WorkspaceUpdateWithoutContactTasksInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutContactTasksInput = {
@@ -3820,6 +3956,8 @@ export type WorkspaceUncheckedUpdateWithoutContactTasksInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutContactNotesInput = {
@@ -3867,6 +4005,8 @@ export type WorkspaceCreateWithoutContactNotesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutContactNotesInput = {
@@ -3914,6 +4054,8 @@ export type WorkspaceUncheckedCreateWithoutContactNotesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutContactNotesInput = {
@@ -3977,6 +4119,8 @@ export type WorkspaceUpdateWithoutContactNotesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutContactNotesInput = {
@@ -4024,6 +4168,8 @@ export type WorkspaceUncheckedUpdateWithoutContactNotesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutContactTagsInput = {
@@ -4071,6 +4217,8 @@ export type WorkspaceCreateWithoutContactTagsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutContactTagsInput = {
@@ -4118,6 +4266,8 @@ export type WorkspaceUncheckedCreateWithoutContactTagsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutContactTagsInput = {
@@ -4181,6 +4331,8 @@ export type WorkspaceUpdateWithoutContactTagsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutContactTagsInput = {
@@ -4228,6 +4380,8 @@ export type WorkspaceUncheckedUpdateWithoutContactTagsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutSetupProgressInput = {
@@ -4275,6 +4429,8 @@ export type WorkspaceCreateWithoutSetupProgressInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutSetupProgressInput = {
@@ -4322,6 +4478,8 @@ export type WorkspaceUncheckedCreateWithoutSetupProgressInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutSetupProgressInput = {
@@ -4385,6 +4543,8 @@ export type WorkspaceUpdateWithoutSetupProgressInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutSetupProgressInput = {
@@ -4432,6 +4592,8 @@ export type WorkspaceUncheckedUpdateWithoutSetupProgressInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutWhatsappBusinessAccountsInput = {
@@ -4479,6 +4641,8 @@ export type WorkspaceCreateWithoutWhatsappBusinessAccountsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutWhatsappBusinessAccountsInput = {
@@ -4526,6 +4690,8 @@ export type WorkspaceUncheckedCreateWithoutWhatsappBusinessAccountsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutWhatsappBusinessAccountsInput = {
@@ -4589,6 +4755,8 @@ export type WorkspaceUpdateWithoutWhatsappBusinessAccountsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutWhatsappBusinessAccountsInput = {
@@ -4636,6 +4804,8 @@ export type WorkspaceUncheckedUpdateWithoutWhatsappBusinessAccountsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutAutomationsInput = {
@@ -4683,6 +4853,8 @@ export type WorkspaceCreateWithoutAutomationsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutAutomationsInput = {
@@ -4730,6 +4902,8 @@ export type WorkspaceUncheckedCreateWithoutAutomationsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutAutomationsInput = {
@@ -4793,6 +4967,8 @@ export type WorkspaceUpdateWithoutAutomationsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutAutomationsInput = {
@@ -4840,6 +5016,8 @@ export type WorkspaceUncheckedUpdateWithoutAutomationsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutAutomationLogsInput = {
@@ -4887,6 +5065,8 @@ export type WorkspaceCreateWithoutAutomationLogsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutAutomationLogsInput = {
@@ -4934,6 +5114,8 @@ export type WorkspaceUncheckedCreateWithoutAutomationLogsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutAutomationLogsInput = {
@@ -4997,6 +5179,8 @@ export type WorkspaceUpdateWithoutAutomationLogsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutAutomationLogsInput = {
@@ -5044,6 +5228,8 @@ export type WorkspaceUncheckedUpdateWithoutAutomationLogsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutWorkflowsInput = {
@@ -5091,6 +5277,8 @@ export type WorkspaceCreateWithoutWorkflowsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutWorkflowsInput = {
@@ -5138,6 +5326,8 @@ export type WorkspaceUncheckedCreateWithoutWorkflowsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutWorkflowsInput = {
@@ -5201,6 +5391,8 @@ export type WorkspaceUpdateWithoutWorkflowsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutWorkflowsInput = {
@@ -5248,6 +5440,8 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutWorkflowRunsInput = {
@@ -5295,6 +5489,8 @@ export type WorkspaceCreateWithoutWorkflowRunsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutWorkflowRunsInput = {
@@ -5342,6 +5538,8 @@ export type WorkspaceUncheckedCreateWithoutWorkflowRunsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutWorkflowRunsInput = {
@@ -5405,6 +5603,8 @@ export type WorkspaceUpdateWithoutWorkflowRunsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutWorkflowRunsInput = {
@@ -5452,6 +5652,8 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowRunsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutCampaignsInput = {
@@ -5499,6 +5701,8 @@ export type WorkspaceCreateWithoutCampaignsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutCampaignsInput = {
@@ -5546,6 +5750,8 @@ export type WorkspaceUncheckedCreateWithoutCampaignsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutCampaignsInput = {
@@ -5609,6 +5815,8 @@ export type WorkspaceUpdateWithoutCampaignsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutCampaignsInput = {
@@ -5656,6 +5864,8 @@ export type WorkspaceUncheckedUpdateWithoutCampaignsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutCampaignRecipientsInput = {
@@ -5703,6 +5913,8 @@ export type WorkspaceCreateWithoutCampaignRecipientsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutCampaignRecipientsInput = {
@@ -5750,6 +5962,8 @@ export type WorkspaceUncheckedCreateWithoutCampaignRecipientsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutCampaignRecipientsInput = {
@@ -5813,6 +6027,8 @@ export type WorkspaceUpdateWithoutCampaignRecipientsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutCampaignRecipientsInput = {
@@ -5860,6 +6076,8 @@ export type WorkspaceUncheckedUpdateWithoutCampaignRecipientsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutMembershipsInput = {
@@ -5907,6 +6125,8 @@ export type WorkspaceCreateWithoutMembershipsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutMembershipsInput = {
@@ -5954,6 +6174,8 @@ export type WorkspaceUncheckedCreateWithoutMembershipsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutMembershipsInput = {
@@ -6017,6 +6239,8 @@ export type WorkspaceUpdateWithoutMembershipsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutMembershipsInput = {
@@ -6064,6 +6288,8 @@ export type WorkspaceUncheckedUpdateWithoutMembershipsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutRolesInput = {
@@ -6111,6 +6337,8 @@ export type WorkspaceCreateWithoutRolesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutRolesInput = {
@@ -6158,6 +6386,8 @@ export type WorkspaceUncheckedCreateWithoutRolesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutRolesInput = {
@@ -6221,6 +6451,8 @@ export type WorkspaceUpdateWithoutRolesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutRolesInput = {
@@ -6268,6 +6500,8 @@ export type WorkspaceUncheckedUpdateWithoutRolesInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutInvitationsInput = {
@@ -6315,6 +6549,8 @@ export type WorkspaceCreateWithoutInvitationsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutInvitationsInput = {
@@ -6362,6 +6598,8 @@ export type WorkspaceUncheckedCreateWithoutInvitationsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutInvitationsInput = {
@@ -6425,6 +6663,8 @@ export type WorkspaceUpdateWithoutInvitationsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutInvitationsInput = {
@@ -6472,6 +6712,8 @@ export type WorkspaceUncheckedUpdateWithoutInvitationsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutWalletLedgerEntriesInput = {
@@ -6519,6 +6761,8 @@ export type WorkspaceCreateWithoutWalletLedgerEntriesInput = {
   webhookDeliveries?: Prisma.WebhookDeliveryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutWalletLedgerEntriesInput = {
@@ -6566,6 +6810,8 @@ export type WorkspaceUncheckedCreateWithoutWalletLedgerEntriesInput = {
   webhookDeliveries?: Prisma.WebhookDeliveryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutWalletLedgerEntriesInput = {
@@ -6629,6 +6875,8 @@ export type WorkspaceUpdateWithoutWalletLedgerEntriesInput = {
   webhookDeliveries?: Prisma.WebhookDeliveryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutWalletLedgerEntriesInput = {
@@ -6676,6 +6924,8 @@ export type WorkspaceUncheckedUpdateWithoutWalletLedgerEntriesInput = {
   webhookDeliveries?: Prisma.WebhookDeliveryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutWalletReservationsInput = {
@@ -6723,6 +6973,8 @@ export type WorkspaceCreateWithoutWalletReservationsInput = {
   webhookDeliveries?: Prisma.WebhookDeliveryCreateNestedManyWithoutWorkspaceInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutWalletReservationsInput = {
@@ -6770,6 +7022,8 @@ export type WorkspaceUncheckedCreateWithoutWalletReservationsInput = {
   webhookDeliveries?: Prisma.WebhookDeliveryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutWalletReservationsInput = {
@@ -6833,6 +7087,8 @@ export type WorkspaceUpdateWithoutWalletReservationsInput = {
   webhookDeliveries?: Prisma.WebhookDeliveryUpdateManyWithoutWorkspaceNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutWalletReservationsInput = {
@@ -6880,6 +7136,8 @@ export type WorkspaceUncheckedUpdateWithoutWalletReservationsInput = {
   webhookDeliveries?: Prisma.WebhookDeliveryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutBillingSettingsInput = {
@@ -6927,6 +7185,8 @@ export type WorkspaceCreateWithoutBillingSettingsInput = {
   webhookDeliveries?: Prisma.WebhookDeliveryCreateNestedManyWithoutWorkspaceInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutBillingSettingsInput = {
@@ -6974,6 +7234,8 @@ export type WorkspaceUncheckedCreateWithoutBillingSettingsInput = {
   webhookDeliveries?: Prisma.WebhookDeliveryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
   walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutBillingSettingsInput = {
@@ -7037,6 +7299,8 @@ export type WorkspaceUpdateWithoutBillingSettingsInput = {
   webhookDeliveries?: Prisma.WebhookDeliveryUpdateManyWithoutWorkspaceNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutBillingSettingsInput = {
@@ -7084,6 +7348,432 @@ export type WorkspaceUncheckedUpdateWithoutBillingSettingsInput = {
   webhookDeliveries?: Prisma.WebhookDeliveryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceCreateWithoutSubscriptionsInput = {
+  id?: string
+  name: string
+  slug: string
+  companyName?: string | null
+  industry?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: number
+  onboardingCompletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
+  tenant: Prisma.TenantCreateNestedOneWithoutWorkspacesInput
+  memberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
+  apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
+  webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutWorkspaceInput
+  webhookDeliveries?: Prisma.WebhookDeliveryCreateNestedManyWithoutWorkspaceInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceUncheckedCreateWithoutSubscriptionsInput = {
+  id?: string
+  tenantId: string
+  name: string
+  slug: string
+  companyName?: string | null
+  industry?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: number
+  onboardingCompletedAt?: Date | string | null
+  ownerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
+  apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutWorkspaceInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUncheckedCreateNestedManyWithoutWorkspaceInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceCreateOrConnectWithoutSubscriptionsInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutSubscriptionsInput, Prisma.WorkspaceUncheckedCreateWithoutSubscriptionsInput>
+}
+
+export type WorkspaceUpsertWithoutSubscriptionsInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutSubscriptionsInput, Prisma.WorkspaceUncheckedUpdateWithoutSubscriptionsInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutSubscriptionsInput, Prisma.WorkspaceUncheckedCreateWithoutSubscriptionsInput>
+  where?: Prisma.WorkspaceWhereInput
+}
+
+export type WorkspaceUpdateToOneWithWhereWithoutSubscriptionsInput = {
+  where?: Prisma.WorkspaceWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutSubscriptionsInput, Prisma.WorkspaceUncheckedUpdateWithoutSubscriptionsInput>
+}
+
+export type WorkspaceUpdateWithoutSubscriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutWorkspacesNestedInput
+  memberships?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
+  apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutWorkspaceNestedInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUpdateManyWithoutWorkspaceNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceUncheckedUpdateWithoutSubscriptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
+  apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutWorkspaceNestedInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUncheckedUpdateManyWithoutWorkspaceNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceCreateWithoutPlanRequestsInput = {
+  id?: string
+  name: string
+  slug: string
+  companyName?: string | null
+  industry?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: number
+  onboardingCompletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
+  tenant: Prisma.TenantCreateNestedOneWithoutWorkspacesInput
+  memberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
+  apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
+  webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutWorkspaceInput
+  webhookDeliveries?: Prisma.WebhookDeliveryCreateNestedManyWithoutWorkspaceInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceUncheckedCreateWithoutPlanRequestsInput = {
+  id?: string
+  tenantId: string
+  name: string
+  slug: string
+  companyName?: string | null
+  industry?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: number
+  onboardingCompletedAt?: Date | string | null
+  ownerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
+  apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutWorkspaceInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUncheckedCreateNestedManyWithoutWorkspaceInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceCreateOrConnectWithoutPlanRequestsInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutPlanRequestsInput, Prisma.WorkspaceUncheckedCreateWithoutPlanRequestsInput>
+}
+
+export type WorkspaceUpsertWithoutPlanRequestsInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutPlanRequestsInput, Prisma.WorkspaceUncheckedUpdateWithoutPlanRequestsInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutPlanRequestsInput, Prisma.WorkspaceUncheckedCreateWithoutPlanRequestsInput>
+  where?: Prisma.WorkspaceWhereInput
+}
+
+export type WorkspaceUpdateToOneWithWhereWithoutPlanRequestsInput = {
+  where?: Prisma.WorkspaceWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutPlanRequestsInput, Prisma.WorkspaceUncheckedUpdateWithoutPlanRequestsInput>
+}
+
+export type WorkspaceUpdateWithoutPlanRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutWorkspacesNestedInput
+  memberships?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
+  apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutWorkspaceNestedInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUpdateManyWithoutWorkspaceNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceUncheckedUpdateWithoutPlanRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
+  apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutWorkspaceNestedInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUncheckedUpdateManyWithoutWorkspaceNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateManyOwnerInput = {
@@ -7151,6 +7841,8 @@ export type WorkspaceUpdateWithoutOwnerInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutOwnerInput = {
@@ -7198,6 +7890,8 @@ export type WorkspaceUncheckedUpdateWithoutOwnerInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateManyWithoutOwnerInput = {
@@ -7285,6 +7979,8 @@ export type WorkspaceUpdateWithoutTenantInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutTenantInput = {
@@ -7332,6 +8028,8 @@ export type WorkspaceUncheckedUpdateWithoutTenantInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
   walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
   billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateManyWithoutTenantInput = {
@@ -7385,6 +8083,8 @@ export type WorkspaceCountOutputType = {
   webhookDeliveries: number
   walletLedgerEntries: number
   walletReservations: number
+  subscriptions: number
+  planRequests: number
 }
 
 export type WorkspaceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -7413,6 +8113,8 @@ export type WorkspaceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensi
   webhookDeliveries?: boolean | WorkspaceCountOutputTypeCountWebhookDeliveriesArgs
   walletLedgerEntries?: boolean | WorkspaceCountOutputTypeCountWalletLedgerEntriesArgs
   walletReservations?: boolean | WorkspaceCountOutputTypeCountWalletReservationsArgs
+  subscriptions?: boolean | WorkspaceCountOutputTypeCountSubscriptionsArgs
+  planRequests?: boolean | WorkspaceCountOutputTypeCountPlanRequestsArgs
 }
 
 /**
@@ -7600,6 +8302,20 @@ export type WorkspaceCountOutputTypeCountWalletReservationsArgs<ExtArgs extends 
   where?: Prisma.WalletReservationWhereInput
 }
 
+/**
+ * WorkspaceCountOutputType without action
+ */
+export type WorkspaceCountOutputTypeCountSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkspaceSubscriptionWhereInput
+}
+
+/**
+ * WorkspaceCountOutputType without action
+ */
+export type WorkspaceCountOutputTypeCountPlanRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PlanRequestWhereInput
+}
+
 
 export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -7649,6 +8365,8 @@ export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   walletLedgerEntries?: boolean | Prisma.Workspace$walletLedgerEntriesArgs<ExtArgs>
   walletReservations?: boolean | Prisma.Workspace$walletReservationsArgs<ExtArgs>
   billingSettings?: boolean | Prisma.Workspace$billingSettingsArgs<ExtArgs>
+  subscriptions?: boolean | Prisma.Workspace$subscriptionsArgs<ExtArgs>
+  planRequests?: boolean | Prisma.Workspace$planRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workspace"]>
 
@@ -7750,6 +8468,8 @@ export type WorkspaceInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   walletLedgerEntries?: boolean | Prisma.Workspace$walletLedgerEntriesArgs<ExtArgs>
   walletReservations?: boolean | Prisma.Workspace$walletReservationsArgs<ExtArgs>
   billingSettings?: boolean | Prisma.Workspace$billingSettingsArgs<ExtArgs>
+  subscriptions?: boolean | Prisma.Workspace$subscriptionsArgs<ExtArgs>
+  planRequests?: boolean | Prisma.Workspace$planRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WorkspaceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -7793,6 +8513,8 @@ export type $WorkspacePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     walletLedgerEntries: Prisma.$WalletLedgerEntryPayload<ExtArgs>[]
     walletReservations: Prisma.$WalletReservationPayload<ExtArgs>[]
     billingSettings: Prisma.$WorkspaceBillingSettingsPayload<ExtArgs> | null
+    subscriptions: Prisma.$WorkspaceSubscriptionPayload<ExtArgs>[]
+    planRequests: Prisma.$PlanRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -8236,6 +8958,8 @@ export interface Prisma__WorkspaceClient<T, Null = never, ExtArgs extends runtim
   walletLedgerEntries<T extends Prisma.Workspace$walletLedgerEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$walletLedgerEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WalletLedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   walletReservations<T extends Prisma.Workspace$walletReservationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$walletReservationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WalletReservationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   billingSettings<T extends Prisma.Workspace$billingSettingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$billingSettingsArgs<ExtArgs>>): Prisma.Prisma__WorkspaceBillingSettingsClient<runtime.Types.Result.GetResult<Prisma.$WorkspaceBillingSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  subscriptions<T extends Prisma.Workspace$subscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$subscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  planRequests<T extends Prisma.Workspace$planRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$planRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlanRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9319,6 +10043,54 @@ export type Workspace$billingSettingsArgs<ExtArgs extends runtime.Types.Extensio
    */
   include?: Prisma.WorkspaceBillingSettingsInclude<ExtArgs> | null
   where?: Prisma.WorkspaceBillingSettingsWhereInput
+}
+
+/**
+ * Workspace.subscriptions
+ */
+export type Workspace$subscriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkspaceSubscription
+   */
+  select?: Prisma.WorkspaceSubscriptionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkspaceSubscription
+   */
+  omit?: Prisma.WorkspaceSubscriptionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceSubscriptionInclude<ExtArgs> | null
+  where?: Prisma.WorkspaceSubscriptionWhereInput
+  orderBy?: Prisma.WorkspaceSubscriptionOrderByWithRelationInput | Prisma.WorkspaceSubscriptionOrderByWithRelationInput[]
+  cursor?: Prisma.WorkspaceSubscriptionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkspaceSubscriptionScalarFieldEnum | Prisma.WorkspaceSubscriptionScalarFieldEnum[]
+}
+
+/**
+ * Workspace.planRequests
+ */
+export type Workspace$planRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PlanRequest
+   */
+  select?: Prisma.PlanRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PlanRequest
+   */
+  omit?: Prisma.PlanRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlanRequestInclude<ExtArgs> | null
+  where?: Prisma.PlanRequestWhereInput
+  orderBy?: Prisma.PlanRequestOrderByWithRelationInput | Prisma.PlanRequestOrderByWithRelationInput[]
+  cursor?: Prisma.PlanRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PlanRequestScalarFieldEnum | Prisma.PlanRequestScalarFieldEnum[]
 }
 
 /**

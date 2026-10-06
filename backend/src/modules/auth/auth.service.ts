@@ -4,6 +4,7 @@ import { prisma } from "../../database/prisma.js";
 import type { Prisma } from "../../generated/prisma/client.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { createWorkspaceWithDefaults } from "../workspaces/permissions.js";
+import { enforceWorkspaceSeatLimit } from "../workspaces/seat-plan-limits.js";
 import { generateSecureToken, hashPassword, hashToken, verifyPassword } from "../../utils/crypto.js";
 import { signAccessToken } from "../../utils/tokens.js";
 import { sendPasswordResetEmail, sendVerificationEmail } from "../../services/email.service.js";
@@ -49,6 +50,12 @@ async function acceptPendingInvitations(transaction: Prisma.TransactionClient, u
       select: { id: true },
     });
     if (!existing) {
+      try {
+        await enforceWorkspaceSeatLimit(transaction, invitation.workspaceId);
+      } catch (error) {
+        if (error instanceof AppError && (error.code === "PLAN_LIMIT_REACHED" || error.code === "TRIAL_EXPIRED")) continue;
+        throw error;
+      }
       await transaction.workspaceMember.create({
         data: { workspaceId: invitation.workspaceId, userId, roleId: invitation.roleId },
       });

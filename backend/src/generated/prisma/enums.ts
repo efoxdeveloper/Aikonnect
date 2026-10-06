@@ -48,6 +48,35 @@ export const InvitationStatus = {
 export type InvitationStatus = (typeof InvitationStatus)[keyof typeof InvitationStatus]
 
 
+export const WorkspaceSubscriptionStatus = {
+  TRIALING: 'TRIALING',
+  ACTIVE: 'ACTIVE',
+  PAST_DUE: 'PAST_DUE',
+  CANCELED: 'CANCELED',
+  EXPIRED: 'EXPIRED',
+  INCOMPLETE: 'INCOMPLETE'
+} as const
+
+export type WorkspaceSubscriptionStatus = (typeof WorkspaceSubscriptionStatus)[keyof typeof WorkspaceSubscriptionStatus]
+
+
+export const SubscriptionBillingPeriod = {
+  MONTHLY: 'MONTHLY',
+  ANNUAL: 'ANNUAL'
+} as const
+
+export type SubscriptionBillingPeriod = (typeof SubscriptionBillingPeriod)[keyof typeof SubscriptionBillingPeriod]
+
+
+export const PlanRequestStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type PlanRequestStatus = (typeof PlanRequestStatus)[keyof typeof PlanRequestStatus]
+
+
 export const WhatsAppConnectionStatus = {
   DISCONNECTED: 'DISCONNECTED',
   CONNECTING: 'CONNECTING',

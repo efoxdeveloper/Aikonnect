@@ -99,6 +99,18 @@ describe("authenticated API requests", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
+  it("announces plan restrictions with the server reason so the app can show upgrade guidance", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(jsonResponse({ error: { code: "PLAN_LIMIT_REACHED", message: "Your workspace reached its contact limit." } }, 403));
+    const blocked = vi.fn();
+    window.addEventListener("marento:plan-access-blocked", blocked, { once: true });
+
+    await expect(apiRequest("/workspaces/workspace-1/contacts", { method: "POST", body: "{}" })).rejects.toMatchObject({ code: "PLAN_LIMIT_REACHED" });
+
+    expect(blocked).toHaveBeenCalledOnce();
+    expect((blocked.mock.calls[0]?.[0] as CustomEvent).detail).toMatchObject({ code: "PLAN_LIMIT_REACHED", message: "Your workspace reached its contact limit." });
+    expect(fetchMock).toHaveBeenCalledOnce();
+  });
+
   it("clears the authenticated session when the refresh cookie is invalid", async () => {
     const authenticationLost = vi.fn();
     vi.spyOn(globalThis, "fetch")

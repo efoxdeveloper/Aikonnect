@@ -5,7 +5,7 @@ import { requirePlatformRole, type PlatformRole } from "../../middleware/platfor
 import * as controller from "./admin.controller.js";
 import * as service from "./admin.service.js";
 import { validateBody, validateParams, validateQuery } from "../../middleware/validate.js";
-import { adminAuditQuerySchema, adminListQuerySchema, adminUserActionSchema, adminUserParamsSchema, adminUserWalletAdjustmentSchema, adminWalletAdjustmentSchema } from "./admin.schemas.js";
+import { adminAuditQuerySchema, adminListQuerySchema, adminPlanInputSchema, adminPlanParamsSchema, adminPlanRequestDecisionSchema, adminPlanRequestParamsSchema, adminPlanRequestQuerySchema, adminUserActionSchema, adminUserParamsSchema, adminUserWalletAdjustmentSchema, adminWalletAdjustmentSchema } from "./admin.schemas.js";
 import * as rateCardController from "../whatsapp-pricing/pricing.controller.js";
 import { rateCardIdParamsSchema, rateCardInputSchema, rateCardListQuerySchema, rateCardStatusSchema, ratePreviewSchema } from "../whatsapp-pricing/pricing.schemas.js";
 import * as walletController from "../wallet/wallet.controller.js";
@@ -36,6 +36,12 @@ adminRouter.post("/users/:userId/wallet-adjustments", ...access(...billingRoles)
 adminRouter.get("/platform-admins", ...access(...administratorRoles), validateQuery(adminListQuerySchema), asyncHandler(controller.platformAdmins));
 adminRouter.get("/whatsapp", ...access(...customerRoles), validateQuery(adminListQuerySchema), asyncHandler(controller.whatsapp));
 adminRouter.get("/billing", ...access(...billingRoles), asyncHandler(controller.billing));
+adminRouter.get("/plans", ...access(...billingRoles), asyncHandler(controller.plans));
+adminRouter.post("/plans", ...access(...administratorRoles), validateBody(adminPlanInputSchema), asyncHandler(controller.createPlan));
+adminRouter.put("/plans/:planId", ...access(...administratorRoles), validateParams(adminPlanParamsSchema), validateBody(adminPlanInputSchema), asyncHandler(controller.updatePlan));
+adminRouter.delete("/plans/:planId", ...access(...administratorRoles), validateParams(adminPlanParamsSchema), asyncHandler(controller.deletePlan));
+adminRouter.get("/plan-requests", ...access(...billingRoles), validateQuery(adminPlanRequestQuerySchema), asyncHandler(controller.planRequests));
+adminRouter.patch("/plan-requests/:requestId", ...access(...billingRoles), validateParams(adminPlanRequestParamsSchema), validateBody(adminPlanRequestDecisionSchema), asyncHandler(controller.decidePlanRequest));
 adminRouter.post("/billing/wallet-adjustments", ...access(...billingRoles), validateBody(adminWalletAdjustmentSchema), asyncHandler(controller.walletAdjustment));
 adminRouter.get("/workspaces/:workspaceId/wallet", ...access(...billingRoles), validateParams(walletParamsSchema), asyncHandler(walletController.get));
 adminRouter.get("/workspaces/:workspaceId/wallet/transactions", ...access(...billingRoles), validateParams(walletParamsSchema), validateQuery(walletLedgerQuerySchema), asyncHandler(walletController.ledger));

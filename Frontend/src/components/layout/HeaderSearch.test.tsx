@@ -25,7 +25,7 @@ describe("HeaderSearch", () => {
     fireEvent.change(input, { target: { value: "billing" } });
 
     expect(input).toHaveValue("billing");
-    expect(screen.getByRole("option", { name: /Billing & Usage/ })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: /Usage & wallet/ })).toBeInTheDocument();
     expect(screen.queryByRole("option", { name: /Campaigns/ })).not.toBeInTheDocument();
   });
 

@@ -87,8 +87,8 @@ describe("SidebarMenuItem", () => {
     render(<MemoryRouter initialEntries={["/reports"]}><SidebarProvider><ExpandedState><SidebarMenuItem item={nestedItem} /></ExpandedState></SidebarProvider></MemoryRouter>);
 
     const child = screen.getByRole("link", { name: "Overview" });
-    expect(child).toHaveStyle({ minHeight: "28px" });
-    expect(child).not.toHaveStyle({ boxShadow: "inset 3px 0 0 #34d399" });
+    expect(child).toHaveStyle({ minHeight: "34px" });
+    expect(child).not.toHaveStyle({ boxShadow: "inset 3px 0 0 #2bc666" });
     expect(child.closest("ul")).not.toHaveStyle({ borderLeft: "1px solid rgba(255,255,255,.1)" });
   });
 });

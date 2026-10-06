@@ -22,6 +22,7 @@ function stub(t: TestContext, target: any, method: string, implementation: (...a
 
 test("message status webhooks preserve the message id and callback data", { concurrency: false }, async (t) => {
   let createManyArgs: any;
+  stub(t, prisma.workspaceSubscription, "findFirst", async () => null);
   stub(t, prisma.message, "findUnique", async () => ({
     id: "message-1",
     workspaceId: "workspace-1",
@@ -51,6 +52,22 @@ test("message status webhooks preserve the message id and callback data", { conc
   assert.equal(createManyArgs.data[0].payload.data.message.meta_data.source_data.callback_data, "order-123");
 });
 
+test("does not enqueue webhook events when the current plan excludes webhooks", { concurrency: false }, async (t) => {
+  let queriedEndpoints = false;
+  stub(t, prisma.message, "findUnique", async () => ({ id: "message-limited", workspaceId: "workspace-limited" }));
+  stub(t, prisma.workspaceSubscription, "findFirst", async () => ({
+    id: "subscription-limited",
+    status: "ACTIVE",
+    trialEndsAt: null,
+    plan: { id: "plan-basic", slug: "basic", name: "Basic", maxSeats: 2, maxContacts: 100, maxCampaignsPerMonth: 5, maxAutomations: 1, maxWorkflows: 1, maxPipelines: 1, apiAccess: false, webhooks: false, advancedReports: false },
+  }));
+  stub(t, prisma.webhookEndpoint, "findMany", async () => { queriedEndpoints = true; return [{ id: "endpoint-1" }]; });
+  stub(t, prisma.webhookDelivery, "createMany", async () => { assert.fail("plan without webhooks must not queue deliveries"); });
+
+  assert.equal(await enqueueMessageWebhook("message-limited", "message.sent"), 0);
+  assert.equal(queriedEndpoints, false);
+});
+
 test("webhook signatures cover the timestamp and exact JSON body", () => {
   const timestamp = "1790848800";
   const body = JSON.stringify({ id: "evt-1", type: "message.sent" });
@@ -64,6 +81,7 @@ test("webhook delivery sends signed JSON and records the delivery", { concurrenc
   let endpointUpdate = 0;
   let claimedToken = "";
   let request: { url: string; init?: RequestInit } | undefined;
+  stub(t, prisma.workspaceSubscription, "findFirst", async () => null);
   stub(t, prisma.webhookDelivery, "findFirst", async () => ({ id: "delivery-1", attemptCount: 0 }));
   stub(t, prisma.webhookDelivery, "updateMany", async (args: any) => {
     if (claimUpdate++ === 0) {
@@ -86,6 +104,7 @@ test("webhook delivery sends signed JSON and records the delivery", { concurrenc
   stub(t, prisma.webhookDelivery, "findUnique", async () => ({
     id: "delivery-1",
     endpointId: "endpoint-1",
+    workspaceId: "workspace-1",
     eventType: "message.sent",
     payload: { version: "1.0", id: "evt-1", type: "message.sent" },
     processingToken: claimedToken,
@@ -101,4 +120,36 @@ test("webhook delivery sends signed JSON and records the delivery", { concurrenc
   assert.match(headers["x-marento-signature"], /^sha256=[a-f0-9]{64}$/);
   assert.equal(deliveredUpdate, 1);
   assert.equal(endpointUpdate, 1);
+});
+
+test("does not deliver queued webhooks when the current plan excludes webhooks", { concurrency: false }, async (t) => {
+  let updateArgs: any[] = [];
+  let processingToken = "";
+  stub(t, prisma.workspaceSubscription, "findFirst", async () => ({
+    id: "subscription-limited",
+    status: "ACTIVE",
+    trialEndsAt: null,
+    plan: { id: "plan-basic", slug: "basic", name: "Basic", maxSeats: 2, maxContacts: 100, maxCampaignsPerMonth: 5, maxAutomations: 1, maxWorkflows: 1, maxPipelines: 1, apiAccess: false, webhooks: false, advancedReports: false },
+  }));
+  stub(t, prisma.webhookDelivery, "findFirst", async () => ({ id: "delivery-limited", attemptCount: 0 }));
+  stub(t, prisma.webhookDelivery, "updateMany", async (args: any) => {
+    updateArgs.push(args);
+    if (updateArgs.length === 1) processingToken = args.data.processingToken;
+    return { count: 1 };
+  });
+  stub(t, prisma.webhookDelivery, "findUnique", async () => ({
+    id: "delivery-limited",
+    endpointId: "endpoint-limited",
+    workspaceId: "workspace-limited",
+    eventType: "message.sent",
+    payload: { id: "evt-limited" },
+    processingToken,
+    endpoint: { url: "https://developer.example.com/hook", secretEncrypted: "unused", active: true },
+  }));
+  stub(t, globalThis, "fetch", async () => { assert.fail("disabled webhooks must not be delivered"); return new Response("", { status: 200 }); });
+
+  assert.equal(await processWebhookDelivery(), true);
+  assert.equal(updateArgs.length, 2);
+  assert.equal(updateArgs[1].data.status, "FAILED");
+  assert.equal(updateArgs[1].data.nextAttemptAt.toISOString(), "9999-12-31T23:59:59.999Z");
 });

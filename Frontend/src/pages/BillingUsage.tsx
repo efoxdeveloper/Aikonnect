@@ -3,8 +3,18 @@ import { BarChart3, CalendarDays, CheckCircle2, Info, MessageSquare, Plus, Walle
 import { useAuth } from "@/contexts/AuthContext";
 import { apiRequest } from "@/lib/api";
 import { getActiveMembership } from "@/lib/workspace";
+import { BillingShell } from "@/components/billing/BillingShell";
+import { Link } from "react-router-dom";
 
 type UsageData = {
+  plan?: {
+    name: string | null;
+    status: "NONE" | "ACTIVE" | "TRIALING" | "EXPIRED";
+    trialEndsAt: string | null;
+    limits: { contacts: number | null; seats: number | null; campaignsPerMonth: number | null };
+    usage: { contacts: number; seats: number; campaignsThisMonth: number };
+    features: { apiAccess: boolean; webhooks: boolean; advancedReports: boolean };
+  };
   wallet?: { currency: string; totalBalance: string; reservedBalance: string; availableBalance: string; lowBalanceThreshold: string; status: string; balanceMinorUnits: string; balance: string; configuredFromBackend: boolean };
   filters: { from: string; to: string };
   summary: {
@@ -105,7 +115,7 @@ export function BillingUsage() {
   const maxDaily = useMemo(() => Math.max(1, ...(data?.daily.map((item) => item.total) ?? [])), [data]);
 
   if (!canRead) {
-    return <PageFrame title="Billing & Usage"><div className="rounded-lg border border-[var(--border-soft)] bg-white p-6 text-sm text-[var(--text-secondary)] shadow-[0_2px_8px_rgba(30,40,55,.04)]"><h2 className="text-sm font-medium text-[var(--text-primary)]">Billing access is restricted</h2><div className="mt-1">You do not have permission to view workspace usage.</div></div></PageFrame>;
+    return <BillingShell><PageFrame title="Billing & Usage"><div className="rounded-lg border border-[var(--border-soft)] bg-white p-6 text-sm text-[var(--text-secondary)] shadow-[0_2px_8px_rgba(30,40,55,.04)]"><h2 className="text-sm font-medium text-[var(--text-primary)]">Billing access is restricted</h2><div className="mt-1">You do not have permission to view workspace usage.</div></div></PageFrame></BillingShell>;
   }
 
   const applyCustomRange = () => {
@@ -128,7 +138,7 @@ export function BillingUsage() {
   };
 
   return (
-    <PageFrame title="Billing & Usage">
+    <BillingShell><PageFrame title="Billing & Usage">
       <div className="mb-5 flex flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]"><CalendarDays size={15} /><span>{data ? `${formatDate(data.filters.from)} – ${formatDate(data.filters.to)}` : "Usage period"}</span></div>
@@ -154,6 +164,8 @@ export function BillingUsage() {
           <MetricCard icon={<CheckCircle2 size={17} />} label="Read messages" value={data.summary.readMessages} detail={`${numberFormat.format(data.summary.failedMessages)} failed`} />
         </div>
 
+        {data.plan && <PlanUsageCard plan={data.plan} />}
+
         <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.3fr)_minmax(320px,.7fr)]">
           <section className="rounded-lg border border-[var(--border-soft)] bg-white p-5 shadow-[0_2px_8px_rgba(30,40,55,.04)] sm:p-6">
             <div className="flex items-center justify-between gap-3"><div><h2 className="text-sm font-medium text-[var(--text-primary)]">Message activity</h2><div className="mt-0.5 text-xs text-[var(--text-muted)]">Messages recorded by day</div></div><BarChart3 size={18} className="text-[var(--brand)]" /></div>
@@ -172,8 +184,44 @@ export function BillingUsage() {
         <section className="mt-4 flex items-start gap-3 rounded-lg border border-[var(--border-soft)] bg-white p-4 text-xs leading-5 text-[var(--text-secondary)] shadow-[0_2px_8px_rgba(30,40,55,.04)]"><Info size={16} className="mt-0.5 shrink-0 text-[var(--brand)]" /><div><div className="font-medium text-[var(--text-primary)]">Meta billing is separate</div><div className="mt-0.5">This page tracks internal usage. Meta charges the connected WhatsApp Business Account according to its message pricing and delivery rules.</div></div></section>
         <section className="mt-4 overflow-hidden rounded-lg border border-[var(--border-soft)] bg-white shadow-[0_2px_8px_rgba(30,40,55,.04)]"><div className="flex items-center justify-between gap-3 border-b border-[var(--border-soft)] px-5 py-4 sm:px-6"><div><h2 className="text-sm font-medium text-[var(--text-primary)]">Wallet activity</h2><div className="mt-0.5 text-xs text-[var(--text-muted)]">Immutable credits, holds, charges, and releases</div></div><WalletCards size={18} className="text-[var(--brand)]" /></div>{ledger === null ? <div className="p-5 text-xs text-[var(--text-muted)]">Loading wallet activity…</div> : ledger.items.length ? <div className="overflow-x-auto"><table className="w-full min-w-[680px] text-left text-xs"><thead className="border-b border-[var(--border-soft)] bg-[var(--page-background)] text-[10px] font-semibold uppercase tracking-wide text-[var(--text-muted)]"><tr><th className="px-5 py-3">Date</th><th className="px-5 py-3">Type</th><th className="px-5 py-3">Description</th><th className="px-5 py-3 text-right">Amount</th><th className="px-5 py-3 text-right">Balance after</th></tr></thead><tbody className="divide-y divide-[var(--border-soft)]">{ledger.items.map((entry) => <tr key={entry.id}><td className="whitespace-nowrap px-5 py-3 text-[var(--text-muted)]">{new Date(entry.createdAt).toLocaleString()}</td><td className={`px-5 py-3 font-medium ${entry.direction === "CREDIT" ? "text-emerald-700" : entry.direction === "DEBIT" ? "text-amber-700" : "text-[var(--text-secondary)]"}`}>{entry.transactionType ?? entry.direction}</td><td className="px-5 py-3"><div className="font-medium text-[var(--text-primary)]">{entry.description ?? entry.reason ?? "Wallet transaction"}</div></td><td className={`px-5 py-3 text-right font-medium ${entry.direction === "CREDIT" ? "text-emerald-700" : "text-amber-700"}`}>{entry.amount ? formatMoney(data.wallet?.currency ?? "INR", entry.amount, true, entry.direction) : formatMinorUnits(data.wallet?.currency ?? "INR", entry.amountMinorUnits ?? "0", true, entry.direction)}</td><td className="px-5 py-3 text-right text-[var(--text-secondary)]">{entry.closingTotalBalance ? formatMoney(data.wallet?.currency ?? "INR", entry.closingTotalBalance) : formatMinorUnits(data.wallet?.currency ?? "INR", entry.balanceAfterMinorUnits ?? "0")}</td></tr>)}</tbody></table></div> : <div className="p-5 text-xs text-[var(--text-muted)]">No wallet activity has been recorded yet.</div>}</section>
       </>}
-    </PageFrame>
+    </PageFrame></BillingShell>
   );
+}
+
+function PlanUsageCard({ plan }: { plan: NonNullable<UsageData["plan"]> }) {
+  const limits = [
+    { key: "contacts", label: "Contacts", used: plan.usage.contacts, limit: plan.limits.contacts },
+    { key: "seats", label: "Team seats", used: plan.usage.seats, limit: plan.limits.seats },
+    { key: "campaigns", label: "Campaigns this month", used: plan.usage.campaignsThisMonth, limit: plan.limits.campaignsPerMonth },
+  ];
+  const featureRows = [
+    { key: "apiAccess", label: "API access", included: plan.features.apiAccess },
+    { key: "webhooks", label: "Webhooks", included: plan.features.webhooks },
+    { key: "advancedReports", label: "Advanced reports", included: plan.features.advancedReports },
+  ];
+  const statusLabel = plan.status === "TRIALING" ? "Free trial" : plan.status === "ACTIVE" ? "Active" : plan.status === "EXPIRED" ? "Trial ended" : "No active plan";
+  return <section aria-label="Plan limits and features" className="mt-4 rounded-lg border border-[var(--border-soft)] bg-white p-5 shadow-[0_2px_8px_rgba(30,40,55,.04)] sm:p-6">
+    <div className="flex flex-wrap items-start justify-between gap-3">
+      <div><h2 className="text-sm font-medium text-[var(--text-primary)]">Plan usage</h2><p className="mt-1 text-xs text-[var(--text-muted)]">{plan.name ?? statusLabel}{plan.name ? ` · ${statusLabel}` : ""}{plan.status === "TRIALING" && plan.trialEndsAt ? ` · Ends ${new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }).format(new Date(plan.trialEndsAt))}` : ""}</p></div>
+      <Link to="/billing/plans" className="inline-flex h-8 items-center rounded-md bg-[var(--brand)] px-3 text-xs font-medium text-white hover:opacity-90">View plans</Link>
+    </div>
+    {plan.status === "EXPIRED" && <div role="status" className="mt-4 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">Your free trial has ended. Some features and actions are locked until you choose a plan.</div>}
+    {plan.status === "NONE" && <div className="mt-4 rounded-md border border-[var(--border-soft)] bg-[var(--page-background)] px-3 py-2 text-xs text-[var(--text-secondary)]">No plan limits are currently assigned to this workspace.</div>}
+    <div className="mt-5 grid gap-5 lg:grid-cols-2">
+      <div className="space-y-4">{limits.map((item) => <div key={item.key}>
+        <div className="flex items-center justify-between gap-3 text-xs"><span className="text-[var(--text-secondary)]">{item.label}</span><span className="font-medium text-[var(--text-primary)]">{numberFormat.format(item.used)} / {item.limit == null ? plan.status === "EXPIRED" ? "Plan ended" : "No limit" : numberFormat.format(item.limit)}</span></div>
+        {item.limit != null && <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[var(--surface-subtle)]"><div className={`h-full rounded-full ${item.used >= item.limit ? "bg-amber-500" : "bg-[var(--brand)]"}`} style={{ width: `${Math.min(100, item.limit > 0 ? item.used / item.limit * 100 : item.used > 0 ? 100 : 0)}%` }} /></div>}
+      </div>)}</div>
+      <div className="border-t border-[var(--border-soft)] pt-4 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+        <h3 className="text-xs font-medium text-[var(--text-primary)]">Plan features</h3>
+        <ul className="mt-3 space-y-2">{featureRows.map((feature) => {
+          const included = plan.status === "NONE" || feature.included;
+          return <li key={feature.key} className="flex items-center justify-between gap-3 text-xs"><span className="text-[var(--text-secondary)]">{feature.label}</span><span className={included ? "font-medium text-emerald-700" : "font-medium text-amber-700"}>{plan.status === "NONE" ? "Available" : included ? "Included" : "Locked"}</span></li>;
+        })}</ul>
+        {featureRows.some((feature) => plan.status !== "NONE" && !feature.included) && <p className="mt-3 text-[11px] leading-4 text-[var(--text-muted)]">Blocked actions explain the limit and link here so you can review available plans.</p>}
+      </div>
+    </div>
+  </section>;
 }
 
 function MetricCard({ icon, label, value, detail }: { icon: ReactNode; label: string; value: ReactNode; detail: string }) {

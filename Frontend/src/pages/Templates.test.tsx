@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TemplateBuilder } from "@/pages/TemplateBuilder";
@@ -42,6 +42,7 @@ describe("Templates", () => {
       "overflow-hidden",
       "bg-[var(--page-background)]",
     );
+    expect(screen.getByTestId("templates-page-header")).not.toHaveClass("border-b");
     expect(screen.getByRole("tablist", { name: "Template views" })).toHaveClass("bg-white", "divide-x", "divide-[var(--border-soft)]");
     expect(screen.getByRole("heading", { name: "Templates" })).toBeInTheDocument();
     expect(screen.queryByText("Meta is the source of truth for submitted WhatsApp templates.")).not.toBeInTheDocument();
@@ -57,7 +58,12 @@ describe("Templates", () => {
       "true",
     );
     await waitFor(() => expect(screen.getByTestId("templates-table-panel")).toBeInTheDocument());
-    expect(screen.getAllByText("boost_conversion")).toHaveLength(2);
+    const templateTable = screen.getByRole("table", { name: "Templates" });
+    expect(templateTable.querySelector("thead")).toHaveClass("bg-[var(--sidebar-rail-background)]");
+    const templateNameHeader = screen.getByRole("columnheader", { name: "Template Name" });
+    expect(templateNameHeader).toHaveClass("h-[46px]", "font-bold", "uppercase");
+    expect(templateTable.querySelector("tbody tr")).toHaveClass("h-12");
+    expect(screen.getAllByText("boost_conversion")).toHaveLength(1);
   });
 
   it("shows the active table, filters templates, and supports the create route", async () => {
@@ -68,12 +74,15 @@ describe("Templates", () => {
       "min-h-0",
       "overflow-auto",
     ));
-    expect(screen.getAllByText("boost_conversion")).toHaveLength(2);
+    expect(screen.getAllByText("boost_conversion")).toHaveLength(1);
     expect(screen.getByTestId("template-row-actions-boost_conversion")).toHaveClass(
       "opacity-0",
       "group-hover:opacity-100",
     );
-    await waitFor(() => expect(screen.getByText("DPS Carousel")).toBeInTheDocument());
+    const templateName = await screen.findByText("DPS Carousel");
+    expect(templateName).toHaveClass("group-hover:text-blue-600", "group-hover:underline");
+    expect(screen.queryByText("dps_carousel")).not.toBeInTheDocument();
+    expect(within(screen.getByRole("table", { name: "Templates" })).getByText("Approved")).toHaveClass("font-semibold", "text-[var(--success)]");
 
     fireEvent.change(screen.getByRole("textbox", { name: "Search templates" }), {
       target: { value: "DPS" },

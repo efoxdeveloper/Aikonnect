@@ -3,12 +3,59 @@ import { checkDatabaseConnection, prisma } from "../../database/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { Prisma, type Prisma as PrismaTypes } from "../../generated/prisma/client.js";
 import type { Request } from "express";
-import type { AdminAuditQuery, AdminListQuery, AdminUserAction } from "./admin.schemas.js";
+import type { AdminAuditQuery, AdminListQuery, AdminPlanInput, AdminUserAction } from "./admin.schemas.js";
 import type { PlatformRole } from "../../middleware/platform-access.js";
 import { minorUnitsToAmount } from "../wallet/wallet.service.js";
 
 function pagination(total: number, query: AdminListQuery) {
   return { page: query.page, pageSize: query.pageSize, total, totalPages: Math.max(1, Math.ceil(total / query.pageSize)), hasNext: query.page * query.pageSize < total, hasPrevious: query.page > 1 };
+}
+
+function planPayload(plan: Awaited<ReturnType<typeof prisma.subscriptionPlan.findUniqueOrThrow>>) {
+  return {
+    ...plan,
+    monthlyPriceMinorUnits: plan.monthlyPriceMinorUnits.toString(),
+    annualPriceMinorUnits: plan.annualPriceMinorUnits.toString(),
+    createdAt: plan.createdAt.toISOString(),
+    updatedAt: plan.updatedAt.toISOString(),
+  };
+}
+
+function planData(input: AdminPlanInput) {
+  const { monthlyPrice, annualPrice, ...fields } = input;
+  return { ...fields, monthlyPriceMinorUnits: monthlyPrice, annualPriceMinorUnits: annualPrice };
+}
+
+export async function listSubscriptionPlans() {
+  const plans = await prisma.subscriptionPlan.findMany({ orderBy: [{ displayOrder: "asc" }, { createdAt: "asc" }] });
+  return { items: plans.map(planPayload) };
+}
+
+export async function createSubscriptionPlan(input: AdminPlanInput, actorUserId: string) {
+  const plan = await prisma.$transaction(async (transaction) => {
+    const created = await transaction.subscriptionPlan.create({ data: planData(input) });
+    await transaction.platformAuditLog.create({ data: { actorUserId, action: "PLAN_CREATE", resourceType: "subscription_plan", resourceId: created.id, metadata: { name: created.name, slug: created.slug } } });
+    return created;
+  });
+  return planPayload(plan);
+}
+
+export async function updateSubscriptionPlan(planId: string, input: AdminPlanInput, actorUserId: string) {
+  const plan = await prisma.$transaction(async (transaction) => {
+    const updated = await transaction.subscriptionPlan.update({ where: { id: planId }, data: planData(input) });
+    await transaction.platformAuditLog.create({ data: { actorUserId, action: "PLAN_UPDATE", resourceType: "subscription_plan", resourceId: updated.id, metadata: { name: updated.name, slug: updated.slug } } });
+    return updated;
+  });
+  return planPayload(plan);
+}
+
+export async function deleteSubscriptionPlan(planId: string, actorUserId: string) {
+  const deleted = await prisma.$transaction(async (transaction) => {
+    const plan = await transaction.subscriptionPlan.delete({ where: { id: planId }, select: { id: true, name: true, slug: true } });
+    await transaction.platformAuditLog.create({ data: { actorUserId, action: "PLAN_DELETE", resourceType: "subscription_plan", resourceId: plan.id, metadata: { name: plan.name, slug: plan.slug } } });
+    return plan;
+  });
+  return { id: deleted.id, deleted: true };
 }
 
 export async function getOverview() {
@@ -105,18 +152,19 @@ export async function listWhatsAppConnections(query: AdminListQuery) {
 }
 
 export async function getBillingOverview() {
-  const [accountsByBillingStatus, totalAccounts, allocatedAccounts, workspaces, walletSummary, wallets] = await Promise.all([
+  const [accountsByBillingStatus, totalAccounts, allocatedAccounts, workspaces, walletSummary, wallets, subscriptionPlans] = await Promise.all([
     prisma.whatsAppBusinessAccount.groupBy({ by: ["sharedBillingStatus"], _count: { _all: true } }),
     prisma.whatsAppBusinessAccount.count(),
     prisma.whatsAppBusinessAccount.count({ where: { sharedBillingAllocationId: { not: null } } }),
     prisma.workspace.count(),
     prisma.wallet.aggregate({ _count: { _all: true }, _sum: { balanceMinorUnits: true, totalBalance: true, reservedBalance: true } }),
     prisma.wallet.findMany({ orderBy: { tenant: { name: "asc" } }, select: { tenantId: true, currency: true, balanceMinorUnits: true, totalBalance: true, reservedBalance: true, status: true, tenant: { select: { name: true, slug: true, _count: { select: { workspaces: true } } } } } }),
+    prisma.subscriptionPlan.findMany({ orderBy: [{ displayOrder: "asc" }, { createdAt: "asc" }] }),
   ]);
   const totalBalanceMinorUnits = walletSummary._sum.balanceMinorUnits ?? 0n;
   const totalBalance = walletSummary._sum.totalBalance?.toFixed(6) ?? "0.000000";
   const reservedBalance = walletSummary._sum.reservedBalance?.toFixed(6) ?? "0.000000";
-  return { subscriptions: { configured: false, message: "Subscription and invoice models are not configured yet." }, wallet: { configured: true, currency: env.WALLET_CURRENCY, walletCount: walletSummary._count._all, balanceMinorUnits: totalBalanceMinorUnits.toString(), balance: minorUnitsToAmount(totalBalanceMinorUnits), totalBalance, reservedBalance, availableBalance: new Prisma.Decimal(totalBalance).sub(new Prisma.Decimal(reservedBalance)).toFixed(6) }, wallets: wallets.map((wallet) => ({ tenantId: wallet.tenantId, tenantName: wallet.tenant.name, tenantSlug: wallet.tenant.slug, workspaceCount: wallet.tenant._count.workspaces, currency: wallet.currency, balanceMinorUnits: wallet.balanceMinorUnits.toString(), balance: minorUnitsToAmount(wallet.balanceMinorUnits), totalBalance: wallet.totalBalance.toFixed(6), reservedBalance: wallet.reservedBalance.toFixed(6), availableBalance: wallet.totalBalance.sub(wallet.reservedBalance).toFixed(6), status: wallet.status })), sharedWhatsAppBilling: { totalAccounts, allocatedAccounts, unallocatedAccounts: totalAccounts - allocatedAccounts, statuses: Object.fromEntries(accountsByBillingStatus.map(({ sharedBillingStatus, _count }) => [sharedBillingStatus.toLowerCase(), _count._all])) }, workspaceCount: workspaces };
+  return { subscriptions: { configured: false, message: "Payment checkout and automated renewals are not configured. Customer plan requests are reviewed manually below." }, plans: { items: subscriptionPlans.map(planPayload) }, wallet: { configured: true, currency: env.WALLET_CURRENCY, walletCount: walletSummary._count._all, balanceMinorUnits: totalBalanceMinorUnits.toString(), balance: minorUnitsToAmount(totalBalanceMinorUnits), totalBalance, reservedBalance, availableBalance: new Prisma.Decimal(totalBalance).sub(new Prisma.Decimal(reservedBalance)).toFixed(6) }, wallets: wallets.map((wallet) => ({ tenantId: wallet.tenantId, tenantName: wallet.tenant.name, tenantSlug: wallet.tenant.slug, workspaceCount: wallet.tenant._count.workspaces, currency: wallet.currency, balanceMinorUnits: wallet.balanceMinorUnits.toString(), balance: minorUnitsToAmount(wallet.balanceMinorUnits), totalBalance: wallet.totalBalance.toFixed(6), reservedBalance: wallet.reservedBalance.toFixed(6), availableBalance: wallet.totalBalance.sub(wallet.reservedBalance).toFixed(6), status: wallet.status })), sharedWhatsAppBilling: { totalAccounts, allocatedAccounts, unallocatedAccounts: totalAccounts - allocatedAccounts, statuses: Object.fromEntries(accountsByBillingStatus.map(({ sharedBillingStatus, _count }) => [sharedBillingStatus.toLowerCase(), _count._all])) }, workspaceCount: workspaces };
 }
 
 export async function getUsageOverview() {

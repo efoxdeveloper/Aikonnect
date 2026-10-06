@@ -352,6 +352,8 @@ describe("ContactHub", () => {
     render(<ContactHub />);
     const totalUsers = await screen.findByText(/Total Users:/);
     const table = screen.getByRole("table");
+    expect(screen.getAllByTestId("contact-whatsapp-icon").length).toBeGreaterThan(0);
+    expect(table.querySelector("tbody tr:not([data-testid='contact-load-more-row'])")).toHaveClass("h-12");
 
     expect(screen.getByTestId("contact-page")).toHaveClass(
       "h-full",
@@ -361,12 +363,13 @@ describe("ContactHub", () => {
       "bg-white",
       "flex-none",
     );
+    expect(screen.getByTestId("contact-page-header")).not.toHaveClass("border-b");
     const toolbar = screen.getByRole("button", { name: "Segment" }).closest(".contact-filter-toolbar");
     expect(toolbar).toBeInTheDocument();
     expect(toolbar).toHaveClass("flex-nowrap", "min-w-0", "gap-2");
     expect(toolbar).not.toHaveClass("flex-wrap");
     expect(table).toHaveClass("contact-data-table", "bg-white");
-    expect(table.querySelector("thead")).toHaveClass("contact-table-head", "bg-[var(--table-header)]");
+    expect(table.querySelector("thead")).toHaveClass("contact-table-head", "bg-[var(--sidebar-rail-background)]");
     expect(screen.getByTestId("contact-table-scroll-region")).toHaveClass(
       "min-h-0",
       "flex-1",
@@ -377,11 +380,12 @@ describe("ContactHub", () => {
       "top-0",
       "border-b",
       "border-[var(--border-soft)]",
-      "bg-[var(--table-header)]",
+      "bg-[var(--sidebar-rail-background)]",
       "shadow-[inset_0_-1px_0_var(--border-soft)]",
     );
     const contactNameHeader = screen.getByRole("columnheader", { name: "Contact Name" });
-    expect(within(contactNameHeader).getByRole("heading", { level: 3, name: "Contact Name" })).toBeInTheDocument();
+    const contactNameHeading = within(contactNameHeader).getByRole("heading", { level: 3, name: "Contact Name" });
+    expect(contactNameHeading).toHaveClass("font-bold", "uppercase");
     expect(contactNameHeader.parentElement).not.toHaveClass("text-[13px]", "font-semibold");
     expect(
       screen.getByTestId("contact-table-scroll-region"),
@@ -392,7 +396,8 @@ describe("ContactHub", () => {
 
   it("keeps table headers non-interactive and provides sorting only from the toolbar", async () => {
     render(<ContactHub />);
-    await screen.findByText("Shani Deshwal");
+    const contactName = await screen.findByText("Shani Deshwal");
+    expect(contactName).toHaveClass("group-hover:text-blue-600", "group-hover:underline");
 
     for (const label of contactColumnLabels) {
       const header = screen.getByRole("columnheader", { name: label });
@@ -573,6 +578,15 @@ describe("ContactHub", () => {
     expect(routerMocks.navigate).toHaveBeenCalledWith("/contacts/1");
   });
 
+  it("opens the contact's Inbox conversation from its WhatsApp action", async () => {
+    render(<ContactHub />);
+    await screen.findByText("Shani Deshwal");
+
+    fireEvent.click(screen.getByRole("button", { name: "Open conversation with Shani Deshwal" }));
+
+    expect(routerMocks.navigate).toHaveBeenCalledWith("/inbox?contactId=1");
+  });
+
   it("searches available tags and filters contacts without a portal dropdown", async () => {
     render(<ContactHub />);
     await screen.findByText("Shani Deshwal");
@@ -647,7 +661,7 @@ describe("ContactHub", () => {
 
   it("allows columns to be hidden without removing the selection column", () => {
     render(<ContactHub />);
-    fireEvent.click(screen.getByRole("button", { name: "Modify Columns" }));
+    fireEvent.click(screen.getByRole("button", { name: "Columns" }));
     fireEvent.click(screen.getByRole("checkbox", { name: "Email ID" }));
 
     expect(
@@ -661,7 +675,7 @@ describe("ContactHub", () => {
   it("restores the saved column selection from local storage after remounting", async () => {
     const firstRender = render(<ContactHub />);
     await screen.findByText("Shani Deshwal");
-    fireEvent.click(screen.getByRole("button", { name: "Modify Columns" }));
+    fireEvent.click(screen.getByRole("button", { name: "Columns" }));
     fireEvent.click(screen.getByRole("checkbox", { name: "Email ID" }));
 
     expect(JSON.parse(window.localStorage.getItem("contact-hub-columns-v2") ?? "{}").visible)
@@ -671,7 +685,7 @@ describe("ContactHub", () => {
     await screen.findByText("Shani Deshwal");
 
     expect(screen.queryByRole("columnheader", { name: "Email ID" })).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Modify Columns" }));
+    fireEvent.click(screen.getByRole("button", { name: "Columns" }));
     expect(screen.getByRole("checkbox", { name: "Email ID" })).not.toBeChecked();
   });
 
@@ -688,7 +702,7 @@ describe("ContactHub", () => {
   it("reorders table columns by dragging and restores the saved sequence", async () => {
     const firstRender = render(<ContactHub />);
     await screen.findByText("Shani Deshwal");
-    fireEvent.click(screen.getByRole("button", { name: "Modify Columns" }));
+    fireEvent.click(screen.getByRole("button", { name: "Columns" }));
     const phoneColumn = screen.getByTestId("column-order-item-Phone Number");
     const nameColumn = screen.getByTestId("column-order-item-Contact Name");
     const dataTransfer = {

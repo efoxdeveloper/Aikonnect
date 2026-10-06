@@ -27,7 +27,7 @@ describe("SidebarSection", () => {
     expect(screen.getByRole("link", { name: "Campaigns" })).toBeInTheDocument();
     const trigger = screen.getByRole("button", { name: /Marketing/ });
     expect(trigger).toHaveAttribute("aria-expanded", "true");
-    expect(trigger).toHaveStyle({ borderBottom: "1px solid rgba(255,255,255,.1)" });
+    expect(trigger).toHaveStyle({ textTransform: "uppercase", fontSize: "10px" });
     expect(trigger.querySelector("svg")).toBeInTheDocument();
   });
 

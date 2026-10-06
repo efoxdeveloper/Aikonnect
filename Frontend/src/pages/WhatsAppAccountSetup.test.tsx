@@ -93,6 +93,6 @@ describe("WhatsAppAccountSetup", () => {
     vi.mocked(useWhatsAppEmbeddedSignup).mockReturnValue({ connecting: true, syncing: true, error: null, pinRequired: false, submitRegistrationPin: vi.fn(), cancelRegistrationPin: vi.fn(), start: vi.fn() });
     render(<AuthContext.Provider value={auth}><MemoryRouter><WhatsAppAccountSetup /></MemoryRouter></AuthContext.Provider>);
 
-    expect(screen.getByRole("dialog", { name: "Connecting Marento to Meta" })).toHaveTextContent("setting up your WhatsApp account");
+    expect(screen.getByRole("dialog", { name: "Connecting..." })).toBeInTheDocument();
   });
 });

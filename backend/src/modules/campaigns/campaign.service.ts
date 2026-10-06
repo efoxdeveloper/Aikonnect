@@ -4,6 +4,7 @@ import { AppError } from "../../middleware/error-handler.js";
 import { contactWhereForSegment } from "../contacts/contact.service.js";
 import type { SegmentCondition } from "../contacts/contact.schemas.js";
 import { campaignTemplateMediaSchema, type CampaignListQuery, type CreateCampaignInput } from "./campaign.schemas.js";
+import { enforceCampaignPlanLimit } from "./campaign-plan-limits.js";
 
 const campaignSelect = {
   id: true, workspaceId: true, name: true, channelKey: true, kind: true, category: true,
@@ -129,6 +130,11 @@ export async function getCampaign(workspaceId: string, campaignId: string) {
 
 export async function createCampaign(workspaceId: string, actorUserId: string, input: CreateCampaignInput) {
   const campaign = await prisma.$transaction(async (transaction) => {
+    const now = new Date();
+    if (input.launchMode !== "draft") {
+      const launchAt = input.launchMode === "schedule" && input.scheduledAt ? new Date(input.scheduledAt) : now;
+      await enforceCampaignPlanLimit(transaction, workspaceId, launchAt, now);
+    }
     let templateName: string | null = null;
     let remoteTemplateName: string | null = null;
     let templateLanguageCode: string | null = null;
@@ -166,7 +172,6 @@ export async function createCampaign(workspaceId: string, actorUserId: string, i
     if (input.launchMode !== "draft") await ensureWhatsAppReady(transaction, workspaceId);
     const recipients = await resolveRecipients(transaction, workspaceId, input);
     if (input.launchMode !== "draft" && recipients.length === 0) throw new AppError(422, "The campaign audience has no eligible contacts", "CAMPAIGN_AUDIENCE_EMPTY");
-    const now = new Date();
     const status = input.launchMode === "schedule" ? "SCHEDULED" : input.launchMode === "send" ? "RUNNING" : "DRAFT";
     const audienceConfig = { ...input.audienceConfig, ...(input.segmentId ? { segmentId: input.segmentId } : {}) } as Prisma.InputJsonValue;
     return transaction.campaign.create({

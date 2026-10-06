@@ -2,6 +2,7 @@ import type { RequestHandler } from "express";
 import { prisma } from "../database/prisma.js";
 import { AppError } from "./error-handler.js";
 import { hashToken } from "../utils/crypto.js";
+import { assertWorkspaceFeatureEnabled } from "../modules/billing/entitlements.service.js";
 
 function suppliedKey(request: Parameters<RequestHandler>[0]) {
   const header = request.headers["x-api-key"]?.toString().trim();
@@ -32,6 +33,7 @@ export const authenticateDeveloperApiKey: RequestHandler = async (request, _resp
       select: { id: true, workspaceId: true, scopes: true, revokedAt: true, expiresAt: true },
     });
     if (!key || key.revokedAt || (key.expiresAt && key.expiresAt <= new Date())) throw new AppError(401, "The developer API key is invalid or expired", "API_KEY_INVALID");
+    await assertWorkspaceFeatureEnabled(key.workspaceId, "apiAccess");
     request.developerApiKey = { id: key.id, workspaceId: key.workspaceId, scopes: key.scopes };
     void prisma.publicApiKey.update({ where: { id: key.id }, data: { lastUsedAt: new Date() } }).catch(() => undefined);
     next();

@@ -54,6 +54,7 @@ export async function listInboxConversations(workspaceId: string, query: InboxCo
     deletedAt: null,
     contact: { deletedAt: null },
     ...(query.status ? { status: query.status } : {}),
+    ...(query.contactId ? { contactId: query.contactId } : {}),
     ...(query.channelKey ? { channelKey: query.channelKey } : {}),
     ...(query.unreadOnly ? { unreadCount: { gt: 0 } } : {}),
     ...(search

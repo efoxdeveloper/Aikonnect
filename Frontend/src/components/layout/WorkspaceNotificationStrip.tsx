@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { apiRequest } from "@/lib/api";
@@ -21,7 +22,7 @@ function formatMoney(currency: string, value: string) {
   return `${currency === "INR" ? "₹" : currency} ${moneyFormat.format(amount)}`;
 }
 
-export function WorkspaceNotificationStrip({ className, reserveSpace = false }: { className?: string; reserveSpace?: boolean }) {
+export function WorkspaceNotificationStrip({ className, reserveSpace = false, style }: { className?: string; reserveSpace?: boolean; style?: CSSProperties }) {
   const { accessToken, user } = useAuth();
   const workspaceId = getActiveMembership(user)?.workspace.id;
   const canReadBilling = getActiveMembership(user)?.role.permissions.includes("billing.read") ?? false;
@@ -82,6 +83,7 @@ export function WorkspaceNotificationStrip({ className, reserveSpace = false }: 
         )}
         onDismiss={() => setDismissed(true)}
         className={cn(className)}
+        style={style}
       />
     </>
   );

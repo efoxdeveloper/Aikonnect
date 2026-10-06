@@ -11,6 +11,7 @@ export const conversationListQuerySchema = z.object({ page: z.coerce.number().in
 export const workspaceConversationParamsSchema = z.object({ workspaceId: z.uuid() });
 export const inboxConversationListQuerySchema = conversationListQuerySchema.extend({
   status: conversationStatus.optional(),
+  contactId: z.uuid().optional(),
   channelKey: z.string().trim().max(50).optional(),
   search: z.string().trim().max(200).default(""),
   unreadOnly: z.preprocess((value) => value === "true", z.boolean().default(false)),

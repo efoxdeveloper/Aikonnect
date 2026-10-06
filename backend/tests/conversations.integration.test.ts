@@ -146,6 +146,13 @@ test("lists workspace conversations with contact context and unread filtering", 
   const listed = (await list.json()) as { data: { items: Array<{ id: string; unreadCount: number; contact: { name: string } }> } };
   assert.deepEqual(listed.data.items.map((item) => ({ id: item.id, unreadCount: item.unreadCount, contact: item.contact.name })), [{ id: conversation.data.id, unreadCount: 2, contact: "Inbox Customer" }]);
 
+  const contactConversationList = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations?contactId=${contact.data.id}`, { headers: authorization });
+  assert.equal(contactConversationList.status, 200);
+  const contactConversationListBody = (await contactConversationList.json()) as { data: { items: Array<{ id: string; contactId: string }> } };
+  assert.deepEqual(contactConversationListBody.data.items.map(({ id, contactId }) => ({ id, contactId })), [{ id: conversation.data.id, contactId: contact.data.id }]);
+  const invalidContactFilter = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations?contactId=not-a-uuid`, { headers: authorization });
+  assert.equal(invalidContactFilter.status, 400);
+
   const unreadCount = await fetch(baseUrl + "/workspaces/" + workspaceId + "/conversations/unread-count", { headers: authorization });
   assert.equal(unreadCount.status, 200);
   assert.deepEqual((await unreadCount.json()).data, { unreadCount: 2 });

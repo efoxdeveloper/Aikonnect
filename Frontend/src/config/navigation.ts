@@ -1,10 +1,12 @@
 import type { ForwardRefExoticComponent, RefAttributes } from "react";
+import { Crown as CrownIcon } from "lucide-react";
 import {
   BlocksIcon as Blocks, ChartNoAxesCombinedIcon as ChartNoAxesCombined,
   ChartSplineIcon as ChartSpline, CreditCardIcon as CreditCard,
   FileTextIcon as FileText, HouseIcon as House, LayoutDashboardIcon as PanelsTopLeft,
   ListChecksIcon as ListTodo, MegaphoneIcon as Megaphone, MessageCircleIcon as MessageCircle,
   MessageSquareTextIcon as MessageSquareText,
+  SettingsIcon as Settings,
   UserRoundIcon as UserRound,
   UsersIcon as Users, UsersRoundIcon as UsersRound, WalletCardsIcon as WalletCards,
   WaypointsIcon as Workflow, WebhookIcon as Webhook,
@@ -28,13 +30,31 @@ export type AnimatedIcon = ForwardRefExoticComponent<AnimatedIconProps & RefAttr
 export interface NavigationItem {
   title: string;
   url?: string;
+  end?: boolean;
+  keywords?: string[];
   icon: AnimatedIcon;
+  iconColor?: string;
   badge?: { text: string; variant: "danger" | "warning" | "success" };
   children?: NavigationItem[];
   platformRoles?: Array<"SUPPORT" | "OPERATIONS" | "BILLING" | "ADMIN" | "SUPER_ADMIN">;
 }
 
 export interface NavigationGroup { title?: string; items: NavigationItem[]; }
+
+export function isNavigationItemActive(item: NavigationItem, pathname: string) {
+  return Boolean(
+    (item.url && (item.url === pathname || (!item.end && item.url !== "/admin" && pathname.startsWith(`${item.url}/`)))) ||
+      item.children?.some((child) => child.url === pathname),
+  );
+}
+
+export function getActiveNavigationGroup(groups: NavigationGroup[], pathname: string) {
+  return groups.find((group) => group.title && group.items.some((item) => isNavigationItemActive(item, pathname)));
+}
+
+export function getActiveNavigationItem(group: NavigationGroup | undefined, pathname: string) {
+  return group?.items.find((item) => isNavigationItemActive(item, pathname));
+}
 
 export const navigationGroups: NavigationGroup[] = [
   { items: [
@@ -63,8 +83,10 @@ export const navigationGroups: NavigationGroup[] = [
   { title: "Settings", items: [
     { title: "WhatsApp Account", url: "/whatsapp-account", icon: MessageCircle },
     { title: "Team Members", url: "/team-members", icon: UsersRound },
-    { title: "Billing & Usage", url: "/billing", icon: WalletCards },
-    { title: "Settings", url: "/account-settings", icon: UserRound },
+    { title: "Usage & wallet", url: "/billing", end: true, keywords: ["billing", "billing & usage"], icon: WalletCards },
+    { title: "Subscriptions", url: "/billing/subscriptions", icon: CrownIcon as unknown as AnimatedIcon, iconColor: "#eab308" },
+    { title: "Plans & pricing", url: "/billing/plans", icon: WalletCards },
+    { title: "Account Settings", url: "/account-settings", icon: Settings },
   ] },
 ];
 

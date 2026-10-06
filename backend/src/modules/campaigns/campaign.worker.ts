@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { prisma } from "../../database/prisma.js";
+import { resolveWorkspaceEntitlements } from "../billing/entitlements.service.js";
 import { logger } from "../../config/logger.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { sendWhatsAppTemplateMessage, type WhatsAppTemplateMedia, type WhatsAppTemplateParameter } from "../whatsapp/whatsapp.service.js";
@@ -176,9 +177,27 @@ async function sendRecipient(campaignId: string, recipientId: string, leaseToken
 
 export async function processCampaign(campaignId: string) {
   const campaign = await prisma.campaign.findUnique({ where: { id: campaignId }, select: { id: true, workspaceId: true, status: true, scheduledAt: true } });
-  if (!campaign || campaign.status !== "RUNNING") return;
-  if (campaign.scheduledAt && campaign.scheduledAt > new Date()) return;
+  if (!campaign || !["RUNNING", "SCHEDULED"].includes(campaign.status)) return;
+  const now = new Date();
+  if (campaign.scheduledAt && campaign.scheduledAt > now) return;
+
+  const pauseForExpiredTrial = async () => {
+    const entitlements = await resolveWorkspaceEntitlements(campaign.workspaceId);
+    if (entitlements.status !== "EXPIRED") return false;
+    await prisma.campaign.updateMany({ where: { id: campaign.id, status: { in: ["RUNNING", "SCHEDULED"] } }, data: { status: "PAUSED" } });
+    return true;
+  };
+
+  if (await pauseForExpiredTrial()) return;
+  if (campaign.status === "SCHEDULED") {
+    const started = await prisma.campaign.updateMany({
+      where: { id: campaign.id, status: "SCHEDULED", OR: [{ scheduledAt: null }, { scheduledAt: { lte: now } }] },
+      data: { status: "RUNNING", setLiveAt: now },
+    });
+    if (!started.count) return;
+  }
   for (let index = 0; index < BATCH_SIZE; index += 1) {
+    if (await pauseForExpiredTrial()) break;
     const candidate = await claimRecipient(campaignId);
     if (!candidate) break;
     try {
@@ -195,8 +214,11 @@ export async function processCampaign(campaignId: string) {
 export async function processDueCampaigns() {
   const now = new Date();
   await prisma.campaignRecipient.updateMany({ where: { status: "ATTEMPTED", attemptCount: { gte: MAX_ATTEMPTS }, OR: [{ processingExpiresAt: { lte: now } }, { processingToken: null, attemptedAt: { lt: new Date(now.getTime() - RECIPIENT_LEASE_MS) } }] }, data: { status: "FAILED", failedAt: now, failureReason: "The delivery worker stopped before completing this attempt", processingToken: null, processingExpiresAt: null } });
-  await prisma.campaign.updateMany({ where: { status: "SCHEDULED", scheduledAt: { lte: now } }, data: { status: "RUNNING", setLiveAt: now } });
-  const campaigns = await prisma.campaign.findMany({ where: { status: "RUNNING" }, orderBy: [{ updatedAt: "asc" }, { id: "asc" }], take: 20, select: { id: true } });
+  const [running, scheduled] = await Promise.all([
+    prisma.campaign.findMany({ where: { status: "RUNNING" }, orderBy: [{ updatedAt: "asc" }, { id: "asc" }], take: 20, select: { id: true } }),
+    prisma.campaign.findMany({ where: { status: "SCHEDULED", OR: [{ scheduledAt: null }, { scheduledAt: { lte: now } }] }, orderBy: [{ updatedAt: "asc" }, { id: "asc" }], take: 20, select: { id: true } }),
+  ]);
+  const campaigns = [...running, ...scheduled];
   for (const campaign of campaigns) await processCampaign(campaign.id);
 }
 

@@ -2,21 +2,12 @@ import { useEffect, useState } from "react";
 import { BellIcon as Bell } from "@animateicons/react/lucide";
 import { Wallet } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { UserMenu } from "./UserMenu";
-import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
-import { useAnimatedIcon } from "@/hooks/use-animated-icon";
-import type { AnimatedIcon } from "@/config/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { apiRequest } from "@/lib/api";
 import { getActiveMembership } from "@/lib/workspace";
 
 type WalletSummary = { currency: string; balance: string };
 const walletAmountFormat = new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-function HeaderIconButton({ label, icon: Icon, indicator }: { label: string; icon: AnimatedIcon; indicator?: boolean }) { const animatedIcon = useAnimatedIcon(); return <Tooltip><TooltipTrigger asChild><Button aria-label={label} title={label} variant="ghost" size="icon" onMouseEnter={animatedIcon.onMouseEnter} onMouseLeave={animatedIcon.onMouseLeave} className="group/action relative rounded-full bg-[#f7f8f7] text-[var(--icon-muted)] shadow-[inset_0_0_0_1px_#e9ecea] active:shadow-inner"><Icon ref={animatedIcon.ref} size={19} duration={0.7} />{indicator && <span className="pointer-events-none absolute right-1.5 top-1.5 size-[7px] rounded-full bg-[var(--brand-accent)] ring-2 ring-[#f7f8f7]" />}</Button></TooltipTrigger><TooltipContent>{label}</TooltipContent></Tooltip>; }
 
 export function WalletBalance() {
   const navigate = useNavigate();
@@ -46,7 +37,7 @@ export function WalletBalance() {
   if (!canRead) return null;
   const amount = wallet?.balance && Number.isFinite(Number(wallet.balance)) ? walletAmountFormat.format(Number(wallet.balance)) : wallet?.balance ?? "—";
   const formatted = wallet ? `${wallet.currency === "INR" ? "₹" : wallet.currency} ${amount}` : "—";
-  return <button type="button" data-testid="navbar-wallet" aria-label={`Wallet balance ${formatted}`} title="Wallet balance" onClick={() => navigate("/billing")} className="flex h-9 shrink-0 items-center gap-1.5 rounded-md border border-transparent bg-transparent px-2 text-xs font-semibold tabular-nums text-[var(--text-primary)] shadow-none transition-colors hover:bg-[var(--surface-subtle)]"><Wallet size={16} className="shrink-0 text-[var(--brand)]" /><span>{formatted}</span></button>;
+  return <button type="button" data-testid="navbar-wallet" aria-label={`Wallet balance ${formatted}`} title={`Wallet balance ${formatted}`} onClick={() => navigate("/billing")} className="flex size-9 shrink-0 items-center justify-center gap-1.5 rounded-md border border-transparent bg-transparent px-1 text-xs font-semibold tabular-nums text-[var(--text-primary)] shadow-none transition-colors hover:bg-[var(--surface-subtle)] sm:w-auto sm:px-2"><Wallet size={16} className="shrink-0 text-[var(--brand)]" /><span className="hidden md:inline">{formatted}</span></button>;
 }
 
-export function HeaderActions() { return <TooltipProvider delayDuration={250}><div className="flex shrink-0 items-center gap-2 sm:gap-2.5"><WorkspaceSwitcher /><WalletBalance /><Popover><PopoverTrigger asChild><div><HeaderIconButton label="Notifications" icon={Bell} indicator /></div></PopoverTrigger><PopoverContent align="end" className="w-[250px]"><p >Notifications</p><p className="mt-1">You’re all caught up. New workspace activity will appear here.</p></PopoverContent></Popover><UserMenu /></div></TooltipProvider>; }
+export function HeaderActions() { return <div className="flex shrink-0 items-center justify-end"><WalletBalance /></div>; }

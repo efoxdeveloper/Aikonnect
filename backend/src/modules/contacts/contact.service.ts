@@ -19,6 +19,7 @@ import {
   syncContactCustomFieldValues,
   validateCustomFieldValues,
 } from "./contact-custom-field.service.js";
+import { enforceContactPlanLimit } from "./contact-plan-limits.js";
 
 const contactInclude = {
   tagAssignments: {
@@ -412,6 +413,7 @@ export async function createContact(
   const blockSource = input.marketingBlockSource ?? (!input.whatsappOpted ? consentSource : "Manual");
   try {
     const contact = await prisma.$transaction(async (transaction) => {
+      await enforceContactPlanLimit(transaction, workspaceId, 1);
       const resolvedTags = await resolveTags(transaction, workspaceId, input.tags);
       const created = await transaction.contact.create({
         data: {
@@ -767,6 +769,8 @@ export async function importContacts(
     const resolvedTags = await resolveTags(transaction, workspaceId, allTagNames);
     const tagsByName = new Map(resolvedTags.map((tag) => [tag.normalizedName, tag.id]));
     const existingByPhone = new Map(existingContacts.map((contact) => [contact.phoneE164, contact]));
+    const newContacts = [...inputIndexes.keys()].filter((phone) => !existingByPhone.has(phone)).length;
+    await enforceContactPlanLimit(transaction, workspaceId, newContacts);
     const results: Array<{ row: number; action: "created" | "updated" | "skipped"; contactId?: string; reason?: string }> = [];
     for (let index = 0; index < input.contacts.length; index += 1) {
       const contactInput = input.contacts[index] as ImportContactsInput["contacts"][number];

@@ -13,7 +13,7 @@ Object.assign(process.env, {
 });
 
 const { prisma } = await import("../src/database/prisma.js");
-const { claimRecipient } = await import("../src/modules/campaigns/campaign.worker.js");
+const { claimRecipient, processCampaign } = await import("../src/modules/campaigns/campaign.worker.js");
 
 function stub(t: TestContext, target: any, method: string, implementation: (...args: any[]) => any) {
   const original = target[method];
@@ -59,4 +59,16 @@ test("recipient lease query does not reclaim a current attempt after one second"
   assert.ok(attemptedRule);
   assert.ok(attemptedRule.OR.some((item: any) => item.processingExpiresAt?.lte instanceof Date));
   assert.ok(attemptedRule.OR.some((item: any) => item.processingToken === null));
+});
+
+test("pauses an active campaign before sending when its trial has expired", async (t) => {
+  stub(t, prisma.campaign, "findUnique", async () => ({ id: "campaign-1", workspaceId: "workspace-1", status: "RUNNING", scheduledAt: null }));
+  stub(t, prisma.workspaceSubscription, "findFirst", async () => ({ id: "subscription-1", status: "TRIALING", trialEndsAt: new Date(Date.now() - 1), plan: {} }));
+  stub(t, prisma.workspaceSubscription, "updateMany", async () => ({ count: 1 }));
+  let pauseArgs: any;
+  stub(t, prisma.campaign, "updateMany", async (args: any) => { pauseArgs = args; return { count: 1 }; });
+  stub(t, prisma.campaignRecipient, "findFirst", async () => { assert.fail("expired trial campaigns must not claim recipients"); });
+
+  await processCampaign("campaign-1");
+  assert.deepEqual(pauseArgs, { where: { id: "campaign-1", status: { in: ["RUNNING", "SCHEDULED"] } }, data: { status: "PAUSED" } });
 });

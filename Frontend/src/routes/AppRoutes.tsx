@@ -14,6 +14,9 @@ import { Inbox } from "@/pages/Inbox";
 import { Automations } from "@/pages/Automations";
 import { AutomationBuilder } from "@/pages/AutomationBuilder";
 import { AutomationPlaceholder } from "@/pages/AutomationPlaceholder";
+import { BillingSubscriptions } from "@/pages/BillingSubscriptions";
+import { PublicPricing } from "@/pages/PublicPricing";
+import { BillingUsage } from "@/pages/BillingUsage";
 import { Workflows } from "@/pages/Workflows";
 import { WorkflowBuilder } from "@/pages/WorkflowBuilder";
 import { Tasks } from "@/pages/Tasks";
@@ -24,11 +27,12 @@ import { PlatformAdminSection } from "@/pages/PlatformAdminSection";
 import { Onboarding } from "@/pages/Onboarding";
 import { WhatsAppRateCards } from "@/pages/WhatsAppRateCards";
 
-const paths = ["dashboard/analytics", "dashboard/activity", "contacts", "campaigns", "templates", "createtemplate", "pipelines", "catalog", "orders", "reports", "integrations", "settings", "account-settings", "payments", "click-to-whatsapp-ads", "conversation-analytics", "campaign-analytics", "webhook-events", "whatsapp-account", "team-members", "team-members/roles", "billing"];
+const paths = ["dashboard/analytics", "dashboard/activity", "contacts", "campaigns", "templates", "createtemplate", "pipelines", "catalog", "orders", "reports", "integrations", "settings", "account-settings", "payments", "click-to-whatsapp-ads", "conversation-analytics", "campaign-analytics", "webhook-events", "whatsapp-account", "team-members", "team-members/roles"];
 export function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/pricing" element={<PublicPricing />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/invitations/accept" element={<InvitationAccept />} />
@@ -58,6 +62,7 @@ export function AppRoutes() {
         </Route>
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/billing" element={<BillingUsage />} />
           <Route path="/contacts/:contactId" element={<ContactDetails />} />
           <Route path="/campaigns/:campaignId" element={<CampaignDetails />} />
           <Route path="/inbox" element={<Inbox />} />
@@ -71,6 +76,8 @@ export function AppRoutes() {
           <Route path="/api-webhooks" element={<ApiWebhooks />} />
           <Route path="/sequences" element={<AutomationPlaceholder kind="sequences" />} />
           <Route path="/automation-settings" element={<AutomationPlaceholder kind="settings" />} />
+          <Route path="/billing/subscriptions" element={<BillingSubscriptions />} />
+          <Route path="/billing/plans" element={<PublicPricing embedded />} />
           {paths.map((path) => <Route key={path} path={`/${path}`} element={<Dashboard />} />)}
         </Route>
       </Route>

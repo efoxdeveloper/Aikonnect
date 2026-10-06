@@ -1,5 +1,5 @@
 import { AlertTriangle, CircleX, Info, X } from "lucide-react";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export type NotificationStripTone = "danger" | "warning" | "info" | "success";
@@ -11,6 +11,7 @@ type NotificationStripProps = {
   actions?: ReactNode;
   onDismiss?: () => void;
   className?: string;
+  style?: CSSProperties;
 };
 
 const toneStyles: Record<NotificationStripTone, {
@@ -57,7 +58,7 @@ const toneIcons = {
   success: Info,
 } satisfies Record<NotificationStripTone, typeof Info>;
 
-export function NotificationStrip({ tone, title, message, actions, onDismiss, className }: NotificationStripProps) {
+export function NotificationStrip({ tone, title, message, actions, onDismiss, className, style }: NotificationStripProps) {
   const styles = toneStyles[tone];
   const Icon = toneIcons[tone];
 
@@ -65,6 +66,7 @@ export function NotificationStrip({ tone, title, message, actions, onDismiss, cl
     <div
       role={tone === "danger" ? "alert" : "status"}
       className={cn("flex min-h-9 w-full items-center gap-3 border-y px-5 py-1.5 text-xs sm:px-7", styles.container, className)}
+      style={style}
     >
       <span className={cn("flex size-5 shrink-0 items-center justify-center rounded-full", styles.icon)}>
         <Icon size={13} strokeWidth={2.5} aria-hidden="true" />

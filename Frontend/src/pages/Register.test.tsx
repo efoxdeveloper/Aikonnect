@@ -41,6 +41,8 @@ describe("registration password visibility", () => {
     expect(header).toContainElement(screen.getByText("Tell us who you are to get started."));
     expect(screen.queryByText("Your details", { exact: true })).not.toBeInTheDocument();
     expect(screen.queryByText("Company", { exact: true })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Log in" })).toHaveAttribute("href", "/login");
+    expect(screen.queryByRole("link", { name: "View plans" })).not.toBeInTheDocument();
   });
 
   it("toggles password and confirmation visibility independently", () => {

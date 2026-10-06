@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { navigationGroups } from "@/config/navigation";
+import { isNavigationItemActive, navigationGroups } from "@/config/navigation";
 
 describe("navigation structure", () => {
   it("does not define static badges on Dashboard or Inbox", () => {
@@ -37,5 +37,13 @@ describe("navigation structure", () => {
     const developer = navigationGroups.find((group) => group.title === "Developer");
 
     expect(developer?.items.some((item) => item.title === "Webhook Events" || item.url === "/webhook-events")).toBe(false);
+  });
+
+  it("puts billing destinations in Settings and marks only the matching page active", () => {
+    const settings = navigationGroups.find((group) => group.title === "Settings");
+    const billingItems = settings?.items.filter((item) => item.url?.startsWith("/billing")) ?? [];
+
+    expect(billingItems.map((item) => item.title)).toEqual(["Usage & wallet", "Subscriptions", "Plans & pricing"]);
+    expect(billingItems.map((item) => isNavigationItemActive(item, "/billing/subscriptions"))).toEqual([false, true, false]);
   });
 });

@@ -1,15 +1,20 @@
 process.env.DATABASE_URL = "postgresql://test:test@127.0.0.1:1/test";
 
 const unitTests = [
+  "./admin-plans.test.ts",
+  "./plan-requests.test.ts",
   "./admin-schemas.test.ts",
   "./automation.executor.test.ts",
   "./automation.schemas.test.ts",
   "./billing.service.test.ts",
   "./campaign.schemas.test.ts",
+  "./campaign-plan-limits.test.ts",
   "./campaign.worker.test.ts",
+  "./contact-plan-limits.test.ts",
   "./crypto.test.ts",
   "./developer-api.test.ts",
   "./email-branding.test.ts",
+  "./entitlements.test.ts",
   "./google-oauth.test.ts",
   "./inbox-realtime.test.ts",
   "./logger.test.ts",
@@ -18,6 +23,7 @@ const unitTests = [
   "./platform-access.test.ts",
   "./rate-limit.test.ts",
   "./slug.test.ts",
+  "./seat-plan-limits.test.ts",
   "./template-deletion.worker.test.ts",
   "./templates-meta.test.ts",
   "./turnstile.test.ts",
@@ -30,9 +36,11 @@ const unitTests = [
   "./whatsapp-signup.test.ts",
   "./whatsapp-test-message.test.ts",
   "./whatsapp-webhook.unit.test.ts",
+  "./webhook-delivery.test.ts",
   "./workflow.executor.test.ts",
   "./workflow.schemas.test.ts",
   "./workspace-setup.test.ts",
+  "./workspace-access.test.ts",
 ] as const;
 
 for (const testFile of unitTests) await import(testFile);

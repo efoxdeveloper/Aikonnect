@@ -149,7 +149,7 @@ describe("Campaigns", () => {
       "overflow-hidden",
       "bg-[var(--page-background)]",
     );
-    expect(screen.getByTestId("campaign-page-header")).toBeInTheDocument();
+    expect(screen.getByTestId("campaign-page-header")).not.toHaveClass("border-b");
     const campaignTabs = screen.getByRole("tablist", { name: "Campaign type" });
     expect(campaignTabs).toHaveClass("rounded-md", "bg-white", "overflow-hidden", "divide-x", "divide-[var(--border-soft)]");
     expect(screen.getByRole("tab", { name: "One Time Campaigns" })).toHaveAttribute("aria-selected", "true");
@@ -169,8 +169,32 @@ describe("Campaigns", () => {
       "min-h-0",
       "overflow-auto",
     );
-    expect(screen.getByTestId("campaign-table-panel").querySelector("table")).toHaveClass("campaign-data-table");
+    expect(screen.getByRole("table", { name: "Campaign performance" })).toHaveClass("campaign-data-table");
+    const campaignHeader = screen.getByRole("columnheader", { name: "Campaign" });
+    expect(campaignHeader).toHaveClass("h-[46px]");
+    expect(within(campaignHeader).getByRole("heading", { name: "Campaign" })).toHaveClass("font-bold", "uppercase");
+    expect(screen.getByRole("columnheader", { name: "Delivered" })).toHaveClass("text-right");
+    expect(screen.queryByRole("columnheader", { name: "Channel" })).not.toBeInTheDocument();
+    expect(screen.getByRole("table", { name: "Campaign performance" }).querySelector("thead")).toHaveClass("bg-[var(--sidebar-rail-background)]");
     expect(await screen.findByText("No campaigns yet")).toBeInTheDocument();
+  });
+
+  it("shows campaign names without a secondary template label", async () => {
+    mockCampaigns = [
+      {
+        id: "campaign-template-label",
+        name: "Welcome campaign",
+        kind: "one_time",
+        template: "hello_work",
+        status: "COMPLETED",
+      },
+    ];
+    renderPage();
+
+    const campaignName = await screen.findByText("Welcome campaign");
+    expect(campaignName).toHaveClass("group-hover:text-blue-600", "group-hover:underline");
+    expect(campaignName.closest("tr")).toHaveClass("h-12");
+    expect(screen.queryByText("hello_work")).not.toBeInTheDocument();
   });
 
   it("opens campaign details when a campaign row is selected", async () => {

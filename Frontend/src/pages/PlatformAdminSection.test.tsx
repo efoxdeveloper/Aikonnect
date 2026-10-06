@@ -104,6 +104,43 @@ describe("platform admin sections", () => {
     expect(await screen.findByRole("status")).toHaveTextContent("Credited INR 125.50");
   });
 
+  it("lets platform admins create, edit, and delete database plans", async () => {
+    const starter = { id: "plan-1", name: "Starter", slug: "starter", description: "Small teams", currency: "INR", monthlyPriceMinorUnits: "99900", annualPriceMinorUnits: "999000", trialDays: 14, maxSeats: 2, maxContacts: 2000, maxCampaignsPerMonth: 5, maxAutomations: 3, maxWorkflows: 1, maxPipelines: 1, apiAccess: false, webhooks: false, advancedReports: false, active: true, displayOrder: 0 };
+    const billingData = { subscriptions: { configured: false, message: "Not configured" }, plans: { items: [starter] }, wallet: { currency: "INR", balance: "0.00" }, wallets: [], sharedWhatsAppBilling: { totalAccounts: 0, allocatedAccounts: 0, unallocatedAccounts: 0, statuses: {} }, workspaceCount: 1 };
+    vi.mocked(apiRequest).mockReset().mockResolvedValue(billingData);
+    const auth = { status: "authenticated", accessToken: "token", user: { id: "admin-1", email: "admin@example.com", firstName: "Platform", lastName: "Admin", emailVerifiedAt: "2026-09-18T00:00:00.000Z", platformRole: "ADMIN", memberships: [] }, login: vi.fn(), register: vi.fn(), verifyEmail: vi.fn(), resendVerification: vi.fn(), changeEmail: vi.fn(), refreshUser: vi.fn(), logout: vi.fn() } as unknown as AuthContextValue;
+    const confirm = vi.spyOn(window, "confirm").mockReturnValue(true);
+
+    render(<AuthContext.Provider value={auth}><MemoryRouter initialEntries={["/admin/billing"]}><PlatformAdminSection /></MemoryRouter></AuthContext.Provider>);
+    expect(await screen.findByText("Starter")).toBeInTheDocument();
+    expect(screen.getByTestId("plan-table-scroll-region")).toHaveClass("overflow-x-auto");
+    fireEvent.click(screen.getByRole("button", { name: "Create plan" }));
+    fireEvent.change(screen.getByLabelText("Plan name"), { target: { value: "Growth" } });
+    fireEvent.change(screen.getByLabelText("Monthly price"), { target: { value: "499.50" } });
+    fireEvent.click(screen.getAllByRole("button", { name: "Create plan" }).at(-1)!);
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith("/admin/plans", expect.objectContaining({ method: "POST", body: expect.stringContaining('"monthlyPrice":"499.50"') })));
+
+    fireEvent.click(await screen.findByRole("button", { name: "Edit Starter" }));
+    fireEvent.change(screen.getByLabelText("Plan name"), { target: { value: "Starter Plus" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith("/admin/plans/plan-1", expect.objectContaining({ method: "PUT", body: expect.stringContaining('"name":"Starter Plus"') })));
+
+    fireEvent.click(await screen.findByRole("button", { name: "Delete Starter" }));
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith("/admin/plans/plan-1", expect.objectContaining({ method: "DELETE" })));
+    expect(confirm).toHaveBeenCalledWith("Permanently delete the Starter plan?");
+    confirm.mockRestore();
+  });
+
+  it("keeps plan mutations unavailable to billing-only administrators", async () => {
+    vi.mocked(apiRequest).mockReset().mockResolvedValue({ subscriptions: { configured: false, message: "Not configured" }, plans: { items: [] }, wallet: { currency: "INR", balance: "0.00" }, wallets: [], sharedWhatsAppBilling: { totalAccounts: 0, allocatedAccounts: 0, unallocatedAccounts: 0, statuses: {} }, workspaceCount: 0 });
+    const auth = { status: "authenticated", accessToken: "token", user: { id: "billing-1", email: "billing@example.com", firstName: "Billing", lastName: "Admin", emailVerifiedAt: "2026-09-18T00:00:00.000Z", platformRole: "BILLING", memberships: [] }, login: vi.fn(), register: vi.fn(), verifyEmail: vi.fn(), resendVerification: vi.fn(), changeEmail: vi.fn(), refreshUser: vi.fn(), logout: vi.fn() } as unknown as AuthContextValue;
+
+    render(<AuthContext.Provider value={auth}><MemoryRouter initialEntries={["/admin/billing"]}><PlatformAdminSection /></MemoryRouter></AuthContext.Provider>);
+    expect(await screen.findByRole("heading", { name: "Subscription plans" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Create plan" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("columnheader", { name: "Actions" })).not.toBeInTheDocument();
+  });
+
   it("allows an administrator to add funds from a user row", async () => {
     vi.mocked(apiRequest).mockReset().mockResolvedValueOnce({
       items: [{ id: "user-1", email: "owner@example.com", firstName: "Lotus", lastName: "Owner", phone: null, status: "ACTIVE", platformRole: "NONE", signupSource: "Manual signup", emailVerifiedAt: null, lastLoginAt: null, createdAt: "2026-09-18T00:00:00.000Z", account: { tenantId: "tenant-1", currency: "INR", totalBalance: "100.000000", availableBalance: "100.000000" }, memberships: [], _count: { memberships: 0, sessions: 1 } }],

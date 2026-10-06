@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { siWhatsapp, siYoutube } from "simple-icons";
+import { siWhatsapp } from "simple-icons";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AuthContext, type AuthContextValue } from "@/contexts/AuthContext";
 import { apiRequest } from "@/lib/api";
@@ -43,7 +43,8 @@ describe("DashboardOverview", () => {
 
   it("renders the full-width workspace overview using the matching live resources", async () => {
     renderDashboard();
-    expect(screen.getByRole("heading", { name: /Welcome back, Pawan/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Dashboard" })).toBeInTheDocument();
+    expect(screen.getByText("Acme Support")).toBeInTheDocument();
     await waitFor(() => expect(within(screen.getByLabelText("Messages Sent")).getByText("100")).toBeInTheDocument());
     expect(within(screen.getByLabelText("Delivered")).getByText("80")).toBeInTheDocument();
     expect(screen.getByText("50.0%")).toBeInTheDocument();
@@ -52,28 +53,22 @@ describe("DashboardOverview", () => {
     expect(walletAction).toHaveAttribute("href", "/billing");
     expect(walletAction.firstElementChild).toHaveClass("lucide-plus");
     expect(screen.getByText("Efox Technologies")).toBeInTheDocument();
-    const accountHealth = within(screen.getByLabelText("WhatsApp Account Health"));
-    const healthHeading = accountHealth.getByRole("heading", { name: "WhatsApp Account Health" });
+    const accountHealth = within(screen.getByRole("region", { name: "WhatsApp account" }));
+    const healthHeading = accountHealth.getByRole("heading", { name: "WhatsApp account" });
     expect(healthHeading.firstElementChild).toHaveAttribute("aria-hidden", "true");
     expect(healthHeading.firstElementChild?.querySelector("path")).toHaveAttribute("d", siWhatsapp.path);
     expect(accountHealth.queryByText("Team members")).not.toBeInTheDocument();
     expect(accountHealth.getByText("WABA review")).toBeInTheDocument();
     expect(accountHealth.getByText("Meta account status")).toBeInTheDocument();
     expect(accountHealth.getByText("Business verification")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Message activity for 2 days" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /New Campaign/ })).toHaveAttribute("href", "/campaigns");
+    expect(screen.queryByLabelText("Watch Tutorials")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Important Information")).not.toBeInTheDocument();
     for (const title of ["Inbox Snapshot", "Template Status", "API & Webhook Health"]) expect(screen.queryByLabelText(title)).not.toBeInTheDocument();
-    const guide = within(screen.getByLabelText("Setup Guide"));
-    expect(guide.getByText("4 / 4")).toBeInTheDocument();
-    expect(guide.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "4");
-    expect(guide.getAllByText("Complete")).toHaveLength(4);
-    expect(guide.getByRole("link", { name: "View connect whatsapp business" })).toHaveAttribute("href", "/whatsapp-account");
-    const tutorials = screen.getByLabelText("Watch Tutorials");
-    expect(tutorials).toHaveTextContent("Interakt platform demo");
-    expect(tutorials.querySelector("h2 svg path")).toHaveAttribute("d", siYoutube.path);
-    expect(within(tutorials).getByRole("button", { name: "Watch tutorial" }).querySelector("svg path")).toHaveAttribute("d", siYoutube.path);
+    expect(screen.queryByLabelText("Finish workspace setup")).not.toBeInTheDocument();
     expect(vi.mocked(apiRequest).mock.calls.some(([path]) => /reports\/templates|templates\?|conversations\?|webhooks|api-keys/.test(String(path)))).toBe(false);
     expect(screen.queryByLabelText("Campaign Performance")).not.toBeInTheDocument();
-    expect(screen.getByLabelText("Important Information")).toHaveAttribute("data-emphasis", "important");
     expect(vi.mocked(apiRequest).mock.calls.some(([path]) => String(path).includes("reports/campaigns"))).toBe(false);
   });
 
@@ -88,7 +83,7 @@ describe("DashboardOverview", () => {
     });
     renderDashboard();
 
-    const health = within(screen.getByLabelText("WhatsApp Account Health"));
+    const health = within(screen.getByRole("region", { name: "WhatsApp account" }));
     const connect = await health.findByRole("button", { name: "Connect WhatsApp" });
     expect(connect.parentElement?.className).toContain("healthDisconnected");
     expect(health.queryByText("Business name")).not.toBeInTheDocument();
@@ -119,19 +114,16 @@ describe("DashboardOverview", () => {
     expect(apiRequest).not.toHaveBeenCalled();
     expect(screen.getByRole("button", { name: /New Campaign/ })).toBeDisabled();
     expect(screen.queryByRole("link", { name: "View Inbox" })).not.toBeInTheDocument();
-    expect(within(screen.getByLabelText("Quick Actions")).getByRole("button", { name: /New Campaign/ })).toBeDisabled();
-    const guide = within(screen.getByLabelText("Setup Guide"));
-    expect(guide.queryByRole("link")).not.toBeInTheDocument();
-    expect(guide.queryByRole("progressbar")).not.toBeInTheDocument();
-    expect(guide.queryByText("Complete")).not.toBeInTheDocument();
+    expect(within(screen.getByLabelText("Quick actions")).getByRole("button", { name: /New Campaign/ })).toBeDisabled();
+    expect(screen.queryByLabelText("Finish workspace setup")).not.toBeInTheDocument();
   });
 
   it("shows actual incomplete setup steps without inventing completion", async () => {
     vi.mocked(apiRequest).mockImplementation(async (path) => String(path).endsWith("/setup") ? { ...setup, progress: { ...setup.progress, phoneNumberConnected: false, testMessageSent: false, completedSteps: 2, percentage: 50 } } as never : responseFor(String(path)) as never);
     renderDashboard();
-    const guide = within(screen.getByLabelText("Setup Guide"));
+    const guide = within(await screen.findByRole("region", { name: "Finish workspace setup" }));
     await waitFor(() => expect(guide.getByText("2 / 4")).toBeInTheDocument());
-    expect(guide.getAllByText("Complete")).toHaveLength(2);
+    expect(guide.queryByText("Complete")).not.toBeInTheDocument();
     expect(guide.getAllByText("To do")).toHaveLength(2);
     expect(guide.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "2");
     expect(guide.getByRole("link", { name: "Open send your first test message" })).toHaveAttribute("href", "/whatsapp-account");
@@ -139,59 +131,18 @@ describe("DashboardOverview", () => {
 
   it("hides WhatsApp setup actions when the member can only read workspace details", async () => {
     renderDashboard(["workspace.read"]);
-    const guide = within(screen.getByLabelText("Setup Guide"));
-    await waitFor(() => expect(guide.getByText("4 / 4")).toBeInTheDocument());
-    expect(guide.getByRole("link", { name: "View create your workspace" })).toHaveAttribute("href", "/settings");
-    expect(guide.getAllByRole("link")).toHaveLength(1);
+    expect(screen.queryByLabelText("Finish workspace setup")).not.toBeInTheDocument();
     expect(vi.mocked(apiRequest).mock.calls.map(([path]) => path)).toEqual(["/workspaces/workspace-1/setup"]);
   });
 
-  it("loads the tutorial only after opening it and unmounts playback on close", async () => {
+  it("prioritizes the activity chart and account status before quick actions", () => {
     renderDashboard();
-    expect(screen.queryByTitle("Interakt platform demo video")).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Watch tutorial" }));
-    const dialog = await screen.findByRole("dialog", { name: "WhatsApp workspace walkthrough" });
-    expect(within(dialog).getByTitle("Interakt platform demo video")).toHaveAttribute("src", "https://www.youtube-nocookie.com/embed/59fdY8aGPDE?autoplay=1&rel=0");
-    const fallback = within(dialog).getByRole("link", { name: "Watch on YouTube" });
-    expect(fallback).toHaveAttribute("href", "https://www.youtube.com/watch?v=59fdY8aGPDE");
-    expect(fallback).toHaveAttribute("rel", "noopener noreferrer");
-    fireEvent.click(within(dialog).getByRole("button", { name: "Close tutorial" }));
-    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
-    expect(screen.queryByTitle("Interakt platform demo video")).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Watch WhatsApp workspace walkthrough" }));
-    expect(await screen.findByRole("dialog")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Done" }));
-    await waitFor(() => expect(screen.queryByTitle("Interakt platform demo video")).not.toBeInTheDocument());
-  });
-
-  it("places Quick Actions under Account Health and keeps tutorials and setup in the other column", () => {
-    renderDashboard();
-    const health = screen.getByLabelText("WhatsApp Account Health");
-    const actions = screen.getByLabelText("Quick Actions");
-    const information = screen.getByLabelText("Important Information");
-    const tutorials = screen.getByLabelText("Watch Tutorials");
-    const guide = screen.getByLabelText("Setup Guide");
-    expect(health.parentElement).toBe(actions.parentElement);
-    expect(actions.parentElement).toBe(information.parentElement);
-    expect(tutorials.parentElement).toBe(guide.parentElement);
+    const chart = screen.getByRole("region", { name: "Message activity" });
+    const health = screen.getByRole("region", { name: "WhatsApp account" });
+    const actions = screen.getByRole("region", { name: "Quick actions" });
+    expect(chart.parentElement).toBe(health.parentElement);
+    expect(chart.compareDocumentPosition(actions) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(health.compareDocumentPosition(actions) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(tutorials.compareDocumentPosition(guide) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-    expect(actions.compareDocumentPosition(information) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-  });
-
-  it("shows Meta WhatsApp platform rules as a simple always-visible list", () => {
-    renderDashboard();
-    const information = within(screen.getByLabelText("Important Information"));
-    const rules = information.getByRole("list");
-    expect(within(rules).getAllByRole("listitem")).toHaveLength(6);
-    expect(rules).toHaveTextContent("Get clear opt-in");
-    expect(rules).toHaveTextContent("within 24 hours");
-    expect(rules).toHaveTextContent("approved message template");
-    expect(rules).toHaveTextContent("Honor opt-out requests");
-    expect(information.queryByRole("button")).not.toBeInTheDocument();
-    const policyLink = information.getByRole("link", { name: /WhatsApp Business Messaging Policy/ });
-    expect(policyLink).toHaveAttribute("href", "https://business.whatsapp.com/policy");
-    expect(policyLink).toHaveAttribute("target", "_blank");
   });
 
   it("keeps the page in its viewport frame and gives scrolling to the dashboard content region", () => {
@@ -208,10 +159,8 @@ describe("DashboardOverview", () => {
     renderDashboard();
     await waitFor(() => expect(screen.getAllByText("Unavailable").length).toBeGreaterThan(0));
     expect(screen.getByLabelText("Messages Sent")).toHaveTextContent("—");
-    const guide = within(screen.getByLabelText("Setup Guide"));
-    expect(guide.getByText("Unavailable")).toBeInTheDocument();
-    expect(guide.queryByRole("progressbar")).not.toBeInTheDocument();
-    expect(guide.queryByText("Complete")).not.toBeInTheDocument();
+    expect(within(screen.getByRole("region", { name: "WhatsApp account" })).getAllByText("Unavailable").length).toBeGreaterThan(0);
+    expect(screen.queryByLabelText("Finish workspace setup")).not.toBeInTheDocument();
   });
 });
 

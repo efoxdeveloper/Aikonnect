@@ -7,6 +7,7 @@ import { reserveMessageBilling, releaseMessageBilling } from "../billing/billing
 import { resolveMessagePricing, type PricingSnapshot, messagePricingSnapshot } from "../whatsapp-pricing/pricing.service.js";
 import { sendWhatsAppAudioMessage, sendWhatsAppDocumentMessage, sendWhatsAppImageMessage, sendWhatsAppInteractiveButtonMessage, sendWhatsAppStickerMessage, sendWhatsAppTemplateMessage, sendWhatsAppTextMessage, sendWhatsAppVideoMessage, type WhatsAppTemplateParameter } from "../whatsapp/whatsapp.service.js";
 import { enqueueMessageWebhook } from "../webhooks/webhook.service.js";
+import { enforceContactPlanLimit } from "../contacts/contact-plan-limits.js";
 import { publicMessageSchema, type PublicMessageInput, type PublicTextMessageInput, type SendMessageInput } from "./developer-api.schemas.js";
 
 function normalizedPhone(value: string) {
@@ -89,6 +90,7 @@ export async function sendTemplateMessage(workspaceId: string, input: SendMessag
     created = await prisma.$transaction(async (transaction) => {
       const existingContact = await transaction.contact.findFirst({ where: { workspaceId, phoneE164: to, deletedAt: null }, select: { id: true, whatsappOpted: true, marketingBlocked: true } });
       if (existingContact && (!existingContact.whatsappOpted || existingContact.marketingBlocked)) throw new AppError(422, "The recipient is not eligible for WhatsApp messaging", "CONTACT_NOT_WHATSAPP_ELIGIBLE");
+      if (!existingContact) await enforceContactPlanLimit(transaction, workspaceId, 1);
       const contact = existingContact ?? await transaction.contact.create({ data: { workspaceId, name: to, phoneE164: to, source: "Developer API", status: "New Lead", whatsappOpted: true, whatsappOptInSource: "Developer API", whatsappOptedInAt: new Date(), customAttributes: {} }, select: { id: true } });
       if (!existingContact) await transaction.contactConsentEvent.create({ data: { workspaceId, contactId: contact.id, type: "OPT_IN", source: "Developer API", occurredAt: new Date() } });
       const conversation = await transaction.conversation.upsert({ where: { workspaceId_contactId_channelKey: { workspaceId, contactId: contact.id, channelKey: "whatsapp" } }, create: { workspaceId, contactId: contact.id, channelKey: "whatsapp", status: "OPEN" }, update: { deletedAt: null }, select: { id: true } });
@@ -146,6 +148,7 @@ export async function sendPublicMessage(workspaceId: string, input: PublicMessag
       if (existingContact && (!existingContact.whatsappOpted || existingContact.marketingBlocked)) {
         throw new AppError(422, "The recipient is not eligible for WhatsApp messaging", "CONTACT_NOT_WHATSAPP_ELIGIBLE");
       }
+      if (!existingContact) await enforceContactPlanLimit(transaction, workspaceId, 1);
       const contact = existingContact ?? await transaction.contact.create({
         data: {
           workspaceId,

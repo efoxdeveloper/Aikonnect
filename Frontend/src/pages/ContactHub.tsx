@@ -8,7 +8,6 @@ import {
   GripVertical,
   ListFilter,
   Megaphone,
-  MessageCircle,
   MoreVertical,
   Pencil,
   Plus,
@@ -203,22 +202,22 @@ const skeletonWidths: Record<Column, string> = {
 
 function ContactTableSkeletonRows({ columns }: { columns: Column[] }) {
   return Array.from({ length: 8 }, (_, index) => (
-    <tr key={index} data-testid="contact-row-skeleton" className="border-b">
-      <td className="px-4 py-3"><Skeleton className="size-4 rounded" /></td>
-      {columns.map((column) => <td key={column} className="px-3 py-3"><Skeleton className={cn(column === "Tags" ? "h-6" : "h-4", skeletonWidths[column])} /></td>)}
+    <tr key={index} data-testid="contact-row-skeleton" className="h-12 border-b">
+      <td className="px-4 py-2"><Skeleton className="size-4 rounded" /></td>
+      {columns.map((column) => <td key={column} className="px-3 py-2"><Skeleton className={cn(column === "Tags" ? "h-6" : "h-4", skeletonWidths[column])} /></td>)}
       <td><Skeleton className="size-5 rounded-full" /></td>
     </tr>
   ));
 }
 
 function ContactDataCell({ column, contact }: { column: Column; contact: Contact }) {
-  if (column === "Contact Name") return <td className="max-w-[210px] px-3 py-3"><span className="truncate font-medium text-[#252b28]">{contact.name}</span></td>;
-  if (column === "Phone Number") return <td className="px-3 py-3">{formatPhoneForTable(contact.phone)}</td>;
-  if (column === "Email ID") return <td className="px-3 py-3">{contact.email}</td>;
-  if (column === "Created On") return <td className="px-3 py-3">{contact.createdOn}</td>;
-  if (column === "Source") return <td className="px-3 py-3">{contact.source}</td>;
+  if (column === "Contact Name") return <td className="max-w-[210px] px-3 py-2"><span className="truncate font-medium text-[#252b28] transition-colors group-hover:text-blue-600 group-hover:underline group-focus-visible:text-blue-600 group-focus-visible:underline">{contact.name}</span></td>;
+  if (column === "Phone Number") return <td className="px-3 py-2">{formatPhoneForTable(contact.phone)}</td>;
+  if (column === "Email ID") return <td className="px-3 py-2">{contact.email}</td>;
+  if (column === "Created On") return <td className="px-3 py-2">{contact.createdOn}</td>;
+  if (column === "Source") return <td className="px-3 py-2">{contact.source}</td>;
   return (
-    <td className="px-3 py-3">
+    <td className="px-3 py-2">
       {contact.tags.length
         ? contact.tags.map((item) => <span key={item} className="mr-1 inline-flex rounded-full border border-[#d9ccff] bg-[var(--premium-soft)] px-[9px] py-1 text-[12px] font-medium text-[var(--premium)]">{item}</span>)
         : "-"}
@@ -1127,7 +1126,7 @@ export function ContactHub() {
       data-testid="contact-page"
     >
       <div
-        className="flex-none border-b border-[var(--border)] bg-white"
+        className="flex-none bg-white"
         data-testid="contact-page-header"
       >
         <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-4 sm:flex-row sm:items-start sm:justify-between sm:px-6 lg:px-8">
@@ -1293,7 +1292,7 @@ export function ContactHub() {
               className="flex h-10 items-center rounded-lg border border-[#dfe5e1] bg-white px-3 text-[13px] text-[#47554f] hover:bg-[#f6f8f7]"
             >
               <Columns3 size={16} className="mr-2" />
-              Modify Columns
+              Columns
               <ChevronDown size={15} className="ml-2" />
             </button>
             {columnsOpen && (
@@ -1357,7 +1356,7 @@ export function ContactHub() {
             data-testid="contact-table-scroll-region"
           >
             <table className="contact-data-table w-full min-w-[900px] border-collapse bg-white text-left">
-              <thead className="contact-table-head sticky top-0 z-10 border-b border-[var(--border-soft)] bg-[var(--table-header)] shadow-[inset_0_-1px_0_var(--border-soft)]">
+              <thead className="contact-table-head sticky top-0 z-10 border-b border-[var(--border-soft)] bg-[var(--sidebar-rail-background)] shadow-[inset_0_-1px_0_var(--border-soft)]">
                 <tr>
                   <th className="w-14 px-4 py-3.5">
                     <input
@@ -1368,7 +1367,7 @@ export function ContactHub() {
                       className="size-[17px] accent-[var(--brand)]"
                     />
                   </th>
-                  {orderedVisibleColumns.map((column) => <th key={column} className="px-3 py-3.5"><h3>{column}</h3></th>)}
+                  {orderedVisibleColumns.map((column) => <th key={column} className="px-3 py-3.5"><h3 className="font-bold uppercase">{column}</h3></th>)}
                   <th className="w-16">
                     <span className="sr-only">Actions</span>
                   </th>
@@ -1382,9 +1381,9 @@ export function ContactHub() {
                     tabIndex={0}
                     onClick={() => navigate(`/contacts/${contact.id}`)}
                     onKeyDown={(event) => { if (event.key === "Enter") navigate(`/contacts/${contact.id}`); }}
-                    className="cursor-pointer border-b border-[var(--border-soft)] outline-none hover:bg-[var(--table-hover)] focus-visible:bg-[var(--table-selected)]"
+                    className="group h-12 cursor-pointer border-b border-[var(--border-soft)] outline-none hover:bg-[var(--table-hover)] focus-visible:bg-[var(--table-selected)]"
                   >
-                    <td className="px-4 py-3" onClick={(event) => event.stopPropagation()} onKeyDown={(event) => event.stopPropagation()}>
+                    <td className="px-4 py-2" onClick={(event) => event.stopPropagation()} onKeyDown={(event) => event.stopPropagation()}>
                       <input
                         type="checkbox"
                         aria-label={`Select ${contact.name}`}
@@ -1394,13 +1393,17 @@ export function ContactHub() {
                       />
                     </td>
                     {orderedVisibleColumns.map((column) => <ContactDataCell key={column} column={column} contact={contact} />)}
-                    <td>
+                    <td className="px-2 py-2">
                       <button
                         type="button"
                         aria-label={`Open conversation with ${contact.name}`}
                         onClick={(event) => { event.stopPropagation(); navigate(`/inbox?contactId=${contact.id}`); }}
+                        className="flex size-8 items-center justify-center rounded-md text-[#25D366] transition-colors hover:bg-[#eaf8ee] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]/30"
                       >
-                        <MessageCircle size={18} />
+                        <svg data-testid="contact-whatsapp-icon" aria-hidden="true" viewBox="0 0 24 24" className="size-[18px]" fill="currentColor">
+                          <path d="M12.01 2C6.48 2 2 6.48 2 12c0 1.76.46 3.41 1.27 4.84L2 22l5.31-1.39A9.95 9.95 0 0 0 12.01 22C17.53 22 22 17.52 22 12S17.53 2 12.01 2Z" />
+                          <path fill="white" d="M16.7 14.1c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.15-.42-2.19-1.35-.81-.72-1.36-1.61-1.52-1.88-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47-.16-.01-.34-.01-.52-.01-.18 0-.48.07-.73.34-.25.27-.96.93-.96 2.27s.98 2.63 1.12 2.81c.14.18 1.93 2.95 4.68 4.14.65.28 1.16.45 1.56.58.65.21 1.24.18 1.7.11.54-.08 1.6-.65 1.83-1.28.23-.63.23-1.17.16-1.28-.07-.11-.25-.18-.52-.32Z" />
+                        </svg>
                       </button>
                     </td>
                   </tr>

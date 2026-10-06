@@ -91,6 +91,9 @@ export const ModelName = {
   WalletLedgerEntry: 'WalletLedgerEntry',
   WalletReservation: 'WalletReservation',
   WorkspaceBillingSettings: 'WorkspaceBillingSettings',
+  SubscriptionPlan: 'SubscriptionPlan',
+  WorkspaceSubscription: 'WorkspaceSubscription',
+  PlanRequest: 'PlanRequest',
   PlatformAuditLog: 'PlatformAuditLog',
   EmailVerificationToken: 'EmailVerificationToken',
   PasswordResetToken: 'PasswordResetToken'
@@ -917,6 +920,79 @@ export const WorkspaceBillingSettingsScalarFieldEnum = {
 } as const
 
 export type WorkspaceBillingSettingsScalarFieldEnum = (typeof WorkspaceBillingSettingsScalarFieldEnum)[keyof typeof WorkspaceBillingSettingsScalarFieldEnum]
+
+
+export const SubscriptionPlanScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  description: 'description',
+  currency: 'currency',
+  monthlyPriceMinorUnits: 'monthlyPriceMinorUnits',
+  annualPriceMinorUnits: 'annualPriceMinorUnits',
+  trialDays: 'trialDays',
+  maxSeats: 'maxSeats',
+  maxContacts: 'maxContacts',
+  maxCampaignsPerMonth: 'maxCampaignsPerMonth',
+  maxAutomations: 'maxAutomations',
+  maxWorkflows: 'maxWorkflows',
+  maxPipelines: 'maxPipelines',
+  apiAccess: 'apiAccess',
+  webhooks: 'webhooks',
+  advancedReports: 'advancedReports',
+  active: 'active',
+  displayOrder: 'displayOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SubscriptionPlanScalarFieldEnum = (typeof SubscriptionPlanScalarFieldEnum)[keyof typeof SubscriptionPlanScalarFieldEnum]
+
+
+export const WorkspaceSubscriptionScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  planId: 'planId',
+  planName: 'planName',
+  status: 'status',
+  billingPeriod: 'billingPeriod',
+  currency: 'currency',
+  amountMinorUnits: 'amountMinorUnits',
+  startedAt: 'startedAt',
+  trialEndsAt: 'trialEndsAt',
+  currentPeriodStartsAt: 'currentPeriodStartsAt',
+  currentPeriodEndsAt: 'currentPeriodEndsAt',
+  cancelAtPeriodEnd: 'cancelAtPeriodEnd',
+  canceledAt: 'canceledAt',
+  endedAt: 'endedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkspaceSubscriptionScalarFieldEnum = (typeof WorkspaceSubscriptionScalarFieldEnum)[keyof typeof WorkspaceSubscriptionScalarFieldEnum]
+
+
+export const PlanRequestScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  planId: 'planId',
+  requestedByUserId: 'requestedByUserId',
+  reviewedByUserId: 'reviewedByUserId',
+  subscriptionId: 'subscriptionId',
+  planName: 'planName',
+  billingPeriod: 'billingPeriod',
+  currency: 'currency',
+  amountMinorUnits: 'amountMinorUnits',
+  trialDays: 'trialDays',
+  status: 'status',
+  customerNote: 'customerNote',
+  adminNote: 'adminNote',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  decidedAt: 'decidedAt'
+} as const
+
+export type PlanRequestScalarFieldEnum = (typeof PlanRequestScalarFieldEnum)[keyof typeof PlanRequestScalarFieldEnum]
 
 
 export const PlatformAuditLogScalarFieldEnum = {

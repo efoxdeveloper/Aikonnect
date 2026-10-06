@@ -48,6 +48,13 @@ type ErrorEnvelope = {
   };
 };
 
+const PLAN_ACCESS_ERROR_CODES = new Set(["PLAN_LIMIT_REACHED", "PLAN_FEATURE_NOT_INCLUDED", "TRIAL_EXPIRED"]);
+
+function notifyPlanAccessBlocked(error: NonNullable<ErrorEnvelope["error"]>) {
+  if (typeof window === "undefined" || !error.code || !PLAN_ACCESS_ERROR_CODES.has(error.code)) return;
+  window.dispatchEvent(new CustomEvent("marento:plan-access-blocked", { detail: { code: error.code, message: error.message ?? "This action is not available on your current plan." } }));
+}
+
 export class ApiError extends Error {
   constructor(
     public readonly status: number,
@@ -190,6 +197,7 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
     if (response.status === 204) return undefined as T;
     const payload = (await response.json().catch(() => ({}))) as ApiEnvelope<T> & ErrorEnvelope;
     if (!response.ok) {
+      if (payload.error) notifyPlanAccessBlocked(payload.error);
       throw new ApiError(
         response.status,
         payload.error?.message ?? "The request could not be completed.",
@@ -210,6 +218,7 @@ export async function downloadApiFile(path: string, accessToken: string): Promis
     const response = await requestWithAuthRetry(path, {}, new Headers({ authorization: `Bearer ${accessToken}` }));
     if (!response.ok) {
       const payload = (await response.json().catch(() => ({}))) as ErrorEnvelope;
+      if (payload.error) notifyPlanAccessBlocked(payload.error);
       throw new ApiError(response.status, payload.error?.message ?? "The file could not be downloaded.", payload.error?.code);
     }
     return response.blob();

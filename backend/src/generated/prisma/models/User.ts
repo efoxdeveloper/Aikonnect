@@ -337,6 +337,8 @@ export type UserWhereInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogListRelationFilter
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardListRelationFilter
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardListRelationFilter
+  planRequestsSubmitted?: Prisma.PlanRequestListRelationFilter
+  planRequestsReviewed?: Prisma.PlanRequestListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -395,6 +397,8 @@ export type UserOrderByWithRelationInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogOrderByRelationAggregateInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardOrderByRelationAggregateInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardOrderByRelationAggregateInput
+  planRequestsSubmitted?: Prisma.PlanRequestOrderByRelationAggregateInput
+  planRequestsReviewed?: Prisma.PlanRequestOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -456,6 +460,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   platformAuditLogs?: Prisma.PlatformAuditLogListRelationFilter
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardListRelationFilter
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardListRelationFilter
+  planRequestsSubmitted?: Prisma.PlanRequestListRelationFilter
+  planRequestsReviewed?: Prisma.PlanRequestListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -566,6 +572,8 @@ export type UserCreateInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -624,6 +632,8 @@ export type UserUncheckedCreateInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUpdateInput = {
@@ -682,6 +692,8 @@ export type UserUpdateInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -740,6 +752,8 @@ export type UserUncheckedUpdateInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1418,6 +1432,36 @@ export type UserUpdateOneWithoutWalletLedgerEntriesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWalletLedgerEntriesInput, Prisma.UserUpdateWithoutWalletLedgerEntriesInput>, Prisma.UserUncheckedUpdateWithoutWalletLedgerEntriesInput>
 }
 
+export type UserCreateNestedOneWithoutPlanRequestsSubmittedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPlanRequestsSubmittedInput, Prisma.UserUncheckedCreateWithoutPlanRequestsSubmittedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlanRequestsSubmittedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutPlanRequestsReviewedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPlanRequestsReviewedInput, Prisma.UserUncheckedCreateWithoutPlanRequestsReviewedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlanRequestsReviewedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPlanRequestsSubmittedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPlanRequestsSubmittedInput, Prisma.UserUncheckedCreateWithoutPlanRequestsSubmittedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlanRequestsSubmittedInput
+  upsert?: Prisma.UserUpsertWithoutPlanRequestsSubmittedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPlanRequestsSubmittedInput, Prisma.UserUpdateWithoutPlanRequestsSubmittedInput>, Prisma.UserUncheckedUpdateWithoutPlanRequestsSubmittedInput>
+}
+
+export type UserUpdateOneWithoutPlanRequestsReviewedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPlanRequestsReviewedInput, Prisma.UserUncheckedCreateWithoutPlanRequestsReviewedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlanRequestsReviewedInput
+  upsert?: Prisma.UserUpsertWithoutPlanRequestsReviewedInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPlanRequestsReviewedInput, Prisma.UserUpdateWithoutPlanRequestsReviewedInput>, Prisma.UserUncheckedUpdateWithoutPlanRequestsReviewedInput>
+}
+
 export type UserCreateNestedOneWithoutPlatformAuditLogsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutPlatformAuditLogsInput, Prisma.UserUncheckedCreateWithoutPlatformAuditLogsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlatformAuditLogsInput
@@ -1515,6 +1559,8 @@ export type UserCreateWithoutOauthAccountsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutOauthAccountsInput = {
@@ -1572,6 +1618,8 @@ export type UserUncheckedCreateWithoutOauthAccountsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutOauthAccountsInput = {
@@ -1645,6 +1693,8 @@ export type UserUpdateWithoutOauthAccountsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOauthAccountsInput = {
@@ -1702,6 +1752,8 @@ export type UserUncheckedUpdateWithoutOauthAccountsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutOwnedTenantsInput = {
@@ -1759,6 +1811,8 @@ export type UserCreateWithoutOwnedTenantsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutOwnedTenantsInput = {
@@ -1816,6 +1870,8 @@ export type UserUncheckedCreateWithoutOwnedTenantsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutOwnedTenantsInput = {
@@ -1889,6 +1945,8 @@ export type UserUpdateWithoutOwnedTenantsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedTenantsInput = {
@@ -1946,6 +2004,8 @@ export type UserUncheckedUpdateWithoutOwnedTenantsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutOwnedWorkspacesInput = {
@@ -2003,6 +2063,8 @@ export type UserCreateWithoutOwnedWorkspacesInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
@@ -2060,6 +2122,8 @@ export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutOwnedWorkspacesInput = {
@@ -2133,6 +2197,8 @@ export type UserUpdateWithoutOwnedWorkspacesInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
@@ -2190,6 +2256,8 @@ export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutTemplatesCreatedInput = {
@@ -2247,6 +2315,8 @@ export type UserCreateWithoutTemplatesCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutTemplatesCreatedInput = {
@@ -2304,6 +2374,8 @@ export type UserUncheckedCreateWithoutTemplatesCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutTemplatesCreatedInput = {
@@ -2366,6 +2438,8 @@ export type UserCreateWithoutTemplatesUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutTemplatesUpdatedInput = {
@@ -2423,6 +2497,8 @@ export type UserUncheckedCreateWithoutTemplatesUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutTemplatesUpdatedInput = {
@@ -2485,6 +2561,8 @@ export type UserCreateWithoutTemplatesDeletedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutTemplatesDeletedInput = {
@@ -2542,6 +2620,8 @@ export type UserUncheckedCreateWithoutTemplatesDeletedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutTemplatesDeletedInput = {
@@ -2615,6 +2695,8 @@ export type UserUpdateWithoutTemplatesCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTemplatesCreatedInput = {
@@ -2672,6 +2754,8 @@ export type UserUncheckedUpdateWithoutTemplatesCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUpsertWithoutTemplatesUpdatedInput = {
@@ -2740,6 +2824,8 @@ export type UserUpdateWithoutTemplatesUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTemplatesUpdatedInput = {
@@ -2797,6 +2883,8 @@ export type UserUncheckedUpdateWithoutTemplatesUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUpsertWithoutTemplatesDeletedInput = {
@@ -2865,6 +2953,8 @@ export type UserUpdateWithoutTemplatesDeletedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTemplatesDeletedInput = {
@@ -2922,6 +3012,8 @@ export type UserUncheckedUpdateWithoutTemplatesDeletedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutApiKeysCreatedInput = {
@@ -2979,6 +3071,8 @@ export type UserCreateWithoutApiKeysCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutApiKeysCreatedInput = {
@@ -3036,6 +3130,8 @@ export type UserUncheckedCreateWithoutApiKeysCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutApiKeysCreatedInput = {
@@ -3109,6 +3205,8 @@ export type UserUpdateWithoutApiKeysCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApiKeysCreatedInput = {
@@ -3166,6 +3264,8 @@ export type UserUncheckedUpdateWithoutApiKeysCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutWebhookEndpointsCreatedInput = {
@@ -3223,6 +3323,8 @@ export type UserCreateWithoutWebhookEndpointsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutWebhookEndpointsCreatedInput = {
@@ -3280,6 +3382,8 @@ export type UserUncheckedCreateWithoutWebhookEndpointsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutWebhookEndpointsCreatedInput = {
@@ -3353,6 +3457,8 @@ export type UserUpdateWithoutWebhookEndpointsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWebhookEndpointsCreatedInput = {
@@ -3410,6 +3516,8 @@ export type UserUncheckedUpdateWithoutWebhookEndpointsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutContactsCreatedInput = {
@@ -3467,6 +3575,8 @@ export type UserCreateWithoutContactsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutContactsCreatedInput = {
@@ -3524,6 +3634,8 @@ export type UserUncheckedCreateWithoutContactsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutContactsCreatedInput = {
@@ -3586,6 +3698,8 @@ export type UserCreateWithoutContactsOwnedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutContactsOwnedInput = {
@@ -3643,6 +3757,8 @@ export type UserUncheckedCreateWithoutContactsOwnedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutContactsOwnedInput = {
@@ -3705,6 +3821,8 @@ export type UserCreateWithoutContactsUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutContactsUpdatedInput = {
@@ -3762,6 +3880,8 @@ export type UserUncheckedCreateWithoutContactsUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutContactsUpdatedInput = {
@@ -3824,6 +3944,8 @@ export type UserCreateWithoutContactsDeletedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutContactsDeletedInput = {
@@ -3881,6 +4003,8 @@ export type UserUncheckedCreateWithoutContactsDeletedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutContactsDeletedInput = {
@@ -3954,6 +4078,8 @@ export type UserUpdateWithoutContactsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactsCreatedInput = {
@@ -4011,6 +4137,8 @@ export type UserUncheckedUpdateWithoutContactsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUpsertWithoutContactsOwnedInput = {
@@ -4079,6 +4207,8 @@ export type UserUpdateWithoutContactsOwnedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactsOwnedInput = {
@@ -4136,6 +4266,8 @@ export type UserUncheckedUpdateWithoutContactsOwnedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUpsertWithoutContactsUpdatedInput = {
@@ -4204,6 +4336,8 @@ export type UserUpdateWithoutContactsUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactsUpdatedInput = {
@@ -4261,6 +4395,8 @@ export type UserUncheckedUpdateWithoutContactsUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUpsertWithoutContactsDeletedInput = {
@@ -4329,6 +4465,8 @@ export type UserUpdateWithoutContactsDeletedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactsDeletedInput = {
@@ -4386,6 +4524,8 @@ export type UserUncheckedUpdateWithoutContactsDeletedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutContactConsentEventsInput = {
@@ -4443,6 +4583,8 @@ export type UserCreateWithoutContactConsentEventsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutContactConsentEventsInput = {
@@ -4500,6 +4642,8 @@ export type UserUncheckedCreateWithoutContactConsentEventsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutContactConsentEventsInput = {
@@ -4573,6 +4717,8 @@ export type UserUpdateWithoutContactConsentEventsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactConsentEventsInput = {
@@ -4630,6 +4776,8 @@ export type UserUncheckedUpdateWithoutContactConsentEventsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutMessagesCreatedInput = {
@@ -4687,6 +4835,8 @@ export type UserCreateWithoutMessagesCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutMessagesCreatedInput = {
@@ -4744,6 +4894,8 @@ export type UserUncheckedCreateWithoutMessagesCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutMessagesCreatedInput = {
@@ -4817,6 +4969,8 @@ export type UserUpdateWithoutMessagesCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessagesCreatedInput = {
@@ -4874,6 +5028,8 @@ export type UserUncheckedUpdateWithoutMessagesCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutWhatsappRateCardsCreatedInput = {
@@ -4931,6 +5087,8 @@ export type UserCreateWithoutWhatsappRateCardsCreatedInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutWhatsappRateCardsCreatedInput = {
@@ -4988,6 +5146,8 @@ export type UserUncheckedCreateWithoutWhatsappRateCardsCreatedInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutWhatsappRateCardsCreatedInput = {
@@ -5050,6 +5210,8 @@ export type UserCreateWithoutWhatsappRateCardsUpdatedInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutWhatsappRateCardsUpdatedInput = {
@@ -5107,6 +5269,8 @@ export type UserUncheckedCreateWithoutWhatsappRateCardsUpdatedInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutWhatsappRateCardsUpdatedInput = {
@@ -5180,6 +5344,8 @@ export type UserUpdateWithoutWhatsappRateCardsCreatedInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWhatsappRateCardsCreatedInput = {
@@ -5237,6 +5403,8 @@ export type UserUncheckedUpdateWithoutWhatsappRateCardsCreatedInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUpsertWithoutWhatsappRateCardsUpdatedInput = {
@@ -5305,6 +5473,8 @@ export type UserUpdateWithoutWhatsappRateCardsUpdatedInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWhatsappRateCardsUpdatedInput = {
@@ -5362,6 +5532,8 @@ export type UserUncheckedUpdateWithoutWhatsappRateCardsUpdatedInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutContactCustomFieldsCreatedInput = {
@@ -5419,6 +5591,8 @@ export type UserCreateWithoutContactCustomFieldsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutContactCustomFieldsCreatedInput = {
@@ -5476,6 +5650,8 @@ export type UserUncheckedCreateWithoutContactCustomFieldsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutContactCustomFieldsCreatedInput = {
@@ -5538,6 +5714,8 @@ export type UserCreateWithoutContactCustomFieldsUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutContactCustomFieldsUpdatedInput = {
@@ -5595,6 +5773,8 @@ export type UserUncheckedCreateWithoutContactCustomFieldsUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutContactCustomFieldsUpdatedInput = {
@@ -5668,6 +5848,8 @@ export type UserUpdateWithoutContactCustomFieldsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactCustomFieldsCreatedInput = {
@@ -5725,6 +5907,8 @@ export type UserUncheckedUpdateWithoutContactCustomFieldsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUpsertWithoutContactCustomFieldsUpdatedInput = {
@@ -5793,6 +5977,8 @@ export type UserUpdateWithoutContactCustomFieldsUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactCustomFieldsUpdatedInput = {
@@ -5850,6 +6036,8 @@ export type UserUncheckedUpdateWithoutContactCustomFieldsUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutContactSegmentsCreatedInput = {
@@ -5907,6 +6095,8 @@ export type UserCreateWithoutContactSegmentsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutContactSegmentsCreatedInput = {
@@ -5964,6 +6154,8 @@ export type UserUncheckedCreateWithoutContactSegmentsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutContactSegmentsCreatedInput = {
@@ -6026,6 +6218,8 @@ export type UserCreateWithoutContactSegmentsUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutContactSegmentsUpdatedInput = {
@@ -6083,6 +6277,8 @@ export type UserUncheckedCreateWithoutContactSegmentsUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutContactSegmentsUpdatedInput = {
@@ -6156,6 +6352,8 @@ export type UserUpdateWithoutContactSegmentsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactSegmentsCreatedInput = {
@@ -6213,6 +6411,8 @@ export type UserUncheckedUpdateWithoutContactSegmentsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUpsertWithoutContactSegmentsUpdatedInput = {
@@ -6281,6 +6481,8 @@ export type UserUpdateWithoutContactSegmentsUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactSegmentsUpdatedInput = {
@@ -6338,6 +6540,8 @@ export type UserUncheckedUpdateWithoutContactSegmentsUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutContactTasksCreatedInput = {
@@ -6395,6 +6599,8 @@ export type UserCreateWithoutContactTasksCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutContactTasksCreatedInput = {
@@ -6452,6 +6658,8 @@ export type UserUncheckedCreateWithoutContactTasksCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutContactTasksCreatedInput = {
@@ -6514,6 +6722,8 @@ export type UserCreateWithoutContactTasksUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutContactTasksUpdatedInput = {
@@ -6571,6 +6781,8 @@ export type UserUncheckedCreateWithoutContactTasksUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutContactTasksUpdatedInput = {
@@ -6644,6 +6856,8 @@ export type UserUpdateWithoutContactTasksCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactTasksCreatedInput = {
@@ -6701,6 +6915,8 @@ export type UserUncheckedUpdateWithoutContactTasksCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUpsertWithoutContactTasksUpdatedInput = {
@@ -6769,6 +6985,8 @@ export type UserUpdateWithoutContactTasksUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactTasksUpdatedInput = {
@@ -6826,6 +7044,8 @@ export type UserUncheckedUpdateWithoutContactTasksUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutContactNotesCreatedInput = {
@@ -6883,6 +7103,8 @@ export type UserCreateWithoutContactNotesCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutContactNotesCreatedInput = {
@@ -6940,6 +7162,8 @@ export type UserUncheckedCreateWithoutContactNotesCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutContactNotesCreatedInput = {
@@ -7002,6 +7226,8 @@ export type UserCreateWithoutContactNotesUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutContactNotesUpdatedInput = {
@@ -7059,6 +7285,8 @@ export type UserUncheckedCreateWithoutContactNotesUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutContactNotesUpdatedInput = {
@@ -7121,6 +7349,8 @@ export type UserCreateWithoutContactNotesDeletedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutContactNotesDeletedInput = {
@@ -7178,6 +7408,8 @@ export type UserUncheckedCreateWithoutContactNotesDeletedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutContactNotesDeletedInput = {
@@ -7251,6 +7483,8 @@ export type UserUpdateWithoutContactNotesCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactNotesCreatedInput = {
@@ -7308,6 +7542,8 @@ export type UserUncheckedUpdateWithoutContactNotesCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUpsertWithoutContactNotesUpdatedInput = {
@@ -7376,6 +7612,8 @@ export type UserUpdateWithoutContactNotesUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactNotesUpdatedInput = {
@@ -7433,6 +7671,8 @@ export type UserUncheckedUpdateWithoutContactNotesUpdatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUpsertWithoutContactNotesDeletedInput = {
@@ -7501,6 +7741,8 @@ export type UserUpdateWithoutContactNotesDeletedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutContactNotesDeletedInput = {
@@ -7558,6 +7800,8 @@ export type UserUncheckedUpdateWithoutContactNotesDeletedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutAutomationsCreatedInput = {
@@ -7615,6 +7859,8 @@ export type UserCreateWithoutAutomationsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutAutomationsCreatedInput = {
@@ -7672,6 +7918,8 @@ export type UserUncheckedCreateWithoutAutomationsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutAutomationsCreatedInput = {
@@ -7745,6 +7993,8 @@ export type UserUpdateWithoutAutomationsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAutomationsCreatedInput = {
@@ -7802,6 +8052,8 @@ export type UserUncheckedUpdateWithoutAutomationsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutWorkflowsCreatedInput = {
@@ -7859,6 +8111,8 @@ export type UserCreateWithoutWorkflowsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutWorkflowsCreatedInput = {
@@ -7916,6 +8170,8 @@ export type UserUncheckedCreateWithoutWorkflowsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutWorkflowsCreatedInput = {
@@ -7989,6 +8245,8 @@ export type UserUpdateWithoutWorkflowsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkflowsCreatedInput = {
@@ -8046,6 +8304,8 @@ export type UserUncheckedUpdateWithoutWorkflowsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutCampaignsCreatedInput = {
@@ -8103,6 +8363,8 @@ export type UserCreateWithoutCampaignsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutCampaignsCreatedInput = {
@@ -8160,6 +8422,8 @@ export type UserUncheckedCreateWithoutCampaignsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutCampaignsCreatedInput = {
@@ -8233,6 +8497,8 @@ export type UserUpdateWithoutCampaignsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCampaignsCreatedInput = {
@@ -8290,6 +8556,8 @@ export type UserUncheckedUpdateWithoutCampaignsCreatedInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutMembershipsInput = {
@@ -8347,6 +8615,8 @@ export type UserCreateWithoutMembershipsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutMembershipsInput = {
@@ -8404,6 +8674,8 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutMembershipsInput = {
@@ -8477,6 +8749,8 @@ export type UserUpdateWithoutMembershipsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMembershipsInput = {
@@ -8534,6 +8808,8 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutInvitationsSentInput = {
@@ -8591,6 +8867,8 @@ export type UserCreateWithoutInvitationsSentInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutInvitationsSentInput = {
@@ -8648,6 +8926,8 @@ export type UserUncheckedCreateWithoutInvitationsSentInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutInvitationsSentInput = {
@@ -8721,6 +9001,8 @@ export type UserUpdateWithoutInvitationsSentInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInvitationsSentInput = {
@@ -8778,6 +9060,8 @@ export type UserUncheckedUpdateWithoutInvitationsSentInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -8835,6 +9119,8 @@ export type UserCreateWithoutSessionsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -8892,6 +9178,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -8965,6 +9253,8 @@ export type UserUpdateWithoutSessionsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -9022,6 +9312,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutWalletLedgerEntriesInput = {
@@ -9079,6 +9371,8 @@ export type UserCreateWithoutWalletLedgerEntriesInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutWalletLedgerEntriesInput = {
@@ -9136,6 +9430,8 @@ export type UserUncheckedCreateWithoutWalletLedgerEntriesInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutWalletLedgerEntriesInput = {
@@ -9209,6 +9505,8 @@ export type UserUpdateWithoutWalletLedgerEntriesInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWalletLedgerEntriesInput = {
@@ -9266,6 +9564,512 @@ export type UserUncheckedUpdateWithoutWalletLedgerEntriesInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+}
+
+export type UserCreateWithoutPlanRequestsSubmittedInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  phone?: string | null
+  status?: $Enums.UserStatus
+  platformRole?: $Enums.PlatformRole
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  ownedTenants?: Prisma.TenantCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
+  invitationsSent?: Prisma.WorkspaceInvitationCreateNestedManyWithoutInvitedByInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  contactsCreated?: Prisma.ContactCreateNestedManyWithoutCreatedByInput
+  contactsOwned?: Prisma.ContactCreateNestedManyWithoutAccountOwnerInput
+  contactsUpdated?: Prisma.ContactCreateNestedManyWithoutUpdatedByInput
+  contactsDeleted?: Prisma.ContactCreateNestedManyWithoutDeletedByInput
+  contactTasksCreated?: Prisma.ContactTaskCreateNestedManyWithoutCreatedByInput
+  contactTasksUpdated?: Prisma.ContactTaskCreateNestedManyWithoutUpdatedByInput
+  contactNotesCreated?: Prisma.ContactNoteCreateNestedManyWithoutCreatedByInput
+  contactNotesUpdated?: Prisma.ContactNoteCreateNestedManyWithoutUpdatedByInput
+  contactNotesDeleted?: Prisma.ContactNoteCreateNestedManyWithoutDeletedByInput
+  contactSegmentsCreated?: Prisma.ContactSegmentCreateNestedManyWithoutCreatedByInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentCreateNestedManyWithoutUpdatedByInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldCreateNestedManyWithoutCreatedByInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldCreateNestedManyWithoutUpdatedByInput
+  contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutActorUserInput
+  messagesCreated?: Prisma.MessageCreateNestedManyWithoutCreatedByInput
+  templatesCreated?: Prisma.TemplateCreateNestedManyWithoutCreatedByInput
+  templatesUpdated?: Prisma.TemplateCreateNestedManyWithoutUpdatedByInput
+  templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
+  automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
+  workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
+  apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
+  webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
+  whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
+  whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
+}
+
+export type UserUncheckedCreateWithoutPlanRequestsSubmittedInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  phone?: string | null
+  status?: $Enums.UserStatus
+  platformRole?: $Enums.PlatformRole
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  ownedTenants?: Prisma.TenantUncheckedCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
+  invitationsSent?: Prisma.WorkspaceInvitationUncheckedCreateNestedManyWithoutInvitedByInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  contactsCreated?: Prisma.ContactUncheckedCreateNestedManyWithoutCreatedByInput
+  contactsOwned?: Prisma.ContactUncheckedCreateNestedManyWithoutAccountOwnerInput
+  contactsUpdated?: Prisma.ContactUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactsDeleted?: Prisma.ContactUncheckedCreateNestedManyWithoutDeletedByInput
+  contactTasksCreated?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  contactTasksUpdated?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactNotesCreated?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  contactNotesUpdated?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactNotesDeleted?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutDeletedByInput
+  contactSegmentsCreated?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutCreatedByInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutActorUserInput
+  messagesCreated?: Prisma.MessageUncheckedCreateNestedManyWithoutCreatedByInput
+  templatesCreated?: Prisma.TemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  templatesUpdated?: Prisma.TemplateUncheckedCreateNestedManyWithoutUpdatedByInput
+  templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
+  automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
+  workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+  apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
+  webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
+  whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
+  whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
+}
+
+export type UserCreateOrConnectWithoutPlanRequestsSubmittedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPlanRequestsSubmittedInput, Prisma.UserUncheckedCreateWithoutPlanRequestsSubmittedInput>
+}
+
+export type UserCreateWithoutPlanRequestsReviewedInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  phone?: string | null
+  status?: $Enums.UserStatus
+  platformRole?: $Enums.PlatformRole
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  ownedTenants?: Prisma.TenantCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
+  invitationsSent?: Prisma.WorkspaceInvitationCreateNestedManyWithoutInvitedByInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  contactsCreated?: Prisma.ContactCreateNestedManyWithoutCreatedByInput
+  contactsOwned?: Prisma.ContactCreateNestedManyWithoutAccountOwnerInput
+  contactsUpdated?: Prisma.ContactCreateNestedManyWithoutUpdatedByInput
+  contactsDeleted?: Prisma.ContactCreateNestedManyWithoutDeletedByInput
+  contactTasksCreated?: Prisma.ContactTaskCreateNestedManyWithoutCreatedByInput
+  contactTasksUpdated?: Prisma.ContactTaskCreateNestedManyWithoutUpdatedByInput
+  contactNotesCreated?: Prisma.ContactNoteCreateNestedManyWithoutCreatedByInput
+  contactNotesUpdated?: Prisma.ContactNoteCreateNestedManyWithoutUpdatedByInput
+  contactNotesDeleted?: Prisma.ContactNoteCreateNestedManyWithoutDeletedByInput
+  contactSegmentsCreated?: Prisma.ContactSegmentCreateNestedManyWithoutCreatedByInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentCreateNestedManyWithoutUpdatedByInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldCreateNestedManyWithoutCreatedByInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldCreateNestedManyWithoutUpdatedByInput
+  contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutActorUserInput
+  messagesCreated?: Prisma.MessageCreateNestedManyWithoutCreatedByInput
+  templatesCreated?: Prisma.TemplateCreateNestedManyWithoutCreatedByInput
+  templatesUpdated?: Prisma.TemplateCreateNestedManyWithoutUpdatedByInput
+  templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
+  automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
+  workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
+  apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
+  webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
+  whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
+  whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+}
+
+export type UserUncheckedCreateWithoutPlanRequestsReviewedInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  phone?: string | null
+  status?: $Enums.UserStatus
+  platformRole?: $Enums.PlatformRole
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  ownedTenants?: Prisma.TenantUncheckedCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
+  invitationsSent?: Prisma.WorkspaceInvitationUncheckedCreateNestedManyWithoutInvitedByInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  contactsCreated?: Prisma.ContactUncheckedCreateNestedManyWithoutCreatedByInput
+  contactsOwned?: Prisma.ContactUncheckedCreateNestedManyWithoutAccountOwnerInput
+  contactsUpdated?: Prisma.ContactUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactsDeleted?: Prisma.ContactUncheckedCreateNestedManyWithoutDeletedByInput
+  contactTasksCreated?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  contactTasksUpdated?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactNotesCreated?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  contactNotesUpdated?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactNotesDeleted?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutDeletedByInput
+  contactSegmentsCreated?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutCreatedByInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutActorUserInput
+  messagesCreated?: Prisma.MessageUncheckedCreateNestedManyWithoutCreatedByInput
+  templatesCreated?: Prisma.TemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  templatesUpdated?: Prisma.TemplateUncheckedCreateNestedManyWithoutUpdatedByInput
+  templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
+  automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
+  workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+  apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
+  webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
+  whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
+  whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+}
+
+export type UserCreateOrConnectWithoutPlanRequestsReviewedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPlanRequestsReviewedInput, Prisma.UserUncheckedCreateWithoutPlanRequestsReviewedInput>
+}
+
+export type UserUpsertWithoutPlanRequestsSubmittedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPlanRequestsSubmittedInput, Prisma.UserUncheckedUpdateWithoutPlanRequestsSubmittedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPlanRequestsSubmittedInput, Prisma.UserUncheckedCreateWithoutPlanRequestsSubmittedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPlanRequestsSubmittedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPlanRequestsSubmittedInput, Prisma.UserUncheckedUpdateWithoutPlanRequestsSubmittedInput>
+}
+
+export type UserUpdateWithoutPlanRequestsSubmittedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  ownedTenants?: Prisma.TenantUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
+  invitationsSent?: Prisma.WorkspaceInvitationUpdateManyWithoutInvitedByNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  contactsCreated?: Prisma.ContactUpdateManyWithoutCreatedByNestedInput
+  contactsOwned?: Prisma.ContactUpdateManyWithoutAccountOwnerNestedInput
+  contactsUpdated?: Prisma.ContactUpdateManyWithoutUpdatedByNestedInput
+  contactsDeleted?: Prisma.ContactUpdateManyWithoutDeletedByNestedInput
+  contactTasksCreated?: Prisma.ContactTaskUpdateManyWithoutCreatedByNestedInput
+  contactTasksUpdated?: Prisma.ContactTaskUpdateManyWithoutUpdatedByNestedInput
+  contactNotesCreated?: Prisma.ContactNoteUpdateManyWithoutCreatedByNestedInput
+  contactNotesUpdated?: Prisma.ContactNoteUpdateManyWithoutUpdatedByNestedInput
+  contactNotesDeleted?: Prisma.ContactNoteUpdateManyWithoutDeletedByNestedInput
+  contactSegmentsCreated?: Prisma.ContactSegmentUpdateManyWithoutCreatedByNestedInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentUpdateManyWithoutUpdatedByNestedInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldUpdateManyWithoutCreatedByNestedInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldUpdateManyWithoutUpdatedByNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutActorUserNestedInput
+  messagesCreated?: Prisma.MessageUpdateManyWithoutCreatedByNestedInput
+  templatesCreated?: Prisma.TemplateUpdateManyWithoutCreatedByNestedInput
+  templatesUpdated?: Prisma.TemplateUpdateManyWithoutUpdatedByNestedInput
+  templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
+  automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
+  workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
+  apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
+  webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
+  whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
+  whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPlanRequestsSubmittedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedTenants?: Prisma.TenantUncheckedUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  invitationsSent?: Prisma.WorkspaceInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  contactsCreated?: Prisma.ContactUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactsOwned?: Prisma.ContactUncheckedUpdateManyWithoutAccountOwnerNestedInput
+  contactsUpdated?: Prisma.ContactUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactsDeleted?: Prisma.ContactUncheckedUpdateManyWithoutDeletedByNestedInput
+  contactTasksCreated?: Prisma.ContactTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactTasksUpdated?: Prisma.ContactTaskUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactNotesCreated?: Prisma.ContactNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactNotesUpdated?: Prisma.ContactNoteUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactNotesDeleted?: Prisma.ContactNoteUncheckedUpdateManyWithoutDeletedByNestedInput
+  contactSegmentsCreated?: Prisma.ContactSegmentUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutActorUserNestedInput
+  messagesCreated?: Prisma.MessageUncheckedUpdateManyWithoutCreatedByNestedInput
+  templatesCreated?: Prisma.TemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  templatesUpdated?: Prisma.TemplateUncheckedUpdateManyWithoutUpdatedByNestedInput
+  templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
+  automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
+  workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+  apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
+  webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
+  whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
+  whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+}
+
+export type UserUpsertWithoutPlanRequestsReviewedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPlanRequestsReviewedInput, Prisma.UserUncheckedUpdateWithoutPlanRequestsReviewedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPlanRequestsReviewedInput, Prisma.UserUncheckedCreateWithoutPlanRequestsReviewedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPlanRequestsReviewedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPlanRequestsReviewedInput, Prisma.UserUncheckedUpdateWithoutPlanRequestsReviewedInput>
+}
+
+export type UserUpdateWithoutPlanRequestsReviewedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  ownedTenants?: Prisma.TenantUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
+  invitationsSent?: Prisma.WorkspaceInvitationUpdateManyWithoutInvitedByNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  contactsCreated?: Prisma.ContactUpdateManyWithoutCreatedByNestedInput
+  contactsOwned?: Prisma.ContactUpdateManyWithoutAccountOwnerNestedInput
+  contactsUpdated?: Prisma.ContactUpdateManyWithoutUpdatedByNestedInput
+  contactsDeleted?: Prisma.ContactUpdateManyWithoutDeletedByNestedInput
+  contactTasksCreated?: Prisma.ContactTaskUpdateManyWithoutCreatedByNestedInput
+  contactTasksUpdated?: Prisma.ContactTaskUpdateManyWithoutUpdatedByNestedInput
+  contactNotesCreated?: Prisma.ContactNoteUpdateManyWithoutCreatedByNestedInput
+  contactNotesUpdated?: Prisma.ContactNoteUpdateManyWithoutUpdatedByNestedInput
+  contactNotesDeleted?: Prisma.ContactNoteUpdateManyWithoutDeletedByNestedInput
+  contactSegmentsCreated?: Prisma.ContactSegmentUpdateManyWithoutCreatedByNestedInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentUpdateManyWithoutUpdatedByNestedInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldUpdateManyWithoutCreatedByNestedInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldUpdateManyWithoutUpdatedByNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutActorUserNestedInput
+  messagesCreated?: Prisma.MessageUpdateManyWithoutCreatedByNestedInput
+  templatesCreated?: Prisma.TemplateUpdateManyWithoutCreatedByNestedInput
+  templatesUpdated?: Prisma.TemplateUpdateManyWithoutUpdatedByNestedInput
+  templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
+  automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
+  workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
+  apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
+  webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
+  whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
+  whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPlanRequestsReviewedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedTenants?: Prisma.TenantUncheckedUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  invitationsSent?: Prisma.WorkspaceInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  contactsCreated?: Prisma.ContactUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactsOwned?: Prisma.ContactUncheckedUpdateManyWithoutAccountOwnerNestedInput
+  contactsUpdated?: Prisma.ContactUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactsDeleted?: Prisma.ContactUncheckedUpdateManyWithoutDeletedByNestedInput
+  contactTasksCreated?: Prisma.ContactTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactTasksUpdated?: Prisma.ContactTaskUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactNotesCreated?: Prisma.ContactNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactNotesUpdated?: Prisma.ContactNoteUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactNotesDeleted?: Prisma.ContactNoteUncheckedUpdateManyWithoutDeletedByNestedInput
+  contactSegmentsCreated?: Prisma.ContactSegmentUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutActorUserNestedInput
+  messagesCreated?: Prisma.MessageUncheckedUpdateManyWithoutCreatedByNestedInput
+  templatesCreated?: Prisma.TemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  templatesUpdated?: Prisma.TemplateUncheckedUpdateManyWithoutUpdatedByNestedInput
+  templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
+  automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
+  workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+  apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
+  webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
+  whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
+  whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
 }
 
 export type UserCreateWithoutPlatformAuditLogsInput = {
@@ -9323,6 +10127,8 @@ export type UserCreateWithoutPlatformAuditLogsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutPlatformAuditLogsInput = {
@@ -9380,6 +10186,8 @@ export type UserUncheckedCreateWithoutPlatformAuditLogsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutPlatformAuditLogsInput = {
@@ -9453,6 +10261,8 @@ export type UserUpdateWithoutPlatformAuditLogsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPlatformAuditLogsInput = {
@@ -9510,6 +10320,8 @@ export type UserUncheckedUpdateWithoutPlatformAuditLogsInput = {
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutEmailVerificationTokensInput = {
@@ -9567,6 +10379,8 @@ export type UserCreateWithoutEmailVerificationTokensInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutEmailVerificationTokensInput = {
@@ -9624,6 +10438,8 @@ export type UserUncheckedCreateWithoutEmailVerificationTokensInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutEmailVerificationTokensInput = {
@@ -9697,6 +10513,8 @@ export type UserUpdateWithoutEmailVerificationTokensInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmailVerificationTokensInput = {
@@ -9754,6 +10572,8 @@ export type UserUncheckedUpdateWithoutEmailVerificationTokensInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserCreateWithoutPasswordResetTokensInput = {
@@ -9811,6 +10631,8 @@ export type UserCreateWithoutPasswordResetTokensInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
@@ -9868,6 +10690,8 @@ export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
 }
 
 export type UserCreateOrConnectWithoutPasswordResetTokensInput = {
@@ -9941,6 +10765,8 @@ export type UserUpdateWithoutPasswordResetTokensInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
@@ -9998,6 +10824,8 @@ export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
 }
 
 
@@ -10041,6 +10869,8 @@ export type UserCountOutputType = {
   platformAuditLogs: number
   whatsappRateCardsCreated: number
   whatsappRateCardsUpdated: number
+  planRequestsSubmitted: number
+  planRequestsReviewed: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -10079,6 +10909,8 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   platformAuditLogs?: boolean | UserCountOutputTypeCountPlatformAuditLogsArgs
   whatsappRateCardsCreated?: boolean | UserCountOutputTypeCountWhatsappRateCardsCreatedArgs
   whatsappRateCardsUpdated?: boolean | UserCountOutputTypeCountWhatsappRateCardsUpdatedArgs
+  planRequestsSubmitted?: boolean | UserCountOutputTypeCountPlanRequestsSubmittedArgs
+  planRequestsReviewed?: boolean | UserCountOutputTypeCountPlanRequestsReviewedArgs
 }
 
 /**
@@ -10336,6 +11168,20 @@ export type UserCountOutputTypeCountWhatsappRateCardsUpdatedArgs<ExtArgs extends
   where?: Prisma.WhatsAppRateCardWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPlanRequestsSubmittedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PlanRequestWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPlanRequestsReviewedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PlanRequestWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -10393,6 +11239,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   platformAuditLogs?: boolean | Prisma.User$platformAuditLogsArgs<ExtArgs>
   whatsappRateCardsCreated?: boolean | Prisma.User$whatsappRateCardsCreatedArgs<ExtArgs>
   whatsappRateCardsUpdated?: boolean | Prisma.User$whatsappRateCardsUpdatedArgs<ExtArgs>
+  planRequestsSubmitted?: boolean | Prisma.User$planRequestsSubmittedArgs<ExtArgs>
+  planRequestsReviewed?: boolean | Prisma.User$planRequestsReviewedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -10502,6 +11350,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   platformAuditLogs?: boolean | Prisma.User$platformAuditLogsArgs<ExtArgs>
   whatsappRateCardsCreated?: boolean | Prisma.User$whatsappRateCardsCreatedArgs<ExtArgs>
   whatsappRateCardsUpdated?: boolean | Prisma.User$whatsappRateCardsUpdatedArgs<ExtArgs>
+  planRequestsSubmitted?: boolean | Prisma.User$planRequestsSubmittedArgs<ExtArgs>
+  planRequestsReviewed?: boolean | Prisma.User$planRequestsReviewedArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -10545,6 +11395,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     platformAuditLogs: Prisma.$PlatformAuditLogPayload<ExtArgs>[]
     whatsappRateCardsCreated: Prisma.$WhatsAppRateCardPayload<ExtArgs>[]
     whatsappRateCardsUpdated: Prisma.$WhatsAppRateCardPayload<ExtArgs>[]
+    planRequestsSubmitted: Prisma.$PlanRequestPayload<ExtArgs>[]
+    planRequestsReviewed: Prisma.$PlanRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -10996,6 +11848,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   platformAuditLogs<T extends Prisma.User$platformAuditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$platformAuditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlatformAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   whatsappRateCardsCreated<T extends Prisma.User$whatsappRateCardsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$whatsappRateCardsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WhatsAppRateCardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   whatsappRateCardsUpdated<T extends Prisma.User$whatsappRateCardsUpdatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$whatsappRateCardsUpdatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WhatsAppRateCardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  planRequestsSubmitted<T extends Prisma.User$planRequestsSubmittedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$planRequestsSubmittedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlanRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  planRequestsReviewed<T extends Prisma.User$planRequestsReviewedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$planRequestsReviewedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlanRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12275,6 +13129,54 @@ export type User$whatsappRateCardsUpdatedArgs<ExtArgs extends runtime.Types.Exte
   take?: number
   skip?: number
   distinct?: Prisma.WhatsAppRateCardScalarFieldEnum | Prisma.WhatsAppRateCardScalarFieldEnum[]
+}
+
+/**
+ * User.planRequestsSubmitted
+ */
+export type User$planRequestsSubmittedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PlanRequest
+   */
+  select?: Prisma.PlanRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PlanRequest
+   */
+  omit?: Prisma.PlanRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlanRequestInclude<ExtArgs> | null
+  where?: Prisma.PlanRequestWhereInput
+  orderBy?: Prisma.PlanRequestOrderByWithRelationInput | Prisma.PlanRequestOrderByWithRelationInput[]
+  cursor?: Prisma.PlanRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PlanRequestScalarFieldEnum | Prisma.PlanRequestScalarFieldEnum[]
+}
+
+/**
+ * User.planRequestsReviewed
+ */
+export type User$planRequestsReviewedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PlanRequest
+   */
+  select?: Prisma.PlanRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PlanRequest
+   */
+  omit?: Prisma.PlanRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlanRequestInclude<ExtArgs> | null
+  where?: Prisma.PlanRequestWhereInput
+  orderBy?: Prisma.PlanRequestOrderByWithRelationInput | Prisma.PlanRequestOrderByWithRelationInput[]
+  cursor?: Prisma.PlanRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PlanRequestScalarFieldEnum | Prisma.PlanRequestScalarFieldEnum[]
 }
 
 /**

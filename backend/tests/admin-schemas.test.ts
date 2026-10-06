@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { adminAuditQuerySchema, adminListQuerySchema, adminUserWalletAdjustmentSchema, adminWalletAdjustmentSchema } from "../src/modules/admin/admin.schemas.js";
+import { adminAuditQuerySchema, adminListQuerySchema, adminPlanInputSchema, adminUserWalletAdjustmentSchema, adminWalletAdjustmentSchema } from "../src/modules/admin/admin.schemas.js";
 
 test("admin list query applies safe pagination defaults", () => {
   assert.deepEqual(adminListQuerySchema.parse({}), { page: 1, pageSize: 25 });
@@ -10,6 +10,23 @@ test("admin list query applies safe pagination defaults", () => {
 test("admin audit query rejects oversized pages and preserves filters", () => {
   assert.equal(adminAuditQuerySchema.safeParse({ pageSize: "101" }).success, false);
   assert.deepEqual(adminAuditQuerySchema.parse({ resourceType: "platform_admin", action: "GET" }), { page: 1, pageSize: 25, resourceType: "platform_admin", action: "GET" });
+});
+
+test("subscription plan input normalizes money and slugs and accepts unlimited limits", () => {
+  const parsed = adminPlanInputSchema.parse({ name: " Growth ", slug: "GROWTH", description: " Team plan ", currency: "inr", monthlyPrice: "499.50", annualPrice: "4999", trialDays: 14, maxSeats: 5, maxContacts: null, maxCampaignsPerMonth: 30, maxAutomations: 20, maxWorkflows: 10, maxPipelines: 3, apiAccess: true, webhooks: true, advancedReports: true, active: true, displayOrder: 2 });
+  assert.equal(parsed.name, "Growth");
+  assert.equal(parsed.slug, "growth");
+  assert.equal(parsed.currency, "INR");
+  assert.equal(parsed.monthlyPrice, 49950n);
+  assert.equal(parsed.annualPrice, 499900n);
+  assert.equal(parsed.maxContacts, null);
+});
+
+test("subscription plan input rejects unsafe slugs, prices, and invalid limits", () => {
+  const valid = { name: "Starter", slug: "starter", description: null, currency: "INR", monthlyPrice: "0.00", annualPrice: "0", trialDays: 14, maxSeats: null, maxContacts: null, maxCampaignsPerMonth: null, maxAutomations: null, maxWorkflows: null, maxPipelines: null, apiAccess: false, webhooks: false, advancedReports: false, active: true, displayOrder: 0 };
+  assert.equal(adminPlanInputSchema.safeParse({ ...valid, slug: "Bad Slug" }).success, false);
+  assert.equal(adminPlanInputSchema.safeParse({ ...valid, monthlyPrice: "1.001" }).success, false);
+  assert.equal(adminPlanInputSchema.safeParse({ ...valid, maxSeats: 0 }).success, false);
 });
 
 test("manual wallet adjustments require a positive minor-unit amount and preserve idempotency", () => {

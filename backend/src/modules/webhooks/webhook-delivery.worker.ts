@@ -3,6 +3,8 @@ import { logger } from "../../config/logger.js";
 import { env } from "../../config/env.js";
 import { prisma } from "../../database/prisma.js";
 import { decryptSecret } from "../../utils/crypto.js";
+import { assertWorkspaceFeatureEnabled } from "../billing/entitlements.service.js";
+import { AppError } from "../../middleware/error-handler.js";
 
 const POLL_INTERVAL_MS = 1_000;
 const CLAIM_LEASE_MS = 2 * 60_000;
@@ -56,9 +58,19 @@ async function claimDelivery() {
 async function deliver(claim: { id: string; processingToken: string; attempt: number }) {
   const delivery = await prisma.webhookDelivery.findUnique({
     where: { id: claim.id },
-    select: { id: true, endpointId: true, eventType: true, payload: true, processingToken: true, endpoint: { select: { url: true, secretEncrypted: true, active: true } } },
+    select: { id: true, endpointId: true, workspaceId: true, eventType: true, payload: true, processingToken: true, endpoint: { select: { url: true, secretEncrypted: true, active: true } } },
   });
   if (!delivery || delivery.processingToken !== claim.processingToken) return;
+  try {
+    await assertWorkspaceFeatureEnabled(delivery.workspaceId, "webhooks");
+  } catch (error) {
+    if (!(error instanceof AppError) || !["PLAN_FEATURE_NOT_INCLUDED", "TRIAL_EXPIRED"].includes(error.code)) throw error;
+    await prisma.webhookDelivery.updateMany({
+      where: { id: delivery.id, status: "PROCESSING", processingToken: claim.processingToken },
+      data: { status: "FAILED", processingToken: null, processingAt: null, nextAttemptAt: NEVER_RETRY_AT, lastError: error.message },
+    });
+    return;
+  }
   if (!delivery.endpoint.active) {
     await prisma.webhookDelivery.updateMany({ where: { id: delivery.id, processingToken: claim.processingToken }, data: { status: "FAILED", processingToken: null, processingAt: null, nextAttemptAt: NEVER_RETRY_AT, lastError: "The webhook endpoint is inactive" } });
     return;

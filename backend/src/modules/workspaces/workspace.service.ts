@@ -7,6 +7,8 @@ import { generateSecureToken, hashToken } from "../../utils/crypto.js";
 import { toSlug } from "../../utils/slug.js";
 import { sendWorkspaceInvitationEmail } from "../../services/email.service.js";
 import { createWorkspaceWithDefaults, permissionDefinitions } from "./permissions.js";
+import { enforceWorkspaceSeatLimit } from "./seat-plan-limits.js";
+import { resolveWorkspaceEntitlements } from "../billing/entitlements.service.js";
 import type {
   CompleteWorkspaceOnboardingInput,
   CreateRoleInput,
@@ -95,6 +97,15 @@ export async function getWorkspace(workspaceId: string) {
   });
   if (!workspace) throw new AppError(404, "Workspace was not found", "WORKSPACE_NOT_FOUND");
   return workspace;
+}
+
+export async function getWorkspacePlanStatus(workspaceId: string) {
+  const entitlements = await resolveWorkspaceEntitlements(workspaceId);
+  return {
+    status: entitlements.status,
+    planName: entitlements.plan?.name ?? null,
+    trialEndsAt: entitlements.trialEndsAt?.toISOString() ?? null,
+  };
 }
 
 export async function getWorkspaceSetup(workspaceId: string) {
@@ -360,6 +371,7 @@ export async function inviteMember(workspaceId: string, invitedById: string, inp
       where: { workspaceId, email: input.email, status: "PENDING" },
       data: { status: "REVOKED" },
     });
+    await enforceWorkspaceSeatLimit(transaction, workspaceId, 1);
     return transaction.workspaceInvitation.create({
       data: {
         workspaceId,
@@ -442,6 +454,7 @@ export async function acceptInvitation(userId: string, userEmail: string, rawTok
       where: { workspaceId_userId: { workspaceId: invitation.workspaceId, userId } },
     });
     if (existing) throw new AppError(409, "You are already a member of this workspace", "MEMBER_EXISTS");
+    await enforceWorkspaceSeatLimit(transaction, invitation.workspaceId);
 
     const membership = await transaction.workspaceMember.create({
       data: {

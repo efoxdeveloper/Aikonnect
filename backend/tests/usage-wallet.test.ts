@@ -18,18 +18,43 @@ test("usage exposes the persisted wallet balance", async (t: TestContext) => {
   const originalCurrency = env.WALLET_CURRENCY;
   Object.assign(env, { WALLET_CURRENCY: "INR" });
   const originalFindMany = prisma.message.findMany;
+  const originalSubscriptionFindFirst = prisma.workspaceSubscription.findFirst;
+  const originalContactCount = prisma.contact.count;
+  const originalMemberCount = prisma.workspaceMember.count;
+  const originalInvitationCount = prisma.workspaceInvitation.count;
+  const originalCampaignCount = prisma.campaign.count;
   const originalTransaction = prisma.$transaction;
   prisma.message.findMany = async () => [] as never;
+  (prisma.workspaceSubscription as any).findFirst = async () => null;
+  (prisma.contact as any).count = async () => 8;
+  (prisma.workspaceMember as any).count = async () => 2;
+  (prisma.workspaceInvitation as any).count = async () => 1;
+  (prisma.campaign as any).count = async () => 3;
   (prisma as any).$transaction = async (callback: (client: any) => Promise<unknown>) => callback({
     workspace: { findUnique: async () => ({ tenantId: "tenant-id" }) },
     wallet: { upsert: async () => ({ id: "wallet-id", tenantId: "tenant-id", currency: "INR", balanceMinorUnits: 12500n, createdAt: new Date("2026-01-01T00:00:00.000Z"), updatedAt: new Date("2026-01-01T00:00:00.000Z") }) },
   });
   t.after(() => {
     prisma.message.findMany = originalFindMany;
+    (prisma.workspaceSubscription as any).findFirst = originalSubscriptionFindFirst;
+    (prisma.contact as any).count = originalContactCount;
+    (prisma.workspaceMember as any).count = originalMemberCount;
+    (prisma.workspaceInvitation as any).count = originalInvitationCount;
+    (prisma.campaign as any).count = originalCampaignCount;
     (prisma as any).$transaction = originalTransaction;
     Object.assign(env, { WALLET_CURRENCY: originalCurrency });
   });
 
   const result = await getUsage("workspace-id", {});
-  assert.deepEqual(result.wallet, { currency: "INR", balanceMinorUnits: "12500", balance: "125.00", configuredFromBackend: false });
+  assert.equal(result.wallet.currency, "INR");
+  assert.equal(result.wallet.balanceMinorUnits, "12500");
+  assert.equal(result.wallet.balance, "125.00");
+  assert.deepEqual(result.plan, {
+    name: null,
+    status: "NONE",
+    trialEndsAt: null,
+    limits: { contacts: null, seats: null, campaignsPerMonth: null },
+    usage: { contacts: 8, seats: 3, campaignsThisMonth: 3 },
+    features: { apiAccess: false, webhooks: false, advancedReports: false },
+  });
 });

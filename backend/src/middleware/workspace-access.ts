@@ -3,6 +3,11 @@ import { prisma } from "../database/prisma.js";
 import type { PermissionKey } from "../modules/workspaces/permissions.js";
 import { AppError } from "./error-handler.js";
 import { requireAuth } from "./authenticate.js";
+import { assertWorkspaceWritable } from "../modules/billing/entitlements.service.js";
+
+function isPlanRequestSubmission(request: Parameters<RequestHandler>[0]) {
+  return request.method === "POST" && /\/subscriptions\/requests\/?$/.test((request.originalUrl ?? "").split("?")[0] ?? "");
+}
 
 export function requireWorkspacePermission(permission: PermissionKey): RequestHandler {
   return requireAnyWorkspacePermission(permission);
@@ -43,6 +48,8 @@ export function requireAnyWorkspacePermission(...requiredPermissions: Permission
         roleId: membership.roleId,
         permissions,
       };
+      const isReadRequest = ["GET", "HEAD", "OPTIONS"].includes(request.method ?? "GET");
+      if (!isReadRequest && !isPlanRequestSubmission(request)) await assertWorkspaceWritable(workspaceId);
       next();
     } catch (error) {
       next(error);

@@ -25,7 +25,7 @@ export function DashboardSetupGuide({ data, status, permissions }: { data: Works
       <div className={styles.progressSummary}><div><span className={styles.progressLabel}>Workspace setup</span><strong>{completed === null ? status || "Progress unavailable" : `${completed} / 4`}</strong><span className={styles.progressDetail}>{completed === null ? "steps complete" : `steps complete · ${completed * 25}%`}</span></div><span className={styles.progressBadge}>{completed === 4 ? <><Check size={14} /> Ready</> : "In progress"}</span></div>
       {completed !== null && <div role="progressbar" aria-label="Workspace setup progress" aria-valuemin={0} aria-valuemax={4} aria-valuenow={completed} className={styles.progress}><span style={{ width: `${completed * 25}%` }} /></div>}
     </div>
-    <ol className={styles.steps}>{setupSteps.map((step, index) => {
+    <ol className={styles.steps}>{setupSteps.filter((step) => !data || !data.progress[step.key]).map((step, index) => {
       const done = data?.progress[step.key];
       return <li key={step.key} data-complete={done || undefined}>
         <span className={styles.stepIcon} aria-hidden="true">{done ? <Check size={16} /> : index + 1}</span>

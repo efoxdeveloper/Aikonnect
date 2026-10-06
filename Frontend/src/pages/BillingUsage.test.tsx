@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AuthContext, type AuthContextValue } from "@/contexts/AuthContext";
 import { apiRequest } from "@/lib/api";
@@ -25,6 +26,7 @@ const auth = (permissions: string[] = ["billing.read"]): AuthContextValue => ({
 });
 
 const usage = {
+  plan: { name: "Growth", status: "TRIALING" as const, trialEndsAt: "2026-09-01T00:00:00.000Z", limits: { contacts: 1000, seats: 5, campaignsPerMonth: 10 }, usage: { contacts: 125, seats: 3, campaignsThisMonth: 4 }, features: { apiAccess: true, webhooks: false, advancedReports: true } },
   wallet: { currency: "INR", totalBalance: "125.000000", reservedBalance: "2.500000", availableBalance: "122.500000", lowBalanceThreshold: "10.000000", status: "ACTIVE", balanceMinorUnits: "12500", balance: "125.00", configuredFromBackend: false },
   filters: { from: "2026-08-01T00:00:00.000Z", to: "2026-08-31T23:59:59.999Z" },
   summary: { totalMessages: 42, incomingMessages: 18, outgoingMessages: 24, deliveredMessages: 22, readMessages: 16, failedMessages: 2, engagedContacts: 9, activeConversations: 7, mediaMessages: 3 },
@@ -38,7 +40,7 @@ const usage = {
 };
 
 function renderPage(value = auth()) {
-  return render(<AuthContext.Provider value={value}><BillingUsage /></AuthContext.Provider>);
+  return render(<MemoryRouter><AuthContext.Provider value={value}><BillingUsage /></AuthContext.Provider></MemoryRouter>);
 }
 
 describe("BillingUsage", () => {
@@ -57,6 +59,11 @@ describe("BillingUsage", () => {
     expect(screen.queryByText("Engaged contacts")).not.toBeInTheDocument();
     expect(screen.getByText("42")).toBeInTheDocument();
     expect(screen.getByText("Meta billing is separate")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Plan usage" })).toBeInTheDocument();
+    expect(screen.getByText(/Growth.*Free trial.*Ends/)).toBeInTheDocument();
+    expect(screen.getByText("125 / 1,000")).toBeInTheDocument();
+    expect(screen.getByText("Locked")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "View plans" })).toHaveAttribute("href", "/billing/plans");
 
     fireEvent.click(screen.getByRole("button", { name: "7 days" }));
     await waitFor(() => expect(vi.mocked(apiRequest).mock.calls.some(([path]) => String(path).includes("/workspaces/workspace-1/usage?"))).toBe(true));

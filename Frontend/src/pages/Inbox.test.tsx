@@ -58,8 +58,8 @@ const olderConversation = {
   contact: { id: "contact-older", name: "Older Customer", profileName: "Older", profileImageUrl: null },
 };
 
-function renderPage(value = auth) {
-  return render(<AuthContext.Provider value={value}><MemoryRouter><Inbox /></MemoryRouter></AuthContext.Provider>);
+function renderPage(value = auth, initialEntry = "/inbox") {
+  return render(<AuthContext.Provider value={value}><MemoryRouter initialEntries={[initialEntry]}><Inbox /></MemoryRouter></AuthContext.Provider>);
 }
 
 describe("Inbox", () => {
@@ -83,29 +83,79 @@ describe("Inbox", () => {
     });
   });
 
-  it("renders the shadcn mail-style panes and loads a workspace conversation", async () => {
+  it("renders the WATI-style inbox navigation, chat list, and conversation panes", async () => {
     renderPage();
     expect(screen.getByTestId("inbox-page")).toHaveClass("h-full", "overflow-hidden");
     expect(screen.getByRole("heading", { name: "All chats" })).toBeInTheDocument();
+    const folderNav = within(screen.getByRole("navigation", { name: "Inbox folders" }));
+    const channelNav = within(screen.getByRole("navigation", { name: "Inbox channels" }));
+    expect(screen.getByLabelText("Inbox navigation")).toBeInTheDocument();
+    expect(channelNav.getByRole("button", { name: "All Channels" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("button", { name: "Conversation list options" })).toHaveAttribute("aria-expanded", "false");
     fireEvent.click(screen.getByRole("button", { name: "Conversation list options" }));
-    expect(screen.getByRole("button", { name: "Channels" })).toHaveAttribute("aria-expanded", "false");
-    expect(screen.getByRole("button", { name: "More filters" })).toHaveAttribute("aria-expanded", "false");
-    expect(screen.getByRole("button", { name: "All chats" })).toHaveClass("bg-[var(--brand-soft)]");
-    expect(screen.getByRole("button", { name: "Assigned to me" })).not.toHaveClass("bg-[var(--brand-soft)]");
-    expect(screen.getByRole("button", { name: "Unassigned" })).not.toHaveClass("bg-[var(--brand-soft)]");
-    fireEvent.click(screen.getByRole("button", { name: "Unassigned" }));
+    const filtersMenu = within(screen.getByRole("menu", { name: "Conversation filters" }));
+    expect(filtersMenu.getByRole("button", { name: "Channels" })).toHaveAttribute("aria-expanded", "false");
+    expect(filtersMenu.getByRole("button", { name: "More filters" })).toHaveAttribute("aria-expanded", "false");
+    expect(folderNav.getByRole("button", { name: "All chats" })).toHaveAttribute("aria-pressed", "true");
+    expect(folderNav.getByRole("button", { name: "Assigned to me" })).toHaveAttribute("aria-pressed", "false");
+    expect(folderNav.getByRole("button", { name: "Unassigned" })).toHaveAttribute("aria-pressed", "false");
+    fireEvent.click(folderNav.getByRole("button", { name: "Unassigned" }));
     fireEvent.click(screen.getByRole("button", { name: "Conversation list options" }));
-    expect(screen.getByRole("button", { name: "Unassigned" })).toHaveClass("bg-[var(--brand-soft)]");
-    expect(screen.getByRole("button", { name: "All chats" })).not.toHaveClass("bg-[var(--brand-soft)]");
+    expect(folderNav.getByRole("button", { name: "Unassigned" })).toHaveAttribute("aria-pressed", "true");
+    expect(folderNav.getByRole("button", { name: "All chats" })).toHaveAttribute("aria-pressed", "false");
     fireEvent.click(screen.getByRole("button", { name: "Channels" }));
-    expect(screen.getByRole("button", { name: "All Channels" })).toBeInTheDocument();
+    expect(within(screen.getByRole("menu", { name: "Conversation filters" })).getByRole("button", { name: "All Channels" })).toBeInTheDocument();
     expect(await screen.findByRole("button", { name: /Aarav Sharma/ })).toBeInTheDocument();
     expect(await screen.findByText("Can you share the pricing?")).toBeInTheDocument();
     expect(apiRequest).toHaveBeenCalledWith(
       "/workspaces/workspace-1/conversations?page=1&pageSize=25&search=",
       { headers: { authorization: "Bearer access-token" } },
     );
+  });
+
+  it("opens the linked contact conversation when arriving from the contacts table", async () => {
+    const linkedConversation = {
+      ...conversation,
+      id: "conversation-2",
+      contactId: "contact-2",
+      contact: { id: "contact-2", name: "Shani Deshwal", profileName: "Shani", profileImageUrl: null },
+    };
+    vi.mocked(apiRequest).mockImplementation(async (path) => {
+      const pathText = String(path);
+      if (pathText.includes("/messages")) {
+        return { items: [{ id: "message-linked", direction: "INCOMING", type: "TEXT", status: "READ", text: "Linked contact conversation", sentAt: "2026-08-27T06:00:00.000Z" }], pagination: {} } as never;
+      }
+      if (pathText.includes("contactId=contact-2")) {
+        return { items: [linkedConversation], pagination: { page: 1, pageSize: 25, total: 1, totalPages: 1 } } as never;
+      }
+      return { items: [conversation], pagination: { page: 1, pageSize: 25, total: 1, totalPages: 1 } } as never;
+    });
+
+    renderPage(auth, "/inbox?contactId=contact-2");
+
+    expect(await screen.findByRole("heading", { name: "Shani Deshwal" })).toBeInTheDocument();
+    expect(await screen.findByText("Linked contact conversation")).toBeInTheDocument();
+    expect(apiRequest).toHaveBeenCalledWith(
+      expect.stringContaining("contactId=contact-2"),
+      { headers: { authorization: "Bearer access-token" } },
+    );
+  });
+
+  it("does not open another contact's conversation when the linked contact has none", async () => {
+    vi.mocked(apiRequest).mockImplementation(async (path) => {
+      const pathText = String(path);
+      if (pathText.includes("contactId=contact-2")) {
+        return { items: [], pagination: { page: 1, pageSize: 25, total: 0, totalPages: 1 } } as never;
+      }
+      if (pathText.includes("/messages")) return { items: [], pagination: {} } as never;
+      return { items: [conversation], pagination: { page: 1, pageSize: 25, total: 1, totalPages: 1 } } as never;
+    });
+
+    renderPage(auth, "/inbox?contactId=contact-2");
+
+    expect(await screen.findByRole("heading", { name: "No conversation found" })).toBeInTheDocument();
+    expect(screen.queryByTestId("inbox-message-region")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Aarav Sharma/ })).toBeInTheDocument();
   });
 
   it("shows chat actions and persists pin, clear, and delete choices", async () => {
@@ -151,7 +201,7 @@ describe("Inbox", () => {
     expect(screen.getAllByRole("img", { name: "Aarav Sharma profile" })).toHaveLength(2);
     expect(screen.queryByRole("button", { name: "Start video call" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Start phone call" })).not.toBeInTheDocument();
-    expect(screen.getByTestId("inbox-message-region")).toHaveClass("overflow-y-auto");
+    expect(screen.getByTestId("inbox-message-region")).toHaveClass("overflow-y-auto", "whatsapp-chat-wallpaper");
     expect(screen.getByTestId("inbox-message-region")).toHaveStyle({ backgroundColor: "#efeae2" });
     await waitFor(() => expect(within(screen.getByTestId("inbox-message-region")).getByText("Can you share the pricing?")).toHaveClass("break-words", "[overflow-wrap:anywhere]"));
     expect(screen.getByRole("textbox", { name: "Message" })).toHaveAttribute("placeholder", "Type a message");
@@ -177,8 +227,9 @@ describe("Inbox", () => {
     });
     renderPage();
     await screen.findByText("Can you share the pricing?");
+    await screen.findByTestId("inbox-message-region");
     fireEvent.click(screen.getByRole("button", { name: "Search in conversation" }));
-    expect(screen.getByTestId("conversation-search-drawer")).toBeInTheDocument();
+    expect(await screen.findByTestId("conversation-search-drawer")).toBeInTheDocument();
     fireEvent.change(screen.getByRole("textbox", { name: "Search messages" }), { target: { value: "pricing" } });
     await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
       "/workspaces/workspace-1/contacts/contact-1/conversations/conversation-1/messages?page=1&pageSize=50&latest=true&search=pricing",
@@ -204,7 +255,11 @@ describe("Inbox", () => {
     Object.defineProperty(list, "scrollTop", { configurable: true, writable: true, value: 500 });
     fireEvent.scroll(list);
     expect(await screen.findByRole("button", { name: /Older Customer/ })).toBeInTheDocument();
-    expect(screen.getByTestId("contact-avatar-fallback")).toBeInTheDocument();
+    const avatarInitials = screen.getByTestId("contact-avatar-fallback");
+    expect(avatarInitials).toHaveTextContent("OC");
+    const avatar = avatarInitials.closest(".MuiAvatar-root") as HTMLElement;
+    expect(avatar.style.backgroundColor).toMatch(/^rgb\(/);
+    expect(avatar.style.backgroundColor).not.toBe("rgb(223, 229, 231)");
     expect(apiRequest).toHaveBeenCalledWith(
       "/workspaces/workspace-1/conversations?page=2&pageSize=25&search=",
       { headers: { authorization: "Bearer access-token" } },
@@ -250,6 +305,7 @@ describe("Inbox", () => {
     fireEvent.change(screen.getByRole("textbox", { name: "Message" }), { target: { value: "Here is the pricing." } });
     fireEvent.click(screen.getByRole("button", { name: "Send" }));
     await waitFor(() => expect(screen.getByText("Here is the pricing.")).toBeInTheDocument());
+    expect(screen.getByText("Here is the pricing.").parentElement).toHaveClass("bg-[#d9fdd3]", "text-[#111b21]");
     expect(apiRequest).toHaveBeenCalledWith(
       "/workspaces/workspace-1/contacts/contact-1/conversations/conversation-1/messages",
       expect.objectContaining({ method: "POST", body: expect.stringContaining("Here is the pricing.") }),
@@ -502,8 +558,7 @@ describe("Inbox", () => {
     vi.stubGlobal("WebSocket", FakeWebSocket);
     renderPage();
     await screen.findByText("Can you share the pricing?");
-    fireEvent.click(screen.getByRole("button", { name: "Conversation list options" }));
-    fireEvent.click(screen.getByRole("button", { name: "Active chats" }));
+    fireEvent.click(within(screen.getByRole("navigation", { name: "Inbox folders" })).getByRole("button", { name: "Active chats" }));
     await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
       "/workspaces/workspace-1/conversations?page=1&pageSize=25&search=&status=OPEN",
       { headers: { authorization: "Bearer access-token" } },

@@ -191,7 +191,6 @@ function formatDate(value: string | null) {
       }).format(new Date(value))
     : "--";
 }
-function templateLabel(value: string) { return value || "--"; }
 function templateVariableCount(body: string | undefined) {
   return Math.max(0, ...[...(body ?? "").matchAll(/\{\{\s*(\d+)\s*\}\}/g)].map((match) => Number(match[1])));
 }
@@ -1150,7 +1149,7 @@ export function Campaigns() {
       data-testid="campaign-page"
     >
       <div
-        className="flex-none border-b border-[var(--border)] bg-white"
+        className="flex-none bg-white"
         data-testid="campaign-page-header"
       >
         <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-4 sm:flex-row sm:items-start sm:justify-between sm:px-6 lg:px-8">
@@ -1304,36 +1303,35 @@ export function Campaigns() {
             className="min-h-0 flex-1 overflow-auto"
             data-testid="campaign-table-scroll-region"
           >
-            <table className="campaign-data-table w-full min-w-[1180px] border-collapse text-left">
-              <thead className="sticky top-0 z-10 border-b border-[var(--border-soft)] bg-[var(--table-header)] shadow-[inset_0_-1px_0_var(--border-soft)]">
+            <table aria-label="Campaign performance" className="campaign-data-table w-full min-w-[1040px] border-collapse text-left">
+              <thead className="sticky top-0 z-10 border-b border-[var(--border-soft)] bg-[var(--sidebar-rail-background)] shadow-[inset_0_-1px_0_var(--border-soft)]">
                 <tr>
                   {[
-                    "Campaign Name",
-                    "Channel",
-                    "Created By",
-                    "Category",
-                    "Status",
-                    "Attempted",
-                    "Sent",
-                    "Delivered %",
-                    "Read %",
-                    "Replied %",
-                    "Set Live",
-                  ].map((heading) => (
-                    <th key={heading} className="px-3 py-4 first:pl-4">
-                      <h3>{heading}</h3>
+                    { label: "Campaign", align: "text-left" },
+                    { label: "Created by", align: "text-left" },
+                    { label: "Category", align: "text-left" },
+                    { label: "Status", align: "text-left" },
+                    { label: "Attempted", align: "text-right" },
+                    { label: "Sent", align: "text-right" },
+                    { label: "Delivered", align: "text-right" },
+                    { label: "Read", align: "text-right" },
+                    { label: "Replied", align: "text-right" },
+                    { label: "Set live", align: "text-left" },
+                  ].map(({ label, align }) => (
+                    <th key={label} scope="col" className={cn("h-[46px] px-3 py-3", align, label === "Campaign" && "pl-4")}>
+                      <h3 className="font-bold uppercase">{label}</h3>
                     </th>
                   ))}
-                  <th className="w-12 px-3 py-4">
+                  <th scope="col" className="w-12 px-3 py-3">
                     <span className="sr-only">Actions</span>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {loading ? <tr><td colSpan={12} className="p-12 text-center text-xs text-[var(--text-secondary)]">Loading campaigns…</td></tr> : filteredCampaigns.map((campaign) => (
+                {loading ? <tr><td colSpan={11} className="p-12 text-center text-xs text-[var(--text-secondary)]">Loading campaigns…</td></tr> : filteredCampaigns.map((campaign) => (
                   <tr
                     key={campaign.id}
-                    className="cursor-pointer border-b border-[var(--border-soft)] text-sm text-[var(--text-primary)] hover:bg-[var(--brand-soft)] focus-within:bg-[var(--brand-soft)]"
+                    className="group h-12 cursor-pointer border-b border-[var(--border-soft)] text-sm text-[var(--text-primary)] hover:bg-[var(--brand-soft)] focus-within:bg-[var(--brand-soft)]"
                     onClick={() => navigate(`/campaigns/${encodeURIComponent(campaign.id)}`)}
                     onKeyDown={(event) => {
                       if (event.key === "Enter" || event.key === " ") {
@@ -1343,40 +1341,40 @@ export function Campaigns() {
                     }}
                     tabIndex={0}
                   >
-                    <td className="max-w-[230px] px-4 py-4">
-                      <div className="truncate font-medium">
+                    <td className="max-w-[260px] px-4 py-4">
+                      <div className="truncate font-medium text-[var(--text-primary)] transition-colors group-hover:text-blue-600 group-hover:underline group-focus-visible:text-blue-600 group-focus-visible:underline">
                         {campaign.name}
                       </div>
-                      <div className="mt-1 truncate text-xs text-[var(--text-secondary)]">
-                        {templateLabel(campaign.template)}
-                      </div>
                     </td>
-                    <td className="px-3 py-4">{campaign.channel}</td>
                     <td className="whitespace-nowrap px-3 py-4">
                       {campaign.createdBy}
                     </td>
-                    <td className="px-3 py-4">{campaign.category}</td>
-                    <td className="px-3 py-4">
+                    <td className="whitespace-nowrap px-3 py-4">{campaign.category}</td>
+                    <td className="whitespace-nowrap px-3 py-4">
                       <CampaignStatusBadge status={campaign.status} />
                     </td>
-                    <td className="px-3 py-4">{campaign.attempted || "--"}</td>
-                    <td className="px-3 py-4">{campaign.sent || "--"}</td>
-                    <td className="px-3 py-4">
+                    <td className="whitespace-nowrap px-3 py-4 text-right font-medium tabular-nums">
+                      {campaign.attempted || "--"}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-4 text-right font-medium tabular-nums">
+                      {campaign.sent || "--"}
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-4 text-right font-medium tabular-nums">
                       {campaign.deliveredRate === null
                         ? "--"
                         : `${campaign.deliveredRate}%`}
                     </td>
-                    <td className="px-3 py-4">
+                    <td className="whitespace-nowrap px-3 py-4 text-right font-medium tabular-nums">
                       {campaign.readRate === null
                         ? "--"
                         : `${campaign.readRate}%`}
                     </td>
-                    <td className="px-3 py-4">
+                    <td className="whitespace-nowrap px-3 py-4 text-right font-medium tabular-nums">
                       {campaign.replied === null
                         ? "--"
                         : `${campaign.replied}%`}
                     </td>
-                    <td className="px-3 py-4">
+                    <td className="whitespace-nowrap px-3 py-4">
                       {formatDate(campaign.setLiveAt)}
                     </td>
                     <td className="px-3 py-4">

@@ -13,34 +13,34 @@ function isItemActive(item: NavigationItem, pathname: string) {
 }
 
 const buttonSx = {
-  minHeight: 44,
-  mx: 1.5,
-  width: "calc(100% - 24px)",
-  borderRadius: 1,
-  px: 1.5,
-  color: "rgba(255,255,255,.9)",
-  fontSize: 14,
+  minHeight: 40,
+  mx: 0.5,
+  width: "calc(100% - 8px)",
+  borderRadius: 1.25,
+  px: 1.25,
+  color: "var(--text-secondary)",
+  fontSize: 13,
   fontWeight: 500,
   textAlign: "left",
   fontFamily: "var(--font-sans)",
   transition: "background-color 180ms ease, color 180ms ease, transform 180ms ease",
-  "&:hover": { backgroundColor: "rgba(255,255,255,.09)" },
+  "&:hover": { backgroundColor: "#e7e9e8", color: "var(--text-primary)" },
   "&:active": { transform: "scale(.98)" },
-  "&[data-active=true]": { backgroundColor: "rgba(255,255,255,.055)", color: "#fff", fontWeight: 600 },
-  "&[data-active=true] .MuiListItemIcon-root": { color: "#6ee7b7" },
-  "&:focus-visible": { outline: "2px solid rgba(110,231,183,.7)", outlineOffset: 2 },
+  "&[data-active=true]": { backgroundColor: "var(--brand-soft)", color: "var(--brand)", fontWeight: 600 },
+  "&[data-active=true] .MuiListItemIcon-root": { color: "var(--brand)" },
+  "&:focus-visible": { outline: "2px solid var(--brand-accent)", outlineOffset: 2 },
 };
 
 const childButtonSx = {
-  minHeight: 28,
+  minHeight: 34,
   borderRadius: 1,
-  px: 1,
+  px: 1.25,
   py: 0,
-  color: "rgba(255,255,255,.6)",
+  color: "var(--text-secondary)",
   fontSize: 13,
   fontWeight: 400,
-  "&:hover": { backgroundColor: "rgba(255,255,255,.07)", color: "#fff" },
-  "&[data-active=true]": { color: "#fff", fontWeight: 500 },
+  "&:hover": { backgroundColor: "#f6f7f6", color: "var(--text-primary)" },
+  "&[data-active=true]": { backgroundColor: "var(--brand-soft)", color: "var(--brand)", fontWeight: 600 },
 };
 
 export function SidebarMenuItem({ item }: { item: NavigationItem }) {
@@ -52,7 +52,7 @@ export function SidebarMenuItem({ item }: { item: NavigationItem }) {
   const iconRef = useRef<AnimatedIconHandle>(null);
   const handleNavigation = () => { if (isMobile) setOpenMobile(false); };
   const destination = item.url ?? item.children?.[0]?.url ?? "#";
-  const icon = <item.icon ref={iconRef} size={20} duration={0.7} />;
+  const icon = <item.icon ref={item.iconColor ? undefined : iconRef} size={18} duration={0.7} color={item.iconColor} />;
   const badgeTestId = item.title.toLowerCase().replace(/\s+/g, "-") + "-badge";
   const trailing = state !== "collapsed" && (
     <span className="ml-auto flex shrink-0 items-center gap-1.5">
@@ -71,7 +71,7 @@ export function SidebarMenuItem({ item }: { item: NavigationItem }) {
   if (state === "collapsed") {
     return <ListItem disablePadding sx={{ display: "block" }}>
       <Tooltip title={item.title} placement="right" enterDelay={200}>
-        <ListItemButton component={Link} to={destination} onClick={handleNavigation} aria-current={active ? "page" : undefined} {...common} sx={{ ...buttonSx, position: "relative", width: 44, mx: "auto", px: 0, justifyContent: "center" }}>
+        <ListItemButton component={Link} to={destination} onClick={handleNavigation} aria-current={active ? "page" : undefined} title={item.title} {...common} sx={{ ...buttonSx, position: "relative", width: 40, minHeight: 40, mx: "auto", px: 0, justifyContent: "center", borderRadius: 1.25 }}>
           <ListItemIcon sx={{ minWidth: 0, color: "inherit", justifyContent: "center" }}>{icon}</ListItemIcon>
           {item.badge && <span data-testid={badgeTestId} aria-label={item.badge.text + " unread messages"} className="absolute right-0.5 top-0.5 flex min-w-4 items-center justify-center rounded-full bg-[#ef4444] px-1 text-[9px] font-bold leading-4 text-white">{item.badge.text}</span>}
         </ListItemButton>
