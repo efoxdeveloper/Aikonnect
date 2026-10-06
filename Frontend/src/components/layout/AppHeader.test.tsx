@@ -64,7 +64,7 @@ describe("AppHeader", () => {
     expect(screen.queryByTestId("header-search")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Notifications" })).not.toBeInTheDocument();
     expect(screen.getByRole("img", { name: "Marento" })).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: "Marento" })).toHaveAttribute("src", "/marento-logo-1.webp");
+    expect(screen.getByRole("img", { name: "Marento" })).toHaveAttribute("src", "/marento-logo-1.png");
     expect(screen.getByRole("img", { name: "Marento" })).toHaveClass("h-11", "w-[184px]");
     expect(screen.getByTestId("sidebar-brand-header")).toBeInTheDocument();
     expect(screen.getByTestId("navbar-brand")).toHaveClass("sm:ml-0");
