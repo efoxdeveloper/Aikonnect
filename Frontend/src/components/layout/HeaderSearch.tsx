@@ -1,4 +1,4 @@
-import { useMemo, useState, type KeyboardEvent } from "react";
+import { useContext, useMemo, useState, type KeyboardEvent } from "react";
 import { SearchIcon as Search } from "@animateicons/react/lucide";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -6,6 +6,8 @@ import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
 import { navigationGroups, type NavigationItem } from "@/config/navigation";
 import { useAnimatedIcon } from "@/hooks/use-animated-icon";
+import { AuthContext } from "@/contexts/AuthContext";
+import { getActiveMembership } from "@/lib/workspace";
 
 type SearchResult = { item: NavigationItem; groupTitle?: string };
 
@@ -18,12 +20,15 @@ export function HeaderSearch() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
+  const auth = useContext(AuthContext);
+  const permissions = getActiveMembership(auth?.user ?? null)?.role.permissions ?? [];
   const searchIcon = useAnimatedIcon();
   const normalizedQuery = query.trim().toLowerCase();
   const filteredResults = useMemo(() => searchResults.filter(({ item, groupTitle }) => {
+    if (item.requiredPermission && !permissions.includes(item.requiredPermission)) return false;
     if (!normalizedQuery) return true;
     return `${item.title} ${groupTitle ?? ""} ${(item.keywords ?? []).join(" ")}`.toLowerCase().includes(normalizedQuery);
-  }), [normalizedQuery]);
+  }), [normalizedQuery, permissions]);
 
   const selectResult = (url?: string) => {
     if (!url) return;

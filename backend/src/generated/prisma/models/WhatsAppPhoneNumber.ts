@@ -256,6 +256,7 @@ export type WhatsAppPhoneNumberWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"WhatsAppPhoneNumber"> | Date | string
   businessAccount?: Prisma.XOR<Prisma.WhatsAppBusinessAccountScalarRelationFilter, Prisma.WhatsAppBusinessAccountWhereInput>
   conversations?: Prisma.ConversationListRelationFilter
+  assignmentRules?: Prisma.ConversationAssignmentRuleListRelationFilter
 }
 
 export type WhatsAppPhoneNumberOrderByWithRelationInput = {
@@ -275,6 +276,7 @@ export type WhatsAppPhoneNumberOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   businessAccount?: Prisma.WhatsAppBusinessAccountOrderByWithRelationInput
   conversations?: Prisma.ConversationOrderByRelationAggregateInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleOrderByRelationAggregateInput
 }
 
 export type WhatsAppPhoneNumberWhereUniqueInput = Prisma.AtLeast<{
@@ -298,6 +300,7 @@ export type WhatsAppPhoneNumberWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"WhatsAppPhoneNumber"> | Date | string
   businessAccount?: Prisma.XOR<Prisma.WhatsAppBusinessAccountScalarRelationFilter, Prisma.WhatsAppBusinessAccountWhereInput>
   conversations?: Prisma.ConversationListRelationFilter
+  assignmentRules?: Prisma.ConversationAssignmentRuleListRelationFilter
 }, "id" | "businessAccountId_metaPhoneNumberId">
 
 export type WhatsAppPhoneNumberOrderByWithAggregationInput = {
@@ -356,6 +359,7 @@ export type WhatsAppPhoneNumberCreateInput = {
   updatedAt?: Date | string
   businessAccount: Prisma.WhatsAppBusinessAccountCreateNestedOneWithoutPhoneNumbersInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutPhoneNumberInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutPhoneNumberInput
 }
 
 export type WhatsAppPhoneNumberUncheckedCreateInput = {
@@ -374,6 +378,7 @@ export type WhatsAppPhoneNumberUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPhoneNumberInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutPhoneNumberInput
 }
 
 export type WhatsAppPhoneNumberUpdateInput = {
@@ -392,6 +397,7 @@ export type WhatsAppPhoneNumberUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessAccount?: Prisma.WhatsAppBusinessAccountUpdateOneRequiredWithoutPhoneNumbersNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutPhoneNumberNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutPhoneNumberNestedInput
 }
 
 export type WhatsAppPhoneNumberUncheckedUpdateInput = {
@@ -410,6 +416,7 @@ export type WhatsAppPhoneNumberUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPhoneNumberNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutPhoneNumberNestedInput
 }
 
 export type WhatsAppPhoneNumberCreateManyInput = {
@@ -549,6 +556,22 @@ export type WhatsAppPhoneNumberUpdateOneWithoutConversationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WhatsAppPhoneNumberUpdateToOneWithWhereWithoutConversationsInput, Prisma.WhatsAppPhoneNumberUpdateWithoutConversationsInput>, Prisma.WhatsAppPhoneNumberUncheckedUpdateWithoutConversationsInput>
 }
 
+export type WhatsAppPhoneNumberCreateNestedOneWithoutAssignmentRulesInput = {
+  create?: Prisma.XOR<Prisma.WhatsAppPhoneNumberCreateWithoutAssignmentRulesInput, Prisma.WhatsAppPhoneNumberUncheckedCreateWithoutAssignmentRulesInput>
+  connectOrCreate?: Prisma.WhatsAppPhoneNumberCreateOrConnectWithoutAssignmentRulesInput
+  connect?: Prisma.WhatsAppPhoneNumberWhereUniqueInput
+}
+
+export type WhatsAppPhoneNumberUpdateOneWithoutAssignmentRulesNestedInput = {
+  create?: Prisma.XOR<Prisma.WhatsAppPhoneNumberCreateWithoutAssignmentRulesInput, Prisma.WhatsAppPhoneNumberUncheckedCreateWithoutAssignmentRulesInput>
+  connectOrCreate?: Prisma.WhatsAppPhoneNumberCreateOrConnectWithoutAssignmentRulesInput
+  upsert?: Prisma.WhatsAppPhoneNumberUpsertWithoutAssignmentRulesInput
+  disconnect?: Prisma.WhatsAppPhoneNumberWhereInput | boolean
+  delete?: Prisma.WhatsAppPhoneNumberWhereInput | boolean
+  connect?: Prisma.WhatsAppPhoneNumberWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WhatsAppPhoneNumberUpdateToOneWithWhereWithoutAssignmentRulesInput, Prisma.WhatsAppPhoneNumberUpdateWithoutAssignmentRulesInput>, Prisma.WhatsAppPhoneNumberUncheckedUpdateWithoutAssignmentRulesInput>
+}
+
 export type WhatsAppPhoneNumberCreateNestedManyWithoutBusinessAccountInput = {
   create?: Prisma.XOR<Prisma.WhatsAppPhoneNumberCreateWithoutBusinessAccountInput, Prisma.WhatsAppPhoneNumberUncheckedCreateWithoutBusinessAccountInput> | Prisma.WhatsAppPhoneNumberCreateWithoutBusinessAccountInput[] | Prisma.WhatsAppPhoneNumberUncheckedCreateWithoutBusinessAccountInput[]
   connectOrCreate?: Prisma.WhatsAppPhoneNumberCreateOrConnectWithoutBusinessAccountInput | Prisma.WhatsAppPhoneNumberCreateOrConnectWithoutBusinessAccountInput[]
@@ -610,6 +633,7 @@ export type WhatsAppPhoneNumberCreateWithoutConversationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   businessAccount: Prisma.WhatsAppBusinessAccountCreateNestedOneWithoutPhoneNumbersInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutPhoneNumberInput
 }
 
 export type WhatsAppPhoneNumberUncheckedCreateWithoutConversationsInput = {
@@ -627,6 +651,7 @@ export type WhatsAppPhoneNumberUncheckedCreateWithoutConversationsInput = {
   lastSyncedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutPhoneNumberInput
 }
 
 export type WhatsAppPhoneNumberCreateOrConnectWithoutConversationsInput = {
@@ -660,6 +685,7 @@ export type WhatsAppPhoneNumberUpdateWithoutConversationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessAccount?: Prisma.WhatsAppBusinessAccountUpdateOneRequiredWithoutPhoneNumbersNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutPhoneNumberNestedInput
 }
 
 export type WhatsAppPhoneNumberUncheckedUpdateWithoutConversationsInput = {
@@ -677,6 +703,95 @@ export type WhatsAppPhoneNumberUncheckedUpdateWithoutConversationsInput = {
   lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutPhoneNumberNestedInput
+}
+
+export type WhatsAppPhoneNumberCreateWithoutAssignmentRulesInput = {
+  id?: string
+  metaPhoneNumberId: string
+  displayPhoneNumber: string
+  verifiedName?: string | null
+  status?: $Enums.WhatsAppPhoneNumberStatus
+  qualityRating?: string | null
+  messagingLimit?: string | null
+  isOnBusinessApp?: boolean
+  platformType?: string | null
+  connectedAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  businessAccount: Prisma.WhatsAppBusinessAccountCreateNestedOneWithoutPhoneNumbersInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutPhoneNumberInput
+}
+
+export type WhatsAppPhoneNumberUncheckedCreateWithoutAssignmentRulesInput = {
+  id?: string
+  businessAccountId: string
+  metaPhoneNumberId: string
+  displayPhoneNumber: string
+  verifiedName?: string | null
+  status?: $Enums.WhatsAppPhoneNumberStatus
+  qualityRating?: string | null
+  messagingLimit?: string | null
+  isOnBusinessApp?: boolean
+  platformType?: string | null
+  connectedAt?: Date | string | null
+  lastSyncedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPhoneNumberInput
+}
+
+export type WhatsAppPhoneNumberCreateOrConnectWithoutAssignmentRulesInput = {
+  where: Prisma.WhatsAppPhoneNumberWhereUniqueInput
+  create: Prisma.XOR<Prisma.WhatsAppPhoneNumberCreateWithoutAssignmentRulesInput, Prisma.WhatsAppPhoneNumberUncheckedCreateWithoutAssignmentRulesInput>
+}
+
+export type WhatsAppPhoneNumberUpsertWithoutAssignmentRulesInput = {
+  update: Prisma.XOR<Prisma.WhatsAppPhoneNumberUpdateWithoutAssignmentRulesInput, Prisma.WhatsAppPhoneNumberUncheckedUpdateWithoutAssignmentRulesInput>
+  create: Prisma.XOR<Prisma.WhatsAppPhoneNumberCreateWithoutAssignmentRulesInput, Prisma.WhatsAppPhoneNumberUncheckedCreateWithoutAssignmentRulesInput>
+  where?: Prisma.WhatsAppPhoneNumberWhereInput
+}
+
+export type WhatsAppPhoneNumberUpdateToOneWithWhereWithoutAssignmentRulesInput = {
+  where?: Prisma.WhatsAppPhoneNumberWhereInput
+  data: Prisma.XOR<Prisma.WhatsAppPhoneNumberUpdateWithoutAssignmentRulesInput, Prisma.WhatsAppPhoneNumberUncheckedUpdateWithoutAssignmentRulesInput>
+}
+
+export type WhatsAppPhoneNumberUpdateWithoutAssignmentRulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  metaPhoneNumberId?: Prisma.StringFieldUpdateOperationsInput | string
+  displayPhoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumWhatsAppPhoneNumberStatusFieldUpdateOperationsInput | $Enums.WhatsAppPhoneNumberStatus
+  qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messagingLimit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnBusinessApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  platformType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessAccount?: Prisma.WhatsAppBusinessAccountUpdateOneRequiredWithoutPhoneNumbersNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutPhoneNumberNestedInput
+}
+
+export type WhatsAppPhoneNumberUncheckedUpdateWithoutAssignmentRulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  businessAccountId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaPhoneNumberId?: Prisma.StringFieldUpdateOperationsInput | string
+  displayPhoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  verifiedName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumWhatsAppPhoneNumberStatusFieldUpdateOperationsInput | $Enums.WhatsAppPhoneNumberStatus
+  qualityRating?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  messagingLimit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnBusinessApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  platformType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  connectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSyncedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPhoneNumberNestedInput
 }
 
 export type WhatsAppPhoneNumberCreateWithoutBusinessAccountInput = {
@@ -694,6 +809,7 @@ export type WhatsAppPhoneNumberCreateWithoutBusinessAccountInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   conversations?: Prisma.ConversationCreateNestedManyWithoutPhoneNumberInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutPhoneNumberInput
 }
 
 export type WhatsAppPhoneNumberUncheckedCreateWithoutBusinessAccountInput = {
@@ -711,6 +827,7 @@ export type WhatsAppPhoneNumberUncheckedCreateWithoutBusinessAccountInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutPhoneNumberInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutPhoneNumberInput
 }
 
 export type WhatsAppPhoneNumberCreateOrConnectWithoutBusinessAccountInput = {
@@ -790,6 +907,7 @@ export type WhatsAppPhoneNumberUpdateWithoutBusinessAccountInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   conversations?: Prisma.ConversationUpdateManyWithoutPhoneNumberNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutPhoneNumberNestedInput
 }
 
 export type WhatsAppPhoneNumberUncheckedUpdateWithoutBusinessAccountInput = {
@@ -807,6 +925,7 @@ export type WhatsAppPhoneNumberUncheckedUpdateWithoutBusinessAccountInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutPhoneNumberNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutPhoneNumberNestedInput
 }
 
 export type WhatsAppPhoneNumberUncheckedUpdateManyWithoutBusinessAccountInput = {
@@ -832,10 +951,12 @@ export type WhatsAppPhoneNumberUncheckedUpdateManyWithoutBusinessAccountInput = 
 
 export type WhatsAppPhoneNumberCountOutputType = {
   conversations: number
+  assignmentRules: number
 }
 
 export type WhatsAppPhoneNumberCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   conversations?: boolean | WhatsAppPhoneNumberCountOutputTypeCountConversationsArgs
+  assignmentRules?: boolean | WhatsAppPhoneNumberCountOutputTypeCountAssignmentRulesArgs
 }
 
 /**
@@ -853,6 +974,13 @@ export type WhatsAppPhoneNumberCountOutputTypeDefaultArgs<ExtArgs extends runtim
  */
 export type WhatsAppPhoneNumberCountOutputTypeCountConversationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ConversationWhereInput
+}
+
+/**
+ * WhatsAppPhoneNumberCountOutputType without action
+ */
+export type WhatsAppPhoneNumberCountOutputTypeCountAssignmentRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ConversationAssignmentRuleWhereInput
 }
 
 
@@ -873,6 +1001,7 @@ export type WhatsAppPhoneNumberSelect<ExtArgs extends runtime.Types.Extensions.I
   updatedAt?: boolean
   businessAccount?: boolean | Prisma.WhatsAppBusinessAccountDefaultArgs<ExtArgs>
   conversations?: boolean | Prisma.WhatsAppPhoneNumber$conversationsArgs<ExtArgs>
+  assignmentRules?: boolean | Prisma.WhatsAppPhoneNumber$assignmentRulesArgs<ExtArgs>
   _count?: boolean | Prisma.WhatsAppPhoneNumberCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["whatsAppPhoneNumber"]>
 
@@ -933,6 +1062,7 @@ export type WhatsAppPhoneNumberOmit<ExtArgs extends runtime.Types.Extensions.Int
 export type WhatsAppPhoneNumberInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   businessAccount?: boolean | Prisma.WhatsAppBusinessAccountDefaultArgs<ExtArgs>
   conversations?: boolean | Prisma.WhatsAppPhoneNumber$conversationsArgs<ExtArgs>
+  assignmentRules?: boolean | Prisma.WhatsAppPhoneNumber$assignmentRulesArgs<ExtArgs>
   _count?: boolean | Prisma.WhatsAppPhoneNumberCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WhatsAppPhoneNumberIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -947,6 +1077,7 @@ export type $WhatsAppPhoneNumberPayload<ExtArgs extends runtime.Types.Extensions
   objects: {
     businessAccount: Prisma.$WhatsAppBusinessAccountPayload<ExtArgs>
     conversations: Prisma.$ConversationPayload<ExtArgs>[]
+    assignmentRules: Prisma.$ConversationAssignmentRulePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1359,6 +1490,7 @@ export interface Prisma__WhatsAppPhoneNumberClient<T, Null = never, ExtArgs exte
   readonly [Symbol.toStringTag]: "PrismaPromise"
   businessAccount<T extends Prisma.WhatsAppBusinessAccountDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhatsAppBusinessAccountDefaultArgs<ExtArgs>>): Prisma.Prisma__WhatsAppBusinessAccountClient<runtime.Types.Result.GetResult<Prisma.$WhatsAppBusinessAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   conversations<T extends Prisma.WhatsAppPhoneNumber$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhatsAppPhoneNumber$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assignmentRules<T extends Prisma.WhatsAppPhoneNumber$assignmentRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WhatsAppPhoneNumber$assignmentRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationAssignmentRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1824,6 +1956,30 @@ export type WhatsAppPhoneNumber$conversationsArgs<ExtArgs extends runtime.Types.
   take?: number
   skip?: number
   distinct?: Prisma.ConversationScalarFieldEnum | Prisma.ConversationScalarFieldEnum[]
+}
+
+/**
+ * WhatsAppPhoneNumber.assignmentRules
+ */
+export type WhatsAppPhoneNumber$assignmentRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ConversationAssignmentRule
+   */
+  select?: Prisma.ConversationAssignmentRuleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ConversationAssignmentRule
+   */
+  omit?: Prisma.ConversationAssignmentRuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ConversationAssignmentRuleInclude<ExtArgs> | null
+  where?: Prisma.ConversationAssignmentRuleWhereInput
+  orderBy?: Prisma.ConversationAssignmentRuleOrderByWithRelationInput | Prisma.ConversationAssignmentRuleOrderByWithRelationInput[]
+  cursor?: Prisma.ConversationAssignmentRuleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ConversationAssignmentRuleScalarFieldEnum | Prisma.ConversationAssignmentRuleScalarFieldEnum[]
 }
 
 /**

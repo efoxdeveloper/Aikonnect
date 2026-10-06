@@ -392,6 +392,23 @@ export type EnumConversationStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumConversationStatusFilter<$PrismaModel>
 }
 
+export type EnumConversationAssignmentStrategyFilter<$PrismaModel = never> = {
+  equals?: $Enums.ConversationAssignmentStrategy | Prisma.EnumConversationAssignmentStrategyFieldRefInput<$PrismaModel>
+  in?: $Enums.ConversationAssignmentStrategy[] | Prisma.ListEnumConversationAssignmentStrategyFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ConversationAssignmentStrategy[] | Prisma.ListEnumConversationAssignmentStrategyFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumConversationAssignmentStrategyFilter<$PrismaModel> | $Enums.ConversationAssignmentStrategy
+}
+
+export type EnumConversationAssignmentStrategyWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ConversationAssignmentStrategy | Prisma.EnumConversationAssignmentStrategyFieldRefInput<$PrismaModel>
+  in?: $Enums.ConversationAssignmentStrategy[] | Prisma.ListEnumConversationAssignmentStrategyFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ConversationAssignmentStrategy[] | Prisma.ListEnumConversationAssignmentStrategyFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumConversationAssignmentStrategyWithAggregatesFilter<$PrismaModel> | $Enums.ConversationAssignmentStrategy
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumConversationAssignmentStrategyFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumConversationAssignmentStrategyFilter<$PrismaModel>
+}
+
 export type EnumMessageDirectionFilter<$PrismaModel = never> = {
   equals?: $Enums.MessageDirection | Prisma.EnumMessageDirectionFieldRefInput<$PrismaModel>
   in?: $Enums.MessageDirection[] | Prisma.ListEnumMessageDirectionFieldRefInput<$PrismaModel>
@@ -1238,6 +1255,23 @@ export type NestedEnumConversationStatusWithAggregatesFilter<$PrismaModel = neve
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumConversationStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumConversationStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumConversationAssignmentStrategyFilter<$PrismaModel = never> = {
+  equals?: $Enums.ConversationAssignmentStrategy | Prisma.EnumConversationAssignmentStrategyFieldRefInput<$PrismaModel>
+  in?: $Enums.ConversationAssignmentStrategy[] | Prisma.ListEnumConversationAssignmentStrategyFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ConversationAssignmentStrategy[] | Prisma.ListEnumConversationAssignmentStrategyFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumConversationAssignmentStrategyFilter<$PrismaModel> | $Enums.ConversationAssignmentStrategy
+}
+
+export type NestedEnumConversationAssignmentStrategyWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ConversationAssignmentStrategy | Prisma.EnumConversationAssignmentStrategyFieldRefInput<$PrismaModel>
+  in?: $Enums.ConversationAssignmentStrategy[] | Prisma.ListEnumConversationAssignmentStrategyFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ConversationAssignmentStrategy[] | Prisma.ListEnumConversationAssignmentStrategyFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumConversationAssignmentStrategyWithAggregatesFilter<$PrismaModel> | $Enums.ConversationAssignmentStrategy
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumConversationAssignmentStrategyFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumConversationAssignmentStrategyFilter<$PrismaModel>
 }
 
 export type NestedEnumMessageDirectionFilter<$PrismaModel = never> = {

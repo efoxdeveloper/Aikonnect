@@ -62,6 +62,7 @@ export const ModelName = {
   Contact: 'Contact',
   ContactConsentEvent: 'ContactConsentEvent',
   Conversation: 'Conversation',
+  ConversationAssignmentRule: 'ConversationAssignmentRule',
   Message: 'Message',
   WhatsAppWebhookEvent: 'WhatsAppWebhookEvent',
   WhatsAppRateCard: 'WhatsAppRateCard',
@@ -344,12 +345,34 @@ export const ConversationScalarFieldEnum = {
   lastMessagePreview: 'lastMessagePreview',
   lastMessageAt: 'lastMessageAt',
   clearedAt: 'clearedAt',
+  assigneeMembershipId: 'assigneeMembershipId',
+  assignmentRuleId: 'assignmentRuleId',
+  assignedAt: 'assignedAt',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ConversationScalarFieldEnum = (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
+
+
+export const ConversationAssignmentRuleScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  name: 'name',
+  priority: 'priority',
+  enabled: 'enabled',
+  contactTagId: 'contactTagId',
+  phoneNumberId: 'phoneNumberId',
+  strategy: 'strategy',
+  memberIds: 'memberIds',
+  roundRobinCursor: 'roundRobinCursor',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ConversationAssignmentRuleScalarFieldEnum = (typeof ConversationAssignmentRuleScalarFieldEnum)[keyof typeof ConversationAssignmentRuleScalarFieldEnum]
 
 
 export const MessageScalarFieldEnum = {

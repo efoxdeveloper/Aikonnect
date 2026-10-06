@@ -86,6 +86,7 @@ export function AppSidebar({ platformOnly = false }: { platformOnly?: boolean })
   const auth = useContext(AuthContext);
   const membership = getActiveMembership(auth?.user ?? null);
   const canReadInbox = membership?.role.permissions.includes("inbox.read") ?? false;
+  const canManageAssignmentRules = membership?.role.permissions.includes("conversations.assign") ?? false;
   const { unreadCount } = useInboxUnreadCount({ workspaceId: membership?.workspace.id, accessToken: auth?.accessToken, enabled: canReadInbox });
   const platformRole = auth?.user?.platformRole;
   const canAccessPlatformAdmin = Boolean(platformRole && platformRole !== "NONE");
@@ -94,10 +95,10 @@ export function AppSidebar({ platformOnly = false }: { platformOnly?: boolean })
     const source = platformOnly ? platformNavigationGroups.map((group) => ({
       ...group,
       items: group.items.filter((item) => !item.platformRoles || Boolean(visiblePlatformRole && item.platformRoles.includes(visiblePlatformRole))),
-    })) : navigationGroups;
+    })) : navigationGroups.map((group) => ({ ...group, items: group.items.filter((item) => !item.requiredPermission || (item.requiredPermission === "conversations.assign" && canManageAssignmentRules)) }));
     const visible = withInboxBadge(source, unreadCount).filter((group) => group.items.length > 0);
     return !platformOnly && canAccessPlatformAdmin ? [...visible, { title: "Platform", items: [{ title: "Admin console", url: "/admin", icon: ShieldCheck }] }] : visible;
-  }, [canAccessPlatformAdmin, platformOnly, unreadCount, visiblePlatformRole]);
+  }, [canAccessPlatformAdmin, canManageAssignmentRules, platformOnly, unreadCount, visiblePlatformRole]);
   const activeGroup = getActiveNavigationGroup(groups, pathname);
   const railItems = groups.flatMap((group) => {
     if (!group.title) return group.items.map((item) => ({ item, active: isNavigationItemActive(item, pathname) }));

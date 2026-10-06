@@ -8,6 +8,7 @@ import { enqueueMessageWebhook } from "../webhooks/webhook.service.js";
 import { publishInboxMessageStatus, publishInboxRefresh } from "../../realtime/inbox.js";
 import { prisma } from "../../database/prisma.js";
 import { runAutomationsForEvent } from "../automations/automation.executor.js";
+import { applyAssignmentRules } from "../assignment-rules/assignment-rule.service.js";
 import { runWorkflowsForEvent } from "../workflows/workflow.executor.js";
 import { markCampaignReply, refreshCampaignMetrics } from "../campaigns/campaign.metrics.js";
 
@@ -510,6 +511,11 @@ async function processPayload(payload: WhatsAppWebhookPayload) {
         const result = await ingestIncomingMessage(phoneNumber.businessAccount.workspaceId, phoneNumber.id, message, contactProfile?.name, contactProfile?.profileImageUrl);
         if (result) {
           await enqueueMessageWebhook(result.messageId, "message.received");
+          try {
+            await applyAssignmentRules(phoneNumber.businessAccount.workspaceId, result.conversationId);
+          } catch (error) {
+            logger.error({ workspaceId: phoneNumber.businessAccount.workspaceId, conversationId: result.conversationId, error }, "Conversation assignment rules could not be applied");
+          }
           publishInboxRefresh(phoneNumber.businessAccount.workspaceId, result.conversationId);
           await markCampaignReply(phoneNumber.businessAccount.workspaceId, result.phoneNumber, result.sentAt);
           try {

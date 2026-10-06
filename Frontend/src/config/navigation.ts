@@ -34,6 +34,7 @@ export interface NavigationItem {
   keywords?: string[];
   icon: AnimatedIcon;
   iconColor?: string;
+  requiredPermission?: string;
   badge?: { text: string; variant: "danger" | "warning" | "success" };
   children?: NavigationItem[];
   platformRoles?: Array<"SUPPORT" | "OPERATIONS" | "BILLING" | "ADMIN" | "SUPER_ADMIN">;
@@ -83,6 +84,7 @@ export const navigationGroups: NavigationGroup[] = [
   { title: "Settings", items: [
     { title: "WhatsApp Account", url: "/whatsapp-account", icon: MessageCircle },
     { title: "Team Members", url: "/team-members", icon: UsersRound },
+    { title: "Assignment Rules", url: "/assignment-rules", icon: Workflow, requiredPermission: "conversations.assign" },
     { title: "Usage & wallet", url: "/billing", end: true, keywords: ["billing", "billing & usage"], icon: WalletCards },
     { title: "Subscriptions", url: "/billing/subscriptions", icon: CrownIcon as unknown as AnimatedIcon, iconColor: "#eab308" },
     { title: "Plans & pricing", url: "/billing/plans", icon: WalletCards },

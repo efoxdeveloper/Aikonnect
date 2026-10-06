@@ -97,6 +97,11 @@ enum ConversationStatus {
   CLOSED
 }
 
+enum ConversationAssignmentStrategy {
+  AGENT
+  ROUND_ROBIN
+}
+
 enum MessageDirection {
   INCOMING
   OUTGOING
@@ -284,26 +289,26 @@ model Tenant {
 }
 
 model Workspace {
-  id                       String                    @id @default(uuid()) @db.Uuid
-  tenantId                 String                    @map("tenant_id") @db.Uuid
-  name                     String                    @db.VarChar(160)
-  slug                     String                    @unique @db.VarChar(180)
-  companyName              String?                   @map("company_name") @db.VarChar(160)
-  industry                 String?                   @db.VarChar(100)
-  companyWebsite           String?                   @map("company_website") @db.VarChar(500)
-  companyLocation          String?                   @map("company_location") @db.VarChar(200)
-  annualRevenue            String?                   @map("annual_revenue") @db.VarChar(50)
-  logoData                 String?                   @map("logo_data") @db.Text
-  country                  String?                   @db.VarChar(100)
-  timezone                 String?                   @db.VarChar(100)
-  onboardingData           Json                      @default("{}") @map("onboarding_data") @db.JsonB
-  onboardingStep           Int                       @default(0) @map("onboarding_step")
-  onboardingCompletedAt    DateTime?                 @map("onboarding_completed_at") @db.Timestamptz(3)
-  ownerId                  String                    @map("owner_id") @db.Uuid
-  createdAt                DateTime                  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt                DateTime                  @updatedAt @map("updated_at") @db.Timestamptz(3)
-  owner                    User                      @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Restrict)
-  tenant                   Tenant                    @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  id                       String                       @id @default(uuid()) @db.Uuid
+  tenantId                 String                       @map("tenant_id") @db.Uuid
+  name                     String                       @db.VarChar(160)
+  slug                     String                       @unique @db.VarChar(180)
+  companyName              String?                      @map("company_name") @db.VarChar(160)
+  industry                 String?                      @db.VarChar(100)
+  companyWebsite           String?                      @map("company_website") @db.VarChar(500)
+  companyLocation          String?                      @map("company_location") @db.VarChar(200)
+  annualRevenue            String?                      @map("annual_revenue") @db.VarChar(50)
+  logoData                 String?                      @map("logo_data") @db.Text
+  country                  String?                      @db.VarChar(100)
+  timezone                 String?                      @db.VarChar(100)
+  onboardingData           Json                         @default("{}") @map("onboarding_data") @db.JsonB
+  onboardingStep           Int                          @default(0) @map("onboarding_step")
+  onboardingCompletedAt    DateTime?                    @map("onboarding_completed_at") @db.Timestamptz(3)
+  ownerId                  String                       @map("owner_id") @db.Uuid
+  createdAt                DateTime                     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt                DateTime                     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  owner                    User                         @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Restrict)
+  tenant                   Tenant                       @relation(fields: [tenantId], references: [id], onDelete: Restrict)
   memberships              WorkspaceMember[]
   roles                    Role[]
   invitations              WorkspaceInvitation[]
@@ -317,6 +322,7 @@ model Workspace {
   contactCustomFields      ContactCustomField[]
   contactConsentEvents     ContactConsentEvent[]
   conversations            Conversation[]
+  assignmentRules          ConversationAssignmentRule[]
   messages                 Message[]
   templates                Template[]
   automations              Automation[]
@@ -539,25 +545,30 @@ model ContactConsentEvent {
 }
 
 model Conversation {
-  id                 String               @id @default(uuid()) @db.Uuid
-  workspaceId        String               @map("workspace_id") @db.Uuid
-  contactId          String               @map("contact_id") @db.Uuid
-  phoneNumberId      String?              @map("phone_number_id") @db.Uuid
-  channelKey         String               @default("whatsapp") @map("channel_key") @db.VarChar(50)
-  status             ConversationStatus   @default(OPEN)
-  isPinned           Boolean              @default(false) @map("is_pinned")
-  unreadCount        Int                  @default(0) @map("unread_count")
-  lastMessagePreview String?              @map("last_message_preview") @db.Text
-  lastMessageAt      DateTime?            @map("last_message_at") @db.Timestamptz(3)
-  clearedAt          DateTime?            @map("cleared_at") @db.Timestamptz(3)
-  deletedAt          DateTime?            @map("deleted_at") @db.Timestamptz(3)
-  createdAt          DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt          DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
-  workspace          Workspace            @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  contact            Contact              @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  phoneNumber        WhatsAppPhoneNumber? @relation(fields: [phoneNumberId], references: [id], onDelete: SetNull)
-  messages           Message[]
-  workflowRuns       WorkflowRun[]
+  id                   String                      @id @default(uuid()) @db.Uuid
+  workspaceId          String                      @map("workspace_id") @db.Uuid
+  contactId            String                      @map("contact_id") @db.Uuid
+  phoneNumberId        String?                     @map("phone_number_id") @db.Uuid
+  channelKey           String                      @default("whatsapp") @map("channel_key") @db.VarChar(50)
+  status               ConversationStatus          @default(OPEN)
+  isPinned             Boolean                     @default(false) @map("is_pinned")
+  unreadCount          Int                         @default(0) @map("unread_count")
+  lastMessagePreview   String?                     @map("last_message_preview") @db.Text
+  lastMessageAt        DateTime?                   @map("last_message_at") @db.Timestamptz(3)
+  clearedAt            DateTime?                   @map("cleared_at") @db.Timestamptz(3)
+  assigneeMembershipId String?                     @map("assignee_membership_id") @db.Uuid
+  assignmentRuleId     String?                     @map("assignment_rule_id") @db.Uuid
+  assignedAt           DateTime?                   @map("assigned_at") @db.Timestamptz(3)
+  deletedAt            DateTime?                   @map("deleted_at") @db.Timestamptz(3)
+  createdAt            DateTime                    @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime                    @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace            Workspace                   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contact              Contact                     @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  phoneNumber          WhatsAppPhoneNumber?        @relation(fields: [phoneNumberId], references: [id], onDelete: SetNull)
+  assignee             WorkspaceMember?            @relation("ConversationAssignee", fields: [assigneeMembershipId], references: [id], onDelete: SetNull)
+  assignmentRule       ConversationAssignmentRule? @relation(fields: [assignmentRuleId], references: [id], onDelete: SetNull)
+  messages             Message[]
+  workflowRuns         WorkflowRun[]
 
   @@unique([workspaceId, contactId, channelKey])
   @@index([workspaceId, status, lastMessageAt, id])
@@ -565,8 +576,31 @@ model Conversation {
   @@index([workspaceId, lastMessageAt(sort: Desc), id(sort: Desc)], map: "conversations_workspace_recent_idx")
   @@index([workspaceId, contactId, updatedAt, id])
   @@index([workspaceId, deletedAt, isPinned, lastMessageAt, id])
+  @@index([workspaceId, assigneeMembershipId, status, lastMessageAt(sort: Desc)])
   @@index([phoneNumberId])
   @@map("conversations")
+}
+
+model ConversationAssignmentRule {
+  id               String                         @id @default(uuid()) @db.Uuid
+  workspaceId      String                         @map("workspace_id") @db.Uuid
+  name             String                         @db.VarChar(160)
+  priority         Int                            @default(0)
+  enabled          Boolean                        @default(true)
+  contactTagId     String?                        @map("contact_tag_id") @db.Uuid
+  phoneNumberId    String?                        @map("phone_number_id") @db.Uuid
+  strategy         ConversationAssignmentStrategy
+  memberIds        String[]                       @default([]) @map("member_ids") @db.Uuid
+  roundRobinCursor Int                            @default(0) @map("round_robin_cursor")
+  createdById      String?                        @map("created_by_id") @db.Uuid
+  createdAt        DateTime                       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime                       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace        Workspace                      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  phoneNumber      WhatsAppPhoneNumber?           @relation(fields: [phoneNumberId], references: [id], onDelete: SetNull)
+  conversations    Conversation[]
+
+  @@index([workspaceId, enabled, priority])
+  @@map("conversation_assignment_rules")
 }
 
 model Message {
@@ -884,22 +918,23 @@ model WhatsAppBusinessAccount {
 }
 
 model WhatsAppPhoneNumber {
-  id                 String                    @id @default(uuid()) @db.Uuid
-  businessAccountId  String                    @map("business_account_id") @db.Uuid
-  metaPhoneNumberId  String                    @map("meta_phone_number_id") @db.VarChar(100)
-  displayPhoneNumber String                    @map("display_phone_number") @db.VarChar(30)
-  verifiedName       String?                   @map("verified_name") @db.VarChar(160)
-  status             WhatsAppPhoneNumberStatus @default(PENDING)
-  qualityRating      String?                   @map("quality_rating") @db.VarChar(30)
-  messagingLimit     String?                   @map("messaging_limit") @db.VarChar(50)
-  isOnBusinessApp    Boolean                   @default(false) @map("is_on_business_app")
-  platformType       String?                   @map("platform_type") @db.VarChar(30)
-  connectedAt        DateTime?                 @map("connected_at") @db.Timestamptz(3)
-  lastSyncedAt       DateTime?                 @map("last_synced_at") @db.Timestamptz(3)
-  createdAt          DateTime                  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt          DateTime                  @updatedAt @map("updated_at") @db.Timestamptz(3)
-  businessAccount    WhatsAppBusinessAccount   @relation(fields: [businessAccountId], references: [id], onDelete: Cascade)
+  id                 String                       @id @default(uuid()) @db.Uuid
+  businessAccountId  String                       @map("business_account_id") @db.Uuid
+  metaPhoneNumberId  String                       @map("meta_phone_number_id") @db.VarChar(100)
+  displayPhoneNumber String                       @map("display_phone_number") @db.VarChar(30)
+  verifiedName       String?                      @map("verified_name") @db.VarChar(160)
+  status             WhatsAppPhoneNumberStatus    @default(PENDING)
+  qualityRating      String?                      @map("quality_rating") @db.VarChar(30)
+  messagingLimit     String?                      @map("messaging_limit") @db.VarChar(50)
+  isOnBusinessApp    Boolean                      @default(false) @map("is_on_business_app")
+  platformType       String?                      @map("platform_type") @db.VarChar(30)
+  connectedAt        DateTime?                    @map("connected_at") @db.Timestamptz(3)
+  lastSyncedAt       DateTime?                    @map("last_synced_at") @db.Timestamptz(3)
+  createdAt          DateTime                     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime                     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  businessAccount    WhatsAppBusinessAccount      @relation(fields: [businessAccountId], references: [id], onDelete: Cascade)
   conversations      Conversation[]
+  assignmentRules    ConversationAssignmentRule[]
 
   @@unique([businessAccountId, metaPhoneNumberId])
   @@index([businessAccountId, status])
@@ -1074,16 +1109,17 @@ model CampaignRecipient {
 }
 
 model WorkspaceMember {
-  id          String           @id @default(uuid()) @db.Uuid
-  workspaceId String           @map("workspace_id") @db.Uuid
-  userId      String           @map("user_id") @db.Uuid
-  roleId      String           @map("role_id") @db.Uuid
-  status      MembershipStatus @default(ACTIVE)
-  joinedAt    DateTime         @default(now()) @map("joined_at") @db.Timestamptz(3)
-  updatedAt   DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
-  workspace   Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role        Role             @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  id                    String           @id @default(uuid()) @db.Uuid
+  workspaceId           String           @map("workspace_id") @db.Uuid
+  userId                String           @map("user_id") @db.Uuid
+  roleId                String           @map("role_id") @db.Uuid
+  status                MembershipStatus @default(ACTIVE)
+  joinedAt              DateTime         @default(now()) @map("joined_at") @db.Timestamptz(3)
+  updatedAt             DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace             Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user                  User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role                  Role             @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  assignedConversations Conversation[]   @relation("ConversationAssignee")
 
   @@unique([workspaceId, userId])
   @@index([userId, status])

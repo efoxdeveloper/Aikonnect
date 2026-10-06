@@ -16,6 +16,7 @@ if (!testDatabaseUrl) {
   process.env.DATABASE_URL = testDatabaseUrl;
 
   const integrationTests = [
+    "./assignment-rules.integration.test.ts",
     "./api-keys.integration.test.ts",
     "./auth-workspace.integration.test.ts",
     "./campaigns.integration.test.ts",

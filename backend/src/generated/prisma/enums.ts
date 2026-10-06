@@ -137,6 +137,14 @@ export const ConversationStatus = {
 export type ConversationStatus = (typeof ConversationStatus)[keyof typeof ConversationStatus]
 
 
+export const ConversationAssignmentStrategy = {
+  AGENT: 'AGENT',
+  ROUND_ROBIN: 'ROUND_ROBIN'
+} as const
+
+export type ConversationAssignmentStrategy = (typeof ConversationAssignmentStrategy)[keyof typeof ConversationAssignmentStrategy]
+
+
 export const MessageDirection = {
   INCOMING: 'INCOMING',
   OUTGOING: 'OUTGOING'

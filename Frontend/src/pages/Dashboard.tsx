@@ -13,6 +13,7 @@ import { Pipelines } from "@/pages/Pipelines";
 import { Reports } from "@/pages/Reports";
 import { BillingUsage } from "@/pages/BillingUsage";
 import { Integrations } from "@/pages/Integrations";
+import { AssignmentRules } from "@/pages/AssignmentRules";
 
 export function Dashboard() {
   const { pathname } = useLocation();
@@ -20,6 +21,7 @@ export function Dashboard() {
   if (pathname === "/whatsapp-account") return <WhatsAppAccountSetup />;
   if (pathname === "/team-members") return <TeamMembers />;
   if (pathname === "/team-members/roles") return <RoleManagement />;
+  if (pathname === "/assignment-rules") return <AssignmentRules />;
   if (pathname === "/settings") return <WorkspaceSettings />;
   if (pathname === "/account-settings") return <AccountSettings />;
   if (pathname === "/billing") return <BillingUsage />;

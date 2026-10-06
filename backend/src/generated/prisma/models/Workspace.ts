@@ -331,6 +331,7 @@ export type WorkspaceWhereInput = {
   contactCustomFields?: Prisma.ContactCustomFieldListRelationFilter
   contactConsentEvents?: Prisma.ContactConsentEventListRelationFilter
   conversations?: Prisma.ConversationListRelationFilter
+  assignmentRules?: Prisma.ConversationAssignmentRuleListRelationFilter
   messages?: Prisma.MessageListRelationFilter
   templates?: Prisma.TemplateListRelationFilter
   automations?: Prisma.AutomationListRelationFilter
@@ -383,6 +384,7 @@ export type WorkspaceOrderByWithRelationInput = {
   contactCustomFields?: Prisma.ContactCustomFieldOrderByRelationAggregateInput
   contactConsentEvents?: Prisma.ContactConsentEventOrderByRelationAggregateInput
   conversations?: Prisma.ConversationOrderByRelationAggregateInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleOrderByRelationAggregateInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
   templates?: Prisma.TemplateOrderByRelationAggregateInput
   automations?: Prisma.AutomationOrderByRelationAggregateInput
@@ -438,6 +440,7 @@ export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
   contactCustomFields?: Prisma.ContactCustomFieldListRelationFilter
   contactConsentEvents?: Prisma.ContactConsentEventListRelationFilter
   conversations?: Prisma.ConversationListRelationFilter
+  assignmentRules?: Prisma.ConversationAssignmentRuleListRelationFilter
   messages?: Prisma.MessageListRelationFilter
   templates?: Prisma.TemplateListRelationFilter
   automations?: Prisma.AutomationListRelationFilter
@@ -538,6 +541,7 @@ export type WorkspaceCreateInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -588,6 +592,7 @@ export type WorkspaceUncheckedCreateInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -638,6 +643,7 @@ export type WorkspaceUpdateInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -688,6 +694,7 @@ export type WorkspaceUncheckedUpdateInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -1046,6 +1053,20 @@ export type WorkspaceUpdateOneRequiredWithoutConversationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutConversationsInput, Prisma.WorkspaceUpdateWithoutConversationsInput>, Prisma.WorkspaceUncheckedUpdateWithoutConversationsInput>
 }
 
+export type WorkspaceCreateNestedOneWithoutAssignmentRulesInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutAssignmentRulesInput, Prisma.WorkspaceUncheckedCreateWithoutAssignmentRulesInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutAssignmentRulesInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+}
+
+export type WorkspaceUpdateOneRequiredWithoutAssignmentRulesNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutAssignmentRulesInput, Prisma.WorkspaceUncheckedCreateWithoutAssignmentRulesInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutAssignmentRulesInput
+  upsert?: Prisma.WorkspaceUpsertWithoutAssignmentRulesInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutAssignmentRulesInput, Prisma.WorkspaceUpdateWithoutAssignmentRulesInput>, Prisma.WorkspaceUncheckedUpdateWithoutAssignmentRulesInput>
+}
+
 export type WorkspaceCreateNestedOneWithoutMessagesInput = {
   create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutMessagesInput, Prisma.WorkspaceUncheckedCreateWithoutMessagesInput>
   connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutMessagesInput
@@ -1387,6 +1408,7 @@ export type WorkspaceCreateWithoutOwnerInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -1436,6 +1458,7 @@ export type WorkspaceUncheckedCreateWithoutOwnerInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -1535,6 +1558,7 @@ export type WorkspaceCreateWithoutTenantInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -1584,6 +1608,7 @@ export type WorkspaceUncheckedCreateWithoutTenantInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -1660,6 +1685,7 @@ export type WorkspaceCreateWithoutTemplatesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
@@ -1709,6 +1735,7 @@ export type WorkspaceUncheckedCreateWithoutTemplatesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -1774,6 +1801,7 @@ export type WorkspaceUpdateWithoutTemplatesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
@@ -1823,6 +1851,7 @@ export type WorkspaceUncheckedUpdateWithoutTemplatesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -1872,6 +1901,7 @@ export type WorkspaceCreateWithoutApiKeysInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -1921,6 +1951,7 @@ export type WorkspaceUncheckedCreateWithoutApiKeysInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -1986,6 +2017,7 @@ export type WorkspaceUpdateWithoutApiKeysInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -2035,6 +2067,7 @@ export type WorkspaceUncheckedUpdateWithoutApiKeysInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -2084,6 +2117,7 @@ export type WorkspaceCreateWithoutWebhookEndpointsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -2133,6 +2167,7 @@ export type WorkspaceUncheckedCreateWithoutWebhookEndpointsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -2198,6 +2233,7 @@ export type WorkspaceUpdateWithoutWebhookEndpointsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -2247,6 +2283,7 @@ export type WorkspaceUncheckedUpdateWithoutWebhookEndpointsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -2296,6 +2333,7 @@ export type WorkspaceCreateWithoutWebhookDeliveriesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -2345,6 +2383,7 @@ export type WorkspaceUncheckedCreateWithoutWebhookDeliveriesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -2410,6 +2449,7 @@ export type WorkspaceUpdateWithoutWebhookDeliveriesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -2459,6 +2499,7 @@ export type WorkspaceUncheckedUpdateWithoutWebhookDeliveriesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -2507,6 +2548,7 @@ export type WorkspaceCreateWithoutContactsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -2556,6 +2598,7 @@ export type WorkspaceUncheckedCreateWithoutContactsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -2621,6 +2664,7 @@ export type WorkspaceUpdateWithoutContactsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -2670,6 +2714,7 @@ export type WorkspaceUncheckedUpdateWithoutContactsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -2719,6 +2764,7 @@ export type WorkspaceCreateWithoutContactConsentEventsInput = {
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -2768,6 +2814,7 @@ export type WorkspaceUncheckedCreateWithoutContactConsentEventsInput = {
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -2833,6 +2880,7 @@ export type WorkspaceUpdateWithoutContactConsentEventsInput = {
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -2882,6 +2930,7 @@ export type WorkspaceUncheckedUpdateWithoutContactConsentEventsInput = {
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -2931,6 +2980,7 @@ export type WorkspaceCreateWithoutConversationsInput = {
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -2980,6 +3030,7 @@ export type WorkspaceUncheckedCreateWithoutConversationsInput = {
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -3045,6 +3096,7 @@ export type WorkspaceUpdateWithoutConversationsInput = {
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -3094,6 +3146,223 @@ export type WorkspaceUncheckedUpdateWithoutConversationsInput = {
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
+  apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutWorkspaceNestedInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUncheckedUpdateManyWithoutWorkspaceNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceCreateWithoutAssignmentRulesInput = {
+  id?: string
+  name: string
+  slug: string
+  companyName?: string | null
+  industry?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: number
+  onboardingCompletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
+  tenant: Prisma.TenantCreateNestedOneWithoutWorkspacesInput
+  memberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
+  apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
+  webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutWorkspaceInput
+  webhookDeliveries?: Prisma.WebhookDeliveryCreateNestedManyWithoutWorkspaceInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceUncheckedCreateWithoutAssignmentRulesInput = {
+  id?: string
+  tenantId: string
+  name: string
+  slug: string
+  companyName?: string | null
+  industry?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: number
+  onboardingCompletedAt?: Date | string | null
+  ownerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
+  apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutWorkspaceInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUncheckedCreateNestedManyWithoutWorkspaceInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceCreateOrConnectWithoutAssignmentRulesInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutAssignmentRulesInput, Prisma.WorkspaceUncheckedCreateWithoutAssignmentRulesInput>
+}
+
+export type WorkspaceUpsertWithoutAssignmentRulesInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutAssignmentRulesInput, Prisma.WorkspaceUncheckedUpdateWithoutAssignmentRulesInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutAssignmentRulesInput, Prisma.WorkspaceUncheckedCreateWithoutAssignmentRulesInput>
+  where?: Prisma.WorkspaceWhereInput
+}
+
+export type WorkspaceUpdateToOneWithWhereWithoutAssignmentRulesInput = {
+  where?: Prisma.WorkspaceWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutAssignmentRulesInput, Prisma.WorkspaceUncheckedUpdateWithoutAssignmentRulesInput>
+}
+
+export type WorkspaceUpdateWithoutAssignmentRulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutWorkspacesNestedInput
+  memberships?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
+  apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutWorkspaceNestedInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUpdateManyWithoutWorkspaceNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceUncheckedUpdateWithoutAssignmentRulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -3144,6 +3413,7 @@ export type WorkspaceCreateWithoutMessagesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
@@ -3193,6 +3463,7 @@ export type WorkspaceUncheckedCreateWithoutMessagesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -3258,6 +3529,7 @@ export type WorkspaceUpdateWithoutMessagesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
@@ -3307,6 +3579,7 @@ export type WorkspaceUncheckedUpdateWithoutMessagesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -3355,6 +3628,7 @@ export type WorkspaceCreateWithoutContactCustomFieldsInput = {
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -3404,6 +3678,7 @@ export type WorkspaceUncheckedCreateWithoutContactCustomFieldsInput = {
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -3469,6 +3744,7 @@ export type WorkspaceUpdateWithoutContactCustomFieldsInput = {
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -3518,6 +3794,7 @@ export type WorkspaceUncheckedUpdateWithoutContactCustomFieldsInput = {
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -3567,6 +3844,7 @@ export type WorkspaceCreateWithoutContactSegmentsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -3616,6 +3894,7 @@ export type WorkspaceUncheckedCreateWithoutContactSegmentsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -3681,6 +3960,7 @@ export type WorkspaceUpdateWithoutContactSegmentsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -3730,6 +4010,7 @@ export type WorkspaceUncheckedUpdateWithoutContactSegmentsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -3779,6 +4060,7 @@ export type WorkspaceCreateWithoutContactTasksInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -3828,6 +4110,7 @@ export type WorkspaceUncheckedCreateWithoutContactTasksInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -3893,6 +4176,7 @@ export type WorkspaceUpdateWithoutContactTasksInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -3942,6 +4226,7 @@ export type WorkspaceUncheckedUpdateWithoutContactTasksInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -3991,6 +4276,7 @@ export type WorkspaceCreateWithoutContactNotesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -4040,6 +4326,7 @@ export type WorkspaceUncheckedCreateWithoutContactNotesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -4105,6 +4392,7 @@ export type WorkspaceUpdateWithoutContactNotesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -4154,6 +4442,7 @@ export type WorkspaceUncheckedUpdateWithoutContactNotesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -4203,6 +4492,7 @@ export type WorkspaceCreateWithoutContactTagsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -4252,6 +4542,7 @@ export type WorkspaceUncheckedCreateWithoutContactTagsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -4317,6 +4608,7 @@ export type WorkspaceUpdateWithoutContactTagsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -4366,6 +4658,7 @@ export type WorkspaceUncheckedUpdateWithoutContactTagsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -4415,6 +4708,7 @@ export type WorkspaceCreateWithoutSetupProgressInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -4464,6 +4758,7 @@ export type WorkspaceUncheckedCreateWithoutSetupProgressInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -4529,6 +4824,7 @@ export type WorkspaceUpdateWithoutSetupProgressInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -4578,6 +4874,7 @@ export type WorkspaceUncheckedUpdateWithoutSetupProgressInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -4627,6 +4924,7 @@ export type WorkspaceCreateWithoutWhatsappBusinessAccountsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -4676,6 +4974,7 @@ export type WorkspaceUncheckedCreateWithoutWhatsappBusinessAccountsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -4741,6 +5040,7 @@ export type WorkspaceUpdateWithoutWhatsappBusinessAccountsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -4790,6 +5090,7 @@ export type WorkspaceUncheckedUpdateWithoutWhatsappBusinessAccountsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -4840,6 +5141,7 @@ export type WorkspaceCreateWithoutAutomationsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
@@ -4889,6 +5191,7 @@ export type WorkspaceUncheckedCreateWithoutAutomationsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -4954,6 +5257,7 @@ export type WorkspaceUpdateWithoutAutomationsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
@@ -5003,6 +5307,7 @@ export type WorkspaceUncheckedUpdateWithoutAutomationsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5052,6 +5357,7 @@ export type WorkspaceCreateWithoutAutomationLogsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -5101,6 +5407,7 @@ export type WorkspaceUncheckedCreateWithoutAutomationLogsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -5166,6 +5473,7 @@ export type WorkspaceUpdateWithoutAutomationLogsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -5215,6 +5523,7 @@ export type WorkspaceUncheckedUpdateWithoutAutomationLogsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5264,6 +5573,7 @@ export type WorkspaceCreateWithoutWorkflowsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -5313,6 +5623,7 @@ export type WorkspaceUncheckedCreateWithoutWorkflowsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -5378,6 +5689,7 @@ export type WorkspaceUpdateWithoutWorkflowsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -5427,6 +5739,7 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5476,6 +5789,7 @@ export type WorkspaceCreateWithoutWorkflowRunsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -5525,6 +5839,7 @@ export type WorkspaceUncheckedCreateWithoutWorkflowRunsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -5590,6 +5905,7 @@ export type WorkspaceUpdateWithoutWorkflowRunsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -5639,6 +5955,7 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowRunsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5688,6 +6005,7 @@ export type WorkspaceCreateWithoutCampaignsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -5737,6 +6055,7 @@ export type WorkspaceUncheckedCreateWithoutCampaignsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -5802,6 +6121,7 @@ export type WorkspaceUpdateWithoutCampaignsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -5851,6 +6171,7 @@ export type WorkspaceUncheckedUpdateWithoutCampaignsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5900,6 +6221,7 @@ export type WorkspaceCreateWithoutCampaignRecipientsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -5949,6 +6271,7 @@ export type WorkspaceUncheckedCreateWithoutCampaignRecipientsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -6014,6 +6337,7 @@ export type WorkspaceUpdateWithoutCampaignRecipientsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -6063,6 +6387,7 @@ export type WorkspaceUncheckedUpdateWithoutCampaignRecipientsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -6111,6 +6436,7 @@ export type WorkspaceCreateWithoutMembershipsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -6160,6 +6486,7 @@ export type WorkspaceUncheckedCreateWithoutMembershipsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -6225,6 +6552,7 @@ export type WorkspaceUpdateWithoutMembershipsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -6274,6 +6602,7 @@ export type WorkspaceUncheckedUpdateWithoutMembershipsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -6323,6 +6652,7 @@ export type WorkspaceCreateWithoutRolesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -6372,6 +6702,7 @@ export type WorkspaceUncheckedCreateWithoutRolesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -6437,6 +6768,7 @@ export type WorkspaceUpdateWithoutRolesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -6486,6 +6818,7 @@ export type WorkspaceUncheckedUpdateWithoutRolesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -6535,6 +6868,7 @@ export type WorkspaceCreateWithoutInvitationsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -6584,6 +6918,7 @@ export type WorkspaceUncheckedCreateWithoutInvitationsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -6649,6 +6984,7 @@ export type WorkspaceUpdateWithoutInvitationsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -6698,6 +7034,7 @@ export type WorkspaceUncheckedUpdateWithoutInvitationsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -6748,6 +7085,7 @@ export type WorkspaceCreateWithoutWalletLedgerEntriesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -6797,6 +7135,7 @@ export type WorkspaceUncheckedCreateWithoutWalletLedgerEntriesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -6862,6 +7201,7 @@ export type WorkspaceUpdateWithoutWalletLedgerEntriesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -6911,6 +7251,7 @@ export type WorkspaceUncheckedUpdateWithoutWalletLedgerEntriesInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -6960,6 +7301,7 @@ export type WorkspaceCreateWithoutWalletReservationsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -7009,6 +7351,7 @@ export type WorkspaceUncheckedCreateWithoutWalletReservationsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -7074,6 +7417,7 @@ export type WorkspaceUpdateWithoutWalletReservationsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -7123,6 +7467,7 @@ export type WorkspaceUncheckedUpdateWithoutWalletReservationsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -7172,6 +7517,7 @@ export type WorkspaceCreateWithoutBillingSettingsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -7221,6 +7567,7 @@ export type WorkspaceUncheckedCreateWithoutBillingSettingsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -7286,6 +7633,7 @@ export type WorkspaceUpdateWithoutBillingSettingsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -7335,6 +7683,7 @@ export type WorkspaceUncheckedUpdateWithoutBillingSettingsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -7384,6 +7733,7 @@ export type WorkspaceCreateWithoutSubscriptionsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -7433,6 +7783,7 @@ export type WorkspaceUncheckedCreateWithoutSubscriptionsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -7498,6 +7849,7 @@ export type WorkspaceUpdateWithoutSubscriptionsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -7547,6 +7899,7 @@ export type WorkspaceUncheckedUpdateWithoutSubscriptionsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -7596,6 +7949,7 @@ export type WorkspaceCreateWithoutPlanRequestsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
@@ -7645,6 +7999,7 @@ export type WorkspaceUncheckedCreateWithoutPlanRequestsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
   templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -7710,6 +8065,7 @@ export type WorkspaceUpdateWithoutPlanRequestsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -7759,6 +8115,7 @@ export type WorkspaceUncheckedUpdateWithoutPlanRequestsInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -7827,6 +8184,7 @@ export type WorkspaceUpdateWithoutOwnerInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -7876,6 +8234,7 @@ export type WorkspaceUncheckedUpdateWithoutOwnerInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -7965,6 +8324,7 @@ export type WorkspaceUpdateWithoutTenantInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
@@ -8014,6 +8374,7 @@ export type WorkspaceUncheckedUpdateWithoutTenantInput = {
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -8070,6 +8431,7 @@ export type WorkspaceCountOutputType = {
   contactCustomFields: number
   contactConsentEvents: number
   conversations: number
+  assignmentRules: number
   messages: number
   templates: number
   automations: number
@@ -8100,6 +8462,7 @@ export type WorkspaceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensi
   contactCustomFields?: boolean | WorkspaceCountOutputTypeCountContactCustomFieldsArgs
   contactConsentEvents?: boolean | WorkspaceCountOutputTypeCountContactConsentEventsArgs
   conversations?: boolean | WorkspaceCountOutputTypeCountConversationsArgs
+  assignmentRules?: boolean | WorkspaceCountOutputTypeCountAssignmentRulesArgs
   messages?: boolean | WorkspaceCountOutputTypeCountMessagesArgs
   templates?: boolean | WorkspaceCountOutputTypeCountTemplatesArgs
   automations?: boolean | WorkspaceCountOutputTypeCountAutomationsArgs
@@ -8209,6 +8572,13 @@ export type WorkspaceCountOutputTypeCountContactConsentEventsArgs<ExtArgs extend
  */
 export type WorkspaceCountOutputTypeCountConversationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ConversationWhereInput
+}
+
+/**
+ * WorkspaceCountOutputType without action
+ */
+export type WorkspaceCountOutputTypeCountAssignmentRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ConversationAssignmentRuleWhereInput
 }
 
 /**
@@ -8351,6 +8721,7 @@ export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   contactCustomFields?: boolean | Prisma.Workspace$contactCustomFieldsArgs<ExtArgs>
   contactConsentEvents?: boolean | Prisma.Workspace$contactConsentEventsArgs<ExtArgs>
   conversations?: boolean | Prisma.Workspace$conversationsArgs<ExtArgs>
+  assignmentRules?: boolean | Prisma.Workspace$assignmentRulesArgs<ExtArgs>
   messages?: boolean | Prisma.Workspace$messagesArgs<ExtArgs>
   templates?: boolean | Prisma.Workspace$templatesArgs<ExtArgs>
   automations?: boolean | Prisma.Workspace$automationsArgs<ExtArgs>
@@ -8454,6 +8825,7 @@ export type WorkspaceInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   contactCustomFields?: boolean | Prisma.Workspace$contactCustomFieldsArgs<ExtArgs>
   contactConsentEvents?: boolean | Prisma.Workspace$contactConsentEventsArgs<ExtArgs>
   conversations?: boolean | Prisma.Workspace$conversationsArgs<ExtArgs>
+  assignmentRules?: boolean | Prisma.Workspace$assignmentRulesArgs<ExtArgs>
   messages?: boolean | Prisma.Workspace$messagesArgs<ExtArgs>
   templates?: boolean | Prisma.Workspace$templatesArgs<ExtArgs>
   automations?: boolean | Prisma.Workspace$automationsArgs<ExtArgs>
@@ -8499,6 +8871,7 @@ export type $WorkspacePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     contactCustomFields: Prisma.$ContactCustomFieldPayload<ExtArgs>[]
     contactConsentEvents: Prisma.$ContactConsentEventPayload<ExtArgs>[]
     conversations: Prisma.$ConversationPayload<ExtArgs>[]
+    assignmentRules: Prisma.$ConversationAssignmentRulePayload<ExtArgs>[]
     messages: Prisma.$MessagePayload<ExtArgs>[]
     templates: Prisma.$TemplatePayload<ExtArgs>[]
     automations: Prisma.$AutomationPayload<ExtArgs>[]
@@ -8944,6 +9317,7 @@ export interface Prisma__WorkspaceClient<T, Null = never, ExtArgs extends runtim
   contactCustomFields<T extends Prisma.Workspace$contactCustomFieldsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$contactCustomFieldsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactCustomFieldPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   contactConsentEvents<T extends Prisma.Workspace$contactConsentEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$contactConsentEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactConsentEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   conversations<T extends Prisma.Workspace$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assignmentRules<T extends Prisma.Workspace$assignmentRulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$assignmentRulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationAssignmentRulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messages<T extends Prisma.Workspace$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   templates<T extends Prisma.Workspace$templatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$templatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   automations<T extends Prisma.Workspace$automationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$automationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AutomationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -9712,6 +10086,30 @@ export type Workspace$conversationsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.ConversationScalarFieldEnum | Prisma.ConversationScalarFieldEnum[]
+}
+
+/**
+ * Workspace.assignmentRules
+ */
+export type Workspace$assignmentRulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ConversationAssignmentRule
+   */
+  select?: Prisma.ConversationAssignmentRuleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ConversationAssignmentRule
+   */
+  omit?: Prisma.ConversationAssignmentRuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ConversationAssignmentRuleInclude<ExtArgs> | null
+  where?: Prisma.ConversationAssignmentRuleWhereInput
+  orderBy?: Prisma.ConversationAssignmentRuleOrderByWithRelationInput | Prisma.ConversationAssignmentRuleOrderByWithRelationInput[]
+  cursor?: Prisma.ConversationAssignmentRuleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ConversationAssignmentRuleScalarFieldEnum | Prisma.ConversationAssignmentRuleScalarFieldEnum[]
 }
 
 /**

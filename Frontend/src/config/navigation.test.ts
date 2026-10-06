@@ -46,4 +46,12 @@ describe("navigation structure", () => {
     expect(billingItems.map((item) => item.title)).toEqual(["Usage & wallet", "Subscriptions", "Plans & pricing"]);
     expect(billingItems.map((item) => isNavigationItemActive(item, "/billing/subscriptions"))).toEqual([false, true, false]);
   });
+
+  it("places Assignment Rules in Settings and limits the item to inbox assignment managers", () => {
+    const settings = navigationGroups.find((group) => group.title === "Settings");
+    const assignmentRules = settings?.items.find((item) => item.url === "/assignment-rules");
+    expect(assignmentRules?.title).toBe("Assignment Rules");
+    expect(assignmentRules?.requiredPermission).toBe("conversations.assign");
+    expect(isNavigationItemActive(assignmentRules!, "/assignment-rules")).toBe(true);
+  });
 });

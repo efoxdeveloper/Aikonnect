@@ -27,7 +27,7 @@ import { PlatformAdminSection } from "@/pages/PlatformAdminSection";
 import { Onboarding } from "@/pages/Onboarding";
 import { WhatsAppRateCards } from "@/pages/WhatsAppRateCards";
 
-const paths = ["dashboard/analytics", "dashboard/activity", "contacts", "campaigns", "templates", "createtemplate", "pipelines", "catalog", "orders", "reports", "integrations", "settings", "account-settings", "payments", "click-to-whatsapp-ads", "conversation-analytics", "campaign-analytics", "webhook-events", "whatsapp-account", "team-members", "team-members/roles"];
+const paths = ["dashboard/analytics", "dashboard/activity", "contacts", "campaigns", "templates", "createtemplate", "pipelines", "catalog", "orders", "reports", "integrations", "settings", "account-settings", "payments", "click-to-whatsapp-ads", "conversation-analytics", "campaign-analytics", "webhook-events", "whatsapp-account", "team-members", "team-members/roles", "assignment-rules"];
 export function AppRoutes() {
   return (
     <Routes>

@@ -20,6 +20,7 @@ import {
 import { contactRouter } from "../contacts/contact.routes.js";
 import { templateRouter } from "../templates/template.routes.js";
 import { inboxRouter } from "../conversations/conversation.routes.js";
+import { assignmentRuleRouter } from "../assignment-rules/assignment-rule.routes.js";
 import { whatsappRouter } from "../whatsapp/whatsapp.routes.js";
 import { automationRouter } from "../automations/automation.routes.js";
 import { workflowRouter } from "../workflows/workflow.routes.js";
@@ -64,6 +65,7 @@ workspaceRouter.delete("/:workspaceId/roles/:roleId", requireWorkspacePermission
 workspaceRouter.use("/:workspaceId/contacts", contactRouter);
 workspaceRouter.use("/:workspaceId/templates", templateRouter);
 workspaceRouter.use("/:workspaceId/conversations", inboxRouter);
+workspaceRouter.use("/:workspaceId/assignment-rules", assignmentRuleRouter);
 workspaceRouter.use("/:workspaceId/whatsapp", whatsappRouter);
 workspaceRouter.use("/:workspaceId/automations", automationRouter);
 workspaceRouter.use("/:workspaceId/workflows", workflowRouter);
