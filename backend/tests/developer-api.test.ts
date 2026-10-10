@@ -12,8 +12,50 @@ Object.assign(process.env, {
 
 const { prisma } = await import("../src/database/prisma.js");
 const { authenticateDeveloperApiKey, requireDeveloperScope } = await import("../src/middleware/developer-api-key.js");
-const { publicMessageResponse } = await import("../src/modules/developer-api/developer-api.controller.js");
-const { publicAudioMessageSchema, publicDocumentMessageSchema, publicImageMessageSchema, publicInteractiveButtonMessageSchema, publicMessageSchema, publicStickerMessageSchema, publicTextMessageSchema, publicVideoMessageSchema, requestIdempotencyKey, sendMessageSchema } = await import("../src/modules/developer-api/developer-api.schemas.js");
+const { apiCampaignResponse, publicMessageResponse } = await import("../src/modules/developer-api/developer-api.controller.js");
+const { createApiCampaignSchema, publicAudioMessageSchema, publicDocumentMessageSchema, publicImageMessageSchema, publicInteractiveButtonMessageSchema, publicMessageSchema, publicStickerMessageSchema, publicTextMessageSchema, publicVideoMessageSchema, requestIdempotencyKey, sendMessageSchema } = await import("../src/modules/developer-api/developer-api.schemas.js");
+const { createApiCampaign } = await import("../src/modules/developer-api/developer-api.service.js");
+
+test("API campaign schema follows the Interakt create campaign contract", () => {
+  const parsed = createApiCampaignSchema.parse({ campaign_name: "Harsh Test", campaign_type: "PublicAPI", template_name: "newtemplate", language_code: "en" });
+  assert.equal(parsed.campaign_name, "Harsh Test");
+  assert.equal(createApiCampaignSchema.safeParse({ ...parsed, campaign_type: "Other" }).success, false);
+  assert.equal(createApiCampaignSchema.safeParse({ ...parsed, template_name: " " }).success, false);
+  assert.equal(createApiCampaignSchema.safeParse({ campaign_name: "Campaign", campaign_type: "PublicAPI", template_name: "template" }).success, false);
+});
+
+test("API campaign creation is workspace scoped and stores an API campaign from an approved template", async () => {
+  const originalTemplateLookup = (prisma as any).template.findMany;
+  const originalCampaignCreate = (prisma as any).campaign.create;
+  let templateQuery: any;
+  let campaignCreate: any;
+  (prisma as any).template.findMany = async (query: unknown) => {
+    templateQuery = query;
+    return [{ name: "Order update", templateKey: "order-update", metaTemplateName: "newtemplate", metaLanguageCode: "en", language: "English", category: "Utility", body: "Your order is ready", status: "APPROVED" }];
+  };
+  (prisma as any).campaign.create = async (query: unknown) => {
+    campaignCreate = query;
+    return { id: "campaign-123", name: "Harsh Test" };
+  };
+  try {
+    const result = await createApiCampaign("workspace-123", { campaign_name: "Harsh Test", campaign_type: "PublicAPI", template_name: "newtemplate", language_code: "en" });
+    assert.deepEqual(result, { campaignId: "campaign-123", name: "Harsh Test" });
+    assert.equal(templateQuery.where.workspaceId, "workspace-123");
+    assert.equal(templateQuery.where.OR.length, 3);
+    assert.equal(templateQuery.where.OR[0].metaTemplateName.equals, "newtemplate");
+    assert.equal(campaignCreate.data.kind, "API");
+    assert.equal(campaignCreate.data.templateKey, "order-update");
+    assert.equal(campaignCreate.data.templateLanguageCode, "en");
+    assert.deepEqual(apiCampaignResponse(result), {
+      result: true,
+      message: "Api Campaign Created created successfully",
+      data: { campaignId: "campaign-123", name: "Harsh Test", type: "PublicAPI" },
+    });
+  } finally {
+    (prisma as any).template.findMany = originalTemplateLookup;
+    (prisma as any).campaign.create = originalCampaignCreate;
+  }
+});
 
 test("developer send schema accepts a template request and rejects malformed recipients", () => {
   const parsed = sendMessageSchema.parse({ to: "919876543210", templateKey: "order-update", parameters: ["123"] });
@@ -139,20 +181,26 @@ test("developer API key authentication enforces validity and scopes", async () =
   const original = (prisma as any).publicApiKey.findUnique;
   const originalSubscriptionLookup = (prisma as any).workspaceSubscription.findFirst;
   (prisma as any).workspaceSubscription.findFirst = async () => null;
-  (prisma as any).publicApiKey.findUnique = async () => ({ id: "key-1", workspaceId: "workspace-1", scopes: ["messages.send"], revokedAt: null, expiresAt: null });
+  (prisma as any).publicApiKey.findUnique = async () => ({ id: "key-1", workspaceId: "workspace-1", scopes: ["messages.send", "campaigns.create"], revokedAt: null, expiresAt: null });
   const request: any = { headers: { "x-api-key": secret } };
   let authError: unknown;
   await authenticateDeveloperApiKey(request, {}, (error?: unknown) => { authError = error; });
   assert.equal(authError, undefined);
-  assert.deepEqual(request.developerApiKey, { id: "key-1", workspaceId: "workspace-1", scopes: ["messages.send"] });
+  assert.deepEqual(request.developerApiKey, { id: "key-1", workspaceId: "workspace-1", scopes: ["messages.send", "campaigns.create"] });
 
   let scopeError: any;
   await new Promise<void>((resolve) => requireDeveloperScope("messages.send")(request, {}, (error?: unknown) => { scopeError = error; resolve(); }));
   assert.equal(scopeError, undefined);
+  let campaignScopeError: any;
+  await new Promise<void>((resolve) => requireDeveloperScope("campaigns.create")(request, {}, (error?: unknown) => { campaignScopeError = error; resolve(); }));
+  assert.equal(campaignScopeError, undefined);
 
   let missingScopeError: any;
   await new Promise<void>((resolve) => requireDeveloperScope("contacts.write")({ developerApiKey: request.developerApiKey } as any, {}, (error?: unknown) => { missingScopeError = error; resolve(); }));
   assert.equal(missingScopeError.code, "API_KEY_SCOPE_REQUIRED");
+  let missingCampaignScopeError: any;
+  await new Promise<void>((resolve) => requireDeveloperScope("campaigns.create")({ developerApiKey: { ...request.developerApiKey, scopes: ["messages.send"] } } as any, {}, (error?: unknown) => { missingCampaignScopeError = error; resolve(); }));
+  assert.equal(missingCampaignScopeError.code, "API_KEY_SCOPE_REQUIRED");
 
   (prisma as any).publicApiKey.findUnique = original;
   (prisma as any).workspaceSubscription.findFirst = originalSubscriptionLookup;

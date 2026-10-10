@@ -8,7 +8,7 @@ import { resolveMessagePricing, type PricingSnapshot, messagePricingSnapshot } f
 import { sendWhatsAppAudioMessage, sendWhatsAppDocumentMessage, sendWhatsAppImageMessage, sendWhatsAppInteractiveButtonMessage, sendWhatsAppStickerMessage, sendWhatsAppTemplateMessage, sendWhatsAppTextMessage, sendWhatsAppVideoMessage, type WhatsAppTemplateParameter } from "../whatsapp/whatsapp.service.js";
 import { enqueueMessageWebhook } from "../webhooks/webhook.service.js";
 import { enforceContactPlanLimit } from "../contacts/contact-plan-limits.js";
-import { publicMessageSchema, type PublicMessageInput, type PublicTextMessageInput, type SendMessageInput } from "./developer-api.schemas.js";
+import { publicMessageSchema, type CreateApiCampaignInput, type PublicMessageInput, type PublicTextMessageInput, type SendMessageInput } from "./developer-api.schemas.js";
 
 function normalizedPhone(value: string) {
   const digits = value.replace(/\D/g, "");
@@ -68,6 +68,48 @@ function templateParameters(values: string[]): WhatsAppTemplateParameter[] {
 
 function isUniqueConstraint(error: unknown) {
   return Boolean(error && typeof error === "object" && "code" in error && error.code === "P2002");
+}
+
+export async function createApiCampaign(workspaceId: string, input: CreateApiCampaignInput) {
+  const templates = await prisma.template.findMany({
+    where: {
+      workspaceId,
+      deletedAt: null,
+      OR: [
+        { metaTemplateName: { equals: input.template_name, mode: "insensitive" } },
+        { name: { equals: input.template_name, mode: "insensitive" } },
+        { templateKey: { equals: input.template_name, mode: "insensitive" } },
+      ],
+    },
+    select: { name: true, templateKey: true, metaTemplateName: true, metaLanguageCode: true, language: true, category: true, body: true, status: true },
+  });
+  if (!templates.length) throw new AppError(404, "The WhatsApp template was not found in this workspace", "CAMPAIGN_TEMPLATE_NOT_FOUND");
+  const templateLanguage = (template: (typeof templates)[number]) => template.metaLanguageCode ?? template.language.replace(/-/g, "_");
+  const template = templates.find((candidate) => templateLanguage(candidate) === input.language_code);
+  if (!template) throw new AppError(422, "The language code does not match the WhatsApp template", "CAMPAIGN_TEMPLATE_LANGUAGE_MISMATCH", { availableLanguageCodes: templates.map(templateLanguage) });
+  if (template.status !== "APPROVED") throw new AppError(422, "Only approved templates can be used for API campaigns", "CAMPAIGN_TEMPLATE_NOT_APPROVED");
+
+  const campaign = await prisma.campaign.create({
+    data: {
+      workspaceId,
+      name: input.campaign_name,
+      kind: "API",
+      category: template.category,
+      templateKey: template.templateKey,
+      templateName: template.name,
+      metaTemplateName: template.metaTemplateName ?? template.name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, ""),
+      templateLanguageCode: input.language_code,
+      templateBody: template.body,
+      templateVariables: [],
+      buttonTracking: [],
+      audienceType: "all",
+      audienceLabel: "Public API",
+      audienceConfig: { source: "developer_api" },
+      createdById: null,
+    },
+    select: { id: true, name: true },
+  });
+  return { campaignId: campaign.id, name: campaign.name };
 }
 
 export async function sendTemplateMessage(workspaceId: string, input: SendMessageInput, idempotencyKey: string) {

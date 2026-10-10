@@ -9,6 +9,7 @@ export const apiKeyScopes = [
   "events.write",
   "templates.read",
   "messages.send",
+  "campaigns.create",
   "conversations.read",
   "conversations.write",
 ] as const;

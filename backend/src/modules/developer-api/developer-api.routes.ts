@@ -3,9 +3,10 @@ import { asyncHandler } from "../../middleware/async-handler.js";
 import { authenticateDeveloperApiKey, requireDeveloperScope } from "../../middleware/developer-api-key.js";
 import { validateBody } from "../../middleware/validate.js";
 import * as controller from "./developer-api.controller.js";
-import { publicMessageSchema, sendMessageSchema } from "./developer-api.schemas.js";
+import { createApiCampaignSchema, publicMessageSchema, sendMessageSchema } from "./developer-api.schemas.js";
 
 export const developerApiRouter = Router();
 developerApiRouter.use(authenticateDeveloperApiKey);
 developerApiRouter.post("/messages", requireDeveloperScope("messages.send"), validateBody(sendMessageSchema), asyncHandler(controller.sendMessage));
 developerApiRouter.post("/public/message", requireDeveloperScope("messages.send"), validateBody(publicMessageSchema), asyncHandler(controller.sendPublicMessage));
+developerApiRouter.post("/create-campaign/", requireDeveloperScope("campaigns.create"), validateBody(createApiCampaignSchema), asyncHandler(controller.createApiCampaign));

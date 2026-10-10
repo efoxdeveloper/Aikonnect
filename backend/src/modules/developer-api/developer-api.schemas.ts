@@ -4,6 +4,13 @@ import { AppError } from "../../middleware/error-handler.js";
 const phone = z.string().trim().regex(/^\+?[1-9]\d{7,14}$/, "Use a complete international WhatsApp number");
 const idempotencyKey = z.string().trim().min(8).max(255);
 
+export const createApiCampaignSchema = z.object({
+  campaign_name: z.string().trim().min(1).max(160),
+  campaign_type: z.literal("PublicAPI"),
+  template_name: z.string().trim().min(1).max(512),
+  language_code: z.string().trim().min(1).max(50),
+});
+
 export const sendMessageSchema = z.object({
   to: phone,
   templateKey: z.string().trim().min(1).max(180),
@@ -104,6 +111,7 @@ export const publicStickerMessageSchema = publicMessageBase.extend({
 export const publicMessageSchema = z.union([publicTextMessageSchema, publicImageMessageSchema, publicDocumentMessageSchema, publicVideoMessageSchema, publicAudioMessageSchema, publicInteractiveButtonMessageSchema, publicStickerMessageSchema]);
 
 export type SendMessageInput = z.infer<typeof sendMessageSchema>;
+export type CreateApiCampaignInput = z.infer<typeof createApiCampaignSchema>;
 export type PublicTextMessageInput = z.infer<typeof publicTextMessageSchema>;
 export type PublicImageMessageInput = z.infer<typeof publicImageMessageSchema>;
 export type PublicDocumentMessageInput = z.infer<typeof publicDocumentMessageSchema>;

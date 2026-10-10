@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import * as service from "./developer-api.service.js";
-import { requestIdempotencyKey, type PublicMessageInput, type SendMessageInput } from "./developer-api.schemas.js";
+import { requestIdempotencyKey, type CreateApiCampaignInput, type PublicMessageInput, type SendMessageInput } from "./developer-api.schemas.js";
 
 export function publicMessageResponse(result: { replayed: boolean; data: { messageId: string } }) {
   return {
@@ -28,4 +28,19 @@ export async function sendPublicMessage(request: Request, response: Response) {
   const result = await service.sendPublicMessage(apiKey.workspaceId, request.body as PublicMessageInput);
   const formatted = publicMessageResponse(result);
   response.status(formatted.statusCode).json(formatted.body);
+}
+
+export function apiCampaignResponse(campaign: { campaignId: string; name: string }) {
+  return {
+    result: true,
+    message: "Api Campaign Created created successfully",
+    data: { campaignId: campaign.campaignId, name: campaign.name, type: "PublicAPI" },
+  };
+}
+
+export async function createApiCampaign(request: Request, response: Response) {
+  const apiKey = request.developerApiKey;
+  if (!apiKey) throw new Error("Developer API authentication context is missing");
+  const campaign = await service.createApiCampaign(apiKey.workspaceId, request.body as CreateApiCampaignInput);
+  response.status(201).json(apiCampaignResponse(campaign));
 }
