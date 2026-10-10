@@ -5,7 +5,7 @@ import { requirePlatformRole, type PlatformRole } from "../../middleware/platfor
 import * as controller from "./admin.controller.js";
 import * as service from "./admin.service.js";
 import { validateBody, validateParams, validateQuery } from "../../middleware/validate.js";
-import { adminAuditQuerySchema, adminListQuerySchema, adminPlanInputSchema, adminPlanParamsSchema, adminPlanRequestDecisionSchema, adminPlanRequestParamsSchema, adminPlanRequestQuerySchema, adminUserActionSchema, adminUserParamsSchema, adminUserWalletAdjustmentSchema, adminWalletAdjustmentSchema } from "./admin.schemas.js";
+import { adminAuditQuerySchema, adminListQuerySchema, adminPlanInputSchema, adminPlanParamsSchema, adminPlanRequestDecisionSchema, adminPlanRequestParamsSchema, adminPlanRequestQuerySchema, adminUserActionSchema, adminUserParamsSchema, adminUserWalletAdjustmentSchema, adminWalletAdjustmentSchema, platformSettingsInputSchema } from "./admin.schemas.js";
 import * as rateCardController from "../whatsapp-pricing/pricing.controller.js";
 import { rateCardIdParamsSchema, rateCardInputSchema, rateCardListQuerySchema, rateCardStatusSchema, ratePreviewSchema } from "../whatsapp-pricing/pricing.schemas.js";
 import * as walletController from "../wallet/wallet.controller.js";
@@ -57,6 +57,7 @@ adminRouter.get("/health", ...access(...operationsRoles), asyncHandler(controlle
 adminRouter.get("/webhooks", ...access(...operationsRoles), validateQuery(adminListQuerySchema), asyncHandler(controller.webhooks));
 adminRouter.get("/audit-logs", ...access(...auditRoles), validateQuery(adminAuditQuerySchema), asyncHandler(controller.auditLogs));
 adminRouter.get("/settings", ...access(...administratorRoles), asyncHandler(controller.settings));
+adminRouter.patch("/settings", ...access(...administratorRoles), validateBody(platformSettingsInputSchema), asyncHandler(controller.updateSettings));
 adminRouter.get("/feature-flags", ...access(...administratorRoles), asyncHandler(controller.featureFlags));
 adminRouter.post("/whatsapp-rate-cards/preview", ...access(...administratorRoles), validateBody(ratePreviewSchema), asyncHandler(rateCardController.preview));
 adminRouter.get("/whatsapp-rate-cards", ...access(...administratorRoles), validateQuery(rateCardListQuerySchema), asyncHandler(rateCardController.list));

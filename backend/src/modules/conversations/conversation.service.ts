@@ -5,7 +5,7 @@ import { reserveMessageBilling, releaseMessageBilling } from "../billing/billing
 import { downloadWhatsAppMedia, sendWhatsAppConversationMedia, sendWhatsAppConversationText } from "../whatsapp/whatsapp.service.js";
 import { messagePricingSnapshot, resolveMessagePricing } from "../whatsapp-pricing/pricing.service.js";
 import { publishInboxRefresh } from "../../realtime/inbox.js";
-import type { ConversationListQuery, CreateConversationInput, CreateMessageInput, ForwardTargetListQuery, InboxConversationListQuery } from "./conversation.schemas.js";
+import type { ConversationListQuery, CreateConversationInput, CreateMessageInput, ForwardTargetListQuery, InboxConversationListQuery, UpdateConversationStatusInput } from "./conversation.schemas.js";
 
 const conversationSelect = {
   id: true, workspaceId: true, contactId: true, phoneNumberId: true, channelKey: true, status: true,
@@ -22,6 +22,8 @@ const messageSelect = {
 
 const inboxConversationSelect = {
   ...conversationSelect,
+  assigneeMembershipId: true,
+  assignee: { select: { id: true, user: { select: { firstName: true, lastName: true } } } },
   phoneNumber: { select: { displayPhoneNumber: true } },
   contact: { select: { id: true, name: true, profileName: true, profileImageUrl: true, phoneE164: true } },
 } satisfies Prisma.ConversationSelect;
@@ -57,6 +59,7 @@ export async function listInboxConversations(workspaceId: string, query: InboxCo
     ...(query.contactId ? { contactId: query.contactId } : {}),
     ...(query.channelKey ? { channelKey: query.channelKey } : {}),
     ...(query.unreadOnly ? { unreadCount: { gt: 0 } } : {}),
+    ...(query.assigneeMembershipId ? { assigneeMembershipId: query.assigneeMembershipId === "unassigned" ? null : query.assigneeMembershipId } : {}),
     ...(search
       ? {
           OR: [
@@ -88,6 +91,58 @@ export async function listInboxConversations(workspaceId: string, query: InboxCo
       hasPrevious: query.page > 1,
     },
   };
+}
+
+export async function listConversationAssignmentOptions(workspaceId: string) {
+  const memberships = await prisma.workspaceMember.findMany({
+    where: { workspaceId, status: "ACTIVE", user: { status: "ACTIVE" } },
+    orderBy: [{ user: { firstName: "asc" } }, { user: { lastName: "asc" } }],
+    select: { id: true, role: { select: { name: true } }, user: { select: { firstName: true, lastName: true } } },
+  });
+  return memberships.map(({ id, role, user }) => ({ id, name: `${user.firstName} ${user.lastName}`.trim(), role: role.name }));
+}
+
+export async function assignInboxConversation(workspaceId: string, conversationId: string, assigneeMembershipId: string | null) {
+  const conversation = await prisma.conversation.findFirst({ where: { id: conversationId, workspaceId, deletedAt: null }, select: { id: true } });
+  if (!conversation) throw new AppError(404, "Conversation was not found", "CONVERSATION_NOT_FOUND");
+  if (assigneeMembershipId) {
+    const membership = await prisma.workspaceMember.findFirst({ where: { id: assigneeMembershipId, workspaceId, status: "ACTIVE", user: { status: "ACTIVE" } }, select: { id: true } });
+    if (!membership) throw new AppError(400, "Choose an active member of this workspace", "ASSIGNEE_INVALID");
+  }
+  await prisma.conversation.update({
+    where: { id: conversationId, workspaceId },
+    data: { assigneeMembershipId, assignmentRuleId: null, assignedAt: assigneeMembershipId ? new Date() : null },
+  });
+  publishInboxRefresh(workspaceId, conversationId);
+  return prisma.conversation.findFirstOrThrow({ where: { id: conversationId, workspaceId }, select: { id: true, assigneeMembershipId: true, assignee: { select: { id: true, user: { select: { firstName: true, lastName: true } } } } } });
+}
+
+export async function updateInboxConversationStatus(workspaceId: string, conversationId: string, status: UpdateConversationStatusInput["status"]) {
+  const updated = await prisma.conversation.updateMany({ where: { id: conversationId, workspaceId, deletedAt: null }, data: { status } });
+  if (!updated.count) throw new AppError(404, "Conversation was not found", "CONVERSATION_NOT_FOUND");
+  publishInboxRefresh(workspaceId, conversationId);
+  return { id: conversationId, status };
+}
+
+const conversationNoteSelect = {
+  id: true,
+  content: true,
+  createdAt: true,
+  createdBy: { select: { id: true, firstName: true, lastName: true } },
+} satisfies Prisma.ConversationNoteSelect;
+
+export async function listConversationNotes(workspaceId: string, conversationId: string) {
+  const conversation = await prisma.conversation.findFirst({ where: { id: conversationId, workspaceId, deletedAt: null }, select: { id: true } });
+  if (!conversation) throw new AppError(404, "Conversation was not found", "CONVERSATION_NOT_FOUND");
+  return prisma.conversationNote.findMany({ where: { workspaceId, conversationId }, select: conversationNoteSelect, orderBy: [{ createdAt: "asc" }, { id: "asc" }] });
+}
+
+export async function createConversationNote(workspaceId: string, conversationId: string, createdById: string, content: string) {
+  const conversation = await prisma.conversation.findFirst({ where: { id: conversationId, workspaceId, deletedAt: null }, select: { id: true, contactId: true } });
+  if (!conversation) throw new AppError(404, "Conversation was not found", "CONVERSATION_NOT_FOUND");
+  const note = await prisma.conversationNote.create({ data: { workspaceId, conversationId, contactId: conversation.contactId, createdById, content }, select: conversationNoteSelect });
+  publishInboxRefresh(workspaceId, conversationId);
+  return note;
 }
 
 export async function listForwardTargets(workspaceId: string, query: ForwardTargetListQuery) {
@@ -218,16 +273,14 @@ export async function deleteMessage(workspaceId: string, contactId: string, conv
       where: { id: message.id },
       data: { deletedAt, text: null, mediaId: null, mediaUrl: null, payload: {} },
     });
-    const [latest, unreadCount] = await Promise.all([
-      transaction.message.findFirst({
-        where: { workspaceId, contactId, conversationId, ...(conversation.clearedAt ? { sentAt: { gt: conversation.clearedAt } } : {}) },
-        select: { text: true, type: true, direction: true, sentAt: true, deletedAt: true },
-        orderBy: [{ sentAt: "desc" }, { id: "desc" }],
-      }),
-      transaction.message.count({
-        where: { workspaceId, contactId, conversationId, ...(conversation.clearedAt ? { sentAt: { gt: conversation.clearedAt } } : {}), direction: "INCOMING", status: { not: "READ" } },
-      }),
-    ]);
+    const latest = await transaction.message.findFirst({
+      where: { workspaceId, contactId, conversationId, ...(conversation.clearedAt ? { sentAt: { gt: conversation.clearedAt } } : {}) },
+      select: { text: true, type: true, direction: true, sentAt: true, deletedAt: true },
+      orderBy: [{ sentAt: "desc" }, { id: "desc" }],
+    });
+    const unreadCount = await transaction.message.count({
+      where: { workspaceId, contactId, conversationId, ...(conversation.clearedAt ? { sentAt: { gt: conversation.clearedAt } } : {}), direction: "INCOMING", status: { not: "READ" } },
+    });
     await transaction.conversation.update({
       where: { id: conversationId, workspaceId, contactId },
       data: { lastMessagePreview: latest ? latest.deletedAt ? "This message was deleted" : latest.direction === "OUTGOING" ? `You: ${latest.text ?? latest.type}` : latest.text ?? latest.type : null, lastMessageAt: latest?.sentAt ?? null, unreadCount },

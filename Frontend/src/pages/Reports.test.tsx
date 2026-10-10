@@ -27,6 +27,13 @@ const contactsResponse = {
   rows: [{ id: "contact-1", contact: "Asha Sharma", phone: "+919876543210", source: "Import", stage: "NEW", dealValue: 5000, whatsappOpted: true, createdAt: "2026-08-21T10:00:00.000Z" }],
   pagination: { total: 1 },
 };
+const campaignsResponse = {
+  report: "campaigns",
+  filters: reportResponse.filters,
+  summary: { campaigns: 1, recipients: 100, sent: 92, delivered: 80, read: 45, replies: 4, failed: 8 },
+  rows: [{ id: "campaign-1", campaign: "October launch", channel: "whatsapp", category: "Marketing", status: "COMPLETED", recipients: 100, sent: 92, deliveredRate: 87, readRate: 49, replyRate: 4, failed: 8, cost: 91.37 }],
+  pagination: { total: 1 },
+};
 
 const auth: AuthContextValue = {
   status: "authenticated",
@@ -42,13 +49,13 @@ const auth: AuthContextValue = {
   login: vi.fn(), register: vi.fn(), verifyEmail: vi.fn(), resendVerification: vi.fn(), changeEmail: vi.fn(), refreshUser: vi.fn(), logout: vi.fn(),
 };
 
-function renderPage(value = auth) {
-  return render(<AuthContext.Provider value={value}><MemoryRouter initialEntries={["/reports"]}><Reports /></MemoryRouter></AuthContext.Provider>);
+function renderPage(value = auth, entry = "/reports") {
+  return render(<AuthContext.Provider value={value}><MemoryRouter initialEntries={[entry]}><Reports /></MemoryRouter></AuthContext.Provider>);
 }
 
 describe("Reports", () => {
   beforeEach(() => {
-    vi.mocked(apiRequest).mockImplementation(async (path) => path.includes("/contacts?") ? contactsResponse : reportResponse);
+    vi.mocked(apiRequest).mockImplementation(async (path) => path.includes("/contacts?") ? contactsResponse : path.includes("/campaigns?") ? campaignsResponse : reportResponse);
     vi.mocked(downloadApiFile).mockResolvedValue(new Blob(["report,campaigns\n"]));
     vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:report");
     vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => undefined);
@@ -74,6 +81,13 @@ describe("Reports", () => {
     const requestPaths = vi.mocked(apiRequest).mock.calls.map(([path]) => String(path));
     expect(requestPaths.some((path) => path.includes("search=Asha") && path.includes("source=Import"))).toBe(true);
     expect(screen.getByTestId("report-table-scroll-region")).toHaveClass("min-h-0", "overflow-auto");
+  });
+
+  it("shows campaign spend in the campaign report with rupees and two decimals", async () => {
+    renderPage(auth, "/reports?view=campaigns");
+    expect(await screen.findByText("October launch")).toBeInTheDocument();
+    expect(screen.getByRole("columnheader", { name: "Total cost" })).toBeInTheDocument();
+    expect(screen.getByText("₹ 91.37")).toBeInTheDocument();
   });
 
   it("exports the currently filtered report through the backend", async () => {

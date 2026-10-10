@@ -7,6 +7,8 @@ import { messagePricingSnapshot, resolveMessagePricing } from "../whatsapp-prici
 import { decryptSecret, encryptSecret } from "../../utils/crypto.js";
 import type { EmbeddedSignupInput } from "./whatsapp.schemas.js";
 import { META_TEMPLATE_VARIABLE_RATIO_MESSAGE } from "../templates/meta-template-payload.js";
+import { creditWelcomeBonusInTransaction } from "../wallet/wallet.service.js";
+import { publishWalletUpdated } from "../../realtime/wallet.js";
 
 type MetaResponse = Record<string, unknown> & {
   error?: {
@@ -1323,6 +1325,18 @@ export async function sendTestMessage(workspaceId: string, to: string) {
 }
 
 export type WhatsAppTemplateParameter = { type: "text"; text: string };
+export type WhatsAppTemplateHeaderParameter = WhatsAppTemplateParameter
+  | { type: "document"; document: { link: string; filename?: string } }
+  | { type: "image"; image: { link: string } }
+  | { type: "video"; video: { link: string } };
+export type WhatsAppTemplateButtonParameter =
+  | { subType: "url"; index: string; parameters: WhatsAppTemplateParameter[] }
+  | { subType: "order_details"; index: string; parameters: Array<{ type: "action"; action: { order_details: Record<string, unknown> } }> };
+export type WhatsAppTemplateCarouselCard = {
+  headerParameters: WhatsAppTemplateHeaderParameter[];
+  bodyParameters: WhatsAppTemplateParameter[];
+  buttonParameters: WhatsAppTemplateButtonParameter[];
+};
 export type WhatsAppTemplateMedia = {
   kind: "single" | "carousel";
   items: Array<{ mediaId: string; type?: "image" | "video" | "document"; fileName?: string }>;
@@ -1334,17 +1348,31 @@ function mediaTemplateParameter(item: WhatsAppTemplateMedia["items"][number]) {
   return { type, [key]: { id: item.mediaId, ...(type === "document" && item.fileName ? { filename: item.fileName } : {}) } };
 }
 
-export function buildWhatsAppTemplateComponents(parameters: WhatsAppTemplateParameter[], media?: WhatsAppTemplateMedia) {
+export function buildWhatsAppTemplateComponents(parameters: WhatsAppTemplateParameter[], media?: WhatsAppTemplateMedia, headerParameters: WhatsAppTemplateHeaderParameter[] = [], buttonParameters: WhatsAppTemplateButtonParameter[] = [], carouselCards?: WhatsAppTemplateCarouselCard[], orderStatus?: { reference_id: string; order: { status: string; description?: string } }) {
   const components: Array<Record<string, unknown>> = [];
-  if (media?.kind === "carousel") {
+  if (media?.kind !== "carousel" && media?.items[0]) {
+    components.push({ type: "header", parameters: [mediaTemplateParameter(media.items[0])] });
+  } else if (media?.kind !== "carousel" && headerParameters.length) {
+    components.push({ type: "header", parameters: headerParameters });
+  }
+  if (parameters.length) components.push({ type: "body", parameters });
+  for (const button of buttonParameters) components.push({ type: "button", sub_type: button.subType, index: button.index, parameters: button.parameters });
+  if (orderStatus) components.push({ type: "order_status", parameters: [{ type: "order_status", order_status: orderStatus }] });
+  if (carouselCards?.length) {
+    components.push({ type: "carousel", cards: carouselCards.map((card, index) => ({
+      card_index: index,
+      components: [
+        ...(card.headerParameters.length ? [{ type: "header", parameters: card.headerParameters }] : []),
+        ...(card.bodyParameters.length ? [{ type: "body", parameters: card.bodyParameters }] : []),
+        ...card.buttonParameters.map((button) => ({ type: "button", sub_type: button.subType, index: button.index, parameters: button.parameters })),
+      ],
+    })) });
+  } else if (media?.kind === "carousel") {
     components.push({
       type: "carousel",
       cards: media.items.map((item, index) => ({ card_index: index, components: [{ type: "header", parameters: [mediaTemplateParameter(item)] }] })),
     });
-  } else if (media?.items[0]) {
-    components.push({ type: "header", parameters: [mediaTemplateParameter(media.items[0])] });
   }
-  if (parameters.length) components.push({ type: "body", parameters });
   return components;
 }
 
@@ -1357,6 +1385,10 @@ export async function sendWhatsAppTemplateMessage(
   parameters: WhatsAppTemplateParameter[],
   chargeKey?: string,
   media?: WhatsAppTemplateMedia,
+  headerParameters: WhatsAppTemplateHeaderParameter[] = [],
+  buttonParameters: WhatsAppTemplateButtonParameter[] = [],
+  carouselCards?: WhatsAppTemplateCarouselCard[],
+  orderStatus?: { reference_id: string; order: { status: string; description?: string } },
 ) {
   const { encryptionKey } = requireMetaConfiguration();
   const connection = await prisma.whatsAppBusinessAccount.findFirst({
@@ -1394,7 +1426,7 @@ export async function sendWhatsAppTemplateMessage(
       template: {
         name: templateName,
         language: { code: languageCode },
-        ...(parameters.length || media?.items.length ? { components: buildWhatsAppTemplateComponents(parameters, media) } : {}),
+        ...(parameters.length || media?.items.length || headerParameters.length || buttonParameters.length || carouselCards?.length || orderStatus ? { components: buildWhatsAppTemplateComponents(parameters, media, headerParameters, buttonParameters, carouselCards, orderStatus) } : {}),
       },
     }, "send_message");
   const metaMessageId = sent.messages?.[0]?.id;
@@ -1560,8 +1592,10 @@ export async function completeEmbeddedSignup(workspaceId: string, input: Embedde
       create: { workspaceId, whatsappConnectedAt: now, phoneNumberConnectedAt: now },
       update: { whatsappConnectedAt: now, phoneNumberConnectedAt: now },
     });
+    await creditWelcomeBonusInTransaction(transaction, workspaceId);
     return { account, phoneNumber, coexistence: mode === "coexistence" };
   });
+  publishWalletUpdated(workspaceId);
 
   // Persist first so incoming webhooks can resolve this phone. Meta requires WABA
   // subscription before the one-time sync requests, then contacts before history:

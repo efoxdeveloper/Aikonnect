@@ -16,6 +16,7 @@ describe("WhatsApp connection guide", () => {
     );
 
     const proceed = screen.getByRole("button", { name: "Proceed with New Number" });
+    expect(proceed).toHaveClass("bg-[var(--brand)]", "text-white");
     expect(proceed).toHaveTextContent("Opening Meta");
     expect(proceed).toBeDisabled();
     expect(proceed).toHaveAttribute("aria-busy", "true");

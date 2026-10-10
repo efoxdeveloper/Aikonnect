@@ -13,7 +13,8 @@ Object.assign(process.env, {
 
 const { prisma } = await import("../src/database/prisma.js");
 const { AppError } = await import("../src/middleware/error-handler.js");
-const { chargeOutboundMessage, creditWallet, debitWallet, refundWalletCharge } = await import("../src/modules/wallet/wallet.service.js");
+const { Prisma } = await import("../src/generated/prisma/client.js");
+const { chargeOutboundMessage, creditWallet, creditWelcomeBonusInTransaction, debitWallet, listLedger, refundWalletCharge } = await import("../src/modules/wallet/wallet.service.js");
 
 function fixture(t: TestContext, startingBalance = 0n) {
   const wallet = {
@@ -25,6 +26,13 @@ function fixture(t: TestContext, startingBalance = 0n) {
     updatedAt: new Date("2026-01-01T00:00:00.000Z"),
   };
   const entries: any[] = [];
+  let ledgerQueriesInFlight = 0;
+  let maxLedgerQueriesInFlight = 0;
+  const runLedgerQuery = async <T>(result: T) => {
+    ledgerQueriesInFlight += 1;
+    maxLedgerQueriesInFlight = Math.max(maxLedgerQueriesInFlight, ledgerQueriesInFlight);
+    return Promise.resolve(result).finally(() => { ledgerQueriesInFlight -= 1; });
+  };
   const transaction: any = {
     workspace: { findUnique: async () => ({ tenantId: "tenant-id" }) },
     tenant: { findUnique: async () => ({ id: "tenant-id" }) },
@@ -41,6 +49,8 @@ function fixture(t: TestContext, startingBalance = 0n) {
     },
     walletLedgerEntry: {
       findUnique: async ({ where }: any) => entries.find((entry) => entry.walletId === where.walletId_idempotencyKey.walletId && entry.idempotencyKey === where.walletId_idempotencyKey.idempotencyKey) ?? null,
+      count: async () => runLedgerQuery(entries.length),
+      findMany: async () => runLedgerQuery(entries),
       create: async ({ data }: any) => {
         const entry = { id: `entry-${entries.length + 1}`, ...data, createdAt: new Date("2026-01-01T00:00:00.000Z") };
         entries.push(entry);
@@ -52,7 +62,7 @@ function fixture(t: TestContext, startingBalance = 0n) {
   const originalTransaction = prisma.$transaction;
   (prisma as any).$transaction = async (callback: (client: any) => Promise<unknown>) => callback(transaction);
   t.after(() => { (prisma as any).$transaction = originalTransaction; });
-  return { wallet, entries };
+  return { wallet, entries, get maxLedgerQueriesInFlight() { return maxLedgerQueriesInFlight; } };
 }
 
 test("wallet credits update the balance and append a ledger entry", async (t) => {
@@ -63,6 +73,32 @@ test("wallet credits update the balance and append a ledger entry", async (t) =>
   assert.equal(result.entry.direction, "CREDIT");
   assert.equal(result.entry.amountMinorUnits, "12500");
   assert.equal(state.entries.length, 1);
+});
+
+test("WhatsApp connection welcome credits use the configured amount and remain idempotent", async () => {
+  const wallet: any = { id: "welcome-wallet", tenantId: "welcome-tenant", currency: "INR", totalBalance: new Prisma.Decimal(0), reservedBalance: new Prisma.Decimal(0), balanceMinorUnits: 0n, status: "ACTIVE", createdAt: new Date(), updatedAt: new Date() };
+  const entries: any[] = [];
+  const workspace: any = { id: "welcome-workspace", tenantId: "welcome-tenant", welcomeBonusGrantedAt: null };
+  const transaction: any = {
+    workspace: { findUnique: async () => ({ id: workspace.id, tenantId: workspace.tenantId }), update: async ({ data }: any) => Object.assign(workspace, data) },
+    platformConfiguration: { upsert: async () => ({ welcomeBonusAmount: new Prisma.Decimal("400.00") }) },
+    wallet: { upsert: async () => wallet, update: async ({ data }: any) => { Object.assign(wallet, data); return wallet; } },
+    walletLedgerEntry: {
+      findUnique: async ({ where }: any) => entries.find((entry) => entry.walletId === where.walletId_idempotencyKey.walletId && entry.idempotencyKey === where.walletId_idempotencyKey.idempotencyKey) ?? null,
+      create: async ({ data }: any) => { const entry = { id: "welcome-entry", ...data, createdAt: new Date() }; entries.push(entry); return entry; },
+    },
+    $queryRaw: async () => [{ id: wallet.id }],
+  };
+
+  const first = await creditWelcomeBonusInTransaction(transaction, workspace.id);
+  const replay = await creditWelcomeBonusInTransaction(transaction, workspace.id);
+
+  assert.equal(first?.amount, "400.000000");
+  assert.equal(first?.transactionType, "WELCOME_BONUS");
+  assert.equal(replay?.id, first?.id);
+  assert.equal(wallet.totalBalance.toFixed(2), "400.00");
+  assert.equal(entries.length, 1);
+  assert.ok(workspace.welcomeBonusGrantedAt instanceof Date);
 });
 
 test("wallet debits reject insufficient funds without changing the balance", async (t) => {
@@ -116,4 +152,14 @@ test("workspaces under one tenant share the same wallet balance", async (t) => {
   assert.equal(state.wallet.balanceMinorUnits, 750n);
   assert.equal(state.entries[1].tenantId, "tenant-id");
   assert.equal(state.entries[1].workspaceId, "workspace-2");
+});
+
+test("wallet ledger count and page queries run sequentially in the transaction", async (t) => {
+  const state = fixture(t);
+
+  const result = await listLedger("workspace-id", { page: 1, pageSize: 25 });
+
+  assert.deepEqual(result.items, []);
+  assert.equal(result.pagination.total, 0);
+  assert.equal(state.maxLedgerQueriesInFlight, 1);
 });

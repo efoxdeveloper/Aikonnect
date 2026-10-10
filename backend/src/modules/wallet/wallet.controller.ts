@@ -1,12 +1,27 @@
 import type { Request, Response } from "express";
 import * as service from "./wallet.service.js";
 import type { WalletLedgerQuery } from "./wallet.schemas.js";
+import { streamWalletUpdates } from "../../realtime/wallet.js";
 import { prisma } from "../../database/prisma.js";
 import { credit, debit, getBillingSettings, updateBillingSettings, refundReservation, setWalletStatus } from "./wallet.service.js";
 import type { BillingSettingsInput, WalletCreditInput, WalletDebitInput, WalletRefundInput } from "./wallet.schemas.js";
 
 export async function get(request: Request, response: Response) {
   response.status(200).json({ success: true, data: await service.getWallet(request.params.workspaceId as string) });
+}
+
+export function events(request: Request, response: Response) {
+  streamWalletUpdates(request.params.workspaceId as string, response);
+}
+
+export async function welcomeBonus(request: Request, response: Response) {
+  if (!request.auth) throw new Error("Authentication context is missing");
+  response.status(200).json({ success: true, data: await service.getWelcomeBonus(request.params.workspaceId as string) });
+}
+
+export async function celebrateWelcomeBonus(request: Request, response: Response) {
+  if (!request.auth) throw new Error("Authentication context is missing");
+  response.status(200).json({ success: true, data: await service.markWelcomeBonusCelebrated(request.params.workspaceId as string, request.auth.userId) });
 }
 
 export async function ledger(request: Request, response: Response) {

@@ -1,14 +1,17 @@
 import { useMemo, useState, type ReactNode, type FormEvent, type SVGProps } from "react";
-import { ArrowRight, BarChart3, Building2, CalendarDays, Check, CheckCircle2, Eye, FileText, Link2, MessageCircle, Phone, Plus, Send, ShieldCheck, Users, WalletCards, Zap, type LucideIcon } from "lucide-react";
+import { ArrowRight, BarChart3, Building2, CalendarDays, Check, CheckCircle2, Coins, Eye, FileText, Info, Link2, MessageCircle, Phone, Plus, Send, ShieldCheck, Users, WalletCards, Zap, type LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { siWhatsapp } from "simple-icons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { DashboardSetupGuide } from "@/components/dashboard/DashboardLearning";
+import { WelcomeBonusDialog } from "@/components/dashboard/WelcomeBonusDialog";
 import { WhatsAppConnectionGuide, type ConnectionChoice } from "@/components/whatsapp/WhatsAppConnectionGuide";
 import { WhatsAppConnectingDialog } from "@/components/whatsapp/WhatsAppConnectingDialog";
 import { WhatsAppRegistrationPinDialog } from "@/components/whatsapp/WhatsAppRegistrationPinDialog";
 import { useAuth } from "@/contexts/AuthContext";
+import { apiRequest } from "@/lib/api";
 import { useDashboardResource } from "@/hooks/use-dashboard-resource";
 import { useWhatsAppEmbeddedSignup } from "@/hooks/use-whatsapp-embedded-signup";
 import { getActiveMembership } from "@/lib/workspace";
@@ -22,6 +25,7 @@ type Usage = {
   daily: Array<{ date: string; outgoing: number; delivered: number }>;
 };
 type Wallet = { currency: string; balance: string; availableBalance: string; status: string };
+type WelcomeBonus = { amount: string; currency: string; granted: boolean; pending: boolean; source: string | null } | null;
 type Resource = { loading: boolean; error: boolean; restricted: boolean };
 type Tone = "green" | "blue" | "purple" | "amber" | "red" | "neutral";
 const numbers = new Intl.NumberFormat("en-IN");
@@ -97,6 +101,9 @@ export function DashboardOverview() {
   const meta = useDashboardResource<WhatsAppStatusData>(setup.data?.whatsapp.status === "CONNECTED" ? path("whatsapp/status", "whatsapp.read") : null, accessToken);
   const usage = useDashboardResource<Usage>(path(`usage?${query}`, "billing.read"), accessToken);
   const wallet = useDashboardResource<Wallet>(path("wallet", "billing.read"), accessToken);
+  const welcomeBonus = useDashboardResource<WelcomeBonus>(path("wallet/welcome-bonus", "workspace.read"), accessToken);
+  const welcomeBonusOffer = welcomeBonus.data ?? { amount: "400.00", currency: "INR", granted: false, pending: false, source: null };
+  const [bonusDismissedFor, setBonusDismissedFor] = useState<string | null>(null);
 
   const account = setup.data?.whatsapp.accounts.find((item) => item.status === "CONNECTED") ?? setup.data?.whatsapp.accounts[0];
   const phone = account?.phoneNumbers.find((item) => item.status === "ACTIVE") ?? account?.phoneNumbers[0];
@@ -114,6 +121,14 @@ export function DashboardOverview() {
   const rate = (value?: number) => sent === undefined || value === undefined ? "—" : `${(sent ? value / sent * 100 : 0).toFixed(1)}%`;
   const period = range === "today" ? "Today" : range === "30d" ? "Last 30 days" : range === "7d" ? "Last 7 days" : "Selected period";
   const walletValue = wallet.data ? `${wallet.data.currency === "INR" ? "₹" : `${wallet.data.currency} `}${new Intl.NumberFormat("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(wallet.data.availableBalance ?? wallet.data.balance))}` : "—";
+  const showWelcomeBonus = Boolean(can("billing.read") && whatsappConnected && workspaceId && welcomeBonus.data?.pending && welcomeBonus.data.source === "whatsapp_number_connection" && bonusDismissedFor !== workspaceId);
+  function dismissWelcomeBonus() {
+    if (!workspaceId || !accessToken) return;
+    setBonusDismissedFor(workspaceId);
+    void apiRequest(`/workspaces/${workspaceId}/wallet/welcome-bonus/celebrated`, { method: "POST", headers: { authorization: `Bearer ${accessToken}` } }).catch(() => {
+      // Close this session's modal; if persistence failed, the server will offer it again on the next visit.
+    });
+  }
   const quickActions = [
     { title: "New Campaign", to: "/campaigns", icon: Send, permission: "campaigns.create" },
     { title: "New Template", to: "/createtemplate", icon: FileText, permission: "templates.manage" },
@@ -145,10 +160,11 @@ export function DashboardOverview() {
           <Metric title="Read Rate" icon={Eye} tone="purple" value={rate(summary?.readMessages)} detail={resourceText(usage) || `${count(summary?.readMessages)} read · ${period.toLowerCase()}`} />
           <Metric title="Wallet Balance" icon={WalletCards} tone="amber" value={walletValue} detail={resourceText(wallet) || "Available balance"}>{can("billing.read") && <Button asChild className={styles.walletButton}><Link to="/billing"><Plus size={13} aria-hidden="true" />Add</Link></Button>}</Metric>
         </section>
-        <div className={styles.primaryGrid}>
-          <ActivityChart items={usage.data?.daily ?? []} loading={usage.loading} error={usage.error} restricted={usage.restricted} />
+        <div className={`${styles.primaryGrid} ${!whatsappConnected ? styles.primaryGridSingle : ""}`}>
+          {whatsappConnected && <ActivityChart items={usage.data?.daily ?? []} loading={usage.loading} error={usage.error} restricted={usage.restricted} />}
           <Panel title="WhatsApp account" icon={WhatsAppBrandIcon} action={can("whatsapp.read") && <PanelLink to="/whatsapp-account">Manage</PanelLink>}>
               {setup.data && !whatsappConnected ? <div className={styles.healthDisconnected}>
+                {Number(welcomeBonusOffer.amount) > 0 && <><TooltipProvider><Tooltip><TooltipTrigger asChild><button type="button" aria-label="About the WhatsApp connection bonus" className="inline-flex h-7 items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 text-[11px] font-medium text-[var(--text-primary)] transition-colors hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]"><span>Free</span><Coins size={14} className="text-amber-600" aria-hidden="true" /><span>{welcomeBonusOffer.currency === "INR" ? "Rs. " : `${welcomeBonusOffer.currency} `}{new Intl.NumberFormat("en-IN", { maximumFractionDigits: 2 }).format(Number(welcomeBonusOffer.amount))}</span><Info size={13} className="text-[var(--text-muted)]" aria-hidden="true" /></button></TooltipTrigger><TooltipContent side="top" className="max-w-[260px] text-center leading-5">{welcomeBonusOffer.granted ? "Your welcome credit has already been added to the wallet." : "The credit is added once, after Meta confirms your WhatsApp number is connected."}</TooltipContent></Tooltip></TooltipProvider><span data-testid="connection-bonus-plus" aria-hidden="true" className="-my-1 text-xs font-semibold leading-none text-[var(--text-muted)]">+</span></>}
                 {can("whatsapp.manage") ? <Button type="button" onClick={() => setConnectionGuideOpen(true)} disabled={connecting}>
                   <WhatsAppBrandIcon size={17} aria-hidden="true" />Connect WhatsApp
                 </Button> : <span>WhatsApp is not connected</span>}
@@ -179,5 +195,6 @@ export function DashboardOverview() {
       onClose={cancelRegistrationPin}
       onSubmit={submitRegistrationPin}
     />}
+    {showWelcomeBonus && welcomeBonus.data && <WelcomeBonusDialog amount={welcomeBonus.data.amount} currency={welcomeBonus.data.currency} firstName={user?.firstName ?? ""} onClose={dismissWelcomeBonus} />}
   </div>;
 }

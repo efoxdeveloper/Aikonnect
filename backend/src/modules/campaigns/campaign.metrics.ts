@@ -1,4 +1,34 @@
+import { Prisma } from "../../generated/prisma/client.js";
 import { prisma } from "../../database/prisma.js";
+import { publishCampaignUpdated } from "../../realtime/campaign.js";
+
+export async function refreshCampaignCost(workspaceId: string, campaignId: string) {
+  const recipients = await prisma.campaignRecipient.findMany({
+    where: { workspaceId, campaignId, metaMessageId: { not: null } },
+    select: { metaMessageId: true },
+  });
+  const messageIds = recipients.map((recipient) => recipient.metaMessageId).filter((id): id is string => Boolean(id));
+  let totalCost = new Prisma.Decimal(0);
+  if (messageIds.length) {
+    const messages = await prisma.message.findMany({
+      where: { workspaceId, metaMessageId: { in: messageIds } },
+      select: { id: true },
+    });
+    if (messages.length) {
+      const entries = await prisma.walletLedgerEntry.findMany({
+        where: { workspaceId, messageId: { in: messages.map((message) => message.id) }, transactionType: { in: ["CHARGE", "REFUND"] } },
+        select: { amount: true, direction: true },
+      });
+      totalCost = entries.reduce((sum, entry) => {
+        if (entry.amount === null) return sum;
+        return entry.direction === "CREDIT" ? sum.sub(entry.amount) : sum.add(entry.amount);
+      }, totalCost);
+    }
+  }
+  totalCost = totalCost.toDecimalPlaces(2, Prisma.Decimal.ROUND_HALF_UP);
+  await prisma.campaign.updateMany({ where: { id: campaignId, workspaceId }, data: { totalCost } });
+  return totalCost;
+}
 
 export async function refreshCampaignMetrics(workspaceId: string, campaignId: string) {
   const campaign = await prisma.campaign.findFirst({ where: { id: campaignId, workspaceId }, select: { status: true, retryFailed: true } });
@@ -8,9 +38,10 @@ export async function refreshCampaignMetrics(workspaceId: string, campaignId: st
   const pending = counts.get("PENDING") ?? 0;
   const attempted = counts.get("ATTEMPTED") ?? 0;
   const failedRetryable = campaign.retryFailed ? await prisma.campaignRecipient.count({ where: { workspaceId, campaignId, status: "FAILED", attemptCount: { lt: 3 } } }) : 0;
+  const totalCost = await refreshCampaignCost(workspaceId, campaignId);
   const nextStatus = campaign.status === "RUNNING" && pending === 0 && attempted === 0 && failedRetryable === 0 ? "COMPLETED" : undefined;
   await prisma.campaign.updateMany({
-    where: { id: campaignId, workspaceId },
+    where: { id: campaignId, workspaceId, ...(nextStatus ? { status: "RUNNING" } : {}) },
     data: {
       attempted: attempted + (counts.get("SENT") ?? 0) + (counts.get("DELIVERED") ?? 0) + (counts.get("READ") ?? 0) + (counts.get("REPLIED") ?? 0) + (counts.get("FAILED") ?? 0),
       sent: (counts.get("SENT") ?? 0) + (counts.get("DELIVERED") ?? 0) + (counts.get("READ") ?? 0) + (counts.get("REPLIED") ?? 0),
@@ -18,9 +49,11 @@ export async function refreshCampaignMetrics(workspaceId: string, campaignId: st
       read: (counts.get("READ") ?? 0) + (counts.get("REPLIED") ?? 0),
       replied: counts.get("REPLIED") ?? 0,
       failed: counts.get("FAILED") ?? 0,
+      totalCost,
       ...(nextStatus ? { status: nextStatus, completedAt: new Date() } : {}),
     },
   });
+  publishCampaignUpdated(workspaceId, campaignId);
 }
 
 export async function markCampaignReply(workspaceId: string, phoneE164: string, occurredAt: Date) {

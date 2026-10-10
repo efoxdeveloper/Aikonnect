@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import * as adminService from "./admin.service.js";
-import type { AdminAuditQuery, AdminListQuery, AdminPlanInput, AdminPlanRequestDecision, AdminPlanRequestQuery, AdminUserWalletAdjustment, AdminWalletAdjustment } from "./admin.schemas.js";
+import type { AdminAuditQuery, AdminListQuery, AdminPlanInput, AdminPlanRequestDecision, AdminPlanRequestQuery, AdminUserWalletAdjustment, AdminWalletAdjustment, PlatformSettingsInput } from "./admin.schemas.js";
 import * as planRequestsService from "./admin-plan-requests.service.js";
 import { creditWallet, debitWallet } from "../wallet/wallet.service.js";
 
@@ -61,4 +61,11 @@ export async function health(_request: Request, response: Response) { response.s
 export async function webhooks(request: Request, response: Response) { response.status(200).json({ success: true, data: await adminService.listWebhooks(request.validatedQuery as AdminListQuery) }); }
 export async function auditLogs(request: Request, response: Response) { response.status(200).json({ success: true, data: await adminService.listAuditLogs(request.validatedQuery as AdminAuditQuery) }); }
 export async function settings(_request: Request, response: Response) { response.status(200).json({ success: true, data: await adminService.getPlatformSettings() }); }
+export async function updateSettings(request: Request, response: Response) {
+  if (!request.auth) throw new Error("Platform authorization context is missing");
+  const input = request.body as PlatformSettingsInput;
+  const result = await adminService.updatePlatformSettings(input);
+  await adminService.recordPlatformSettingsChange(request.auth.userId, input);
+  response.status(200).json({ success: true, data: result });
+}
 export async function featureFlags(_request: Request, response: Response) { response.status(200).json({ success: true, data: await adminService.getFeatureFlags() }); }

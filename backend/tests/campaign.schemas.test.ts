@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { campaignListQuerySchema, createCampaignSchema } from "../src/modules/campaigns/campaign.schemas.js";
+import { campaignControlSchema, campaignListQuerySchema, createCampaignSchema, estimateCampaignSchema } from "../src/modules/campaigns/campaign.schemas.js";
+
+test("campaign controls accept pause, resume, and cancel actions only", () => {
+  for (const action of ["pause", "resume", "cancel"] as const) assert.deepEqual(campaignControlSchema.parse({ action }), { action });
+  assert.equal(campaignControlSchema.safeParse({ action: "delete" }).success, false);
+});
 
 test("create campaign schema applies defaults and deduplicates audience values", () => {
   const campaign = createCampaignSchema.parse({
@@ -78,7 +83,17 @@ test("create campaign schema validates audience and launch requirements", () => 
   );
 });
 
+test("campaign estimate requires a valid send or schedule payload", () => {
+  const estimate = estimateCampaignSchema.parse({ name: "Estimate", audienceLabel: "Everyone", templateKey: "approved", launchMode: "send" });
+  assert.equal(estimate.launchMode, "send");
+  assert.throws(() => estimateCampaignSchema.parse({ name: "Draft", audienceLabel: "Everyone", launchMode: "draft" }), /Invalid option/);
+  assert.throws(() => estimateCampaignSchema.parse({ name: "No date", audienceLabel: "Everyone", launchMode: "schedule" }), /schedule time is required/);
+});
+
 test("campaign list query schema parses filters and rejects reversed dates", () => {
+  const singleStatus = campaignListQuerySchema.parse({ status: "RUNNING" });
+  assert.deepEqual(singleStatus.status, ["RUNNING"]);
+
   const query = campaignListQuerySchema.parse({
     page: "2",
     pageSize: "50",

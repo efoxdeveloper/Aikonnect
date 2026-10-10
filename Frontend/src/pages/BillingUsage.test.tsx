@@ -56,6 +56,8 @@ describe("BillingUsage", () => {
     expect(await screen.findByText("Total messages")).toBeInTheDocument();
     expect(screen.getByText("₹ 122.50")).toBeInTheDocument();
     expect(screen.getByText("₹ 2.50")).toBeInTheDocument();
+    expect(await screen.findByText("Estimated wallet debit")).toBeInTheDocument();
+    expect(screen.getByText("Held for pending delivery; released if delivery fails")).toBeInTheDocument();
     expect(screen.queryByText("Engaged contacts")).not.toBeInTheDocument();
     expect(screen.getByText("42")).toBeInTheDocument();
     expect(screen.getByText("Meta billing is separate")).toBeInTheDocument();

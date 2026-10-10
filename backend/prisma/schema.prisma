@@ -162,12 +162,21 @@ enum WorkflowRunStatus {
   FAILED
 }
 
+enum SequenceEnrollmentStatus {
+  WAITING
+  ACTIVE
+  COMPLETED
+  STOPPED
+  FAILED
+}
+
 enum CampaignStatus {
   DRAFT
   SCHEDULED
   RUNNING
   COMPLETED
   PAUSED
+  CANCELLED
 }
 
 enum CampaignKind {
@@ -237,10 +246,12 @@ model User {
   contactCustomFieldsUpdated ContactCustomField[]     @relation("ContactCustomFieldUpdater")
   contactConsentEvents       ContactConsentEvent[]    @relation("ContactConsentEventActor")
   messagesCreated            Message[]                @relation("MessageCreator")
+  conversationNotesCreated   ConversationNote[]       @relation("ConversationNoteCreator")
   templatesCreated           Template[]               @relation("TemplateCreator")
   templatesUpdated           Template[]               @relation("TemplateUpdater")
   templatesDeleted           Template[]               @relation("TemplateDeleter")
   automationsCreated         Automation[]             @relation("AutomationCreator")
+  sequencesCreated           Sequence[]               @relation("SequenceCreator")
   workflowsCreated           Workflow[]               @relation("WorkflowCreator")
   campaignsCreated           Campaign[]               @relation("CampaignCreator")
   apiKeysCreated             PublicApiKey[]           @relation("ApiKeyCreator")
@@ -304,6 +315,8 @@ model Workspace {
   onboardingData           Json                         @default("{}") @map("onboarding_data") @db.JsonB
   onboardingStep           Int                          @default(0) @map("onboarding_step")
   onboardingCompletedAt    DateTime?                    @map("onboarding_completed_at") @db.Timestamptz(3)
+  welcomeBonusGrantedAt    DateTime?                    @map("welcome_bonus_granted_at") @db.Timestamptz(3)
+  welcomeBonusCelebratedAt DateTime?                    @map("welcome_bonus_celebrated_at") @db.Timestamptz(3)
   ownerId                  String                       @map("owner_id") @db.Uuid
   createdAt                DateTime                     @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt                DateTime                     @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -318,6 +331,7 @@ model Workspace {
   contactTags              ContactTag[]
   contactTasks             ContactTask[]
   contactNotes             ContactNote[]
+  conversationNotes        ConversationNote[]
   contactSegments          ContactSegment[]
   contactCustomFields      ContactCustomField[]
   contactConsentEvents     ContactConsentEvent[]
@@ -329,6 +343,9 @@ model Workspace {
   automationLogs           AutomationLog[]
   workflows                Workflow[]
   workflowRuns             WorkflowRun[]
+  sequences                Sequence[]
+  sequenceEnrollments      SequenceEnrollment[]
+  automationSettings       WorkspaceAutomationSettings?
   campaigns                Campaign[]
   campaignRecipients       CampaignRecipient[]
   apiKeys                  PublicApiKey[]
@@ -502,9 +519,11 @@ model Contact {
   customFieldValues    ContactCustomFieldValue[]
   consentEvents        ContactConsentEvent[]
   conversations        Conversation[]
+  conversationNotes    ConversationNote[]
   messages             Message[]
   automationLogs       AutomationLog[]
   workflowRuns         WorkflowRun[]
+  sequenceEnrollments  SequenceEnrollment[]
   campaignRecipients   CampaignRecipient[]
 
   @@index([workspaceId, deletedAt, createdAt, id])
@@ -568,6 +587,7 @@ model Conversation {
   assignee             WorkspaceMember?            @relation("ConversationAssignee", fields: [assigneeMembershipId], references: [id], onDelete: SetNull)
   assignmentRule       ConversationAssignmentRule? @relation(fields: [assignmentRuleId], references: [id], onDelete: SetNull)
   messages             Message[]
+  notes                ConversationNote[]
   workflowRuns         WorkflowRun[]
 
   @@unique([workspaceId, contactId, channelKey])
@@ -579,6 +599,25 @@ model Conversation {
   @@index([workspaceId, assigneeMembershipId, status, lastMessageAt(sort: Desc)])
   @@index([phoneNumberId])
   @@map("conversations")
+}
+
+model ConversationNote {
+  id             String       @id @default(uuid()) @db.Uuid
+  workspaceId    String       @map("workspace_id") @db.Uuid
+  conversationId String       @map("conversation_id") @db.Uuid
+  contactId      String       @map("contact_id") @db.Uuid
+  content        String       @db.Text
+  createdById    String?      @map("created_by_id") @db.Uuid
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace      Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  contact        Contact      @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  createdBy      User?        @relation("ConversationNoteCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, conversationId, createdAt, id])
+  @@index([createdById])
+  @@map("conversation_notes")
 }
 
 model ConversationAssignmentRule {
@@ -1032,6 +1071,67 @@ model WorkflowRun {
   @@map("workflow_runs")
 }
 
+model Sequence {
+  id             String         @id @default(uuid()) @db.Uuid
+  workspaceId    String         @map("workspace_id") @db.Uuid
+  name           String         @db.VarChar(160)
+  description    String?        @db.Text
+  status         WorkflowStatus @default(DRAFT)
+  steps          Json           @default("[]") @db.JsonB
+  enrolledCount  Int            @default(0) @map("enrolled_count")
+  completedCount Int            @default(0) @map("completed_count")
+  failedCount    Int            @default(0) @map("failed_count")
+  createdById    String?        @map("created_by_id") @db.Uuid
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace      Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy      User?          @relation("SequenceCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  enrollments    SequenceEnrollment[]
+
+  @@index([workspaceId, status, updatedAt])
+  @@index([workspaceId, createdAt])
+  @@map("sequences")
+}
+
+model SequenceEnrollment {
+  id                String                   @id @default(uuid()) @db.Uuid
+  sequenceId        String                   @map("sequence_id") @db.Uuid
+  workspaceId       String                   @map("workspace_id") @db.Uuid
+  contactId         String                   @map("contact_id") @db.Uuid
+  conversationId    String?                  @map("conversation_id") @db.Uuid
+  status            SequenceEnrollmentStatus @default(WAITING)
+  currentStep       Int                      @default(0) @map("current_step")
+  currentCampaignId String?                  @map("current_campaign_id") @db.Uuid
+  nextRunAt         DateTime                 @map("next_run_at") @db.Timestamptz(3)
+  attemptCount      Int                      @default(0) @map("attempt_count")
+  lastError         String?                  @map("last_error") @db.Text
+  startedAt         DateTime                 @default(now()) @map("started_at") @db.Timestamptz(3)
+  completedAt       DateTime?                @map("completed_at") @db.Timestamptz(3)
+  updatedAt         DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
+  sequence          Sequence                 @relation(fields: [sequenceId], references: [id], onDelete: Cascade)
+  workspace         Workspace                @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  contact           Contact                  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, status, nextRunAt])
+  @@index([sequenceId, status])
+  @@index([contactId, status])
+  @@map("sequence_enrollments")
+}
+
+model WorkspaceAutomationSettings {
+  workspaceId     String    @id @map("workspace_id") @db.Uuid
+  timezone        String    @default("Asia/Kolkata") @db.VarChar(100)
+  sendWindowStart String    @default("09:00") @map("send_window_start") @db.VarChar(5)
+  sendWindowEnd   String    @default("18:00") @map("send_window_end") @db.VarChar(5)
+  sendDays        Json      @default("[1,2,3,4,5]") @map("send_days") @db.JsonB
+  retryLimit      Int       @default(3) @map("retry_limit")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  workspace       Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@map("workspace_automation_settings")
+}
+
 model Campaign {
   id                   String              @id @default(uuid()) @db.Uuid
   workspaceId          String              @map("workspace_id") @db.Uuid
@@ -1424,6 +1524,14 @@ model PlatformAuditLog {
   @@index([actorUserId, createdAt])
   @@index([resourceType, resourceId, createdAt])
   @@map("platform_audit_logs")
+}
+
+model PlatformConfiguration {
+  id                  String   @id @default("default") @db.VarChar(40)
+  welcomeBonusAmount Decimal  @default(400) @map("welcome_bonus_amount") @db.Decimal(18, 2)
+  updatedAt           DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("platform_configuration")
 }
 
 model EmailVerificationToken {

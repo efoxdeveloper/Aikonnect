@@ -33,11 +33,10 @@ describe("Automation module", () => {
     });
   });
 
-  it("renders the split Automation navigation and persisted automation list", async () => {
+  it("renders the automation list without adding a third sidebar", async () => {
     renderRoutes("/automations");
     expect(screen.getByTestId("automation-shell")).toBeInTheDocument();
-    expect(screen.getAllByRole("navigation", { name: "Automation navigation" })).toHaveLength(2);
-    expect(screen.getAllByRole("link", { name: /Workflows/ })).toHaveLength(2);
+    expect(screen.queryByRole("navigation", { name: "Automation navigation" })).not.toBeInTheDocument();
     expect(await screen.findByText("Demo Lead Automation")).toBeInTheDocument();
     expect(screen.queryByText("Automatically respond to customers and perform actions when specific events occur.")).not.toBeInTheDocument();
     expect(screen.getByText("New WhatsApp message received")).toBeInTheDocument();

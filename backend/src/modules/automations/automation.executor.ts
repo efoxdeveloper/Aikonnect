@@ -2,6 +2,7 @@ import type { Prisma } from "../../generated/prisma/client.js";
 import { logger } from "../../config/logger.js";
 import { prisma } from "../../database/prisma.js";
 import { sendAutomationText } from "../whatsapp/whatsapp.service.js";
+import { enrollContactFromAutomation, stopContactSequence } from "../sequences/sequence.service.js";
 import type {
   AutomationAction,
   AutomationCondition,
@@ -275,6 +276,18 @@ export async function executeAction(
         },
       });
       return { status: "SUCCESS", detail: `Custom field updated: ${field}` };
+    }
+    case "START_SEQUENCE": {
+      const sequenceId = asString(config.reference);
+      if (!sequenceId) throw new Error("The sequence ID is missing");
+      await enrollContactFromAutomation(workspaceId, sequenceId, context.contact.id, context.conversation?.id);
+      return { status: "SUCCESS", detail: "Contact enrolled in sequence" };
+    }
+    case "STOP_SEQUENCE": {
+      const sequenceId = asString(config.reference);
+      if (!sequenceId) throw new Error("The sequence ID is missing");
+      const result = await stopContactSequence(workspaceId, sequenceId, context.contact.id);
+      return { status: "SUCCESS", detail: `Stopped ${result.stopped} sequence enrollment${result.stopped === 1 ? "" : "s"}` };
     }
     case "CLOSE_CONVERSATION":
     case "REOPEN_CONVERSATION":

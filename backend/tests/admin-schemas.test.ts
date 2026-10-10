@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { adminAuditQuerySchema, adminListQuerySchema, adminPlanInputSchema, adminUserWalletAdjustmentSchema, adminWalletAdjustmentSchema } from "../src/modules/admin/admin.schemas.js";
+import { adminAuditQuerySchema, adminListQuerySchema, adminPlanInputSchema, adminUserWalletAdjustmentSchema, adminWalletAdjustmentSchema, platformSettingsInputSchema } from "../src/modules/admin/admin.schemas.js";
 
 test("admin list query applies safe pagination defaults", () => {
   assert.deepEqual(adminListQuerySchema.parse({}), { page: 1, pageSize: 25 });
@@ -40,4 +40,11 @@ test("user account funding accepts a positive amount without a workspace or tena
   const parsed = adminUserWalletAdjustmentSchema.parse({ amountMinorUnits: "5000", idempotencyKey: "user-funding-1", reason: "WELCOME_CREDIT" });
   assert.equal(parsed.amountMinorUnits, 5000n);
   assert.equal(adminUserWalletAdjustmentSchema.safeParse({ amountMinorUnits: "0", idempotencyKey: "user-funding-1", reason: "WELCOME_CREDIT" }).success, false);
+});
+
+test("WhatsApp connection bonus settings accept zero or a positive amount with two decimal places", () => {
+  assert.deepEqual(platformSettingsInputSchema.parse({ welcomeBonusAmount: "400" }), { welcomeBonusAmount: "400" });
+  assert.equal(platformSettingsInputSchema.parse({ welcomeBonusAmount: "125.50" }).welcomeBonusAmount, "125.50");
+  assert.equal(platformSettingsInputSchema.safeParse({ welcomeBonusAmount: "-1" }).success, false);
+  assert.equal(platformSettingsInputSchema.safeParse({ welcomeBonusAmount: "1.001" }).success, false);
 });

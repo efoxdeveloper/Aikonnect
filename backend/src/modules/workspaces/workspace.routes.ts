@@ -30,6 +30,8 @@ import { apiKeyRouter } from "../api-keys/api-key.routes.js";
 import { webhookRouter } from "../webhooks/webhook.routes.js";
 import { usageRouter } from "../usage/usage.routes.js";
 import { walletRouter } from "../wallet/wallet.routes.js";
+import { automationSettingsRouter } from "../automations/automation-settings.routes.js";
+import { sequenceRouter } from "../sequences/sequence.routes.js";
 import { subscriptionsRouter } from "../billing/subscriptions.routes.js";
 
 export const workspaceRouter = Router();
@@ -68,6 +70,8 @@ workspaceRouter.use("/:workspaceId/conversations", inboxRouter);
 workspaceRouter.use("/:workspaceId/assignment-rules", assignmentRuleRouter);
 workspaceRouter.use("/:workspaceId/whatsapp", whatsappRouter);
 workspaceRouter.use("/:workspaceId/automations", automationRouter);
+workspaceRouter.use("/:workspaceId/automation-settings", automationSettingsRouter);
+workspaceRouter.use("/:workspaceId/sequences", sequenceRouter);
 workspaceRouter.use("/:workspaceId/workflows", workflowRouter);
 workspaceRouter.use("/:workspaceId/campaigns", campaignRouter);
 workspaceRouter.use("/:workspaceId/reports", reportRouter);

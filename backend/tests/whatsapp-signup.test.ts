@@ -22,6 +22,7 @@ const { embeddedSignupSchema } = await import("../src/modules/whatsapp/whatsapp.
 const { requireWorkspacePermission } = await import("../src/middleware/workspace-access.js");
 const { PERMISSIONS } = await import("../src/modules/workspaces/permissions.js");
 const { encryptSecret } = await import("../src/utils/crypto.js");
+const { Prisma } = await import("../src/generated/prisma/client.js");
 
 const signup = { code: "test-code", wabaId: "test-waba", phoneNumberId: "test-phone" };
 const supportedFields = ["id", "display_phone_number", "verified_name", "quality_rating", "is_on_biz_app", "platform_type"];
@@ -53,6 +54,9 @@ function fixture(t: TestContext, options: {
   const accountWrites: Record<string, any>[] = [];
   const phoneWrites: Record<string, any>[] = [];
   const warnings: string[] = [];
+  const bonusEntries: Record<string, any>[] = [];
+  const workspace = { id: "workspace-id", tenantId: "tenant-id" };
+  const wallet: Record<string, any> = { id: "wallet-id", tenantId: "tenant-id", currency: "INR", totalBalance: new Prisma.Decimal(0), reservedBalance: new Prisma.Decimal(0), balanceMinorUnits: 0n, status: "ACTIVE", createdAt: new Date(), updatedAt: new Date() };
   stubDelegate(t, prisma, "$transaction", async (callback: (transaction: typeof prisma) => Promise<unknown>) => {
     steps.push("persist");
     return callback(prisma);
@@ -70,6 +74,14 @@ function fixture(t: TestContext, options: {
     return { id: "phone-id", metaPhoneNumberId: phone.id, status: "ACTIVE" };
   });
   stubDelegate(t, prisma.workspaceSetupProgress, "upsert", async () => ({}));
+  stubDelegate(t, prisma.workspace, "findUnique", async () => workspace);
+  stubDelegate(t, prisma.workspace, "update", async ({ data }: Record<string, any>) => Object.assign(workspace, data));
+  stubDelegate(t, prisma.platformConfiguration, "upsert", async () => ({ welcomeBonusAmount: new Prisma.Decimal("400.00") }));
+  stubDelegate(t, prisma.wallet, "upsert", async () => wallet);
+  stubDelegate(t, prisma.wallet, "update", async ({ data }: Record<string, any>) => Object.assign(wallet, data));
+  stubDelegate(t, prisma.walletLedgerEntry, "findUnique", async ({ where }: Record<string, any>) => bonusEntries.find((entry) => entry.walletId === where.walletId_idempotencyKey.walletId && entry.idempotencyKey === where.walletId_idempotencyKey.idempotencyKey) ?? null);
+  stubDelegate(t, prisma.walletLedgerEntry, "create", async ({ data }: Record<string, any>) => { const entry = { id: `bonus-${bonusEntries.length + 1}`, transactionReference: `bonus-reference-${bonusEntries.length + 1}`, ...data, createdAt: new Date() }; bonusEntries.push(entry); return entry; });
+  stubDelegate(t, prisma, "$queryRaw", async () => []);
   stubDelegate(t, prisma.whatsAppBusinessAccount, "update", async (args: Record<string, any>) => {
     if (typeof args.data.lastError === "string") warnings.push(args.data.lastError);
     return {};
@@ -144,7 +156,7 @@ function fixture(t: TestContext, options: {
     }
     assert.fail(`Unexpected request: ${url.pathname}`);
   });
-  return { steps, accountWrites, phoneWrites, warnings };
+  return { steps, accountWrites, phoneWrites, warnings, bonusEntries, wallet };
 }
 
 for (const omitPhoneId of [false, true]) {
@@ -156,12 +168,24 @@ for (const omitPhoneId of [false, true]) {
     assert.deepEqual(result.syncRequestIds, ["request-smb_app_state_sync", "request-history"]);
     assert.deepEqual(state.steps, ["exchange", "phone", "persist", "subscribe-start", "subscribed", "smb_app_state_sync", "history"]);
     assert.equal(state.accountWrites[0]?.create.workspaceId, "workspace-id");
+    assert.equal(state.bonusEntries.length, 1);
+    assert.equal(state.bonusEntries[0]?.transactionType, "WELCOME_BONUS");
+    assert.equal(state.bonusEntries[0]?.description, "Welcome bonus for connecting a WhatsApp number");
+    assert.equal(state.wallet.totalBalance.toFixed(2), "400.00");
     assert.notEqual(state.accountWrites[0]?.create.encryptedAccessToken, "test-business-token");
     // Limits are not supplied by this resource; do not invent or overwrite them.
     assert.equal("messagingLimit" in state.phoneWrites[0]!.create, false);
     assert.equal("messagingLimit" in state.phoneWrites[0]!.update, false);
   });
 }
+
+test("reconnecting a WhatsApp number does not credit the welcome bonus twice", async (t) => {
+  const state = fixture(t);
+  await completeEmbeddedSignup("workspace-id", signup);
+  await completeEmbeddedSignup("workspace-id", signup);
+  assert.equal(state.bonusEntries.length, 1);
+  assert.equal(state.wallet.totalBalance.toFixed(2), "400.00");
+});
 
 test("fresh-number signup stores Meta's customer-facing phone number after registration", async (t) => {
   const state = fixture(t);

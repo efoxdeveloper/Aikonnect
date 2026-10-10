@@ -5,13 +5,23 @@ import * as service from "./campaign.service.js";
 import { dispatchCampaign } from "./campaign.worker.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { uploadWhatsAppMedia } from "../whatsapp/whatsapp.service.js";
+import { streamCampaignUpdates } from "../../realtime/campaign.js";
 
 export async function list(request: Request, response: Response) { response.status(200).json({ success: true, data: await service.listCampaigns(request.params.workspaceId as string, request.validatedQuery as CampaignListQuery) }); }
 export async function get(request: Request, response: Response) { response.status(200).json({ success: true, data: await service.getCampaign(request.params.workspaceId as string, request.params.campaignId as string) }); }
+export function events(request: Request, response: Response) { streamCampaignUpdates(request.params.workspaceId as string, request.params.campaignId as string, response); }
+export async function control(request: Request, response: Response) {
+  const campaign = await service.controlCampaign(request.params.workspaceId as string, request.params.campaignId as string, request.body.action);
+  if (campaign.status === "RUNNING") void dispatchCampaign(campaign.id);
+  response.status(200).json({ success: true, data: campaign });
+}
 export async function create(request: Request, response: Response) {
   const campaign = await service.createCampaign(request.params.workspaceId as string, requireAuth(request).userId, request.body);
   if (campaign.status === "RUNNING") void dispatchCampaign(campaign.id);
   response.status(201).json({ success: true, data: campaign });
+}
+export async function estimate(request: Request, response: Response) {
+  response.status(200).json({ success: true, data: await service.estimateCampaign(request.params.workspaceId as string, request.body) });
 }
 export async function uploadMedia(request: Request, response: Response) {
   if (!Buffer.isBuffer(request.body)) throw new AppError(422, "Campaign media bytes are required", "MEDIA_DATA_REQUIRED");

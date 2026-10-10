@@ -76,6 +76,12 @@ export async function setAutomationStatus(workspaceId: string, automationId: str
                 : action.type === "WAIT" ? !Number(config.amount) || Number(config.amount) < 1
                   : ["START_WORKFLOW", "START_SEQUENCE", "STOP_SEQUENCE"].includes(action.type) && !String(config.reference ?? "").trim();
       if (missing) throw new AppError(422, `Complete the ${action.type.replaceAll("_", " ").toLowerCase()} action before publishing`, "AUTOMATION_INVALID");
+      if (action.type === "START_SEQUENCE" || action.type === "STOP_SEQUENCE") {
+        const reference = String(config.reference ?? "");
+        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(reference)) throw new AppError(422, "Choose a valid sequence for this action", "AUTOMATION_INVALID");
+        const sequence = await prisma.sequence.findFirst({ where: { id: reference, workspaceId, ...(action.type === "START_SEQUENCE" ? { status: "ACTIVE" } : {}) }, select: { id: true } });
+        if (!sequence) throw new AppError(422, action.type === "START_SEQUENCE" ? "Choose an active sequence before publishing" : "The selected sequence was not found", "AUTOMATION_INVALID");
+      }
     }
   }
   return prisma.automation.update({ where: { id: automation.id }, data: { status }, select: automationSelect });

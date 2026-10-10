@@ -229,12 +229,24 @@ export const WorkflowRunStatus = {
 export type WorkflowRunStatus = (typeof WorkflowRunStatus)[keyof typeof WorkflowRunStatus]
 
 
+export const SequenceEnrollmentStatus = {
+  WAITING: 'WAITING',
+  ACTIVE: 'ACTIVE',
+  COMPLETED: 'COMPLETED',
+  STOPPED: 'STOPPED',
+  FAILED: 'FAILED'
+} as const
+
+export type SequenceEnrollmentStatus = (typeof SequenceEnrollmentStatus)[keyof typeof SequenceEnrollmentStatus]
+
+
 export const CampaignStatus = {
   DRAFT: 'DRAFT',
   SCHEDULED: 'SCHEDULED',
   RUNNING: 'RUNNING',
   COMPLETED: 'COMPLETED',
-  PAUSED: 'PAUSED'
+  PAUSED: 'PAUSED',
+  CANCELLED: 'CANCELLED'
 } as const
 
 export type CampaignStatus = (typeof CampaignStatus)[keyof typeof CampaignStatus]

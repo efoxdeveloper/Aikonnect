@@ -5,11 +5,11 @@ import { validateBody, validateParams, validateQuery } from "../../middleware/va
 import { requireAnyWorkspacePermission, requireWorkspacePermission } from "../../middleware/workspace-access.js";
 import { PERMISSIONS } from "../workspaces/permissions.js";
 import * as controller from "./conversation.controller.js";
-import { contactConversationParamsSchema, conversationListQuerySchema, conversationParamsSchema, createConversationSchema, createMessageSchema, forwardTargetListQuerySchema, inboxConversationListQuerySchema, pinConversationSchema, workspaceConversationParamsSchema } from "./conversation.schemas.js";
+import { assignConversationSchema, contactConversationParamsSchema, conversationListQuerySchema, conversationParamsSchema, createConversationNoteSchema, createConversationSchema, createMessageSchema, forwardTargetListQuerySchema, inboxConversationListQuerySchema, pinConversationSchema, updateConversationStatusSchema, workspaceConversationDetailParamsSchema, workspaceConversationParamsSchema } from "./conversation.schemas.js";
 
 export const conversationRouter = Router({ mergeParams: true });
 conversationRouter.get("/", requireWorkspacePermission(PERMISSIONS.CONTACTS_READ), validateParams(contactConversationParamsSchema), validateQuery(conversationListQuerySchema), asyncHandler(controller.list));
-conversationRouter.post("/", requireWorkspacePermission(PERMISSIONS.CONTACTS_UPDATE), validateParams(contactConversationParamsSchema), validateBody(createConversationSchema), asyncHandler(controller.create));
+conversationRouter.post("/", requireAnyWorkspacePermission(PERMISSIONS.CONTACTS_UPDATE, PERMISSIONS.CONVERSATIONS_REPLY), validateParams(contactConversationParamsSchema), validateBody(createConversationSchema), asyncHandler(controller.create));
 conversationRouter.get("/history", requireWorkspacePermission(PERMISSIONS.CONTACTS_READ), validateParams(contactConversationParamsSchema), validateQuery(conversationListQuerySchema), asyncHandler(controller.history));
 conversationRouter.get("/:conversationId/messages", requireAnyWorkspacePermission(PERMISSIONS.CONTACTS_READ, PERMISSIONS.INBOX_READ), validateParams(conversationParamsSchema), validateQuery(conversationListQuerySchema), asyncHandler(controller.messages));
 conversationRouter.get("/:conversationId/messages/:messageId/media", requireAnyWorkspacePermission(PERMISSIONS.CONTACTS_READ, PERMISSIONS.INBOX_READ), validateParams(conversationParamsSchema.extend({ messageId: z.uuid() })), asyncHandler(controller.media));
@@ -23,4 +23,9 @@ conversationRouter.post("/:conversationId/messages", requireWorkspacePermission(
 export const inboxRouter = Router({ mergeParams: true });
 inboxRouter.get("/forward-targets", requireWorkspacePermission(PERMISSIONS.INBOX_READ), validateParams(workspaceConversationParamsSchema), validateQuery(forwardTargetListQuerySchema), asyncHandler(controller.forwardTargets));
 inboxRouter.get("/unread-count", requireWorkspacePermission(PERMISSIONS.INBOX_READ), validateParams(workspaceConversationParamsSchema), asyncHandler(controller.inboxUnreadCount));
+inboxRouter.get("/assignment-options", requireWorkspacePermission(PERMISSIONS.CONVERSATIONS_ASSIGN), validateParams(workspaceConversationParamsSchema), asyncHandler(controller.assignmentOptions));
+inboxRouter.get("/:conversationId/notes", requireWorkspacePermission(PERMISSIONS.INBOX_READ), validateParams(workspaceConversationDetailParamsSchema), asyncHandler(controller.listConversationNotes));
+inboxRouter.post("/:conversationId/notes", requireWorkspacePermission(PERMISSIONS.CONVERSATIONS_REPLY), validateParams(workspaceConversationDetailParamsSchema), validateBody(createConversationNoteSchema), asyncHandler(controller.createConversationNote));
+inboxRouter.patch("/:conversationId/assignment", requireWorkspacePermission(PERMISSIONS.CONVERSATIONS_ASSIGN), validateParams(workspaceConversationDetailParamsSchema), validateBody(assignConversationSchema), asyncHandler(controller.assignConversation));
+inboxRouter.patch("/:conversationId/status", requireWorkspacePermission(PERMISSIONS.CONVERSATIONS_MANAGE), validateParams(workspaceConversationDetailParamsSchema), validateBody(updateConversationStatusSchema), asyncHandler(controller.updateConversationStatus));
 inboxRouter.get("/", requireWorkspacePermission(PERMISSIONS.INBOX_READ), validateParams(workspaceConversationParamsSchema), validateQuery(inboxConversationListQuerySchema), asyncHandler(controller.inboxList));

@@ -9,6 +9,7 @@ import {
 } from "react";
 import {
   CalendarDays,
+  Ban,
   Check,
   ChevronDown,
   Copy,
@@ -16,9 +17,10 @@ import {
   FileText,
   Flag,
   Megaphone,
-  MessageCircle,
   MoreVertical,
   Plus,
+  Pause,
+  Play,
   Search,
   Send,
   Tag,
@@ -26,6 +28,7 @@ import {
   UserRound,
   Users,
 } from "lucide-react";
+import { WhatsAppIcon } from "@/components/whatsapp/WhatsAppIcon";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { ApiError, apiRequest } from "@/lib/api";
@@ -46,12 +49,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
 type CampaignStatus =
-  "DRAFT" | "SCHEDULED" | "RUNNING" | "COMPLETED" | "PAUSED";
+  "DRAFT" | "SCHEDULED" | "RUNNING" | "COMPLETED" | "PAUSED" | "CANCELLED";
 type CampaignKind = "one_time" | "ongoing" | "api";
 type Audience = "csv" | "manual" | "segment" | "contacts" | "all";
 type LaunchMode = "draft" | "schedule" | "send";
+type CampaignPayload = {
+  name: string; kind: CampaignKind; category: string; templateKey: string | null; audienceType: Audience;
+  audienceLabel: string; contactIds: string[]; phoneNumbers: string[]; launchMode: LaunchMode; scheduledAt: string | null;
+  retryFailed: boolean; segmentId?: string; templateVariables: Array<{ source: "contact" | "custom" | "constant"; field: string; fallback: string }>;
+  audienceConfig: Record<string, unknown>;
+};
+type CampaignEstimate = {
+  recipientCount: number; excludedCount: number; currency: string; estimatedWalletCost: string; estimatedMetaCost: string;
+  availableBalance: string; projectedBalance: string; canCoverEstimate: boolean; pricingBasis: string;
+  countries: Array<{ countryCode: string; countryName: string; recipients: number; estimatedWalletCost: string; estimatedMetaCost: string }>;
+};
+
+function formatCampaignMoney(currency: string, amount: string | number) {
+  const value = Number(amount);
+  return `${currency} ${Number.isFinite(value) ? value.toFixed(2) : "0.00"}`;
+}
 
 type Campaign = {
   id: string;
@@ -74,6 +94,7 @@ type Campaign = {
   deliveredRate: number | null;
   readRate: number | null;
   replied: number | null;
+  totalCost: number | null;
   setLiveAt: string | null;
   updatedAt: string;
 };
@@ -86,9 +107,12 @@ type CampaignTemplate = {
   category: string;
   language: string;
   body: string;
+  headerText?: string | null;
+  headerFileName?: string | null;
+  footer?: string | null;
   templateType?: "standard" | "carousel" | "limited" | "multi-product" | string;
   headerType?: "none" | "text" | "image" | "video" | "doc" | "location" | string;
-  content?: { carouselCards?: unknown[] } | null;
+  content?: { carouselCards?: unknown[]; buttons?: string[]; buttonTexts?: Record<string, string> } | null;
 };
 type CampaignMediaItem = { mediaId: string; type: "image" | "video" | "document"; fileName?: string };
 type CampaignTemplateMedia = { kind: "single" | "carousel"; items: CampaignMediaItem[] };
@@ -96,6 +120,45 @@ type CampaignTemplateListResponse = {
   items: CampaignTemplate[];
 };
 type CampaignSegment = { id: string; name: string };
+
+function CampaignWhatsAppPreview({ template, variables, media }: { template: CampaignTemplate; variables: Array<{ source: "" | "contact" | "custom" | "constant"; field: string; fallback: string }>; media: CampaignTemplateMedia | null }) {
+  const sampleVariable = (index: number) => {
+    const variable = variables[index - 1];
+    if (!variable?.source) return `Sample ${index}`;
+    if (variable.source === "constant") return variable.field || variable.fallback || `Sample ${index}`;
+    if (variable.source === "contact") {
+      if (variable.field === "name") return variable.fallback || "Ananya Sharma";
+      if (variable.field === "phone") return variable.fallback || "+91 98765 43210";
+      return variable.fallback || `Sample ${variable.field || "contact value"}`;
+    }
+    return variable.fallback || `Sample ${variable.field || "custom value"}`;
+  };
+  const renderVariables = (value: string | null | undefined) => (value ?? "").replace(/\{\{\s*(\d+)\s*\}\}/g, (_match, number: string) => sampleVariable(Number(number)));
+  const renderBody = (value: string) => renderVariables(value).split(/(https?:\/\/[^\s]+)/g).map((part, index) => /^https?:\/\//.test(part) ? <span key={index} className="text-[#168b77] underline underline-offset-2">{part}</span> : <span key={index}>{part}</span>);
+  const buttonLabels = (template.content?.buttons ?? []).map((button) => template.content?.buttonTexts?.[button] || button.replaceAll("-", " "));
+  const mediaName = media?.items[0]?.fileName || template.headerFileName;
+
+  return (
+    <section aria-label="WhatsApp message preview" className="border-t border-[var(--border-soft)] pt-5">
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <h3 className="text-sm font-medium">WhatsApp preview</h3>
+        <span className="text-[11px] text-[var(--text-muted)]">Sample values</span>
+      </div>
+      <div className="mx-auto min-h-[190px] w-full max-w-[360px] space-y-2 rounded-md border border-[#e6ddcf] bg-[#f5f0e6] p-3" style={{ backgroundImage: "radial-gradient(circle at 12px 14px, transparent 5px, rgba(196,178,150,.16) 5.5px, transparent 6.5px), radial-gradient(circle at 35px 34px, transparent 8px, rgba(196,178,150,.12) 8.5px, transparent 9.5px), radial-gradient(rgba(196,178,150,.14) .8px, transparent 1px)", backgroundSize: "48px 48px, 64px 64px, 18px 18px" }}>
+        <div data-testid="campaign-template-preview-message" className="w-fit max-w-[90%] whitespace-pre-wrap rounded-lg rounded-tl-none bg-white px-3 py-2.5 text-[13px] leading-[1.5] text-[#27332e] shadow-[0_1px_2px_rgba(0,0,0,.12)]">
+          {template.headerType && template.headerType !== "none" && <div className="mb-1.5 rounded bg-[#eef4f0] px-2 py-1 text-[11px] font-medium text-[#597067]">{template.headerType === "text" ? renderVariables(template.headerText) : <span>{template.headerType.toUpperCase()} header{mediaName ? ` · ${mediaName}` : ""}</span>}</div>}
+          <div>{template.body ? renderBody(template.body) : "Your template message will appear here."}</div>
+          {template.footer && <div className="mt-2 text-[10px] text-[#84918a]">{renderVariables(template.footer)}</div>}
+          <div className="mt-1 text-right text-[9px] text-[#84918a]">9:41 AM</div>
+        </div>
+        {template.templateType === "carousel" && Array.from({ length: Math.max(1, template.content?.carouselCards?.length ?? 1) }, (_, index) => <div key={index} className="max-w-[82%] overflow-hidden rounded-lg bg-white text-[11px] text-[#27332e] shadow-[0_1px_2px_rgba(0,0,0,.12)]"><div className="flex h-14 items-center justify-center bg-[#dbe6df] text-[#617269]">{media?.items[index]?.fileName ?? `Card ${index + 1} media`}</div><div className="px-2 py-1.5">Carousel card {index + 1}</div></div>)}
+        {buttonLabels.map((label, index) => <div key={`${label}-${index}`} className="max-w-[94%] rounded-md bg-white px-3 py-2 text-center text-[11px] font-medium capitalize text-[#147f78] shadow-[0_1px_2px_rgba(0,0,0,.12)]">{label}</div>)}
+      </div>
+      <p className="mt-2 text-[11px] leading-4 text-[var(--text-muted)]">Variable values are examples. Each recipient sees values from their contact record or your fallback.</p>
+    </section>
+  );
+}
+
 type CampaignListResponse = {
   items: unknown[];
   pagination: { page: number; pageSize: number; total: number; totalPages: number; hasNext: boolean; hasPrevious: boolean };
@@ -114,6 +177,7 @@ const statusLabels: Record<CampaignStatus, string> = {
   RUNNING: "Sending",
   COMPLETED: "Completed",
   PAUSED: "Paused",
+  CANCELLED: "Cancelled",
 };
 const statusClasses: Record<CampaignStatus, string> = {
   DRAFT: "bg-slate-100 text-slate-600",
@@ -121,6 +185,7 @@ const statusClasses: Record<CampaignStatus, string> = {
   RUNNING: "bg-amber-50 text-amber-700",
   COMPLETED: "bg-[var(--brand-soft)] text-[var(--brand)]",
   PAUSED: "bg-red-50 text-red-700",
+  CANCELLED: "bg-red-50 text-red-700",
 };
 
 function validStatus(value: unknown): CampaignStatus {
@@ -177,6 +242,7 @@ function normalizeCampaign(value: unknown): Campaign | null {
     deliveredRate: sent ? Number(((delivered / sent) * 100).toFixed(0)) : null,
     readRate: sent ? Number(((read / sent) * 100).toFixed(0)) : null,
     replied: sent ? Number((((item.replied ?? 0) / sent) * 100).toFixed(0)) : null,
+    totalCost: typeof item.totalCost === "number" && Number.isFinite(item.totalCost) ? item.totalCost : null,
     setLiveAt: item.setLiveAt || item.scheduledAt || null,
     updatedAt: item.updatedAt || new Date(0).toISOString(),
   };
@@ -318,27 +384,14 @@ function CreateCampaignDrawer({
   workspaceId?: string;
   accessToken?: string | null;
   onClose: () => void;
-  onCreate: (campaign: {
-    name: string;
-    kind: CampaignKind;
-    category: string;
-    templateKey: string | null;
-    audienceType: Audience;
-    audienceLabel: string;
-    contactIds: string[];
-    phoneNumbers: string[];
-    launchMode: LaunchMode;
-    scheduledAt: string | null;
-    retryFailed: boolean;
-    segmentId?: string;
-    templateVariables: Array<{ source: "contact" | "custom" | "constant"; field: string; fallback: string }>;
-    audienceConfig: Record<string, unknown>;
-  }) => Promise<void>;
+  onCreate: (campaign: CampaignPayload) => Promise<void>;
 }) {
   const [name, setName] = useState("");
   const [campaignKind, setCampaignKind] = useState(kind);
   const [template, setTemplate] = useState("");
   const [templates, setTemplates] = useState<CampaignTemplate[]>([]);
+  const [templateMenuOpen, setTemplateMenuOpen] = useState(false);
+  const templatePickerRef = useRef<HTMLDivElement>(null);
   const [templatesLoading, setTemplatesLoading] = useState(false);
   const [segments, setSegments] = useState<CampaignSegment[]>([]);
   const [segmentsLoading, setSegmentsLoading] = useState(false);
@@ -359,16 +412,22 @@ function CreateCampaignDrawer({
   const [launchMode, setLaunchMode] =
     useState<Exclude<LaunchMode, "draft">>("send");
   const [scheduledAt, setScheduledAt] = useState("");
+  const scheduleInputRef = useRef<HTMLInputElement>(null);
   const [retryFailed, setRetryFailed] = useState(false);
   const [templateMedia, setTemplateMedia] = useState<CampaignTemplateMedia | null>(null);
   const [mediaUploading, setMediaUploading] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [estimate, setEstimate] = useState<CampaignEstimate | null>(null);
+  const [reviewPayload, setReviewPayload] = useState<CampaignPayload | null>(null);
+  const [estimating, setEstimating] = useState(false);
+  const [launching, setLaunching] = useState(false);
 
   useEffect(() => {
     if (!open) return;
     setName("");
     setCampaignKind(kind);
     setTemplate("");
+    setTemplateMenuOpen(false);
     setCategory(categoryOptions[0]);
     setVariables([{ source: "", field: "", fallback: "" }]);
     setAudience(selectedContactCount ? "contacts" : "all");
@@ -382,6 +441,10 @@ function CreateCampaignDrawer({
     setTemplateMedia(null);
     setMediaUploading(null);
     setError(null);
+    setEstimate(null);
+    setReviewPayload(null);
+    setEstimating(false);
+    setLaunching(false);
   }, [kind, open, selectedContactCount]);
 
   useEffect(() => {
@@ -428,6 +491,17 @@ function CreateCampaignDrawer({
       active = false;
     };
   }, [accessToken, initialTemplateKey, open, workspaceId]);
+
+  useEffect(() => {
+    if (!templateMenuOpen) return;
+    const closeWhenOutside = (event: MouseEvent) => {
+      if (event.target instanceof Node && !templatePickerRef.current?.contains(event.target)) {
+        setTemplateMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", closeWhenOutside);
+    return () => document.removeEventListener("mousedown", closeWhenOutside);
+  }, [templateMenuOpen]);
 
   useEffect(() => {
     if (!open || !workspaceId || !accessToken) return;
@@ -555,7 +629,7 @@ function CreateCampaignDrawer({
             : audience === "segment"
               ? "Saved audience segment"
               : "All opted-in contacts";
-    await onCreate({
+    const payload: CampaignPayload = {
       name: name.trim(),
       kind: campaignKind,
       category,
@@ -573,7 +647,43 @@ function CreateCampaignDrawer({
         ...(audience === "csv" ? { csvFileName } : {}),
         ...(templateMedia ? { templateMedia } : {}),
       },
-    });
+    };
+    if (action === "draft") {
+      await onCreate(payload);
+      return;
+    }
+    if (!workspaceId || !accessToken) {
+      setError("Your workspace session expired. Refresh the page and try again.");
+      return;
+    }
+    setEstimating(true);
+    setError(null);
+    try {
+      const result = await apiRequest<CampaignEstimate>(`/workspaces/${workspaceId}/campaigns/estimate`, {
+        method: "POST",
+        headers: { authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify(payload),
+      });
+      setEstimate(result);
+      setReviewPayload(payload);
+    } catch (caughtError) {
+      setError(caughtError instanceof ApiError ? caughtError.message : "Campaign cost could not be estimated.");
+    } finally {
+      setEstimating(false);
+    }
+  };
+
+  const confirmLaunch = async () => {
+    if (!reviewPayload) return;
+    setLaunching(true);
+    setError(null);
+    try {
+      await onCreate(reviewPayload);
+    } catch (caughtError) {
+      setError(caughtError instanceof ApiError ? caughtError.message : "Campaign could not be launched. Review it and try again.");
+    } finally {
+      setLaunching(false);
+    }
   };
 
   const handleCsvChange = async (file: File | undefined) => {
@@ -610,7 +720,7 @@ function CreateCampaignDrawer({
     >
       <DrawerContent className="h-full max-h-screen border-l border-[var(--border)] data-[vaul-drawer-direction=right]:!max-w-[620px]">
         <DrawerHeader className="relative flex-none border-b border-[var(--border-soft)] bg-[var(--brand-soft)]/45 pr-14">
-          <DrawerTitle>Create WhatsApp Campaign</DrawerTitle>
+          <DrawerTitle>{reviewPayload ? "Review campaign" : "Create WhatsApp Campaign"}</DrawerTitle>
           <DrawerCloseButton />
         </DrawerHeader>
         <form
@@ -620,7 +730,39 @@ function CreateCampaignDrawer({
           }}
           className="flex min-h-0 flex-1 flex-col"
         >
-          <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-6 py-6">
+          <div
+            data-testid="campaign-drawer-body"
+            className="min-h-0 flex-1 overflow-y-auto !select-text px-6 py-6"
+          >
+            {reviewPayload && estimate ? (
+              <div className="space-y-5">
+                <section className="rounded-lg border border-[var(--border)] bg-white p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="text-sm font-semibold text-[var(--text-primary)]">{reviewPayload.name}</h3>
+                      <p className="mt-1 text-xs text-[var(--text-secondary)]">{reviewPayload.templateKey} · {reviewPayload.category} · {reviewPayload.launchMode === "schedule" ? `Scheduled for ${new Date(reviewPayload.scheduledAt ?? "").toLocaleString()}` : "Send now"}</p>
+                    </div>
+                    <span className="rounded-full bg-[var(--brand-soft)] px-2.5 py-1 text-xs font-medium text-[var(--brand)]">{estimate.recipientCount} recipients</span>
+                  </div>
+                  {estimate.excludedCount > 0 && <p className="mt-3 border-t border-[var(--border-soft)] pt-3 text-xs text-[var(--text-secondary)]">{estimate.excludedCount} contacts excluded because they are not eligible for WhatsApp marketing.</p>}
+                </section>
+                <section className="overflow-hidden rounded-lg border border-[var(--border)] bg-white">
+                  <div className="border-b border-[var(--border-soft)] px-4 py-3 text-sm font-semibold">Estimated cost by recipient country</div>
+                  <div className="divide-y divide-[var(--border-soft)]">
+                    {estimate.countries.map((country) => <div key={country.countryCode} className="flex items-center justify-between gap-4 px-4 py-3 text-sm"><div><div className="font-medium">{country.countryName}</div><div className="mt-0.5 text-xs text-[var(--text-secondary)]">{country.recipients} messages · {country.countryCode}</div></div><div className="text-right"><div className="font-medium">{formatCampaignMoney(estimate.currency, country.estimatedWalletCost)}</div><div className="mt-0.5 text-xs text-[var(--text-muted)]">estimated wallet debit</div></div></div>)}
+                  </div>
+                  <div className="space-y-2 border-t border-[var(--border-soft)] bg-[var(--page-background)] px-4 py-3 text-sm">
+                    <div className="flex justify-between"><span>Estimated wallet debit</span><strong>{formatCampaignMoney(estimate.currency, estimate.estimatedWalletCost)}</strong></div>
+                    <div className="flex justify-between text-[var(--text-secondary)]"><span>Available now</span><span>{formatCampaignMoney(estimate.currency, estimate.availableBalance)}</span></div>
+                    <div className="flex justify-between text-[var(--text-secondary)]"><span>Projected available balance</span><span>{formatCampaignMoney(estimate.currency, estimate.projectedBalance)}</span></div>
+                  </div>
+                </section>
+                {!estimate.canCoverEstimate && Number(estimate.estimatedWalletCost) > 0 && <div role="alert" className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2.5 text-sm text-amber-900">Available wallet funds don’t cover this campaign’s estimated cost. Add funds before launching.</div>}
+                <p className="text-xs leading-5 text-[var(--text-secondary)]">Estimated cost assumes 100% delivery to eligible recipients. You are charged only for messages successfully delivered. {estimate.pricingBasis} Rates are checked again when messages are sent.</p>
+                {error && <div role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm">{error}</div>}
+              </div>
+            ) : (
+            <div className="space-y-6">
             <div>
               <h3 className="mb-2 text-sm font-medium">Campaign Name</h3>
               <label htmlFor="campaign-name" className="sr-only">
@@ -658,31 +800,83 @@ function CreateCampaignDrawer({
               <label htmlFor="campaign-template" className="sr-only">
                 WhatsApp template
               </label>
-              <select
-                id="campaign-template"
-                value={template}
-                onChange={(event) => setTemplate(event.target.value)}
-                disabled={templatesLoading || Boolean(templateLoadError)}
-                aria-busy={templatesLoading}
-                className="h-10 w-full rounded-md border border-[var(--border)] bg-white px-3 text-sm outline-none focus:border-[var(--brand)] disabled:cursor-not-allowed disabled:bg-[var(--page-background)]"
-              >
-                <option value="">
-                  {templatesLoading
-                    ? "Loading workspace templates..."
-                    : approvedTemplates.length
-                      ? "Select an approved template"
-                      : "No approved templates available"}
-                </option>
-                {templates.map((item) => (
-                  <option
-                    key={item.id}
-                    value={item.key}
-                    disabled={item.status !== "APPROVED"}
+              <div ref={templatePickerRef} className="relative">
+                <button
+                  id="campaign-template"
+                  type="button"
+                  role="combobox"
+                  aria-label="WhatsApp template"
+                  aria-haspopup="listbox"
+                  aria-expanded={templateMenuOpen}
+                  aria-busy={templatesLoading}
+                  disabled={templatesLoading || Boolean(templateLoadError)}
+                  onClick={() => setTemplateMenuOpen((current) => !current)}
+                  onKeyDown={(event) => {
+                    if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setTemplateMenuOpen(true);
+                    }
+                  }}
+                  className="flex min-h-10 w-full items-center justify-between gap-3 rounded-md border border-[var(--border)] bg-white px-3 py-1.5 text-sm outline-none transition-colors focus:border-[var(--brand)] disabled:cursor-not-allowed disabled:bg-[var(--page-background)]"
+                >
+                  {selectedTemplate ? (
+                    <span className="flex min-w-0 flex-1 flex-col items-start text-left leading-4">
+                      <span className="max-w-full truncate font-medium text-[var(--text-primary)]">
+                        {selectedTemplate.name}
+                      </span>
+                      <span data-testid="selected-template-category" className="max-w-full truncate text-xs font-normal text-[var(--text-muted)]">
+                        {selectedTemplate.category} · {selectedTemplate.language}
+                      </span>
+                    </span>
+                  ) : (
+                    <span className="min-w-0 flex-1 truncate text-left text-[var(--text-muted)]">
+                      {templatesLoading
+                        ? "Loading workspace templates..."
+                        : approvedTemplates.length
+                          ? "Select an approved template"
+                          : "No approved templates available"}
+                    </span>
+                  )}
+                  <ChevronDown size={16} className={cn("shrink-0 text-[var(--text-muted)] transition-transform", templateMenuOpen && "rotate-180")} />
+                </button>
+                {templateMenuOpen && (
+                  <div
+                    role="listbox"
+                    aria-label="WhatsApp templates"
+                    onKeyDown={(event) => {
+                      if (event.key === "Escape") {
+                        setTemplateMenuOpen(false);
+                        (event.currentTarget.parentElement?.querySelector("[role=combobox]") as HTMLButtonElement | null)?.focus();
+                      }
+                    }}
+                    className="absolute left-0 right-0 top-full z-50 mt-1 max-h-64 overflow-y-auto rounded-md border border-[var(--border)] bg-white p-1 shadow-[0_10px_30px_rgba(4,45,29,.10)]"
                   >
-                    {item.name} · {item.language} · {item.status.toLowerCase()}
-                  </option>
-                ))}
-              </select>
+                    {templates.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        role="option"
+                        aria-selected={item.key === template}
+                        disabled={item.status !== "APPROVED"}
+                        onClick={() => {
+                          setTemplate(item.key);
+                          setTemplateMenuOpen(false);
+                        }}
+                        className="flex min-h-12 w-full items-center rounded px-3 py-1.5 text-left hover:bg-[var(--brand-subtle)] focus:bg-[var(--brand-subtle)] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <span className="flex min-w-0 flex-1 flex-col items-start leading-4">
+                          <span className="max-w-full truncate text-sm font-medium text-[var(--text-primary)]">
+                            {item.name}
+                          </span>
+                          <span className="max-w-full truncate text-xs font-normal text-[var(--text-muted)]">
+                            {item.category} · {item.language}
+                          </span>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
               {templateLoadError ? (
                 <span className="mt-1.5 block text-xs text-[var(--danger)]">
                   {templateLoadError}
@@ -695,6 +889,7 @@ function CreateCampaignDrawer({
                 </span>
               )}
             </div>
+            {selectedTemplate && <CampaignWhatsAppPreview template={selectedTemplate} variables={variables} media={templateMedia} />}
             {mediaRequired && (
               <div className="border-t border-[var(--border-soft)] pt-5">
                 <h3 className="mb-1 text-sm font-medium">Campaign media</h3>
@@ -936,12 +1131,33 @@ function CreateCampaignDrawer({
                   >
                     Schedule Date &amp; Time
                   </label>
-                  <Input
-                    id="campaign-schedule"
-                    type="datetime-local"
-                    value={scheduledAt}
-                    onChange={(event) => setScheduledAt(event.target.value)}
-                  />
+                  <div className="relative">
+                    <Input
+                      ref={scheduleInputRef}
+                      id="campaign-schedule"
+                      type="datetime-local"
+                      value={scheduledAt}
+                      onChange={(event) => setScheduledAt(event.target.value)}
+                      className="pr-11"
+                    />
+                    <button
+                      type="button"
+                      aria-label="Open schedule calendar"
+                      onClick={() => {
+                        const input = scheduleInputRef.current;
+                        if (!input) return;
+                        try {
+                          if (typeof input.showPicker === "function") input.showPicker();
+                          else input.focus();
+                        } catch {
+                          input.focus();
+                        }
+                      }}
+                      className="absolute right-1.5 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"
+                    >
+                      <CalendarDays size={16} aria-hidden="true" />
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -965,7 +1181,9 @@ function CreateCampaignDrawer({
                 live.
               </div>
             </div>
-            {error && (
+            </div>
+            )}
+            {error && !reviewPayload && (
               <div
                 role="alert"
                 className="rounded-md bg-red-50 px-3 py-2 text-sm"
@@ -975,6 +1193,10 @@ function CreateCampaignDrawer({
             )}
           </div>
           <DrawerFooter className="flex-none border-t border-[var(--border-soft)] bg-white sm:flex-row sm:justify-end">
+            {reviewPayload ? <>
+              <button type="button" disabled={launching} onClick={() => { setReviewPayload(null); setEstimate(null); setError(null); }} className="h-10 rounded-md border border-[var(--border)] bg-white px-4 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] disabled:opacity-50">Back to edit</button>
+              <button type="button" disabled={launching || (!estimate?.canCoverEstimate && Number(estimate?.estimatedWalletCost ?? 0) > 0)} onClick={() => void confirmLaunch()} className="h-10 rounded-md bg-[var(--brand)] px-4 text-sm font-medium text-white hover:bg-[var(--brand-hover)] disabled:cursor-not-allowed disabled:opacity-50">{launching ? "Launching…" : reviewPayload.launchMode === "schedule" ? "Confirm schedule" : "Confirm and send"}</button>
+            </> : <>
             <button
               type="button"
               onClick={onClose}
@@ -991,13 +1213,14 @@ function CreateCampaignDrawer({
             </button>
             <button
               type="button"
-              disabled={!canSend}
+              disabled={!canSend || estimating}
               onClick={() => submit("live")}
               className="flex h-10 items-center justify-center rounded-md bg-[var(--brand)] px-4 text-sm font-medium text-white hover:bg-[var(--brand-hover)] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Set Live
+              {estimating ? "Calculating…" : "Review cost"}
               <Send size={14} className="ml-1.5" />
             </button>
+            </>}
           </DrawerFooter>
         </form>
       </DrawerContent>
@@ -1021,6 +1244,7 @@ export function Campaigns() {
   const selectedContactIds = (searchParams.get("contactIds") ?? "").split(",").filter(Boolean);
   const selectedTemplateKey = searchParams.get("templateKey");
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [cancelTarget, setCancelTarget] = useState<Campaign | null>(null);
   const [totalCampaigns, setTotalCampaigns] = useState(0);
   const [hasCampaigns, setHasCampaigns] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -1054,7 +1278,7 @@ export function Campaigns() {
   }, [accessToken, canRead, category, creator, dateFilter, kind, search, status, workspaceId]);
   useEffect(() => { void loadCampaigns(); }, [loadCampaigns]);
   const creators = useMemo(
-    () => [...new Map(campaigns.map((campaign) => [campaign.createdById ?? campaign.createdBy, { value: campaign.createdById ?? campaign.createdBy, label: campaign.createdBy }])).values()],
+    () => [...new Map(campaigns.filter((campaign) => campaign.createdById).map((campaign) => [campaign.createdById!, { value: campaign.createdById!, label: campaign.createdBy }])).values()],
     [campaigns],
   );
   const kindCampaigns = totalCampaigns;
@@ -1100,6 +1324,7 @@ export function Campaigns() {
         "Created By",
         "Category",
         "Status",
+        "Total Campaign Cost (INR)",
         "Attempted",
         "Sent",
         "Delivered",
@@ -1113,6 +1338,7 @@ export function Campaigns() {
         campaign.createdBy,
         campaign.category,
         statusLabels[campaign.status],
+        campaign.totalCost === null ? "" : campaign.totalCost.toFixed(2),
         campaign.attempted,
         campaign.sent,
         campaign.delivered,
@@ -1141,6 +1367,20 @@ export function Campaigns() {
       await loadCampaigns();
     } catch (caughtError) {
       setError(caughtError instanceof ApiError ? caughtError.message : "Campaign could not be duplicated.");
+    }
+  };
+  const controlCampaign = async (campaign: Campaign, action: "pause" | "resume" | "cancel") => {
+    if (!canSend || !workspaceId || !accessToken) return;
+    try {
+      await apiRequest(`/workspaces/${workspaceId}/campaigns/${campaign.id}/control`, {
+        method: "POST",
+        headers: { authorization: `Bearer ${accessToken}`, "content-type": "application/json" },
+        body: JSON.stringify({ action }),
+      });
+      await loadCampaigns();
+    } catch (caughtError) {
+      setError(caughtError instanceof ApiError ? caughtError.message : `Campaign could not be ${action === "cancel" ? "cancelled" : `${action}d`}.`);
+      throw caughtError;
     }
   };
   return (
@@ -1177,7 +1417,7 @@ export function Campaigns() {
                 onClick={() => setCreateOpen(true)}
                 className="flex h-10 items-center rounded-md bg-[var(--brand)] px-4 text-[15px] font-medium text-white hover:bg-[var(--brand-hover)]"
               >
-                <MessageCircle size={18} className="mr-2" />
+                <WhatsAppIcon size={18} className="mr-2" />
                 Create WhatsApp Campaign
               </button>
             )}
@@ -1204,7 +1444,7 @@ export function Campaigns() {
             </span>
           </div>
           <div className="flex h-10 items-center rounded-md border border-[var(--border)] bg-white px-2.5 text-[13px] font-medium text-[var(--brand-hover)]">
-            <MessageCircle size={15} className="mr-1.5" />
+            <WhatsAppIcon size={15} className="mr-1.5" />
             WhatsApp
             <ChevronDown size={13} className="ml-1.5" />
           </div>
@@ -1303,7 +1543,7 @@ export function Campaigns() {
             className="min-h-0 flex-1 overflow-auto"
             data-testid="campaign-table-scroll-region"
           >
-            <table aria-label="Campaign performance" className="campaign-data-table w-full min-w-[1040px] border-collapse text-left">
+            <table aria-label="Campaign performance" className="campaign-data-table w-full min-w-[1140px] border-collapse text-left">
               <thead className="sticky top-0 z-10 border-b border-[var(--border-soft)] bg-[var(--sidebar-rail-background)] shadow-[inset_0_-1px_0_var(--border-soft)]">
                 <tr>
                   {[
@@ -1311,6 +1551,7 @@ export function Campaigns() {
                     { label: "Created by", align: "text-left" },
                     { label: "Category", align: "text-left" },
                     { label: "Status", align: "text-left" },
+                    { label: "Total cost", align: "text-right" },
                     { label: "Attempted", align: "text-right" },
                     { label: "Sent", align: "text-right" },
                     { label: "Delivered", align: "text-right" },
@@ -1328,7 +1569,7 @@ export function Campaigns() {
                 </tr>
               </thead>
               <tbody>
-                {loading ? <tr><td colSpan={11} className="p-12 text-center text-xs text-[var(--text-secondary)]">Loading campaigns…</td></tr> : filteredCampaigns.map((campaign) => (
+                {loading ? <tr><td colSpan={12} className="p-12 text-center text-xs text-[var(--text-secondary)]">Loading campaigns…</td></tr> : filteredCampaigns.map((campaign) => (
                   <tr
                     key={campaign.id}
                     className="group h-12 cursor-pointer border-b border-[var(--border-soft)] text-sm text-[var(--text-primary)] hover:bg-[var(--brand-soft)] focus-within:bg-[var(--brand-soft)]"
@@ -1352,6 +1593,9 @@ export function Campaigns() {
                     <td className="whitespace-nowrap px-3 py-4">{campaign.category}</td>
                     <td className="whitespace-nowrap px-3 py-4">
                       <CampaignStatusBadge status={campaign.status} />
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-4 text-right font-medium tabular-nums">
+                      {campaign.totalCost === null ? "—" : `₹ ${campaign.totalCost.toFixed(2)}`}
                     </td>
                     <td className="whitespace-nowrap px-3 py-4 text-right font-medium tabular-nums">
                       {campaign.attempted || "--"}
@@ -1391,6 +1635,9 @@ export function Campaigns() {
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-48">
+                          {canSend && (campaign.status === "RUNNING" || campaign.status === "SCHEDULED") && <DropdownMenuItem onSelect={() => void controlCampaign(campaign, "pause").catch(() => undefined)} className="text-xs"><Pause className="size-4" />Pause campaign</DropdownMenuItem>}
+                          {canSend && campaign.status === "PAUSED" && <DropdownMenuItem onSelect={() => void controlCampaign(campaign, "resume").catch(() => undefined)} className="text-xs"><Play className="size-4" />Resume campaign</DropdownMenuItem>}
+                          {canSend && ["DRAFT", "SCHEDULED", "RUNNING", "PAUSED"].includes(campaign.status) && <DropdownMenuItem onSelect={() => setCancelTarget(campaign)} className="text-xs text-[var(--danger)]"><Ban className="size-4" />Cancel campaign</DropdownMenuItem>}
                           <DropdownMenuItem
                             onSelect={() => downloadReport(campaign)}
                             className="text-xs"
@@ -1467,6 +1714,16 @@ export function Campaigns() {
           setSearchParams({}, { replace: true });
         }}
         onCreate={createCampaign}
+      />
+      <ConfirmationDialog
+        open={Boolean(cancelTarget)}
+        onOpenChange={(open) => { if (!open) setCancelTarget(null); }}
+        title="Cancel this campaign?"
+        description={`“${cancelTarget?.name ?? ""}” will stop starting new messages. Messages already being sent may still complete.`}
+        confirmLabel="Cancel campaign"
+        pendingLabel="Cancelling…"
+        tone="danger"
+        onConfirm={() => cancelTarget ? controlCampaign(cancelTarget, "cancel") : Promise.resolve()}
       />
     </div>
   );

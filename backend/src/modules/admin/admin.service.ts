@@ -3,7 +3,7 @@ import { checkDatabaseConnection, prisma } from "../../database/prisma.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { Prisma, type Prisma as PrismaTypes } from "../../generated/prisma/client.js";
 import type { Request } from "express";
-import type { AdminAuditQuery, AdminListQuery, AdminPlanInput, AdminUserAction } from "./admin.schemas.js";
+import type { AdminAuditQuery, AdminListQuery, AdminPlanInput, AdminUserAction, PlatformSettingsInput } from "./admin.schemas.js";
 import type { PlatformRole } from "../../middleware/platform-access.js";
 import { minorUnitsToAmount } from "../wallet/wallet.service.js";
 
@@ -200,7 +200,19 @@ export async function listAuditLogs(query: AdminAuditQuery) {
 }
 
 export async function getPlatformSettings() {
-  return { runtime: { environment: env.NODE_ENV, apiPrefix: env.API_PREFIX, accessTokenTtlMinutes: env.ACCESS_TOKEN_TTL_MINUTES, refreshTokenTtlDays: env.REFRESH_TOKEN_TTL_DAYS }, integrations: { metaApp: Boolean(env.META_APP_ID), metaGraph: env.META_GRAPH_API_VERSION, smtp: Boolean(env.SMTP_HOST), googleOAuth: Boolean(env.GOOGLE_CLIENT_ID), aiProvider: Boolean(env.GROQ_API_KEY) }, featureFlags: { configured: false, message: "Feature flag persistence is not configured yet." }, billing: { currency: env.WALLET_CURRENCY, walletConfigured: true } };
+  const configuration = await prisma.platformConfiguration.upsert({ where: { id: "default" }, create: { id: "default", welcomeBonusAmount: new Prisma.Decimal(400) }, update: {} });
+  return { runtime: { environment: env.NODE_ENV, apiPrefix: env.API_PREFIX, accessTokenTtlMinutes: env.ACCESS_TOKEN_TTL_MINUTES, refreshTokenTtlDays: env.REFRESH_TOKEN_TTL_DAYS }, integrations: { metaApp: Boolean(env.META_APP_ID), metaGraph: env.META_GRAPH_API_VERSION, smtp: Boolean(env.SMTP_HOST), googleOAuth: Boolean(env.GOOGLE_CLIENT_ID), aiProvider: Boolean(env.GROQ_API_KEY) }, featureFlags: { configured: false, message: "Feature flag persistence is not configured yet." }, billing: { currency: env.WALLET_CURRENCY, walletConfigured: true }, signup: { welcomeBonusAmount: configuration.welcomeBonusAmount.toFixed(2), currency: env.WALLET_CURRENCY } };
+}
+
+export async function updatePlatformSettings(input: PlatformSettingsInput) {
+  const amount = new Prisma.Decimal(input.welcomeBonusAmount);
+  if (amount.lt(0) || amount.gt(99_999_999)) throw new AppError(422, "The WhatsApp connection bonus must be between 0 and 99,999,999", "WELCOME_BONUS_AMOUNT_INVALID");
+  const configuration = await prisma.platformConfiguration.upsert({ where: { id: "default" }, create: { id: "default", welcomeBonusAmount: amount }, update: { welcomeBonusAmount: amount } });
+  return { welcomeBonusAmount: configuration.welcomeBonusAmount.toFixed(2), currency: env.WALLET_CURRENCY, updatedAt: configuration.updatedAt.toISOString() };
+}
+
+export async function recordPlatformSettingsChange(actorUserId: string, input: PlatformSettingsInput) {
+  await prisma.platformAuditLog.create({ data: { actorUserId, action: "WHATSAPP_CONNECTION_BONUS_CHANGED", resourceType: "platform_configuration", resourceId: null, metadata: { welcomeBonusAmount: input.welcomeBonusAmount, currency: env.WALLET_CURRENCY } } });
 }
 
 export async function getFeatureFlags() {

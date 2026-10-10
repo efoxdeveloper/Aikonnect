@@ -73,7 +73,7 @@ export function WhatsAppConnectionGuide({
               <div className="min-h-0 flex-1 overflow-y-auto px-3 py-1.5">
                 {option.sections.map((section) => <section key={section.title} className="border-b border-slate-200 py-3 last:border-b-0"><h3 className="text-[11px] font-medium text-slate-500">{section.title}</h3><div className="mt-2 space-y-1.5 text-[13px] leading-[1.35] text-slate-900 [&>strong]:block [&>span]:block">{section.content}</div></section>)}
               </div>
-              <button type="button" aria-label={`Proceed with ${option.title}`} aria-busy={loading && selected} disabled={loading} onClick={() => { onChoiceChange(option.id); onNext(option.id); }} className="flex shrink-0 items-center justify-center gap-2 border-t border-emerald-200 bg-emerald-50 px-4 py-3 text-xs font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 disabled:cursor-wait disabled:opacity-70">{loading && selected ? <><LoaderCircle size={14} className="animate-spin" aria-hidden="true" /> Opening Meta…</> : <>Proceed <span aria-hidden="true">→</span></>}</button>
+              <button type="button" aria-label={`Proceed with ${option.title}`} aria-busy={loading && selected} disabled={loading} onClick={() => { onChoiceChange(option.id); onNext(option.id); }} className="flex shrink-0 items-center justify-center gap-2 border-t border-[var(--brand)] bg-[var(--brand)] px-4 py-3 text-xs font-semibold text-white transition-colors hover:bg-[var(--brand-hover)] disabled:cursor-wait disabled:opacity-70">{loading && selected ? <><LoaderCircle size={14} className="animate-spin" aria-hidden="true" /> Opening Meta…</> : <>Proceed <span aria-hidden="true">→</span></>}</button>
             </article>;
           })}
         </div>

@@ -19,10 +19,10 @@ function withInboxBadge(groups: NavigationGroup[], unreadCount: number) {
   }));
 }
 
-function RailLink({ item, active, expanded, onClick }: { item: NavigationItem; active: boolean; expanded: boolean; onClick?: () => void }) {
+function RailLink({ item, active, expanded, tooltipTitle, onClick }: { item: NavigationItem; active: boolean; expanded: boolean; tooltipTitle?: string; onClick?: () => void }) {
   const Icon = item.icon;
   const target = item.url ?? item.children?.[0]?.url ?? "/dashboard";
-  return <Tooltip title={expanded ? "" : item.title} placement="right" arrow>
+  return <Tooltip title={expanded ? "" : tooltipTitle ?? item.title} placement="right" arrow>
     <ListItemButton
       component={Link}
       to={target}
@@ -45,14 +45,14 @@ function ContextMenu({ group, pathname, railWidth }: { group: NavigationGroup; p
   const moduleTitle = group.title ?? "Navigation";
   return <Drawer data-testid="sidebar-context-menu" aria-label={`${moduleTitle} menu`} variant="permanent" slotProps={{ paper: { style: { borderRightWidth: 1, borderRightStyle: "solid", borderRightColor: "var(--border)", borderRadius: "16px 0 0 16px" } } }} sx={{ width: "var(--sidebar-width)", flexShrink: 0, "& .MuiDrawer-paper": { position: "fixed", left: railWidth, bottom: 8, top: "calc(var(--header-height) + var(--notification-strip-height, 0px))", width: "var(--sidebar-width)", height: "auto", boxSizing: "border-box", overflow: "hidden", borderRight: "1px solid var(--border)", borderRadius: "16px 0 0 16px", backgroundColor: "#fafafa", backgroundImage: "none", boxShadow: "none", zIndex: 9 } }}>
     <Box sx={{ display: "flex", height: "100%", minHeight: 0, flexDirection: "column", fontFamily: "var(--font-sans)" }}>
-      <Box sx={{ borderBottom: "1px solid var(--border)", px: 2, py: 1.75 }}>
+      <Box sx={{ borderBottom: "1px solid var(--border)", px: 2, py: 1.25 }}>
         <Box sx={{ overflow: "hidden", color: "var(--text-primary)", fontSize: 14, fontWeight: 600, textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{moduleTitle}</Box>
       </Box>
-      <List aria-label={`${moduleTitle} navigation`} disablePadding sx={{ minHeight: 0, flex: 1, overflowY: "auto", px: 1, py: 1 }}>
+      <List aria-label={`${moduleTitle} navigation`} disablePadding sx={{ minHeight: 0, flex: 1, overflowY: "auto", px: 1, py: 0.75 }}>
         {group.items.map((item) => {
           const Icon = item.icon;
           const active = isNavigationItemActive(item, pathname);
-          return <ListItemButton key={item.title} component={Link} to={item.url ?? "#"} selected={active} aria-current={active ? "page" : undefined} sx={{ minHeight: 40, mb: 0.25, gap: 1, borderRadius: "8px", px: 1.25, color: "var(--text-secondary)", "&.Mui-selected": { color: "var(--brand)", backgroundColor: "var(--brand-soft)", fontWeight: 500 }, "&.Mui-selected:hover": { backgroundColor: "var(--brand-soft)" }, "&:hover": { color: "var(--text-primary)", backgroundColor: "var(--surface-subtle)" } }}>
+          return <ListItemButton key={item.title} component={Link} to={item.url ?? "#"} selected={active} aria-current={active ? "page" : undefined} sx={{ minHeight: 36, mb: 0.125, gap: 1, borderRadius: "8px", px: 1.25, color: "var(--text-secondary)", "&.Mui-selected": { color: "var(--brand)", backgroundColor: "var(--brand-soft)", fontWeight: 500 }, "&.Mui-selected:hover": { backgroundColor: "var(--brand-soft)" }, "&:hover": { color: "var(--text-primary)", backgroundColor: "var(--surface-subtle)" } }}>
             <ListItemIcon sx={{ minWidth: 0, color: item.iconColor ?? "inherit" }}><Icon size={17} aria-hidden="true" /></ListItemIcon>
             <ListItemText primary={<Typography noWrap sx={{ fontSize: 14, fontWeight: active ? 500 : 400 }}>{item.title}</Typography>} />
             {item.badge && <Badge color="error" badgeContent={item.badge.text} sx={{ mr: 1 }} />}
@@ -100,11 +100,11 @@ export function AppSidebar({ platformOnly = false }: { platformOnly?: boolean })
     return !platformOnly && canAccessPlatformAdmin ? [...visible, { title: "Platform", items: [{ title: "Admin console", url: "/admin", icon: ShieldCheck }] }] : visible;
   }, [canAccessPlatformAdmin, canManageAssignmentRules, platformOnly, unreadCount, visiblePlatformRole]);
   const activeGroup = getActiveNavigationGroup(groups, pathname);
-  const railItems = groups.flatMap((group) => {
+  const railItems: Array<{ item: NavigationItem; active: boolean; tooltipTitle?: string }> = groups.flatMap((group) => {
     if (!group.title) return group.items.map((item) => ({ item, active: isNavigationItemActive(item, pathname) }));
     const firstItem = group.items[0];
     const item = group.title === "Settings" ? { ...firstItem, title: "Settings", url: "/account-settings", icon: Settings } : firstItem;
-    return [{ item, active: activeGroup === group }];
+    return [{ item, active: activeGroup === group, tooltipTitle: group.title }];
   });
   const railWidth = isRailExpanded ? "var(--sidebar-expanded-width)" : "var(--sidebar-collapsed-width)";
 
@@ -118,7 +118,7 @@ export function AppSidebar({ platformOnly = false }: { platformOnly?: boolean })
   return <>
     <Drawer data-testid="app-sidebar" data-state={isRailExpanded ? "rail-expanded" : "rail"} aria-label="Primary navigation" variant="permanent" slotProps={{ paper: { style: { borderRight: "0px solid transparent" } } }} sx={{ width: railWidth, flexShrink: 0, "& .MuiDrawer-paper": { position: "fixed", left: 0, bottom: 0, top: "calc(var(--header-height) + var(--notification-strip-height, 0px))", width: railWidth, height: "auto", boxSizing: "border-box", display: "flex", alignItems: isRailExpanded ? "stretch" : "center", overflow: "hidden", borderRight: "0 !important", backgroundColor: "var(--sidebar-rail-background)", backgroundImage: "none", boxShadow: "none", px: 0.5, py: 1, zIndex: 10, transition: "width 180ms ease-out" } }}>
       <List aria-label="Application modules" disablePadding sx={{ display: "flex", width: isRailExpanded ? "100%" : "auto", minHeight: 0, flex: 1, flexDirection: "column", alignItems: isRailExpanded ? "stretch" : "center", gap: 0.25, overflowY: "auto" }}>
-        {railItems.map(({ item, active }) => <RailLink key={item.title} item={item} active={active} expanded={isRailExpanded} />)}
+        {railItems.map(({ item, active, tooltipTitle }) => <RailLink key={item.title} item={item} active={active} expanded={isRailExpanded} tooltipTitle={tooltipTitle} />)}
       </List>
       <SidebarFooter expanded={isRailExpanded} showProfile={Boolean(auth?.user)} />
       <Tooltip title={isRailExpanded ? "Collapse sidebar" : "Expand sidebar"} placement="right" arrow>

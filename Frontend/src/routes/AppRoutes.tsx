@@ -13,7 +13,8 @@ import { CampaignDetails } from "@/pages/CampaignDetails";
 import { Inbox } from "@/pages/Inbox";
 import { Automations } from "@/pages/Automations";
 import { AutomationBuilder } from "@/pages/AutomationBuilder";
-import { AutomationPlaceholder } from "@/pages/AutomationPlaceholder";
+import { Sequences, SequenceDetails, SequenceEditor } from "@/pages/Sequences";
+import { AutomationSettings } from "@/pages/AutomationSettings";
 import { BillingSubscriptions } from "@/pages/BillingSubscriptions";
 import { PublicPricing } from "@/pages/PublicPricing";
 import { BillingUsage } from "@/pages/BillingUsage";
@@ -74,8 +75,11 @@ export function AppRoutes() {
           <Route path="/workflows/:workflowId" element={<WorkflowBuilder />} />
           <Route path="/tasks" element={<Tasks />} />
           <Route path="/api-webhooks" element={<ApiWebhooks />} />
-          <Route path="/sequences" element={<AutomationPlaceholder kind="sequences" />} />
-          <Route path="/automation-settings" element={<AutomationPlaceholder kind="settings" />} />
+          <Route path="/sequences" element={<Sequences />} />
+          <Route path="/sequences/create" element={<SequenceEditor />} />
+          <Route path="/sequences/:sequenceId/edit" element={<SequenceEditor />} />
+          <Route path="/sequences/:sequenceId" element={<SequenceDetails />} />
+          <Route path="/automation-settings" element={<AutomationSettings />} />
           <Route path="/billing/subscriptions" element={<BillingSubscriptions />} />
           <Route path="/billing/plans" element={<PublicPricing embedded />} />
           {paths.map((path) => <Route key={path} path={`/${path}`} element={<Dashboard />} />)}

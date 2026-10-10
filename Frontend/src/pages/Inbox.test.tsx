@@ -35,7 +35,7 @@ const manageAuth: AuthContextValue = {
   ...auth,
   user: auth.user && {
     ...auth.user,
-    memberships: [{ ...auth.user.memberships[0], role: { ...auth.user.memberships[0].role, permissions: [...inboxPermission, "conversations.manage"] } }],
+    memberships: [{ ...auth.user.memberships[0], role: { ...auth.user.memberships[0].role, permissions: [...inboxPermission, "conversations.manage", "conversations.assign"] } }],
   },
 };
 
@@ -58,6 +58,17 @@ const olderConversation = {
   contact: { id: "contact-older", name: "Older Customer", profileName: "Older", profileImageUrl: null },
 };
 
+const newContactConversation = {
+  ...conversation,
+  id: "conversation-new-contact",
+  contactId: "contact-new",
+  unreadCount: 0,
+  lastMessagePreview: null,
+  lastMessageAt: null,
+  contact: { id: "contact-new", name: "Nia New Contact", profileName: null, profileImageUrl: null },
+};
+let newContactConversationCreated = false;
+
 function renderPage(value = auth, initialEntry = "/inbox") {
   return render(<AuthContext.Provider value={value}><MemoryRouter initialEntries={[initialEntry]}><Inbox /></MemoryRouter></AuthContext.Provider>);
 }
@@ -71,7 +82,36 @@ describe("Inbox", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    newContactConversationCreated = false;
     vi.mocked(apiRequest).mockImplementation(async (path, options = {}) => {
+      if (String(path).endsWith("/contacts/contact-new/conversations") && options.method === "POST") {
+        newContactConversationCreated = true;
+        return { id: newContactConversation.id, contactId: newContactConversation.contactId } as never;
+      }
+      if (String(path).includes("/conversations?") && String(path).includes("contactId=contact-new")) {
+        return {
+          items: newContactConversationCreated ? [newContactConversation] : [],
+          pagination: { page: 1, pageSize: 25, total: newContactConversationCreated ? 1 : 0, totalPages: 1 },
+        } as never;
+      }
+      if (String(path).endsWith("/assignment-options")) return [{ id: "membership-1", name: "Workspace Owner", role: "Agent" }, { id: "membership-2", name: "Maya Patel", role: "Agent" }] as never;
+      if (String(path).includes("/contacts/contact-new/conversations/") && String(path).includes("/messages")) return { items: [], pagination: {} } as never;
+      if (String(path).endsWith("/notes")) {
+        if (options.method === "POST") {
+          const body = typeof options.body === "string" ? JSON.parse(options.body) as { content: string } : { content: "" };
+          return { id: "note-1", content: body.content, createdAt: "2026-08-27T06:01:00.000Z", createdBy: { id: "user-1", firstName: "Workspace", lastName: "Owner" } } as never;
+        }
+        return [] as never;
+      }
+      if (String(path).endsWith("/status") && options.method === "PATCH") {
+        const body = typeof options.body === "string" ? JSON.parse(options.body) as { status: string } : { status: "OPEN" };
+        return { id: "conversation-1", status: body.status } as never;
+      }
+      if (String(path).endsWith("/assignment") && options.method === "PATCH") {
+        const body = typeof options.body === "string" ? JSON.parse(options.body) as { assigneeMembershipId: string | null } : { assigneeMembershipId: null };
+        const assignee = body.assigneeMembershipId === "membership-2" ? { id: "membership-2", user: { firstName: "Maya", lastName: "Patel" } } : body.assigneeMembershipId === "membership-1" ? { id: "membership-1", user: { firstName: "Workspace", lastName: "Owner" } } : null;
+        return { id: "conversation-1", assigneeMembershipId: body.assigneeMembershipId, assignee } as never;
+      }
       if (String(path).includes("/messages") && options.method === "DELETE") return undefined as never;
       if (String(path).includes("/messages") && options.method === "POST") {
         const body = typeof options.body === "string" ? JSON.parse(options.body) as { type?: string; text?: string | null; mediaData?: string } : {};
@@ -91,6 +131,10 @@ describe("Inbox", () => {
     const channelNav = within(screen.getByRole("navigation", { name: "Inbox channels" }));
     expect(screen.getByLabelText("Inbox navigation")).toBeInTheDocument();
     expect(channelNav.getByRole("button", { name: "All Channels" })).toHaveAttribute("aria-pressed", "true");
+    expect(channelNav.getByRole("button", { name: "WhatsApp" })).toBeEnabled();
+    expect(channelNav.getByRole("button", { name: "Instagram" })).toBeDisabled();
+    expect(channelNav.getByRole("button", { name: "Messenger" })).toBeDisabled();
+    expect(channelNav.getByRole("button", { name: "WhatsApp Calls" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Conversation list options" })).toHaveAttribute("aria-expanded", "false");
     fireEvent.click(screen.getByRole("button", { name: "Conversation list options" }));
     const filtersMenu = within(screen.getByRole("menu", { name: "Conversation filters" }));
@@ -104,12 +148,118 @@ describe("Inbox", () => {
     expect(folderNav.getByRole("button", { name: "Unassigned" })).toHaveAttribute("aria-pressed", "true");
     expect(folderNav.getByRole("button", { name: "All chats" })).toHaveAttribute("aria-pressed", "false");
     fireEvent.click(screen.getByRole("button", { name: "Channels" }));
-    expect(within(screen.getByRole("menu", { name: "Conversation filters" })).getByRole("button", { name: "All Channels" })).toBeInTheDocument();
+    const channelMenu = within(screen.getByRole("menu", { name: "Conversation filters" }));
+    expect(channelMenu.getByRole("button", { name: "All Channels" })).toBeInTheDocument();
+    expect(channelMenu.getByRole("button", { name: "WhatsApp" })).toBeEnabled();
+    expect(channelMenu.getByRole("button", { name: "Instagram" })).toBeDisabled();
+    expect(channelMenu.getByRole("button", { name: "Messenger" })).toBeDisabled();
+    expect(channelMenu.getByRole("button", { name: "WhatsApp Calls" })).toBeDisabled();
     expect(await screen.findByRole("button", { name: /Aarav Sharma/ })).toBeInTheDocument();
     expect(await screen.findByText("Can you share the pricing?")).toBeInTheDocument();
     expect(apiRequest).toHaveBeenCalledWith(
       "/workspaces/workspace-1/conversations?page=1&pageSize=25&search=",
       { headers: { authorization: "Bearer access-token" } },
+    );
+  });
+
+  it("creates and opens an Inbox conversation when a deep-linked contact has no chat yet", async () => {
+    renderPage(auth, "/inbox?contactId=contact-new");
+
+    expect(await screen.findByRole("button", { name: /Nia New Contact/ })).toBeInTheDocument();
+    expect(await screen.findByText("No messages in this conversation")).toBeInTheDocument();
+    expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/contacts/contact-new/conversations",
+      expect.objectContaining({
+        method: "POST",
+        headers: { authorization: "Bearer access-token" },
+        body: JSON.stringify({ channelKey: "whatsapp" }),
+      }),
+    );
+    expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/conversations?page=1&pageSize=25&search=&contactId=contact-new",
+      { headers: { authorization: "Bearer access-token" } },
+    );
+  });
+
+  it("waits to fetch message media until it is near the chat viewport", async () => {
+    const observerCallbacks: Array<(entries: IntersectionObserverEntry[]) => void> = [];
+    vi.stubGlobal("IntersectionObserver", class {
+      constructor(callback: IntersectionObserverCallback) { observerCallbacks.push(callback as (entries: IntersectionObserverEntry[]) => void); }
+      observe() {}
+      disconnect() {}
+    });
+    vi.mocked(downloadApiFile).mockResolvedValue(new Blob(["image data"], { type: "image/jpeg" }));
+    const defaultRequest = vi.mocked(apiRequest).getMockImplementation();
+    vi.mocked(apiRequest).mockImplementation(async (path, options = {}) => {
+      if (String(path).includes("/messages")) {
+        return { items: [{ id: "message-with-media", direction: "INCOMING", type: "IMAGE", status: "READ", mediaId: "meta-media-1", mediaUrl: null, text: null, sentAt: "2026-08-27T06:00:00.000Z" }], pagination: {} } as never;
+      }
+      return defaultRequest ? defaultRequest(path, options) : undefined as never;
+    });
+
+    renderPage();
+    expect(await screen.findByText("Media")).toBeInTheDocument();
+    expect(downloadApiFile).not.toHaveBeenCalled();
+    expect(observerCallbacks).toHaveLength(1);
+
+    act(() => observerCallbacks[0]([{ isIntersecting: true } as IntersectionObserverEntry]));
+    await waitFor(() => expect(downloadApiFile).toHaveBeenCalledTimes(1));
+    expect(downloadApiFile).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/contacts/contact-1/conversations/conversation-1/messages/message-with-media/media",
+      "access-token",
+    );
+  });
+
+  it("filters conversations by the signed-in agent and unassigned state", async () => {
+    renderPage();
+    fireEvent.click(await screen.findByRole("button", { name: "Assigned to me" }));
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/conversations?page=1&pageSize=25&search=&assigneeMembershipId=membership-1",
+      { headers: { authorization: "Bearer access-token" } },
+    ));
+
+    fireEvent.click(screen.getByRole("button", { name: "Unassigned" }));
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/conversations?page=1&pageSize=25&search=&assigneeMembershipId=unassigned",
+      { headers: { authorization: "Bearer access-token" } },
+    ));
+  });
+
+  it("assigns and reassigns a conversation to an active workspace member", async () => {
+    renderPage(manageAuth);
+    const assignee = await screen.findByRole("combobox", { name: "Assign conversation" });
+    fireEvent.change(assignee, { target: { value: "membership-2" } });
+
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/conversations/conversation-1/assignment",
+      { method: "PATCH", headers: { authorization: "Bearer access-token", "content-type": "application/json" }, body: JSON.stringify({ assigneeMembershipId: "membership-2" }) },
+    ));
+    await waitFor(() => expect(screen.getByRole("combobox", { name: "Assign conversation" })).toHaveValue("membership-2"));
+  });
+
+  it("updates conversation state from the thread controls", async () => {
+    renderPage(manageAuth);
+    fireEvent.change(await screen.findByRole("combobox", { name: "Conversation status" }), { target: { value: "PENDING" } });
+
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/conversations/conversation-1/status",
+      { method: "PATCH", headers: { authorization: "Bearer access-token", "content-type": "application/json" }, body: JSON.stringify({ status: "PENDING" }) },
+    ));
+    expect(screen.getByRole("combobox", { name: "Conversation status" })).toHaveValue("PENDING");
+  });
+
+  it("adds a private internal note to the conversation thread", async () => {
+    renderPage();
+    fireEvent.change(await screen.findByRole("combobox", { name: "Composer mode" }), { target: { value: "note" } });
+    fireEvent.change(screen.getByRole("textbox", { name: "Internal note" }), { target: { value: "Follow up tomorrow" } });
+    fireEvent.click(screen.getByRole("button", { name: "Add internal note" }));
+
+    expect(await screen.findByText("Internal note · Workspace Owner")).toBeInTheDocument();
+    expect(screen.getByText("Follow up tomorrow")).toBeInTheDocument();
+    expect(document.querySelector('[data-internal-note="true"]')).toBeInTheDocument();
+    expect(apiRequest).toHaveBeenCalledWith(
+      "/workspaces/workspace-1/conversations/conversation-1/notes",
+      { method: "POST", headers: { authorization: "Bearer access-token", "content-type": "application/json" }, body: JSON.stringify({ content: "Follow up tomorrow" }) },
     );
   });
 

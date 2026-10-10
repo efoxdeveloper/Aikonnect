@@ -36,6 +36,15 @@ describe("AppSidebar", () => {
     expect(sidebar).toHaveAttribute("data-state", "rail");
   });
 
+  it("shows the group name in the Marketing rail tooltip", async () => {
+    render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><AppSidebar /></SidebarProvider></MemoryRouter>);
+
+    const marketing = screen.getByTestId("sidebar-rail-campaigns");
+    expect(marketing).toHaveAttribute("href", "/campaigns");
+    fireEvent.mouseEnter(marketing);
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("Marketing");
+  });
+
   it("expands from the bottom toggle to show only the main module links", () => {
     render(<MemoryRouter initialEntries={["/dashboard"]}><SidebarProvider><AppSidebar /></SidebarProvider></MemoryRouter>);
 
@@ -93,6 +102,8 @@ describe("AppSidebar", () => {
     expect(menu).toHaveTextContent("Campaigns");
     expect(menu).toHaveTextContent("Templates");
     expect(menu).toHaveTextContent("Automation");
+    const secondaryNavigation = within(menu).getByRole("list", { name: "Marketing navigation" });
+    expect(within(secondaryNavigation).getByRole("link", { name: "Campaigns" })).toHaveStyle({ minHeight: "36px" });
     expect(menu).not.toHaveTextContent("Contacts");
     const sidebarPaper = menu.querySelector(".MuiDrawer-paper");
     expect((sidebarPaper as HTMLElement).style.borderRadius).toBe("16px 0 0 16px");
@@ -103,6 +114,17 @@ describe("AppSidebar", () => {
     expect(screen.getByTestId("sidebar-content-shell")).toBeInTheDocument();
     expect(screen.getByTestId("sidebar-content-backdrop")).toBeInTheDocument();
     expect(screen.queryByText("Dashboard")).not.toBeInTheDocument();
+  });
+
+  it("shows automation destinations in the existing Marketing secondary sidebar", () => {
+    render(<MemoryRouter initialEntries={["/automations"]}><SidebarProvider><AppSidebar /></SidebarProvider></MemoryRouter>);
+
+    const menu = screen.getByTestId("sidebar-context-menu");
+    const navigation = within(menu).getByRole("list", { name: "Marketing navigation" });
+    expect(within(navigation).getByRole("link", { name: "Automation" })).toHaveAttribute("href", "/automations");
+    expect(within(navigation).getByRole("link", { name: "Automation" })).toHaveAttribute("aria-current", "page");
+    expect(within(navigation).getByRole("link", { name: "Workflows" })).toHaveAttribute("href", "/workflows");
+    expect(within(navigation).getByRole("link", { name: "Sequences" })).toHaveAttribute("href", "/sequences");
   });
 
   it("uses Settings and a gear icon for the settings module entry", () => {

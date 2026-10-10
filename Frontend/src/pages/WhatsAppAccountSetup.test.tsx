@@ -4,10 +4,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AuthContext, type AuthContextValue } from "@/contexts/AuthContext";
 import { useWhatsAppEmbeddedSignup } from "@/hooks/use-whatsapp-embedded-signup";
 import { useWorkspaceSetup } from "@/hooks/use-workspace-setup";
+import { useDashboardResource } from "@/hooks/use-dashboard-resource";
 import { WhatsAppAccountSetup } from "@/pages/WhatsAppAccountSetup";
 
 vi.mock("@/hooks/use-workspace-setup", () => ({ useWorkspaceSetup: vi.fn() }));
 vi.mock("@/hooks/use-whatsapp-embedded-signup", () => ({ useWhatsAppEmbeddedSignup: vi.fn() }));
+vi.mock("@/hooks/use-dashboard-resource", () => ({ useDashboardResource: vi.fn() }));
 vi.mock("@/lib/api", () => ({ apiRequest: vi.fn() }));
 
 const auth: AuthContextValue = {
@@ -59,6 +61,7 @@ describe("WhatsAppAccountSetup", () => {
   beforeEach(() => {
     vi.mocked(useWorkspaceSetup).mockReturnValue({ data: connectedData, loading: false, error: null, refresh: vi.fn() });
     vi.mocked(useWhatsAppEmbeddedSignup).mockReturnValue({ connecting: false, syncing: false, error: null, pinRequired: false, submitRegistrationPin: vi.fn(), cancelRegistrationPin: vi.fn(), start: vi.fn() });
+    vi.mocked(useDashboardResource).mockReturnValue({ data: { amount: "400.00", currency: "INR", granted: false, pending: false, source: null }, loading: false, error: false, restricted: false, refresh: vi.fn() });
   });
 
   it("uses the authenticated page frame and concise connected account content", () => {
@@ -87,6 +90,16 @@ describe("WhatsAppAccountSetup", () => {
     fireEvent.click(screen.getByRole("button", { name: "Proceed with New Number" }));
     expect(start).toHaveBeenCalledWith("new-number");
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  });
+
+  it("shows the WhatsApp connection bonus and explains when it is credited", async () => {
+    vi.mocked(useWorkspaceSetup).mockReturnValue({ data: disconnectedData, loading: false, error: null, refresh: vi.fn() });
+    render(<AuthContext.Provider value={auth}><MemoryRouter><WhatsAppAccountSetup /></MemoryRouter></AuthContext.Provider>);
+
+    expect(screen.getByText("Rs. 400")).toBeInTheDocument();
+    fireEvent.focus(screen.getByRole("button", { name: "About the WhatsApp connection bonus" }));
+    expect(await screen.findByText("One-time wallet credit, added automatically after Meta confirms your WhatsApp number is connected.")).toBeInTheDocument();
+    expect(useDashboardResource).toHaveBeenCalledWith("/workspaces/workspace-1/wallet/welcome-bonus", "access-token");
   });
 
   it("shows a separate progress dialog while the finished Meta signup is being saved", () => {

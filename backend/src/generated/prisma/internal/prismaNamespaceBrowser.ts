@@ -62,6 +62,7 @@ export const ModelName = {
   Contact: 'Contact',
   ContactConsentEvent: 'ContactConsentEvent',
   Conversation: 'Conversation',
+  ConversationNote: 'ConversationNote',
   ConversationAssignmentRule: 'ConversationAssignmentRule',
   Message: 'Message',
   WhatsAppWebhookEvent: 'WhatsAppWebhookEvent',
@@ -80,6 +81,9 @@ export const ModelName = {
   AutomationLog: 'AutomationLog',
   Workflow: 'Workflow',
   WorkflowRun: 'WorkflowRun',
+  Sequence: 'Sequence',
+  SequenceEnrollment: 'SequenceEnrollment',
+  WorkspaceAutomationSettings: 'WorkspaceAutomationSettings',
   Campaign: 'Campaign',
   CampaignRecipient: 'CampaignRecipient',
   WorkspaceMember: 'WorkspaceMember',
@@ -96,6 +100,7 @@ export const ModelName = {
   WorkspaceSubscription: 'WorkspaceSubscription',
   PlanRequest: 'PlanRequest',
   PlatformAuditLog: 'PlatformAuditLog',
+  PlatformConfiguration: 'PlatformConfiguration',
   EmailVerificationToken: 'EmailVerificationToken',
   PasswordResetToken: 'PasswordResetToken'
 } as const
@@ -182,6 +187,8 @@ export const WorkspaceScalarFieldEnum = {
   onboardingData: 'onboardingData',
   onboardingStep: 'onboardingStep',
   onboardingCompletedAt: 'onboardingCompletedAt',
+  welcomeBonusGrantedAt: 'welcomeBonusGrantedAt',
+  welcomeBonusCelebratedAt: 'welcomeBonusCelebratedAt',
   ownerId: 'ownerId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -354,6 +361,20 @@ export const ConversationScalarFieldEnum = {
 } as const
 
 export type ConversationScalarFieldEnum = (typeof ConversationScalarFieldEnum)[keyof typeof ConversationScalarFieldEnum]
+
+
+export const ConversationNoteScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  conversationId: 'conversationId',
+  contactId: 'contactId',
+  content: 'content',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ConversationNoteScalarFieldEnum = (typeof ConversationNoteScalarFieldEnum)[keyof typeof ConversationNoteScalarFieldEnum]
 
 
 export const ConversationAssignmentRuleScalarFieldEnum = {
@@ -712,6 +733,58 @@ export const WorkflowRunScalarFieldEnum = {
 export type WorkflowRunScalarFieldEnum = (typeof WorkflowRunScalarFieldEnum)[keyof typeof WorkflowRunScalarFieldEnum]
 
 
+export const SequenceScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  name: 'name',
+  description: 'description',
+  status: 'status',
+  steps: 'steps',
+  enrolledCount: 'enrolledCount',
+  completedCount: 'completedCount',
+  failedCount: 'failedCount',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SequenceScalarFieldEnum = (typeof SequenceScalarFieldEnum)[keyof typeof SequenceScalarFieldEnum]
+
+
+export const SequenceEnrollmentScalarFieldEnum = {
+  id: 'id',
+  sequenceId: 'sequenceId',
+  workspaceId: 'workspaceId',
+  contactId: 'contactId',
+  conversationId: 'conversationId',
+  status: 'status',
+  currentStep: 'currentStep',
+  currentCampaignId: 'currentCampaignId',
+  nextRunAt: 'nextRunAt',
+  attemptCount: 'attemptCount',
+  lastError: 'lastError',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SequenceEnrollmentScalarFieldEnum = (typeof SequenceEnrollmentScalarFieldEnum)[keyof typeof SequenceEnrollmentScalarFieldEnum]
+
+
+export const WorkspaceAutomationSettingsScalarFieldEnum = {
+  workspaceId: 'workspaceId',
+  timezone: 'timezone',
+  sendWindowStart: 'sendWindowStart',
+  sendWindowEnd: 'sendWindowEnd',
+  sendDays: 'sendDays',
+  retryLimit: 'retryLimit',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkspaceAutomationSettingsScalarFieldEnum = (typeof WorkspaceAutomationSettingsScalarFieldEnum)[keyof typeof WorkspaceAutomationSettingsScalarFieldEnum]
+
+
 export const CampaignScalarFieldEnum = {
   id: 'id',
   workspaceId: 'workspaceId',
@@ -1032,6 +1105,15 @@ export const PlatformAuditLogScalarFieldEnum = {
 } as const
 
 export type PlatformAuditLogScalarFieldEnum = (typeof PlatformAuditLogScalarFieldEnum)[keyof typeof PlatformAuditLogScalarFieldEnum]
+
+
+export const PlatformConfigurationScalarFieldEnum = {
+  id: 'id',
+  welcomeBonusAmount: 'welcomeBonusAmount',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlatformConfigurationScalarFieldEnum = (typeof PlatformConfigurationScalarFieldEnum)[keyof typeof PlatformConfigurationScalarFieldEnum]
 
 
 export const EmailVerificationTokenScalarFieldEnum = {

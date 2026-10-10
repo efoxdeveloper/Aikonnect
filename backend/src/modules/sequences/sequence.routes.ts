@@ -1,0 +1,20 @@
+import { Router } from "express";
+import { asyncHandler } from "../../middleware/async-handler.js";
+import { validateBody, validateParams, validateQuery } from "../../middleware/validate.js";
+import { requireWorkspacePermission } from "../../middleware/workspace-access.js";
+import { PERMISSIONS } from "../workspaces/permissions.js";
+import * as controller from "./sequence.controller.js";
+import { createSequenceSchema, eligibleContactsQuerySchema, enrollSequenceSchema, sequenceIdParamsSchema, sequenceListQuerySchema, sequenceWorkspaceParamsSchema } from "./sequence.schemas.js";
+
+export const sequenceRouter = Router({ mergeParams: true });
+sequenceRouter.use(validateParams(sequenceWorkspaceParamsSchema));
+sequenceRouter.get("/", requireWorkspacePermission(PERMISSIONS.AUTOMATIONS_READ), validateQuery(sequenceListQuerySchema), asyncHandler(controller.list));
+sequenceRouter.get("/eligible-contacts", requireWorkspacePermission(PERMISSIONS.CAMPAIGNS_SEND), validateQuery(eligibleContactsQuerySchema), asyncHandler(controller.eligibleContacts));
+sequenceRouter.post("/", requireWorkspacePermission(PERMISSIONS.AUTOMATIONS_MANAGE), validateBody(createSequenceSchema), asyncHandler(controller.create));
+sequenceRouter.get("/:sequenceId", requireWorkspacePermission(PERMISSIONS.AUTOMATIONS_READ), validateParams(sequenceIdParamsSchema), asyncHandler(controller.get));
+sequenceRouter.put("/:sequenceId", requireWorkspacePermission(PERMISSIONS.AUTOMATIONS_MANAGE), validateParams(sequenceIdParamsSchema), validateBody(createSequenceSchema), asyncHandler(controller.update));
+sequenceRouter.delete("/:sequenceId", requireWorkspacePermission(PERMISSIONS.AUTOMATIONS_MANAGE), validateParams(sequenceIdParamsSchema), asyncHandler(controller.remove));
+sequenceRouter.post("/:sequenceId/activate", requireWorkspacePermission(PERMISSIONS.AUTOMATIONS_MANAGE), requireWorkspacePermission(PERMISSIONS.CAMPAIGNS_SEND), validateParams(sequenceIdParamsSchema), asyncHandler(controller.activate));
+sequenceRouter.post("/:sequenceId/pause", requireWorkspacePermission(PERMISSIONS.AUTOMATIONS_MANAGE), validateParams(sequenceIdParamsSchema), asyncHandler(controller.pause));
+sequenceRouter.post("/:sequenceId/enrollments", requireWorkspacePermission(PERMISSIONS.CAMPAIGNS_SEND), validateParams(sequenceIdParamsSchema), validateBody(enrollSequenceSchema), asyncHandler(controller.enroll));
+sequenceRouter.post("/:sequenceId/contacts/:contactId/stop", requireWorkspacePermission(PERMISSIONS.AUTOMATIONS_MANAGE), validateParams(sequenceIdParamsSchema.extend({ contactId: sequenceWorkspaceParamsSchema.shape.workspaceId })), asyncHandler(controller.stop));

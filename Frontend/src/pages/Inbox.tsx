@@ -4,9 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import {
   Archive,
   ArrowLeft,
-  Ban,
   Check,
-  CalendarClock,
   CheckCheck,
   Copy,
   ChevronDown,
@@ -22,7 +20,6 @@ import {
   Mic,
   MessageCircle,
   MessageSquare,
-  Megaphone,
   MoreVertical,
   Forward,
   Paperclip,
@@ -31,8 +28,7 @@ import {
   Search,
   Send,
   Smile,
-  Star,
-  Tag,
+  StickyNote,
   RefreshCw,
   Reply,
   Trash2,
@@ -44,6 +40,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { ApiError, apiRequest, downloadApiFile, getWebSocketUrl } from "@/lib/api";
+import { loadInboxMedia } from "@/pages/inbox-media-cache";
 import { getActiveMembership } from "@/lib/workspace";
 import { notifyInboxUnreadCountChanged } from "@/hooks/use-inbox-unread-count";
 import { cn } from "@/lib/utils";
@@ -51,11 +48,14 @@ import { cn } from "@/lib/utils";
 type ConversationStatus = "OPEN" | "PENDING" | "RESOLVED" | "CLOSED";
 type InboxFolder = ConversationStatus | "UNREAD" | undefined;
 type ChatFilterKey = "All chats" | "Active chats" | "Assigned to me" | "Unassigned" | string;
+type AssigneeFilter = "all" | "mine" | "unassigned";
 type ChannelFilter = "all" | "whatsapp" | "instagram" | "messenger" | "whatsapp_calls";
 type Conversation = {
   id: string;
   contactId: string;
   status: ConversationStatus;
+  assigneeMembershipId?: string | null;
+  assignee?: { id: string; user: { firstName: string; lastName: string } } | null;
   unreadCount: number;
   isPinned?: boolean;
   lastMessagePreview: string | null;
@@ -74,7 +74,16 @@ type Message = {
   mediaUrl?: string | null;
   deletedAt?: string | null;
   sentAt: string;
+  internalNote?: boolean;
+  authorName?: string;
 };
+type ConversationNote = {
+  id: string;
+  content: string;
+  createdAt: string;
+  createdBy: { id: string; firstName: string; lastName: string } | null;
+};
+type AssigneeOption = { id: string; name: string; role: string };
 type PageResponse<T> = {
   items: T[];
   pagination: { page: number; pageSize: number; total: number; totalPages: number; hasNext?: boolean; hasPrevious?: boolean };
@@ -84,33 +93,24 @@ type SyncResponse = { syncRequestIds: string[]; syncWarnings: string[] };
 const CONVERSATION_PAGE_SIZE = 25;
 const MESSAGE_PAGE_SIZE = 50;
 
-const channels: Array<{ label: string; value: ChannelFilter; icon: LucideIcon }> = [
+const channels: Array<{ label: string; value: ChannelFilter; icon: LucideIcon; disabled?: boolean }> = [
   { label: "All Channels", value: "all", icon: InboxIcon },
   { label: "WhatsApp", value: "whatsapp", icon: MessageCircle },
-  { label: "Instagram", value: "instagram", icon: MessageSquare },
-  { label: "Messenger", value: "messenger", icon: MessageSquare },
-  { label: "WhatsApp Calls", value: "whatsapp_calls", icon: PhoneCall },
+  { label: "Instagram", value: "instagram", icon: MessageSquare, disabled: true },
+  { label: "Messenger", value: "messenger", icon: MessageSquare, disabled: true },
+  { label: "WhatsApp Calls", value: "whatsapp_calls", icon: PhoneCall, disabled: true },
 ];
-const chatFilters: Array<{ label: string; status: InboxFolder; icon: LucideIcon }> = [
-  { label: "All chats", status: undefined, icon: InboxIcon },
-  { label: "Active chats", status: "OPEN", icon: MessageCircle },
-  { label: "Assigned to me", status: undefined, icon: UserRound },
-  { label: "Unassigned", status: undefined, icon: UserX },
+const chatFilters: Array<{ label: string; status: InboxFolder; assignee: AssigneeFilter; icon: LucideIcon }> = [
+  { label: "All chats", status: undefined, assignee: "all", icon: InboxIcon },
+  { label: "Active chats", status: "OPEN", assignee: "all", icon: MessageCircle },
+  { label: "Assigned to me", status: undefined, assignee: "mine", icon: UserRound },
+  { label: "Unassigned", status: undefined, assignee: "unassigned", icon: UserX },
 ];
 const advancedFilters: Array<{ label: string; status?: InboxFolder; icon: LucideIcon }> = [
-  { label: "Less", icon: CircleAlert },
-  { label: "Last 24 Hours", icon: CalendarClock },
-  { label: "Favorite only", icon: Star },
   { label: "Open", status: "OPEN", icon: MessageCircle },
   { label: "Pending", status: "PENDING", icon: Clock3 },
   { label: "Solved", status: "RESOLVED", icon: CheckCheck },
-  { label: "Expired", icon: Clock3 },
-  { label: "Blocked Chats", icon: Ban },
-  { label: "Broadcasts", icon: Megaphone },
   { label: "Unread", status: "UNREAD", icon: Mail },
-  { label: "CTWA", icon: Tag },
-  { label: "G-CTWA", icon: Tag },
-  { label: "T-CTWA", icon: Tag },
 ];
 
 function initials(name: string) {
@@ -187,11 +187,29 @@ function MessageTicks({ status }: { status: string }) {
 function MessageMedia({ message, accessToken, workspaceId, contactId, conversationId }: { message: Message; accessToken: string | null | undefined; workspaceId: string | undefined; contactId: string; conversationId: string }) {
   const [source, setSource] = useState(message.mediaUrl ?? null);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [nearViewport, setNearViewport] = useState(Boolean(message.mediaUrl));
+  const mediaRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
-    if (!accessToken || !workspaceId || message.mediaUrl || !message.mediaId) return;
+    if (message.mediaUrl || !message.mediaId || nearViewport) return;
+    const element = mediaRef.current;
+    if (!element || typeof IntersectionObserver === "undefined") {
+      setNearViewport(true);
+      return;
+    }
+    const root = element.closest("[data-testid='inbox-message-region']");
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting) return;
+      setNearViewport(true);
+      observer.disconnect();
+    }, { root, rootMargin: "240px 0px" });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [message.mediaId, message.mediaUrl, nearViewport]);
+  useEffect(() => {
+    if (!nearViewport || !accessToken || !workspaceId || message.mediaUrl || !message.mediaId) return;
     let active = true;
     let objectUrl: string | undefined;
-    void downloadApiFile(`/workspaces/${workspaceId}/contacts/${contactId}/conversations/${conversationId}/messages/${message.id}/media`, accessToken)
+    void loadInboxMedia(`/workspaces/${workspaceId}/contacts/${contactId}/conversations/${conversationId}/messages/${message.id}/media`, accessToken)
       .then((blob) => {
         objectUrl = URL.createObjectURL(blob);
         if (active) setSource(objectUrl);
@@ -201,12 +219,12 @@ function MessageMedia({ message, accessToken, workspaceId, contactId, conversati
       active = false;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [accessToken, contactId, conversationId, message.id, message.mediaId, message.mediaUrl, workspaceId]);
+  }, [accessToken, contactId, conversationId, message.id, message.mediaId, message.mediaUrl, nearViewport, workspaceId]);
 
-  if (!source) return <div className="mb-1 flex h-24 w-40 items-center justify-center rounded-md bg-black/5 text-[10px] text-[var(--text-muted)]">Loading media…</div>;
+  if (!source) return <div ref={mediaRef} className="mb-1 flex h-24 w-40 items-center justify-center rounded-md bg-black/5 text-[10px] text-[var(--text-muted)]">{nearViewport ? "Loading media…" : "Media"}</div>;
   if (message.type === "IMAGE") return <>
     <button type="button" aria-label="Open attached image" onClick={() => setPreviewOpen(true)} className="mb-1 block max-w-full cursor-zoom-in rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--brand-accent)]">
-      <img src={source} alt="Attached image" className="max-h-72 max-w-full rounded-md object-cover" />
+      <img src={source} alt="Attached image" loading="lazy" className="max-h-72 max-w-full rounded-md object-cover" />
     </button>
     {previewOpen && <div className="fixed inset-0 z-[1400] flex items-center justify-center bg-black/85 p-4 sm:p-8" role="presentation" onClick={() => setPreviewOpen(false)}>
       <section role="dialog" aria-modal="true" aria-label="Image preview" className="relative flex h-full w-full items-center justify-center" onClick={(event) => event.stopPropagation()}>
@@ -218,8 +236,8 @@ function MessageMedia({ message, accessToken, workspaceId, contactId, conversati
       </section>
     </div>}
   </>;
-  if (message.type === "VIDEO") return <video src={source} controls className="mb-1 max-h-72 max-w-full rounded-md" />;
-  if (message.type === "AUDIO") return <audio src={source} controls className="mb-1 max-w-full" />;
+  if (message.type === "VIDEO") return <video src={source} controls preload="none" className="mb-1 max-h-72 max-w-full rounded-md" />;
+  if (message.type === "AUDIO") return <audio src={source} controls preload="none" className="mb-1 max-w-full" />;
   return <a href={source} download className="mb-1 flex items-center gap-2 rounded-md bg-black/5 px-3 py-2 text-xs underline-offset-2 hover:underline"><FileText size={18} /><span className="max-w-52 truncate">Download document</span><Download size={14} /></a>;
 }
 
@@ -322,13 +340,17 @@ export function Inbox() {
   const { accessToken, user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const deepLinkedContactIdRef = useRef(searchParams.get("contactId"));
-  const workspaceId = getActiveMembership(user)?.workspace.id;
-  const permissions = getActiveMembership(user)?.role.permissions ?? [];
+  const membership = getActiveMembership(user);
+  const workspaceId = membership?.workspace.id;
+  const membershipId = membership?.id;
+  const permissions = membership?.role.permissions ?? [];
   const canRead = permissions.includes("inbox.read");
   const canReply = permissions.includes("conversations.reply");
+  const canAssign = permissions.includes("conversations.assign");
   const canManage = permissions.includes("conversations.manage");
   const canSync = permissions.includes("whatsapp.manage");
   const [folder, setFolder] = useState<InboxFolder>(undefined);
+  const [assigneeFilter, setAssigneeFilter] = useState<AssigneeFilter>("all");
   const [activeFilter, setActiveFilter] = useState<ChatFilterKey>("All chats");
   const [channelFilter, setChannelFilter] = useState<ChannelFilter>("all");
   const [listOptionsOpen, setListOptionsOpen] = useState(false);
@@ -336,9 +358,12 @@ export function Inbox() {
   const [moreFiltersOpen, setMoreFiltersOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [assigneeOptions, setAssigneeOptions] = useState<AssigneeOption[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [notes, setNotes] = useState<ConversationNote[]>([]);
   const [draft, setDraft] = useState("");
+  const [composerMode, setComposerMode] = useState<"message" | "note">("message");
   const [attachment, setAttachment] = useState<SelectedAttachment | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState(true);
@@ -346,8 +371,10 @@ export function Inbox() {
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [loadingOlderMessages, setLoadingOlderMessages] = useState(false);
   const [sending, setSending] = useState(false);
+  const [savingNote, setSavingNote] = useState(false);
   const [error, setError] = useState("");
   const [messageError, setMessageError] = useState("");
+  const [noteError, setNoteError] = useState("");
   const [syncing, setSyncing] = useState(false);
   const [realtimeConnected, setRealtimeConnected] = useState(false);
   const [conversationMenuId, setConversationMenuId] = useState<string | null>(null);
@@ -370,6 +397,10 @@ export function Inbox() {
     () => conversations.find((conversation) => conversation.id === selectedId) ?? null,
     [conversations, selectedId],
   );
+  const displayMessages = useMemo<Message[]>(() => [
+    ...messages,
+    ...notes.map((note): Message => ({ id: note.id, direction: "INCOMING", type: "INTERNAL_NOTE", status: "NOTE", text: note.content, sentAt: note.createdAt, internalNote: true, authorName: note.createdBy ? `${note.createdBy.firstName} ${note.createdBy.lastName}`.trim() : "Workspace teammate" })),
+  ].sort((left, right) => left.sentAt.localeCompare(right.sentAt)), [messages, notes]);
   const selectedContactId = selected?.contactId;
   const selectedUnreadCount = selected?.unreadCount ?? 0;
   const selectedIdRef = useRef(selectedId);
@@ -416,16 +447,16 @@ export function Inbox() {
       messageScrollHeightRef.current = null;
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [messages.length]);
+  }, [messages.length, notes.length]);
 
   useEffect(() => {
-    if (!selectedId || messagesLoading || !messages.length || !stickToBottomRef.current) return;
+    if (!selectedId || messagesLoading || !displayMessages.length || !stickToBottomRef.current) return;
     const frame = window.requestAnimationFrame(() => {
       const region = messageRegionRef.current;
       if (region) region.scrollTop = region.scrollHeight;
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [messages.length, messagesLoading, selectedId]);
+  }, [displayMessages.length, messagesLoading, selectedId]);
 
   const loadConversations = useCallback(async (showLoading = true) => {
     if (!workspaceId || !accessToken || !canRead) {
@@ -444,6 +475,8 @@ export function Inbox() {
     if (channelFilter !== "all") parameters.set("channelKey", channelFilter);
     if (folder === "UNREAD") parameters.set("unreadOnly", "true");
     else if (folder) parameters.set("status", folder);
+    if (assigneeFilter === "unassigned") parameters.set("assigneeMembershipId", "unassigned");
+    else if (assigneeFilter === "mine" && membershipId) parameters.set("assigneeMembershipId", membershipId);
     try {
       const result = await apiRequest<PageResponse<Conversation>>(
         `/workspaces/${workspaceId}/conversations?${parameters.toString()}`,
@@ -459,6 +492,21 @@ export function Inbox() {
           { headers: { authorization: `Bearer ${accessToken}` } },
         );
         loadedItems = mergeConversations(targetedResult.items, result.items);
+        if (!targetedResult.items.some((item) => item.contactId === deepLinkedContactId)) {
+          await apiRequest<Conversation>(
+            `/workspaces/${workspaceId}/contacts/${encodeURIComponent(deepLinkedContactId)}/conversations`,
+            {
+              method: "POST",
+              headers: { authorization: `Bearer ${accessToken}` },
+              body: JSON.stringify({ channelKey: "whatsapp" }),
+            },
+          );
+          const openedConversation = await apiRequest<PageResponse<Conversation>>(
+            `/workspaces/${workspaceId}/conversations?${targetedParameters.toString()}`,
+            { headers: { authorization: `Bearer ${accessToken}` } },
+          );
+          loadedItems = mergeConversations(openedConversation.items, result.items);
+        }
       }
       conversationPageRef.current = 1;
       conversationHasNextRef.current = result.pagination.hasNext ?? result.pagination.totalPages > 1;
@@ -476,7 +524,7 @@ export function Inbox() {
     } finally {
       if (showLoading) setLoading(false);
     }
-  }, [accessToken, canRead, channelFilter, folder, search, workspaceId]);
+  }, [accessToken, assigneeFilter, canRead, channelFilter, folder, membershipId, search, workspaceId]);
 
   const loadMoreConversations = useCallback(async () => {
     if (!workspaceId || !accessToken || !canRead || loadingMoreConversations || !conversationHasNextRef.current) return;
@@ -486,6 +534,8 @@ export function Inbox() {
     if (channelFilter !== "all") parameters.set("channelKey", channelFilter);
     if (folder === "UNREAD") parameters.set("unreadOnly", "true");
     else if (folder) parameters.set("status", folder);
+    if (assigneeFilter === "unassigned") parameters.set("assigneeMembershipId", "unassigned");
+    else if (assigneeFilter === "mine" && membershipId) parameters.set("assigneeMembershipId", membershipId);
     try {
       const result = await apiRequest<PageResponse<Conversation>>(
         `/workspaces/${workspaceId}/conversations?${parameters.toString()}`,
@@ -499,7 +549,7 @@ export function Inbox() {
     } finally {
       setLoadingMoreConversations(false);
     }
-  }, [accessToken, canRead, channelFilter, folder, loadingMoreConversations, search, workspaceId]);
+  }, [accessToken, assigneeFilter, canRead, channelFilter, folder, loadingMoreConversations, membershipId, search, workspaceId]);
 
   const loadConversationsRef = useRef(loadConversations);
   useEffect(() => {
@@ -511,12 +561,26 @@ export function Inbox() {
   }, [loadConversations]);
 
   useEffect(() => {
+    if (!workspaceId || !accessToken || !canAssign) {
+      setAssigneeOptions([]);
+      return;
+    }
+    let active = true;
+    void apiRequest<AssigneeOption[]>(`/workspaces/${workspaceId}/conversations/assignment-options`, { headers: { authorization: `Bearer ${accessToken}` } })
+      .then((items) => { if (active) setAssigneeOptions(Array.isArray(items) ? items : []); })
+      .catch((caughtError) => { if (active) setError(friendlyError(caughtError, "Unable to load workspace agents.")); });
+    return () => { active = false; };
+  }, [accessToken, canAssign, workspaceId]);
+
+  useEffect(() => {
     if (!selectedId || !selectedContactId || !workspaceId || !accessToken) {
       setMessages([]);
+      setNotes([]);
       return;
     }
     let active = true;
     setMessages([]);
+    setNotes([]);
     messagePageRef.current = 1;
     messageHasPreviousRef.current = false;
     loadingOlderMessagesRef.current = false;
@@ -554,6 +618,20 @@ export function Inbox() {
       active = false;
     };
   }, [accessToken, selectedContactId, selectedId, workspaceId]);
+
+  useEffect(() => {
+    if (!selectedId || !workspaceId || !accessToken) {
+      setNotes([]);
+      return;
+    }
+    let active = true;
+    setNotes([]);
+    setNoteError("");
+    void apiRequest<ConversationNote[]>(`/workspaces/${workspaceId}/conversations/${selectedId}/notes`, { headers: { authorization: `Bearer ${accessToken}` } })
+      .then((items) => { if (active) setNotes(Array.isArray(items) ? items : []); })
+      .catch((caughtError) => { if (active) setNoteError(friendlyError(caughtError, "Unable to load internal notes.")); });
+    return () => { active = false; };
+  }, [accessToken, selectedId, workspaceId]);
 
   useEffect(() => {
     const searchTerm = conversationSearch.trim();
@@ -638,6 +716,11 @@ export function Inbox() {
           if (payload.type === "inbox.refresh" && payload.workspaceId === workspaceId) {
             notifyInboxUnreadCountChanged();
             void loadConversationsRef.current(false);
+            if (payload.conversationId && payload.conversationId === selectedIdRef.current) {
+              void apiRequest<ConversationNote[]>(`/workspaces/${workspaceId}/conversations/${payload.conversationId}/notes`, { headers: { authorization: `Bearer ${accessToken}` } })
+                .then((items) => setNotes(Array.isArray(items) ? items : []))
+                .catch(() => undefined);
+            }
           }
           if (payload.type === "inbox.message_status" && payload.workspaceId === workspaceId && payload.conversationId === selectedIdRef.current && payload.messageId && payload.status) {
             setMessages((current) => current.map((message) => message.metaMessageId === payload.messageId || message.id === payload.messageId ? { ...message, status: payload.status ?? message.status } : message));
@@ -702,7 +785,7 @@ export function Inbox() {
     }
   };
 
-  const chooseAttachment = () => fileInputRef.current?.click();
+  const chooseAttachment = () => { if (composerMode === "message") fileInputRef.current?.click(); };
 
   const handleAttachmentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.currentTarget.files?.[0];
@@ -950,6 +1033,77 @@ export function Inbox() {
     }
   };
 
+  const updateSelectedStatus = async (status: ConversationStatus) => {
+    if (!selected || !workspaceId || !accessToken || !canManage || conversationActionBusy) return;
+    setConversationActionBusy(selected.id);
+    setMessageError("");
+    try {
+      await apiRequest(`/workspaces/${workspaceId}/conversations/${selected.id}/status`, {
+        method: "PATCH",
+        headers: { authorization: `Bearer ${accessToken}`, "content-type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      setConversations((current) => current.map((item) => item.id === selected.id ? { ...item, status } : item));
+      if (folder && folder !== "UNREAD" && folder !== status) {
+        setConversations((current) => current.filter((item) => item.id !== selected.id));
+        setSelectedId(null);
+      }
+    } catch (caughtError) {
+      setMessageError(friendlyError(caughtError, "Unable to update conversation status."));
+    } finally {
+      setConversationActionBusy(null);
+    }
+  };
+
+  const updateSelectedAssignee = async (assigneeMembershipId: string) => {
+    if (!selected || !workspaceId || !accessToken || !canAssign || conversationActionBusy) return;
+    setConversationActionBusy(selected.id);
+    setMessageError("");
+    try {
+      const updated = await apiRequest<{ assigneeMembershipId: string | null; assignee: Conversation["assignee"] }>(`/workspaces/${workspaceId}/conversations/${selected.id}/assignment`, {
+        method: "PATCH",
+        headers: { authorization: `Bearer ${accessToken}`, "content-type": "application/json" },
+        body: JSON.stringify({ assigneeMembershipId: assigneeMembershipId || null }),
+      });
+      setConversations((current) => current.map((item) => item.id === selected.id ? { ...item, ...updated } : item));
+      if (assigneeFilter === "mine" || assigneeFilter === "unassigned") await loadConversations();
+    } catch (caughtError) {
+      setMessageError(friendlyError(caughtError, "Unable to assign this conversation."));
+    } finally {
+      setConversationActionBusy(null);
+    }
+  };
+
+  const submitInternalNote = async (event: FormEvent) => {
+    event.preventDefault();
+    const content = draft.trim();
+    if (!content || !selected || !workspaceId || !accessToken || !canReply || savingNote) return;
+    setSavingNote(true);
+    setNoteError("");
+    try {
+      const note = await apiRequest<ConversationNote>(`/workspaces/${workspaceId}/conversations/${selected.id}/notes`, {
+        method: "POST",
+        headers: { authorization: `Bearer ${accessToken}`, "content-type": "application/json" },
+        body: JSON.stringify({ content }),
+      });
+      setNotes((current) => [...current, note].sort((left, right) => left.createdAt.localeCompare(right.createdAt)));
+      setDraft("");
+      stickToBottomRef.current = true;
+    } catch (caughtError) {
+      setNoteError(friendlyError(caughtError, "Unable to save internal note."));
+    } finally {
+      setSavingNote(false);
+    }
+  };
+
+  const selectChatFilter = ({ label, status, assignee }: (typeof chatFilters)[number]) => {
+    setFolder(status);
+    setAssigneeFilter(assignee);
+    setActiveFilter(label);
+    setListOptionsOpen(false);
+    setMoreFiltersOpen(false);
+  };
+
   if (!canRead) {
     return (
       <div className="flex h-full items-center justify-center bg-[var(--page-background)] p-6">
@@ -974,16 +1128,16 @@ export function Inbox() {
             <div className="min-h-0 flex-1 overflow-y-auto px-2.5 py-4">
               <div className="px-2 pb-2 text-[10px] font-semibold uppercase tracking-[.08em] text-[var(--text-muted)]">Channels</div>
               <nav aria-label="Inbox channels" className="space-y-1">
-                {channels.map(({ label, value, icon: Icon }) => <button key={value} type="button" aria-pressed={channelFilter === value} onClick={() => { setChannelFilter(value); setListOptionsOpen(false); }} className={cn("flex h-9 w-full items-center gap-2.5 rounded-md px-2.5 text-left text-xs font-medium transition-colors", channelFilter === value ? "bg-white text-[var(--brand)] shadow-[0_1px_3px_rgba(16,24,20,.07)]" : "text-[var(--text-secondary)] hover:bg-white/70 hover:text-[var(--text-primary)]")}><Icon size={15} className={channelFilter === value ? "text-[var(--brand)]" : "text-[var(--icon-muted)]"} />{label}</button>)}
+                {channels.map(({ label, value, icon: Icon, disabled }) => <button key={value} type="button" disabled={disabled} aria-pressed={channelFilter === value} onClick={() => { setChannelFilter(value); setListOptionsOpen(false); }} className={cn("flex h-9 w-full items-center gap-2.5 rounded-md px-2.5 text-left text-xs font-medium transition-colors", channelFilter === value ? "bg-white text-[var(--brand)] shadow-[0_1px_3px_rgba(16,24,20,.07)]" : "text-[var(--text-secondary)] hover:bg-white/70 hover:text-[var(--text-primary)]", disabled && "cursor-not-allowed opacity-45 hover:bg-transparent hover:text-[var(--text-secondary)]")}><Icon size={15} className={channelFilter === value ? "text-[var(--brand)]" : "text-[var(--icon-muted)]"} />{label}</button>)}
               </nav>
               <div className="mx-2 my-4 border-t border-[var(--border)]" />
               <div className="px-2 pb-2 text-[10px] font-semibold uppercase tracking-[.08em] text-[var(--text-muted)]">Chats</div>
               <nav aria-label="Inbox folders" className="space-y-1">
-                {chatFilters.map(({ label, status, icon: Icon }) => <button key={label} type="button" aria-pressed={activeFilter === label} onClick={() => { setFolder(status); setActiveFilter(label); setListOptionsOpen(false); }} className={cn("flex h-9 w-full items-center gap-2.5 rounded-md px-2.5 text-left text-xs font-medium transition-colors", activeFilter === label ? "bg-white text-[var(--brand)] shadow-[0_1px_3px_rgba(16,24,20,.07)]" : "text-[var(--text-secondary)] hover:bg-white/70 hover:text-[var(--text-primary)]")}><Icon size={15} className={activeFilter === label ? "text-[var(--brand)]" : "text-[var(--icon-muted)]"} />{label}{label === "All chats" && conversations.length > 0 && <span className="ml-auto text-[10px] text-[var(--text-muted)]">{conversations.length}</span>}</button>)}
+                {chatFilters.map(({ label, icon: Icon }) => <button key={label} type="button" aria-pressed={activeFilter === label} onClick={() => selectChatFilter(chatFilters.find((item) => item.label === label)!)} className={cn("flex h-9 w-full items-center gap-2.5 rounded-md px-2.5 text-left text-xs font-medium transition-colors", activeFilter === label ? "bg-white text-[var(--brand)] shadow-[0_1px_3px_rgba(16,24,20,.07)]" : "text-[var(--text-secondary)] hover:bg-white/70 hover:text-[var(--text-primary)]")}><Icon size={15} className={activeFilter === label ? "text-[var(--brand)]" : "text-[var(--icon-muted)]"} />{label}{label === "All chats" && conversations.length > 0 && <span className="ml-auto text-[10px] text-[var(--text-muted)]">{conversations.length}</span>}</button>)}
               </nav>
               <div className="mt-3">
                 <button type="button" aria-label="Expand advanced inbox filters" aria-expanded={moreFiltersOpen} onClick={() => setMoreFiltersOpen((current) => !current)} className="flex h-9 w-full items-center gap-2.5 rounded-md px-2.5 text-left text-xs font-medium text-[var(--text-secondary)] hover:bg-white/70"><Filter size={15} className="text-[var(--icon-muted)]" />More filters<ChevronDown size={14} className={cn("ml-auto transition-transform", moreFiltersOpen && "rotate-180")} /></button>
-                {moreFiltersOpen && <div className="mt-1 space-y-1 pl-2">{advancedFilters.filter(({ label }) => label !== "Less").map(({ label, status, icon: Icon }) => <button key={label} type="button" aria-pressed={activeFilter === label} onClick={() => { if (status !== undefined) { setFolder(status); setActiveFilter(label); } setListOptionsOpen(false); }} className={cn("flex h-8 w-full items-center gap-2 rounded-md px-2.5 text-left text-[11px] font-medium", activeFilter === label ? "bg-white text-[var(--brand)]" : "text-[var(--text-secondary)] hover:bg-white/70")}><Icon size={14} />{label}</button>)}</div>}
+                {moreFiltersOpen && <div className="mt-1 space-y-1 pl-2">{advancedFilters.map(({ label, status, icon: Icon }) => <button key={label} type="button" aria-pressed={activeFilter === label} onClick={() => { setFolder(status); setAssigneeFilter("all"); setActiveFilter(label); setListOptionsOpen(false); }} className={cn("flex h-8 w-full items-center gap-2 rounded-md px-2.5 text-left text-[11px] font-medium", activeFilter === label ? "bg-white text-[var(--brand)]" : "text-[var(--text-secondary)] hover:bg-white/70")}><Icon size={14} />{label}</button>)}</div>}
               </div>
             </div>
           </aside>
@@ -995,12 +1149,12 @@ export function Inbox() {
               </div>
               <div className="relative flex items-center gap-1"><button type="button" aria-label="Refresh conversations" onClick={() => void loadConversations()} className="flex size-8 items-center justify-center rounded-full text-[var(--text-secondary)] transition-colors hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><RefreshCw size={16} /></button><button type="button" aria-label="Conversation list options" aria-expanded={listOptionsOpen} aria-haspopup="menu" onClick={() => setListOptionsOpen((current) => !current)} className="flex size-8 items-center justify-center rounded-full text-[var(--text-secondary)] transition-colors hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><MoreVertical size={17} /></button>{listOptionsOpen && <div role="menu" aria-label="Conversation filters" className="absolute right-0 top-10 z-40 w-64 overflow-hidden rounded-lg border border-[var(--border)] bg-white p-1.5 text-[var(--text-primary)] shadow-[0_10px_28px_rgba(16,24,20,.16)]">
                 <div className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">Chats</div>
-                {chatFilters.map(({ label, status, icon: Icon }) => <button key={label} type="button" onClick={() => { setFolder(status); setActiveFilter(label); setListOptionsOpen(false); }} className={cn("flex h-9 w-full items-center gap-2 rounded-md px-2 text-left text-xs font-medium", activeFilter === label ? "bg-[var(--brand-soft)] text-[var(--brand)]" : "text-[var(--text-secondary)] hover:bg-[var(--surface-subtle)]")}><Icon size={14} />{label}{label === "All chats" && conversations.length > 0 && <span aria-hidden="true" className="ml-auto text-[10px] opacity-70">{conversations.length}</span>}</button>)}
+                {chatFilters.map(({ label, icon: Icon }) => <button key={label} type="button" onClick={() => selectChatFilter(chatFilters.find((item) => item.label === label)!)} className={cn("flex h-9 w-full items-center gap-2 rounded-md px-2 text-left text-xs font-medium", activeFilter === label ? "bg-[var(--brand-soft)] text-[var(--brand)]" : "text-[var(--text-secondary)] hover:bg-[var(--surface-subtle)]")}><Icon size={14} />{label}{label === "All chats" && conversations.length > 0 && <span aria-hidden="true" className="ml-auto text-[10px] opacity-70">{conversations.length}</span>}</button>)}
                 <div className="my-1 border-t border-[var(--border-soft)]" />
                 <button type="button" aria-expanded={channelsOpen} onClick={() => setChannelsOpen((current) => !current)} className="flex h-9 w-full items-center justify-between rounded-md px-2 text-left text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-subtle)]"><span className="flex items-center gap-2"><MessageCircle size={14} />Channels{channelFilter !== "all" && <span className="text-[10px] text-[var(--brand)]">({channels.find((channel) => channel.value === channelFilter)?.label})</span>}</span><ChevronDown className={cn("transition-transform", channelsOpen && "rotate-180")} size={14} /></button>
-                {channelsOpen && <div className="grid grid-cols-2 gap-1 px-1 pb-1">{channels.map(({ label, value, icon: Icon }) => <button key={value} type="button" onClick={() => { setChannelFilter(value); setListOptionsOpen(false); setChannelsOpen(false); }} className={cn("flex min-h-8 items-center gap-1.5 rounded px-2 text-left text-[10px] font-medium", channelFilter === value ? "bg-[var(--brand-soft)] text-[var(--brand)]" : "text-[var(--text-secondary)] hover:bg-[var(--surface-subtle)]")}><Icon size={13} />{label}</button>)}</div>}
+                {channelsOpen && <div className="grid grid-cols-2 gap-1 px-1 pb-1">{channels.map(({ label, value, icon: Icon, disabled }) => <button key={value} type="button" disabled={disabled} onClick={() => { setChannelFilter(value); setListOptionsOpen(false); setChannelsOpen(false); }} className={cn("flex min-h-8 items-center gap-1.5 rounded px-2 text-left text-[10px] font-medium", channelFilter === value ? "bg-[var(--brand-soft)] text-[var(--brand)]" : "text-[var(--text-secondary)] hover:bg-[var(--surface-subtle)]", disabled && "cursor-not-allowed opacity-45 hover:bg-transparent")}><Icon size={13} />{label}</button>)}</div>}
                 <button type="button" aria-expanded={moreFiltersOpen} onClick={() => setMoreFiltersOpen((current) => !current)} className="flex h-9 w-full items-center justify-between rounded-md px-2 text-left text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--surface-subtle)]"><span className="flex items-center gap-2"><Filter size={14} />More filters</span><ChevronDown className={cn("transition-transform", moreFiltersOpen && "rotate-180")} size={14} /></button>
-                {moreFiltersOpen && <div className="grid grid-cols-2 gap-1 px-1 pb-1">{advancedFilters.filter(({ label }) => label !== "Less").map(({ label, status, icon: Icon }) => <button key={label} type="button" onClick={() => { if (status !== undefined) { setFolder(status); setActiveFilter(label); } setListOptionsOpen(false); setMoreFiltersOpen(false); }} className={cn("flex min-h-8 items-center gap-1.5 rounded px-2 text-left text-[10px] font-medium", activeFilter === label ? "bg-[var(--brand-soft)] text-[var(--brand)]" : "text-[var(--text-secondary)] hover:bg-[var(--surface-subtle)]")}><Icon size={13} />{label}</button>)}</div>}
+                {moreFiltersOpen && <div className="grid grid-cols-2 gap-1 px-1 pb-1">{advancedFilters.map(({ label, status, icon: Icon }) => <button key={label} type="button" onClick={() => { setFolder(status); setAssigneeFilter("all"); setActiveFilter(label); setListOptionsOpen(false); setMoreFiltersOpen(false); }} className={cn("flex min-h-8 items-center gap-1.5 rounded px-2 text-left text-[10px] font-medium", activeFilter === label ? "bg-[var(--brand-soft)] text-[var(--brand)]" : "text-[var(--text-secondary)] hover:bg-[var(--surface-subtle)]")}><Icon size={13} />{label}</button>)}</div>}
               </div>}</div>
             </header>
 
@@ -1018,9 +1172,14 @@ export function Inbox() {
           <section className={cn("relative min-h-0 flex-col bg-[var(--page-background)]", selected ? "flex" : "hidden lg:flex")} aria-label="Conversation thread">
             {selected ? <>
               <header className="flex flex-none items-center justify-between border-b border-[var(--border)] bg-[var(--surface-subtle)] px-4 py-2.5 sm:px-5"><div className="flex min-w-0 items-center gap-3"><button type="button" aria-label="Back to conversations" onClick={() => setSelectedId(null)} className="flex size-8 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)] lg:hidden"><ArrowLeft size={18} /></button><ContactAvatar name={selected.contact.name} imageUrl={selected.contact.profileImageUrl} className="size-10" /><div className="min-w-0"><h2 className="truncate text-[15px] font-semibold text-[var(--text-primary)]">{selected.contact.name}</h2><div className="truncate text-[11px] text-[var(--text-secondary)]">{selected.contact.profileName || "WhatsApp contact"} · {selected.status === "OPEN" ? "active now" : selected.status.toLowerCase()}</div></div></div><div className="flex items-center gap-0.5"><button type="button" aria-label="Search in conversation" onClick={() => setConversationSearchOpen(true)} className="hidden size-8 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)] sm:flex"><Search size={16} /></button><button type="button" aria-label="Archive conversation" className="flex size-8 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><Archive size={16} /></button><button type="button" aria-label="More conversation actions" className="flex size-8 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><MoreVertical size={17} /></button></div></header>
+              <div data-testid="conversation-controls" className="flex flex-none flex-wrap items-center gap-x-4 gap-y-2 border-b border-[var(--border-soft)] bg-white px-4 py-2 sm:px-5">
+                <label className="flex items-center gap-2 text-[11px] font-medium text-[var(--text-secondary)]"><span>Status</span><select aria-label="Conversation status" value={selected.status} disabled={!canManage || conversationActionBusy === selected.id} onChange={(event) => void updateSelectedStatus(event.target.value as ConversationStatus)} className="h-8 rounded-md border border-[var(--border)] bg-white px-2 text-xs text-[var(--text-primary)] disabled:opacity-70"><option value="OPEN">Open</option><option value="PENDING">Pending</option><option value="RESOLVED">Resolved</option><option value="CLOSED">Closed</option></select></label>
+                <label className="flex min-w-0 items-center gap-2 text-[11px] font-medium text-[var(--text-secondary)]"><span>Assignee</span><select aria-label="Assign conversation" value={selected.assigneeMembershipId ?? ""} disabled={!canAssign || conversationActionBusy === selected.id} onChange={(event) => void updateSelectedAssignee(event.target.value)} className="h-8 min-w-32 max-w-52 rounded-md border border-[var(--border)] bg-white px-2 text-xs text-[var(--text-primary)] disabled:opacity-70"><option value="">Unassigned</option>{assigneeOptions.map((option) => <option key={option.id} value={option.id}>{option.name}{option.role ? ` · ${option.role}` : ""}</option>)}{selected.assigneeMembershipId && !assigneeOptions.some((option) => option.id === selected.assigneeMembershipId) && <option value={selected.assigneeMembershipId}>{`${selected.assignee?.user.firstName ?? "Current"} ${selected.assignee?.user.lastName ?? "assignee"}`}</option>}</select></label>
+                {!canAssign && selected.assignee && <span className="truncate text-[11px] text-[var(--text-muted)]">Assigned to {selected.assignee.user.firstName} {selected.assignee.user.lastName}</span>}
+              </div>
               {conversationSearchOpen && <aside data-testid="conversation-search-drawer" className="absolute inset-y-0 right-0 z-30 flex w-full max-w-sm flex-col border-l border-[var(--border)] bg-white shadow-[-8px_0_24px_rgba(16,24,20,.12)]"><header className="flex flex-none items-center gap-2 border-b border-[var(--border)] px-3 py-2.5"><button type="button" aria-label="Close message search" onClick={() => { setConversationSearchOpen(false); setConversationSearch(""); }} className="flex size-8 shrink-0 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><ArrowLeft size={17} /></button><div className="relative min-w-0 flex-1"><Search size={15} className="pointer-events-none absolute left-3 top-2.5 text-[var(--text-muted)]" /><input autoFocus aria-label="Search messages" value={conversationSearch} onChange={(event) => setConversationSearch(event.target.value)} placeholder="Search messages" className="h-9 w-full rounded-md border border-transparent bg-[var(--surface-subtle)] pl-9 pr-3 text-xs text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--brand-accent)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-accent)]/10" /></div></header><div className="min-h-0 flex-1 overflow-y-auto p-2">{!conversationSearch.trim() ? <div className="p-6 text-center text-xs text-[var(--text-secondary)]">Search messages in this chat.</div> : conversationSearchLoading ? <div role="status" className="p-6 text-center text-xs text-[var(--text-secondary)]">Searching messages…</div> : conversationSearchError ? <div role="alert" className="m-2 rounded-md border border-[#f5dada] bg-[var(--danger-soft)] p-2 text-xs text-[var(--danger)]">{conversationSearchError}</div> : conversationSearchResults.length ? conversationSearchResults.map((message) => <button key={message.id} type="button" onClick={() => { setConversationSearchOpen(false); setConversationSearch(""); const target = document.querySelector(`[data-message-id="${message.id}"]`); target?.scrollIntoView?.({ behavior: "smooth", block: "center" }); }} className="flex w-full items-start gap-2 rounded-md p-3 text-left hover:bg-[var(--surface-subtle)]"><span className="min-w-0 flex-1"><span className="block truncate text-xs font-medium text-[var(--text-primary)]">{message.text || `[${message.type.toLowerCase()} message]`}</span><span className="mt-0.5 block text-[10px] text-[var(--text-muted)]">{formatTime(message.sentAt)}</span></span></button>) : <div className="p-6 text-center text-xs text-[var(--text-secondary)]">No messages found.</div>}</div></aside>}
-              <div data-testid="inbox-message-region" ref={messageRegionRef} onScroll={(event) => { const region = event.currentTarget; stickToBottomRef.current = region.scrollHeight - region.scrollTop - region.clientHeight < 120; if (region.scrollTop <= 80) void loadOlderMessages(); }} className="whatsapp-chat-wallpaper relative min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-8" style={{ backgroundColor: "#efeae2" }}>{loadingOlderMessages && <div data-testid="inbox-older-messages-loading" role="status" className="pointer-events-none absolute inset-x-0 top-2 z-10 text-center text-[10px] text-[var(--text-secondary)]">Loading older messages…</div>}{messagesLoading ? <div className="text-center text-xs text-[var(--text-secondary)]">Loading messages...</div> : messageError ? <div role="alert" className="rounded-md border border-[#f5dada] bg-[var(--danger-soft)] p-3 text-xs text-[var(--danger)]">{messageError}</div> : messages.length === 0 ? <div className="flex h-full items-center justify-center text-center"><div className="rounded-xl border border-[var(--border-soft)] bg-white/80 px-6 py-5"><Mail className="mx-auto text-[var(--text-muted)]" size={26} /><div className="mt-3 text-sm font-medium">No messages in this conversation</div><div className="mt-1 text-xs text-[var(--text-secondary)]">Start the conversation below.</div></div></div> : <div className="mx-auto flex max-w-3xl flex-col gap-2.5"><div className="mx-auto mb-2 rounded-full border border-[var(--border-soft)] bg-white/85 px-3 py-1 text-[10px] font-medium text-[var(--text-secondary)] shadow-sm">Today</div>{messages.map((message) => <div key={message.id} data-message-id={message.id} className={cn("flex", message.direction === "OUTGOING" ? "justify-end" : "justify-start")}><div className={cn("group/message relative max-w-[82%] rounded-lg px-3 py-2 text-[13px] leading-5 shadow-[0_1px_1px_rgba(4,45,29,.08)] sm:max-w-[68%]", message.direction === "OUTGOING" ? "rounded-br-sm bg-[#d9fdd3] text-[#111b21]" : "rounded-bl-sm border border-[var(--border-soft)] bg-white text-[var(--text-primary)]")}>{!message.deletedAt && <MessageActionMenu message={message} open={messageMenuId === message.id} canDelete={canManage && !message.id.startsWith("pending-")} onToggle={() => setMessageMenuId((current) => current === message.id ? null : message.id)} onReply={() => replyToMessage(message)} onCopy={() => void copyMessage(message)} onDownload={() => void downloadMessageAttachment(message)} onForward={() => { setForwardMessage(message); setForwardSearch(""); setForwardTargets([]); setForwardTargetsError(""); setMessageMenuId(null); }} onDelete={() => void deleteMessage(message)} />}{!message.deletedAt && (message.mediaId || message.mediaUrl) && <MessageMedia message={message} accessToken={accessToken} workspaceId={workspaceId} contactId={selected.contactId} conversationId={selected.id} />}{message.deletedAt ? <div className="pr-14 italic opacity-70">This message was deleted</div> : message.text ? <div className="whitespace-pre-wrap break-words [overflow-wrap:anywhere] pr-14">{message.text}</div> : !message.mediaId && !message.mediaUrl && <div className="pr-14">[{message.type.toLowerCase()} message]</div>}<div className={cn("absolute bottom-1 right-2 flex items-center gap-1 text-[9px]", message.direction === "OUTGOING" ? "text-[#667781]" : "text-[var(--text-muted)]")}>{formatTime(message.sentAt)}{message.direction === "OUTGOING" && <MessageTicks status={message.status} />}</div></div></div>)}</div>}</div>
-              {messageActionNotice && <div role="status" className="absolute bottom-20 left-1/2 z-20 -translate-x-1/2 rounded-full bg-[var(--text-primary)] px-3 py-1.5 text-[11px] text-white shadow-md">{messageActionNotice}</div>}<form onSubmit={sendMessage} className="flex flex-none items-end gap-2 border-t border-[var(--border)] bg-[var(--surface-subtle)] px-3 py-2.5 sm:px-4"><input ref={fileInputRef} type="file" aria-label="Choose media" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv" onChange={handleAttachmentChange} className="sr-only" />{attachment && <div className="flex max-w-40 shrink-0 items-center gap-1 rounded-md border border-[var(--border)] bg-white px-1.5 py-1 text-[10px] text-[var(--text-secondary)]">{attachment.messageType === "IMAGE" ? <img src={attachment.dataUrl} alt="Attachment preview" className="size-7 rounded object-cover" /> : <FileText size={16} />}<span className="truncate">{attachment.fileName}</span><button type="button" aria-label="Remove attachment" onClick={() => setAttachment(null)} className="flex size-5 shrink-0 items-center justify-center rounded text-[var(--text-muted)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><X size={13} /></button></div>}<button type="button" aria-label="Add emoji" className="mb-0.5 flex size-9 shrink-0 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><Smile size={20} /></button><button type="button" aria-label="Attach file" onClick={chooseAttachment} className="mb-0.5 flex size-9 shrink-0 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><Paperclip size={19} /></button><div className="flex min-w-0 flex-1 items-center rounded-lg border border-[var(--border)] bg-white px-3 focus-within:border-[var(--brand-accent)] focus-within:ring-2 focus-within:ring-[var(--brand-accent)]/10"><textarea aria-label="Message" value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={handleMessageKeyDown} disabled={!canReply} placeholder={canReply ? "Type a message" : "You do not have reply permission"} rows={1} className="max-h-28 min-h-9 flex-1 resize-y border-0 bg-transparent py-2 text-sm outline-none placeholder:text-[var(--text-muted)]" /><button type="button" aria-label="Add image" onClick={chooseAttachment} className="hidden size-8 shrink-0 items-center justify-center text-[var(--text-muted)] hover:text-[var(--brand)] sm:flex"><ImagePlus size={17} /></button></div><button type="submit" aria-label={draft.trim() || attachment ? "Send" : "Voice message"} disabled={!canReply || (!draft.trim() && !attachment)} className="mb-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-[var(--brand)] text-white transition-colors hover:bg-[var(--brand-hover)] disabled:cursor-not-allowed disabled:bg-[var(--border-strong)]">{draft.trim() || attachment ? <Send size={16} /> : <Mic size={18} />}<span className="sr-only">{sending ? "Sending" : draft.trim() || attachment ? "Send" : "Voice message"}</span></button></form>{forwardMessage && <ForwardMessageDialog targets={forwardTargets} search={forwardSearch} loading={forwardTargetsLoading} error={forwardTargetsError} working={messageActionBusy === forwardMessage.id} onClose={() => { if (!messageActionBusy) setForwardMessage(null); }} onSearch={setForwardSearch} onForward={(target) => void forwardMessageTo(target)} />}
+              <div data-testid="inbox-message-region" ref={messageRegionRef} onScroll={(event) => { const region = event.currentTarget; stickToBottomRef.current = region.scrollHeight - region.scrollTop - region.clientHeight < 120; if (region.scrollTop <= 80) void loadOlderMessages(); }} className="whatsapp-chat-wallpaper relative min-h-0 flex-1 overflow-y-auto px-4 py-5 sm:px-8" style={{ backgroundColor: "#efeae2" }}>{loadingOlderMessages && <div data-testid="inbox-older-messages-loading" role="status" className="pointer-events-none absolute inset-x-0 top-2 z-10 text-center text-[10px] text-[var(--text-secondary)]">Loading older messages…</div>}{messagesLoading ? <div className="text-center text-xs text-[var(--text-secondary)]">Loading messages...</div> : messageError ? <div role="alert" className="rounded-md border border-[#f5dada] bg-[var(--danger-soft)] p-3 text-xs text-[var(--danger)]">{messageError}</div> : displayMessages.length === 0 ? <div className="flex h-full items-center justify-center text-center"><div className="rounded-xl border border-[var(--border-soft)] bg-white/80 px-6 py-5"><Mail className="mx-auto text-[var(--text-muted)]" size={26} /><div className="mt-3 text-sm font-medium">No messages in this conversation</div><div className="mt-1 text-xs text-[var(--text-secondary)]">Start the conversation below.</div></div></div> : <div className="mx-auto flex max-w-3xl flex-col gap-2.5"><div className="mx-auto mb-2 rounded-full border border-[var(--border-soft)] bg-white/85 px-3 py-1 text-[10px] font-medium text-[var(--text-secondary)] shadow-sm">Today</div>{displayMessages.map((message) => <div key={message.id} data-message-id={message.id} data-internal-note={message.internalNote || undefined} className={cn("flex", message.direction === "OUTGOING" ? "justify-end" : "justify-start")}><div className={cn("group/message relative max-w-[82%] rounded-lg px-3 py-2 text-[13px] leading-5 shadow-[0_1px_1px_rgba(4,45,29,.08)] sm:max-w-[68%]", message.internalNote ? "rounded-md border border-amber-200 bg-amber-50 text-amber-950" : message.direction === "OUTGOING" ? "rounded-br-sm bg-[#d9fdd3] text-[#111b21]" : "rounded-bl-sm border border-[var(--border-soft)] bg-white text-[var(--text-primary)]")}>{!message.deletedAt && !message.internalNote && <MessageActionMenu message={message} open={messageMenuId === message.id} canDelete={canManage && !message.id.startsWith("pending-")} onToggle={() => setMessageMenuId((current) => current === message.id ? null : message.id)} onReply={() => replyToMessage(message)} onCopy={() => void copyMessage(message)} onDownload={() => void downloadMessageAttachment(message)} onForward={() => { setForwardMessage(message); setForwardSearch(""); setForwardTargets([]); setForwardTargetsError(""); setMessageMenuId(null); }} onDelete={() => void deleteMessage(message)} />}{!message.deletedAt && (message.mediaId || message.mediaUrl) && <MessageMedia message={message} accessToken={accessToken} workspaceId={workspaceId} contactId={selected.contactId} conversationId={selected.id} />}{message.internalNote && <div className="mb-1 flex items-center gap-1 text-[10px] font-semibold text-amber-800"><StickyNote size={12} />Internal note · {message.authorName}</div>}{message.deletedAt ? <div className="pr-14 italic opacity-70">This message was deleted</div> : message.text ? <div className="whitespace-pre-wrap break-words [overflow-wrap:anywhere] pr-14">{message.text}</div> : !message.mediaId && !message.mediaUrl && <div className="pr-14">[{message.type.toLowerCase()} message]</div>}<div className={cn("absolute bottom-1 right-2 flex items-center gap-1 text-[9px]", message.direction === "OUTGOING" ? "text-[#667781]" : "text-[var(--text-muted)]")}>{formatTime(message.sentAt)}{message.direction === "OUTGOING" && <MessageTicks status={message.status} />}</div></div></div>)}</div>}</div>
+              {messageActionNotice && <div role="status" className="absolute bottom-20 left-1/2 z-20 -translate-x-1/2 rounded-full bg-[var(--text-primary)] px-3 py-1.5 text-[11px] text-white shadow-md">{messageActionNotice}</div>}{noteError && <div role="alert" className="border-t border-amber-200 bg-amber-50 px-4 py-2 text-xs text-amber-900">{noteError}</div>}<form onSubmit={composerMode === "note" ? submitInternalNote : sendMessage} className="flex flex-none items-end gap-2 border-t border-[var(--border)] bg-[var(--surface-subtle)] px-3 py-2.5 sm:px-4"><select aria-label="Composer mode" value={composerMode} onChange={(event) => { const mode = event.target.value as "message" | "note"; setComposerMode(mode); if (mode === "note") setAttachment(null); }} className="h-9 max-w-28 rounded-md border border-[var(--border)] bg-white px-2 text-[11px] text-[var(--text-secondary)]"><option value="message">Message</option><option value="note">Internal note</option></select><input ref={fileInputRef} disabled={composerMode === "note"} type="file" aria-label="Choose media" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv" onChange={handleAttachmentChange} className="sr-only" />{attachment && <div className="flex max-w-40 shrink-0 items-center gap-1 rounded-md border border-[var(--border)] bg-white px-1.5 py-1 text-[10px] text-[var(--text-secondary)]">{attachment.messageType === "IMAGE" ? <img src={attachment.dataUrl} alt="Attachment preview" className="size-7 rounded object-cover" /> : <FileText size={16} />}<span className="truncate">{attachment.fileName}</span><button type="button" aria-label="Remove attachment" onClick={() => setAttachment(null)} className="flex size-5 shrink-0 items-center justify-center rounded text-[var(--text-muted)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><X size={13} /></button></div>}<button type="button" aria-label="Add emoji" className="mb-0.5 flex size-9 shrink-0 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><Smile size={20} /></button><button type="button" aria-label="Attach file" disabled={composerMode === "note"} onClick={chooseAttachment} className="mb-0.5 flex size-9 shrink-0 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><Paperclip size={19} /></button><div className="flex min-w-0 flex-1 items-center rounded-lg border border-[var(--border)] bg-white px-3 focus-within:border-[var(--brand-accent)] focus-within:ring-2 focus-within:ring-[var(--brand-accent)]/10"><textarea aria-label={composerMode === "note" ? "Internal note" : "Message"} value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={handleMessageKeyDown} disabled={!canReply} placeholder={composerMode === "note" ? "Write a private note for your team" : canReply ? "Type a message" : "You do not have reply permission"} rows={1} className="max-h-28 min-h-9 flex-1 resize-y border-0 bg-transparent py-2 text-sm outline-none placeholder:text-[var(--text-muted)]" /><button type="button" aria-label="Add image" disabled={composerMode === "note"} onClick={chooseAttachment} className="hidden size-8 shrink-0 items-center justify-center text-[var(--text-muted)] hover:text-[var(--brand)] sm:flex"><ImagePlus size={17} /></button></div><button type="submit" aria-label={composerMode === "note" ? "Add internal note" : draft.trim() || attachment ? "Send" : "Voice message"} disabled={!canReply || (composerMode === "note" ? !draft.trim() || savingNote : !draft.trim() && !attachment)} className="mb-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-[var(--brand)] text-white transition-colors hover:bg-[var(--brand-hover)] disabled:cursor-not-allowed disabled:bg-[var(--border-strong)]">{composerMode === "note" ? <StickyNote size={16} /> : draft.trim() || attachment ? <Send size={16} /> : <Mic size={18} />}<span className="sr-only">{composerMode === "note" ? savingNote ? "Adding note" : "Add internal note" : sending ? "Sending" : draft.trim() || attachment ? "Send" : "Voice message"}</span></button></form>{forwardMessage && <ForwardMessageDialog targets={forwardTargets} search={forwardSearch} loading={forwardTargetsLoading} error={forwardTargetsError} working={messageActionBusy === forwardMessage.id} onClose={() => { if (!messageActionBusy) setForwardMessage(null); }} onSearch={setForwardSearch} onForward={(target) => void forwardMessageTo(target)} />}
             </> : <div className="flex h-full items-center justify-center p-8 text-center"><div><InboxIcon className="mx-auto text-[var(--brand)]/60" size={38} /><h2 className="mt-4 text-[15px] font-semibold text-[var(--text-primary)]">{deepLinkedContactIdRef.current && !error ? "No conversation found" : "Select a conversation"}</h2><div className="mt-1 text-xs text-[var(--text-secondary)]">{deepLinkedContactIdRef.current && !error ? "This contact does not have an Inbox conversation yet." : "Choose a chat to view the full thread."}</div></div></div>}
           </section>
         </section>

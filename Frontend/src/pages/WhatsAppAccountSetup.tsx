@@ -3,9 +3,12 @@ import {
   ArrowLeftIcon as ArrowLeft,
   CheckIcon as Check,
   CircleCheckIcon as CircleCheck,
+  CoinsIcon as Coins,
   ExternalLinkIcon as ExternalLink,
+  InfoIcon as Info,
   LoaderCircleIcon as LoaderCircle,
   MessageSquareIcon as MessageSquare,
+  PlusIcon as Plus,
   QrCodeIcon as QrCode,
   RefreshCwIcon as RefreshCw,
   ScanLineIcon as ScanLine,
@@ -22,6 +25,15 @@ import { apiRequest } from "@/lib/api";
 import { WhatsAppConnectionGuide, type ConnectionChoice } from "@/components/whatsapp/WhatsAppConnectionGuide";
 import { WhatsAppConnectingDialog } from "@/components/whatsapp/WhatsAppConnectingDialog";
 import { WhatsAppRegistrationPinDialog } from "@/components/whatsapp/WhatsAppRegistrationPinDialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useDashboardResource } from "@/hooks/use-dashboard-resource";
+
+type WelcomeBonus = { amount: string; currency: string; granted: boolean; pending: boolean; source: string | null };
+
+function formatBonusAmount(amount: string, currency: string) {
+  const formatted = new Intl.NumberFormat("en-IN", { maximumFractionDigits: 2 }).format(Number(amount));
+  return currency === "INR" ? `Rs. ${formatted}` : `${currency} ${formatted}`;
+}
 
 const requirements = [
   "Admin access to Meta Business",
@@ -63,6 +75,8 @@ export function WhatsAppAccountSetup() {
   const connectedPhone = connectedAccount?.phoneNumbers.find((phone) => phone.status === "ACTIVE") ?? connectedAccount?.phoneNumbers[0];
   const isConnected = data?.whatsapp.status === "CONNECTED" && Boolean(connectedPhone);
   const isCoexistence = Boolean(connectedPhone?.isOnBusinessApp && connectedPhone.platformType === "CLOUD_API");
+  const welcomeBonus = useDashboardResource<WelcomeBonus>(!isConnected && membership?.workspace.id ? `/workspaces/${membership.workspace.id}/wallet/welcome-bonus` : null, accessToken);
+  const welcomeBonusOffer = welcomeBonus.data ?? { amount: "400.00", currency: "INR", granted: false, pending: false, source: null };
 
   async function sendTest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -197,7 +211,8 @@ export function WhatsAppAccountSetup() {
                       {coexistenceSteps.map(({ title, detail, icon: Icon }, index) => <li key={title} className="rounded-lg border border-white/80 bg-white/80 p-3 shadow-[0_2px_8px_rgba(4,63,50,.04)] sm:min-h-[112px]"><div className="flex items-center justify-between"><span className="flex size-7 items-center justify-center rounded-full bg-[var(--brand)] text-xs font-bold text-white">{index + 1}</span><Icon size={17} className="text-[var(--brand)]" /></div><div className="mt-3 text-xs font-semibold text-[var(--text-primary)]">{title}</div><div className="mt-1 text-[11px] leading-4 text-[var(--text-secondary)]">{detail}</div></li>)}
                     </ol>
                     <div className="mt-4 flex items-start gap-3 rounded-lg border border-emerald-200 bg-white/80 p-3.5"><QrCode size={22} className="mt-0.5 shrink-0 text-[var(--brand)]" /><div><div className="text-xs font-semibold text-[var(--text-primary)]">Scan the QR code in Meta’s flow</div><div className="mt-1 text-[11px] leading-4 text-[var(--text-secondary)]">Open the message in WhatsApp and scan the live code. Screenshots will not work.</div></div></div>
-                    <button type="button" disabled={connecting || loading} onClick={() => setConnectionGuideOpen(true)} onMouseEnter={externalIcon.onMouseEnter} onMouseLeave={externalIcon.onMouseLeave} className="mt-5 flex h-10 w-full items-center justify-center rounded-md bg-[var(--brand)] px-4 text-sm font-medium text-white transition-colors hover:bg-[var(--brand-hover)] disabled:cursor-not-allowed disabled:opacity-60">{connecting ? "Opening Meta…" : "Connect Number"}{connecting ? <LoaderCircle size={15} className="ml-2 animate-spin" aria-hidden="true" /> : <ExternalLink ref={externalIcon.ref} size={15} duration={0.6} className="ml-2" aria-hidden="true" />}</button>
+                    {Number(welcomeBonusOffer.amount) > 0 && <><div className="mt-5"><TooltipProvider><Tooltip><TooltipTrigger asChild><button type="button" aria-label="About the WhatsApp connection bonus" className="inline-flex h-7 items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 text-[11px] font-medium text-[var(--text-primary)] transition-colors hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]"><span>Free</span><Coins size={14} className="text-amber-600" aria-hidden="true" /><span>{formatBonusAmount(welcomeBonusOffer.amount, welcomeBonusOffer.currency)}</span><Info size={13} className="text-[var(--text-muted)]" aria-hidden="true" /></button></TooltipTrigger><TooltipContent side="top" className="max-w-[260px] text-center leading-5">{welcomeBonusOffer.granted ? "Your welcome credit has already been added to the wallet." : "One-time wallet credit, added automatically after Meta confirms your WhatsApp number is connected."}</TooltipContent></Tooltip></TooltipProvider></div><Plus size={13} aria-hidden="true" className="mx-auto -my-1 text-[var(--text-muted)]" /></>}
+                    <button type="button" disabled={connecting || loading} onClick={() => setConnectionGuideOpen(true)} onMouseEnter={externalIcon.onMouseEnter} onMouseLeave={externalIcon.onMouseLeave} className={`${Number(welcomeBonusOffer.amount) > 0 ? "mt-2" : "mt-5"} flex h-10 w-full items-center justify-center rounded-md bg-[var(--brand)] px-4 text-sm font-medium text-white transition-colors hover:bg-[var(--brand-hover)] disabled:cursor-not-allowed disabled:opacity-60`}>{connecting ? "Opening Meta…" : "Connect Number"}{connecting ? <LoaderCircle size={15} className="ml-2 animate-spin" aria-hidden="true" /> : <ExternalLink ref={externalIcon.ref} size={15} duration={0.6} className="ml-2" aria-hidden="true" />}</button>
                     <div className="mt-2.5 text-center text-[11px] text-[var(--text-muted)]">Meta keeps your credentials secure.</div>
                   </div>
                 )}

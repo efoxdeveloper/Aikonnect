@@ -11,6 +11,10 @@ export const adminAuditQuerySchema = adminListQuerySchema.extend({
   action: z.string().trim().max(120).optional(),
 });
 
+export const platformSettingsInputSchema = z.object({
+  welcomeBonusAmount: z.string().trim().regex(/^(?:0|[1-9]\d{0,7})(?:\.\d{1,2})?$/, "Enter an amount from ₹0 to ₹99,999,999 with up to two decimal places"),
+});
+
 export const adminUserActionSchema = z.object({
   action: z.enum(["ACTIVATE", "SUSPEND", "BLOCK", "DELETE"]),
   confirmation: z.string().trim().max(320).optional(),
@@ -67,6 +71,7 @@ export const adminWalletAdjustmentSchema = z.object({
 });
 
 export type AdminListQuery = z.infer<typeof adminListQuerySchema>;
+export type PlatformSettingsInput = z.infer<typeof platformSettingsInputSchema>;
 export type AdminAuditQuery = z.infer<typeof adminAuditQuerySchema>;
 export type AdminUserAction = z.infer<typeof adminUserActionSchema>["action"];
 export type AdminWalletAdjustment = z.infer<typeof adminWalletAdjustmentSchema>;

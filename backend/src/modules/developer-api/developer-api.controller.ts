@@ -4,12 +4,10 @@ import { requestIdempotencyKey, type CreateApiCampaignInput, type PublicMessageI
 
 export function publicMessageResponse(result: { replayed: boolean; data: { messageId: string } }) {
   return {
-    statusCode: result.replayed ? 200 : 202,
+    statusCode: result.replayed ? 200 : 201,
     body: {
       result: true,
-      message: result.replayed
-        ? "Message was already queued. Check webhook for delivery status"
-        : "Message queued for sending via Marento. Check webhook for delivery status",
+      message: "Message created successfully",
       id: result.data.messageId,
     },
   };

@@ -3,6 +3,10 @@ import { logGoogleOAuthEvent } from "@/lib/google-oauth-debug";
 
 const API_BASE_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:5006/api/v1").replace(/\/$/, "");
 
+export function getApiUrl(path: string): string {
+  return `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
 type AuthSessionHandlers = {
   onAccessTokenRefreshed?: (accessToken: string) => void;
   onAuthenticationLost?: () => void;

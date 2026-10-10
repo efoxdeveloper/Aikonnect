@@ -31,6 +31,7 @@ function responseFor(path: string) {
   if (path.endsWith("/setup")) return setup;
   if (path.endsWith("/whatsapp/status")) return { wabaId: "waba-1", name: "Efox Technologies", status: "ACTIVE", accountReviewStatus: "APPROVED", businessVerificationStatus: "VERIFIED", checkedAt: null };
   if (path.includes("/usage?")) return { summary: { outgoingMessages: 100, deliveredMessages: 80, readMessages: 50, failedMessages: 2 }, daily: [{ date: "2026-10-01", outgoing: 40, delivered: 30 }, { date: "2026-10-02", outgoing: 60, delivered: 50 }] };
+  if (path.endsWith("/wallet/welcome-bonus")) return null;
   if (path.endsWith("/wallet")) return { currency: "INR", balance: "842.50", availableBalance: "700.00", status: "ACTIVE" };
   throw new Error(`Unexpected request ${path}`);
 }
@@ -61,6 +62,7 @@ describe("DashboardOverview", () => {
     expect(accountHealth.getByText("WABA review")).toBeInTheDocument();
     expect(accountHealth.getByText("Meta account status")).toBeInTheDocument();
     expect(accountHealth.getByText("Business verification")).toBeInTheDocument();
+    expect(accountHealth.queryByRole("button", { name: "About the WhatsApp connection bonus" })).not.toBeInTheDocument();
     expect(screen.getByRole("img", { name: "Message activity for 2 days" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /New Campaign/ })).toHaveAttribute("href", "/campaigns");
     expect(screen.queryByLabelText("Watch Tutorials")).not.toBeInTheDocument();
@@ -72,6 +74,23 @@ describe("DashboardOverview", () => {
     expect(vi.mocked(apiRequest).mock.calls.some(([path]) => String(path).includes("reports/campaigns"))).toBe(false);
   });
 
+  it("celebrates a pending WhatsApp connection bonus once and marks it as seen when dismissed", async () => {
+    vi.mocked(apiRequest).mockImplementation(async (path) => {
+      if (String(path).endsWith("/wallet/welcome-bonus")) return { amount: "400.00", currency: "INR", granted: true, pending: true, source: "whatsapp_number_connection" } as never;
+      if (String(path).endsWith("/welcome-bonus/celebrated")) return { marked: true } as never;
+      return responseFor(String(path)) as never;
+    });
+    renderDashboard();
+
+    const dialog = await screen.findByRole("dialog", { name: "Congratulations, Pawan!" });
+    expect(within(dialog).getByText("₹400")).toBeInTheDocument();
+    expect(screen.getByTestId("welcome-bonus-confetti").querySelectorAll("i")).toHaveLength(88);
+    fireEvent.click(within(dialog).getByRole("button", { name: "Explore your dashboard" }));
+
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith("/workspaces/workspace-1/wallet/welcome-bonus/celebrated", expect.objectContaining({ method: "POST" })));
+    await waitFor(() => expect(screen.queryByRole("dialog", { name: "Congratulations, Pawan!" })).not.toBeInTheDocument());
+  });
+
   it("replaces disconnected account details with a centered connect action that opens the setup choices", async () => {
     vi.mocked(apiRequest).mockImplementation(async (path) => {
       if (String(path).endsWith("/setup")) return {
@@ -79,12 +98,24 @@ describe("DashboardOverview", () => {
         progress: { ...setup.progress, whatsappConnected: false, phoneNumberConnected: false, completedSteps: 1, percentage: 25 },
         whatsapp: { status: "DISCONNECTED", accountCount: 0, phoneNumberCount: 0, accounts: [] },
       } as never;
+      if (String(path).endsWith("/wallet/welcome-bonus")) return { amount: "400.00", currency: "INR", granted: true, pending: false, source: "new_workspace_signup" } as never;
       return responseFor(String(path)) as never;
     });
     renderDashboard();
 
     const health = within(screen.getByRole("region", { name: "WhatsApp account" }));
     const connect = await health.findByRole("button", { name: "Connect WhatsApp" });
+    expect(screen.queryByRole("region", { name: "Message activity" })).not.toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "WhatsApp account" }).parentElement?.className).toMatch(/primaryGridSingle/);
+    expect(health.getByText("Rs. 400")).toBeInTheDocument();
+    expect(health.getByText("Free")).toBeInTheDocument();
+    expect(health.queryByText("Connect WhatsApp", { selector: "span" })).not.toBeInTheDocument();
+    const bonusPill = health.getByRole("button", { name: "About the WhatsApp connection bonus" });
+    const bonusPlus = screen.getByTestId("connection-bonus-plus");
+    expect(bonusPill.compareDocumentPosition(bonusPlus) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(bonusPlus.compareDocumentPosition(connect) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    fireEvent.focus(health.getByRole("button", { name: "About the WhatsApp connection bonus" }));
+    expect(await screen.findByText("Your welcome credit has already been added to the wallet.")).toBeInTheDocument();
     expect(connect.parentElement?.className).toContain("healthDisconnected");
     expect(health.queryByText("Business name")).not.toBeInTheDocument();
     expect(health.queryByText("WABA review")).not.toBeInTheDocument();
@@ -132,12 +163,12 @@ describe("DashboardOverview", () => {
   it("hides WhatsApp setup actions when the member can only read workspace details", async () => {
     renderDashboard(["workspace.read"]);
     expect(screen.queryByLabelText("Finish workspace setup")).not.toBeInTheDocument();
-    expect(vi.mocked(apiRequest).mock.calls.map(([path]) => path)).toEqual(["/workspaces/workspace-1/setup"]);
+    expect(vi.mocked(apiRequest).mock.calls.map(([path]) => path)).toEqual(["/workspaces/workspace-1/setup", "/workspaces/workspace-1/wallet/welcome-bonus"]);
   });
 
-  it("prioritizes the activity chart and account status before quick actions", () => {
+  it("prioritizes the activity chart and account status before quick actions", async () => {
     renderDashboard();
-    const chart = screen.getByRole("region", { name: "Message activity" });
+    const chart = await screen.findByRole("region", { name: "Message activity" });
     const health = screen.getByRole("region", { name: "WhatsApp account" });
     const actions = screen.getByRole("region", { name: "Quick actions" });
     expect(chart.parentElement).toBe(health.parentElement);

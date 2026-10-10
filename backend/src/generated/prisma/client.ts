@@ -97,6 +97,11 @@ export type ContactConsentEvent = Prisma.ContactConsentEventModel
  */
 export type Conversation = Prisma.ConversationModel
 /**
+ * Model ConversationNote
+ * 
+ */
+export type ConversationNote = Prisma.ConversationNoteModel
+/**
  * Model ConversationAssignmentRule
  * 
  */
@@ -187,6 +192,21 @@ export type Workflow = Prisma.WorkflowModel
  */
 export type WorkflowRun = Prisma.WorkflowRunModel
 /**
+ * Model Sequence
+ * 
+ */
+export type Sequence = Prisma.SequenceModel
+/**
+ * Model SequenceEnrollment
+ * 
+ */
+export type SequenceEnrollment = Prisma.SequenceEnrollmentModel
+/**
+ * Model WorkspaceAutomationSettings
+ * 
+ */
+export type WorkspaceAutomationSettings = Prisma.WorkspaceAutomationSettingsModel
+/**
  * Model Campaign
  * 
  */
@@ -266,6 +286,11 @@ export type PlanRequest = Prisma.PlanRequestModel
  * 
  */
 export type PlatformAuditLog = Prisma.PlatformAuditLogModel
+/**
+ * Model PlatformConfiguration
+ * 
+ */
+export type PlatformConfiguration = Prisma.PlatformConfigurationModel
 /**
  * Model EmailVerificationToken
  * 

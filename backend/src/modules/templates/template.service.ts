@@ -129,7 +129,7 @@ function localTemplateFromMeta(template: MetaTemplate) {
     templateKey: toSlug(template.name ?? "meta-template"),
     category: template.category === "UTILITY" ? "Utility" : template.category === "AUTHENTICATION" ? "Authentication" : "Marketing",
     language: template.language ?? "en_US",
-    templateType: "standard",
+    templateType: components.some((component) => component.type === "CAROUSEL") ? "carousel" : "standard",
     headerType,
     headerText: typeof header?.text === "string" ? header.text : null,
     headerFileName: null,

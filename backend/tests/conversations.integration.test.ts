@@ -112,6 +112,50 @@ test("lists workspace conversations with contact context and unread filtering", 
   assert.equal(messageSearch.status, 200);
   assert.deepEqual(((await messageSearch.json()) as { data: { items: Array<{ text: string | null }> } }).data.items.map(({ text }) => text), ["A newer WhatsApp message"]);
 
+  const assignmentOptionsResponse = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations/assignment-options`, { headers: authorization });
+  assert.equal(assignmentOptionsResponse.status, 200);
+  const assignmentOptions = (await assignmentOptionsResponse.json()) as { data: Array<{ id: string; name: string }> };
+  assert.ok(assignmentOptions.data.some(({ name }) => name === "Inbox Tester"));
+  const assigneeMembershipId = assignmentOptions.data[0]!.id;
+  const assignConversation = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations/${conversation.data.id}/assignment`, {
+    method: "PATCH", headers: { ...authorization, "content-type": "application/json" }, body: JSON.stringify({ assigneeMembershipId }),
+  });
+  assert.equal(assignConversation.status, 200);
+  assert.equal((await assignConversation.json()).data.assigneeMembershipId, assigneeMembershipId);
+  const assignedFilter = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations?assigneeMembershipId=${assigneeMembershipId}`, { headers: authorization });
+  assert.deepEqual(((await assignedFilter.json()) as { data: { items: Array<{ id: string }> } }).data.items.map(({ id }) => id), [conversation.data.id]);
+  const unassignConversation = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations/${conversation.data.id}/assignment`, {
+    method: "PATCH", headers: { ...authorization, "content-type": "application/json" }, body: JSON.stringify({ assigneeMembershipId: null }),
+  });
+  assert.equal(unassignConversation.status, 200);
+  const unassignedFilter = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations?assigneeMembershipId=unassigned`, { headers: authorization });
+  assert.deepEqual(((await unassignedFilter.json()) as { data: { items: Array<{ id: string }> } }).data.items.map(({ id }) => id), [conversation.data.id]);
+  const invalidAssignee = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations/${conversation.data.id}/assignment`, {
+    method: "PATCH", headers: { ...authorization, "content-type": "application/json" }, body: JSON.stringify({ assigneeMembershipId: "00000000-0000-0000-0000-000000000000" }),
+  });
+  assert.equal(invalidAssignee.status, 400);
+
+  const addNote = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations/${conversation.data.id}/notes`, {
+    method: "POST", headers: { ...authorization, "content-type": "application/json" }, body: JSON.stringify({ content: "Please follow up tomorrow." }),
+  });
+  assert.equal(addNote.status, 201);
+  const note = (await addNote.json()) as { data: { id: string; content: string; createdBy: { firstName: string } } };
+  assert.equal(note.data.content, "Please follow up tomorrow.");
+  assert.equal(note.data.createdBy.firstName, "Inbox");
+  const invalidNote = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations/${conversation.data.id}/notes`, {
+    method: "POST", headers: { ...authorization, "content-type": "application/json" }, body: JSON.stringify({ content: "   " }),
+  });
+  assert.equal(invalidNote.status, 400);
+  const privateNotes = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations/${conversation.data.id}/notes`, { headers: authorization });
+  assert.deepEqual(((await privateNotes.json()) as { data: Array<{ content: string }> }).data.map(({ content }) => content), ["Please follow up tomorrow."]);
+
+  const updateStatus = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations/${conversation.data.id}/status`, {
+    method: "PATCH", headers: { ...authorization, "content-type": "application/json" }, body: JSON.stringify({ status: "PENDING" }),
+  });
+  assert.equal(updateStatus.status, 200);
+  const pendingFilter = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations?status=PENDING`, { headers: authorization });
+  assert.deepEqual(((await pendingFilter.json()) as { data: { items: Array<{ id: string; status: string }> } }).data.items.map(({ id, status }) => ({ id, status })), [{ id: conversation.data.id, status: "PENDING" }]);
+
   const managerRoleResponse = await fetch(`${baseUrl}/workspaces/${workspaceId}/roles`, {
     method: "POST",
     headers: { ...authorization, "content-type": "application/json" },
@@ -132,6 +176,13 @@ test("lists workspace conversations with contact context and unread filtering", 
     data: { roleId: inboxRole.data.id },
   });
 
+  const openConversationWithoutReply = await fetch(`${baseUrl}/workspaces/${workspaceId}/contacts/${contact.data.id}/conversations`, {
+    method: "POST",
+    headers: { ...authorization, "content-type": "application/json" },
+    body: JSON.stringify({ channelKey: "whatsapp" }),
+  });
+  assert.equal(openConversationWithoutReply.status, 403, "Inbox readers without reply permission cannot start new conversations");
+
   const messagesForInboxRole = await fetch(`${baseUrl}/workspaces/${workspaceId}/contacts/${contact.data.id}/conversations/${conversation.data.id}/messages`, { headers: authorization });
   assert.equal(messagesForInboxRole.status, 200, "Inbox members should be able to read conversation messages");
   const messagesBody = (await messagesForInboxRole.json()) as { data: { items: Array<{ id: string; text: string | null; deletedAt: string | null }> } };
@@ -140,6 +191,14 @@ test("lists workspace conversations with contact context and unread filtering", 
   assert.equal(deleteForInboxRole.status, 403, "Inbox members should not be able to delete messages");
   const deleteChatForInboxRole = await fetch(`${baseUrl}/workspaces/${workspaceId}/contacts/${contact.data.id}/conversations/${conversation.data.id}`, { method: "DELETE", headers: authorization });
   assert.equal(deleteChatForInboxRole.status, 403, "Inbox members should not be able to delete chats");
+  const assignForInboxRole = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations/${conversation.data.id}/assignment`, { method: "PATCH", headers: { ...authorization, "content-type": "application/json" }, body: JSON.stringify({ assigneeMembershipId: null }) });
+  assert.equal(assignForInboxRole.status, 403, "Inbox readers without assignment permission cannot assign conversations");
+  const statusForInboxRole = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations/${conversation.data.id}/status`, { method: "PATCH", headers: { ...authorization, "content-type": "application/json" }, body: JSON.stringify({ status: "RESOLVED" }) });
+  assert.equal(statusForInboxRole.status, 403, "Inbox readers without manage permission cannot change conversation state");
+  const noteForInboxRole = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations/${conversation.data.id}/notes`, { method: "POST", headers: { ...authorization, "content-type": "application/json" }, body: JSON.stringify({ content: "This should be denied." }) });
+  assert.equal(noteForInboxRole.status, 403, "Inbox readers without reply permission cannot add private notes");
+  const notesForInboxRole = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations/${conversation.data.id}/notes`, { headers: authorization });
+  assert.equal(notesForInboxRole.status, 200, "Inbox readers can read team notes");
 
   const list = await fetch(`${baseUrl}/workspaces/${workspaceId}/conversations?unreadOnly=true&search=Inbox`, { headers: authorization });
   assert.equal(list.status, 200);

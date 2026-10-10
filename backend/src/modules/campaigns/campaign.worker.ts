@@ -5,9 +5,10 @@ import { logger } from "../../config/logger.js";
 import { AppError } from "../../middleware/error-handler.js";
 import { sendWhatsAppTemplateMessage, type WhatsAppTemplateMedia, type WhatsAppTemplateParameter } from "../whatsapp/whatsapp.service.js";
 import { refreshCampaignMetrics } from "./campaign.metrics.js";
-import { templateVariableCount } from "./campaign.service.js";
+import { campaignWalletCanCover, templateVariableCount } from "./campaign.service.js";
 import { messagePricingSnapshot, resolveMessagePricing } from "../whatsapp-pricing/pricing.service.js";
 import { reserveMessageBilling, releaseMessageBilling } from "../billing/billing.service.js";
+import { publishCampaignUpdated } from "../../realtime/campaign.js";
 
 const MAX_ATTEMPTS = 3;
 const BATCH_SIZE = 25;
@@ -70,6 +71,7 @@ export async function claimRecipient(campaignId: string) {
   const candidate = await prisma.campaignRecipient.findFirst({
     where: {
       campaignId,
+      campaign: { is: { status: "RUNNING" } },
       OR: [
         { status: "PENDING", processingToken: null },
         { status: "FAILED", attemptCount: { lt: MAX_ATTEMPTS }, updatedAt: { lte: retryCutoff }, processingToken: null },
@@ -95,6 +97,7 @@ export async function claimRecipient(campaignId: string) {
     where: {
       id: candidate.id,
       status: candidate.status,
+      campaign: { is: { status: "RUNNING" } },
       ...(candidate.attemptCount > 0 ? { attemptCount: { lt: MAX_ATTEMPTS } } : {}),
       ...(candidate.status === "ATTEMPTED"
         ? { OR: [{ processingExpiresAt: { lte: now } }, { processingToken: null, attemptedAt: { lte: legacyCutoff } }] }
@@ -176,7 +179,7 @@ async function sendRecipient(campaignId: string, recipientId: string, leaseToken
 }
 
 export async function processCampaign(campaignId: string) {
-  const campaign = await prisma.campaign.findUnique({ where: { id: campaignId }, select: { id: true, workspaceId: true, status: true, scheduledAt: true } });
+  const campaign = await prisma.campaign.findUnique({ where: { id: campaignId }, select: { id: true, workspaceId: true, status: true, scheduledAt: true, category: true } });
   if (!campaign || !["RUNNING", "SCHEDULED"].includes(campaign.status)) return;
   const now = new Date();
   if (campaign.scheduledAt && campaign.scheduledAt > now) return;
@@ -190,6 +193,11 @@ export async function processCampaign(campaignId: string) {
 
   if (await pauseForExpiredTrial()) return;
   if (campaign.status === "SCHEDULED") {
+    const pendingRecipients = await prisma.campaignRecipient.findMany({
+      where: { campaignId: campaign.id, workspaceId: campaign.workspaceId, status: "PENDING" },
+      select: { phoneE164: true },
+    });
+    if (!await campaignWalletCanCover(campaign.workspaceId, campaign.category, pendingRecipients)) return;
     const started = await prisma.campaign.updateMany({
       where: { id: campaign.id, status: "SCHEDULED", OR: [{ scheduledAt: null }, { scheduledAt: { lte: now } }] },
       data: { status: "RUNNING", setLiveAt: now },
@@ -197,9 +205,12 @@ export async function processCampaign(campaignId: string) {
     if (!started.count) return;
   }
   for (let index = 0; index < BATCH_SIZE; index += 1) {
+    const current = await prisma.campaign.findUnique({ where: { id: campaignId }, select: { status: true } });
+    if (!current || current.status !== "RUNNING") break;
     if (await pauseForExpiredTrial()) break;
     const candidate = await claimRecipient(campaignId);
     if (!candidate) break;
+    publishCampaignUpdated(campaign.workspaceId, campaignId);
     try {
       await sendRecipient(campaignId, candidate.id, candidate.leaseToken);
     } catch (error) {

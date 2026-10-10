@@ -54,6 +54,8 @@ function headers(accessToken: string) {
 test("campaign APIs enforce authentication and input validation", async () => {
   const anonymous = await fetch(`${baseUrl}/workspaces/00000000-0000-0000-0000-000000000000/campaigns`);
   assert.equal(anonymous.status, 401);
+  const anonymousEstimate = await fetch(`${baseUrl}/workspaces/00000000-0000-0000-0000-000000000000/campaigns/estimate`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({}) });
+  assert.equal(anonymousEstimate.status, 401);
 
   const owner = await registerVerified();
   const invalid = await fetch(`${baseUrl}/workspaces/${owner.workspace.id}/campaigns`, {

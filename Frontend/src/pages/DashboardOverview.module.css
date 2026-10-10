@@ -31,6 +31,7 @@
 .metricText small { display: block; overflow: hidden; margin-top: 2px; color: var(--text-muted); font-size: 11px; line-height: 16px; text-overflow: ellipsis; white-space: nowrap; }
 .walletButton { height: 32px; padding: 0 9px; font-size: 12px; gap: 4px; }
 .primaryGrid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(340px, 1fr); align-items: stretch; gap: 16px; }
+.primaryGridSingle { grid-template-columns: minmax(0, 1fr); }
 .panel { overflow: hidden; }
 .panelHeader { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 50px; padding: 13px 16px 8px; }
 .panelHeader h2 { display: flex; align-items: center; gap: 8px; min-width: 0; margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: -.01em; }
@@ -61,7 +62,7 @@
 .healthItem strong[data-tone="amber"] { color: var(--warning); }
 .healthItem strong[data-tone="red"] { color: var(--danger); }
 .healthItem small { display: block; overflow: hidden; color: var(--text-muted); font-size: 11px; line-height: 15px; text-overflow: ellipsis; white-space: nowrap; }
-.healthDisconnected { display: flex; min-height: 238px; align-items: center; justify-content: center; padding: 24px; }
+.healthDisconnected { display: flex; min-height: 238px; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; }
 .healthDisconnected > span { color: var(--text-secondary); font-size: 12px; }
 .quickActions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; padding: 4px 14px 14px; }
 .quickActions > a, .quickActions > button { display: flex; justify-content: flex-start; gap: 10px; min-width: 0; height: 54px; padding: 6px 10px; border-color: var(--border-soft); border-radius: 8px; background: var(--surface); font-size: 12px; text-align: left; }

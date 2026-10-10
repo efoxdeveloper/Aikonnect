@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 export const campaignKind = z.enum(["one_time", "ongoing", "api"]);
-export const campaignStatus = z.enum(["DRAFT", "SCHEDULED", "RUNNING", "COMPLETED", "PAUSED"]);
+export const campaignStatus = z.enum(["DRAFT", "SCHEDULED", "RUNNING", "COMPLETED", "PAUSED", "CANCELLED"]);
+export const campaignControlSchema = z.object({ action: z.enum(["pause", "resume", "cancel"]) });
 export const campaignAudienceType = z.enum(["csv", "manual", "segment", "contacts", "all"]);
 export const campaignLaunchMode = z.enum(["draft", "send", "schedule"]);
 const e164Phone = z.string().trim().regex(/^\+[1-9]\d{6,14}$/, "Phone numbers must be complete E.164 numbers");
@@ -55,11 +56,15 @@ export const createCampaignSchema = z.object({
   });
 });
 
+export const estimateCampaignSchema = createCampaignSchema.safeExtend({
+  launchMode: z.enum(["send", "schedule"]),
+});
+
 export const campaignListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(100).default(25),
   search: z.string().trim().max(200).default(""),
-  status: z.preprocess((value) => typeof value === "string" && value.includes(",") ? value.split(",") : value, z.array(campaignStatus).min(1).optional()),
+  status: z.preprocess((value) => typeof value === "string" ? value.split(",") : value, z.array(campaignStatus).min(1).optional()),
   kind: campaignKind.optional(),
   category: z.string().trim().max(40).optional(),
   createdById: z.uuid().optional(),
@@ -71,4 +76,6 @@ export const campaignListQuerySchema = z.object({
 });
 
 export type CreateCampaignInput = z.infer<typeof createCampaignSchema>;
+export type EstimateCampaignInput = z.infer<typeof estimateCampaignSchema>;
 export type CampaignListQuery = z.infer<typeof campaignListQuerySchema>;
+export type CampaignControlAction = z.infer<typeof campaignControlSchema>["action"];

@@ -44,6 +44,18 @@ describe("platform admin sections", () => {
     expect(apiRequest).toHaveBeenCalledWith("/admin/workspaces?page=1&pageSize=25");
   });
 
+  it("lets platform administrators set the WhatsApp connection bonus amount", async () => {
+    vi.mocked(apiRequest).mockReset().mockResolvedValue({ runtime: { environment: "test" }, integrations: { googleOAuth: true }, featureFlags: { configured: false, message: "Not configured" }, billing: { currency: "INR", walletConfigured: true }, signup: { welcomeBonusAmount: "400.00", currency: "INR" } });
+    const auth = { status: "authenticated", accessToken: "token", user: { id: "admin-1", email: "admin@example.com", firstName: "Platform", lastName: "Admin", emailVerifiedAt: null, platformRole: "ADMIN", memberships: [] }, login: vi.fn(), register: vi.fn(), verifyEmail: vi.fn(), resendVerification: vi.fn(), changeEmail: vi.fn(), refreshUser: vi.fn(), logout: vi.fn() } as unknown as AuthContextValue;
+    render(<AuthContext.Provider value={auth}><MemoryRouter initialEntries={["/admin/settings"]}><PlatformAdminSection /></MemoryRouter></AuthContext.Provider>);
+
+    const amount = await screen.findByLabelText("Bonus amount (INR)");
+    expect(amount).toHaveValue(400);
+    fireEvent.change(amount, { target: { value: "500.25" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save bonus" }));
+    await waitFor(() => expect(apiRequest).toHaveBeenCalledWith("/admin/settings", expect.objectContaining({ method: "PATCH", body: JSON.stringify({ welcomeBonusAmount: "500.25" }) })));
+  });
+
   it("loads the next page from the server when pagination is available", async () => {
     vi.mocked(apiRequest).mockReset()
       .mockResolvedValueOnce({

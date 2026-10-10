@@ -34,6 +34,7 @@ test("recipient lease allows only one concurrent worker claim", async (t) => {
     claimed = true;
     assert.equal(args.where.id, candidate.id);
     assert.equal(args.where.status, "PENDING");
+    assert.deepEqual(args.where.campaign, { is: { status: "RUNNING" } });
     assert.equal(args.where.processingToken, null);
     assert.equal(args.data.status, "ATTEMPTED");
     assert.match(args.data.processingToken, /^[0-9a-f-]{36}$/i);
@@ -71,4 +72,12 @@ test("pauses an active campaign before sending when its trial has expired", asyn
 
   await processCampaign("campaign-1");
   assert.deepEqual(pauseArgs, { where: { id: "campaign-1", status: { in: ["RUNNING", "SCHEDULED"] } }, data: { status: "PAUSED" } });
+});
+
+test("paused and cancelled campaigns do not claim or send recipients", async (t) => {
+  for (const status of ["PAUSED", "CANCELLED"]) {
+    stub(t, prisma.campaign, "findUnique", async () => ({ id: "campaign-1", workspaceId: "workspace-1", status, scheduledAt: null, category: "Marketing" }));
+    stub(t, prisma.campaignRecipient, "findFirst", async () => { assert.fail(`${status} campaigns must not claim recipients`); });
+    await processCampaign("campaign-1");
+  }
 });

@@ -41,6 +41,7 @@ export function AutomationBuilder() {
   const [templates, setTemplates] = useState<Option[]>([]);
   const [tags, setTags] = useState<Option[]>([]);
   const [members, setMembers] = useState<Option[]>([]);
+  const [sequences, setSequences] = useState<Option[]>([]);
   const [customFields, setCustomFields] = useState<string[]>([]);
   const [loading, setLoading] = useState(Boolean(automationId));
   const [saving, setSaving] = useState(false);
@@ -61,12 +62,14 @@ export function AutomationBuilder() {
       apiRequest<Array<{ id: string; user: { firstName: string; lastName: string }; status: string }>>(`/workspaces/${workspaceId}/members`, { headers }),
       apiRequest<Array<{ id: string; label: string }>>(`/workspaces/${workspaceId}/contacts/custom-fields`, { headers }).catch(() => []),
       apiRequest<{ items: Array<{ id: string; name: string; key: string; status: string }> }>(`/workspaces/${workspaceId}/templates?status=active&page=1&pageSize=100`, { headers }).catch(() => ({ items: [] })),
-    ]).then(([tagRows, memberRows, fieldRows, templateRows]) => {
+      apiRequest<{ items: Array<{ id: string; name: string }> }>(`/workspaces/${workspaceId}/sequences?status=ACTIVE&page=1&pageSize=100`, { headers }).catch(() => ({ items: [] })),
+    ]).then(([tagRows, memberRows, fieldRows, templateRows, sequenceRows]) => {
       if (!active) return;
       setTags(tagRows.map((item) => ({ id: item.id, label: item.name })));
       setMembers(memberRows.filter((item) => item.status === "ACTIVE").map((item) => ({ id: item.id, label: `${item.user.firstName} ${item.user.lastName}`.trim() })));
       setCustomFields(fieldRows.map((item) => item.label));
       setTemplates(templateRows.items.filter((item) => item.status === "APPROVED").map((item) => ({ id: item.id, label: item.name || item.key })));
+      setSequences(sequenceRows.items.map((item) => ({ id: item.id, label: item.name })));
     }).catch(() => undefined);
     if (automationId) {
       void automationService(workspaceId, accessToken).get(automationId).then((item) => { if (active) setForm(fromAutomation(item)); }).catch((caught) => { if (active) toast.error(friendlyError(caught, "Automation could not be loaded.")); }).finally(() => { if (active) setLoading(false); });
@@ -118,7 +121,7 @@ export function AutomationBuilder() {
   if (loading) return <AutomationShell><div className="p-8 text-sm text-[var(--text-secondary)]">Loading automation...</div></AutomationShell>;
   return <AutomationShell><div data-testid="automation-builder" className="flex h-full min-h-0 flex-col overflow-hidden">
     <header className="flex flex-none flex-wrap items-center justify-between gap-3 border-b border-[var(--border-soft)] bg-white px-5 py-3 sm:px-8"><div className="flex min-w-0 flex-1 items-center gap-3"><button type="button" aria-label="Back to automations" onClick={() => navigate("/automations")} className="flex size-8 shrink-0 items-center justify-center rounded-md text-[var(--text-secondary)] hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"><ArrowLeft size={17} /></button><div className="flex min-w-0 flex-1 items-center"><label htmlFor="automation-name" className="sr-only">Automation Name</label><Input id="automation-name" value={form.name} onChange={(event) => { setNameError(false); setForm((current) => ({ ...current, name: event.target.value })); }} placeholder="Automation name" maxLength={160} aria-invalid={nameError} className={`h-9 min-w-0 max-w-[380px] flex-1 bg-white px-3 text-sm font-medium shadow-none focus:bg-white focus:ring-0 ${nameError ? "border-red-500 focus:border-red-500" : "border-[var(--border)] focus:border-[var(--brand)]"}`} /></div></div><div className="flex items-center gap-2"><Button type="button" variant="outline" size="sm" onClick={() => void save(false)} disabled={saving} className="h-9 text-xs"><Save size={14} /> Save Draft</Button><Button type="button" size="sm" onClick={() => void save(true)} disabled={saving} className="h-9 text-xs"><Send size={14} /> Publish</Button></div></header>
-    <AutomationRuleBuilder trigger={form.trigger} conditions={form.conditions} actions={form.actions} templates={templates} tags={tags} members={members} customFields={customFields} onTriggerChange={(trigger) => setForm((current) => ({ ...current, trigger, conditions: [] }))} onConditionsChange={(conditions) => setForm((current) => ({ ...current, conditions }))} onActionChange={updateAction} onActionAdd={addAction} onActionMove={moveAction} onActionDuplicate={duplicateAction} onActionRemove={(id) => setForm((current) => ({ ...current, actions: current.actions.filter((item) => item.id !== id).map((item, index) => ({ ...item, order: index + 1 })) }))} />
+    <AutomationRuleBuilder trigger={form.trigger} conditions={form.conditions} actions={form.actions} templates={templates} tags={tags} members={members} sequences={sequences} customFields={customFields} onTriggerChange={(trigger) => setForm((current) => ({ ...current, trigger, conditions: [] }))} onConditionsChange={(conditions) => setForm((current) => ({ ...current, conditions }))} onActionChange={updateAction} onActionAdd={addAction} onActionMove={moveAction} onActionDuplicate={duplicateAction} onActionRemove={(id) => setForm((current) => ({ ...current, actions: current.actions.filter((item) => item.id !== id).map((item, index) => ({ ...item, order: index + 1 })) }))} />
     </div>
   </AutomationShell>;
 }

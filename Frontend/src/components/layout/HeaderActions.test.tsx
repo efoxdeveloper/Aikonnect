@@ -5,7 +5,9 @@ import { AuthContext, type AuthContextValue } from "@/contexts/AuthContext";
 import { apiRequest } from "@/lib/api";
 import { WalletBalance } from "./HeaderActions";
 
-vi.mock("@/lib/api", () => ({ apiRequest: vi.fn() }));
+const { subscribeToWalletEventsMock } = vi.hoisted(() => ({ subscribeToWalletEventsMock: vi.fn((_options: { url: string; accessToken: string; onUpdate: () => void }) => vi.fn()) }));
+vi.mock("@/lib/api", () => ({ apiRequest: vi.fn(), getApiUrl: (path: string) => `http://localhost:5006/api/v1${path}` }));
+vi.mock("@/lib/wallet-events", () => ({ subscribeToWalletEvents: subscribeToWalletEventsMock }));
 
 function auth(permissions: string[] = ["billing.read"]) {
   return {
@@ -27,7 +29,7 @@ function auth(permissions: string[] = ["billing.read"]) {
 }
 
 describe("WalletBalance", () => {
-  beforeEach(() => vi.mocked(apiRequest).mockReset());
+  beforeEach(() => { vi.mocked(apiRequest).mockReset(); subscribeToWalletEventsMock.mockReset().mockReturnValue(vi.fn()); });
 
   it("loads and shows the active workspace wallet amount in the navbar", async () => {
     vi.mocked(apiRequest).mockResolvedValue({ currency: "INR", balance: "125.00" });
@@ -44,5 +46,25 @@ describe("WalletBalance", () => {
 
     expect(screen.queryByTestId("navbar-wallet")).not.toBeInTheDocument();
     expect(apiRequest).not.toHaveBeenCalled();
+  });
+
+  it("shows spendable balance and refreshes it when the wallet SSE stream reports a reservation", async () => {
+    vi.mocked(apiRequest)
+      .mockResolvedValueOnce({ currency: "INR", balance: "125.00", availableBalance: "125.00", reservedBalance: "0.00" })
+      .mockResolvedValueOnce({ currency: "INR", balance: "125.00", availableBalance: "121.75", reservedBalance: "3.25" });
+
+    render(<AuthContext.Provider value={auth()}><MemoryRouter><WalletBalance /></MemoryRouter></AuthContext.Provider>);
+    const wallet = await screen.findByTestId("navbar-wallet");
+    await waitFor(() => expect(wallet).toHaveTextContent("₹ 125.00"));
+    expect(subscribeToWalletEventsMock).toHaveBeenCalledWith({
+      url: "http://localhost:5006/api/v1/workspaces/workspace-1/wallet/events",
+      accessToken: "access-token",
+      onUpdate: expect.any(Function),
+    });
+    const onUpdate = subscribeToWalletEventsMock.mock.calls[0][0].onUpdate;
+    onUpdate();
+    await waitFor(() => expect(wallet).toHaveTextContent("₹ 121.75"));
+    expect(wallet).toHaveTextContent("Held ₹ 3.25");
+    expect(wallet).toHaveAttribute("aria-label", "Available wallet balance ₹ 121.75; ₹ 3.25 held for pending messages");
   });
 });

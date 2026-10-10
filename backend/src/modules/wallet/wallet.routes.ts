@@ -8,6 +8,9 @@ import { walletLedgerQuerySchema, walletParamsSchema, billingSettingsSchema } fr
 
 export const walletRouter = Router({ mergeParams: true });
 walletRouter.get("/", requireWorkspacePermission(PERMISSIONS.BILLING_READ), validateParams(walletParamsSchema), asyncHandler(controller.get));
+walletRouter.get("/events", requireWorkspacePermission(PERMISSIONS.BILLING_READ), validateParams(walletParamsSchema), controller.events);
+walletRouter.get("/welcome-bonus", requireWorkspacePermission(PERMISSIONS.WORKSPACE_READ), validateParams(walletParamsSchema), asyncHandler(controller.welcomeBonus));
+walletRouter.post("/welcome-bonus/celebrated", requireWorkspacePermission(PERMISSIONS.BILLING_READ), validateParams(walletParamsSchema), asyncHandler(controller.celebrateWelcomeBonus));
 walletRouter.get("/ledger", requireWorkspacePermission(PERMISSIONS.BILLING_READ), validateParams(walletParamsSchema), validateQuery(walletLedgerQuerySchema), asyncHandler(controller.ledger));
 walletRouter.get("/settings", requireWorkspacePermission(PERMISSIONS.BILLING_READ), validateParams(walletParamsSchema), asyncHandler(controller.settings));
 walletRouter.patch("/settings", requireWorkspacePermission(PERMISSIONS.BILLING_MANAGE), validateParams(walletParamsSchema), validateBody(billingSettingsSchema), asyncHandler(controller.adminUpdateSettings));

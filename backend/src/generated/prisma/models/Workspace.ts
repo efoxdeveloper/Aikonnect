@@ -49,6 +49,8 @@ export type WorkspaceMinAggregateOutputType = {
   timezone: string | null
   onboardingStep: number | null
   onboardingCompletedAt: Date | null
+  welcomeBonusGrantedAt: Date | null
+  welcomeBonusCelebratedAt: Date | null
   ownerId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -69,6 +71,8 @@ export type WorkspaceMaxAggregateOutputType = {
   timezone: string | null
   onboardingStep: number | null
   onboardingCompletedAt: Date | null
+  welcomeBonusGrantedAt: Date | null
+  welcomeBonusCelebratedAt: Date | null
   ownerId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -90,6 +94,8 @@ export type WorkspaceCountAggregateOutputType = {
   onboardingData: number
   onboardingStep: number
   onboardingCompletedAt: number
+  welcomeBonusGrantedAt: number
+  welcomeBonusCelebratedAt: number
   ownerId: number
   createdAt: number
   updatedAt: number
@@ -120,6 +126,8 @@ export type WorkspaceMinAggregateInputType = {
   timezone?: true
   onboardingStep?: true
   onboardingCompletedAt?: true
+  welcomeBonusGrantedAt?: true
+  welcomeBonusCelebratedAt?: true
   ownerId?: true
   createdAt?: true
   updatedAt?: true
@@ -140,6 +148,8 @@ export type WorkspaceMaxAggregateInputType = {
   timezone?: true
   onboardingStep?: true
   onboardingCompletedAt?: true
+  welcomeBonusGrantedAt?: true
+  welcomeBonusCelebratedAt?: true
   ownerId?: true
   createdAt?: true
   updatedAt?: true
@@ -161,6 +171,8 @@ export type WorkspaceCountAggregateInputType = {
   onboardingData?: true
   onboardingStep?: true
   onboardingCompletedAt?: true
+  welcomeBonusGrantedAt?: true
+  welcomeBonusCelebratedAt?: true
   ownerId?: true
   createdAt?: true
   updatedAt?: true
@@ -269,6 +281,8 @@ export type WorkspaceGroupByOutputType = {
   onboardingData: runtime.JsonValue
   onboardingStep: number
   onboardingCompletedAt: Date | null
+  welcomeBonusGrantedAt: Date | null
+  welcomeBonusCelebratedAt: Date | null
   ownerId: string
   createdAt: Date
   updatedAt: Date
@@ -313,6 +327,8 @@ export type WorkspaceWhereInput = {
   onboardingData?: Prisma.JsonFilter<"Workspace">
   onboardingStep?: Prisma.IntFilter<"Workspace"> | number
   onboardingCompletedAt?: Prisma.DateTimeNullableFilter<"Workspace"> | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.DateTimeNullableFilter<"Workspace"> | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.DateTimeNullableFilter<"Workspace"> | Date | string | null
   ownerId?: Prisma.UuidFilter<"Workspace"> | string
   createdAt?: Prisma.DateTimeFilter<"Workspace"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Workspace"> | Date | string
@@ -327,6 +343,7 @@ export type WorkspaceWhereInput = {
   contactTags?: Prisma.ContactTagListRelationFilter
   contactTasks?: Prisma.ContactTaskListRelationFilter
   contactNotes?: Prisma.ContactNoteListRelationFilter
+  conversationNotes?: Prisma.ConversationNoteListRelationFilter
   contactSegments?: Prisma.ContactSegmentListRelationFilter
   contactCustomFields?: Prisma.ContactCustomFieldListRelationFilter
   contactConsentEvents?: Prisma.ContactConsentEventListRelationFilter
@@ -338,6 +355,9 @@ export type WorkspaceWhereInput = {
   automationLogs?: Prisma.AutomationLogListRelationFilter
   workflows?: Prisma.WorkflowListRelationFilter
   workflowRuns?: Prisma.WorkflowRunListRelationFilter
+  sequences?: Prisma.SequenceListRelationFilter
+  sequenceEnrollments?: Prisma.SequenceEnrollmentListRelationFilter
+  automationSettings?: Prisma.XOR<Prisma.WorkspaceAutomationSettingsNullableScalarRelationFilter, Prisma.WorkspaceAutomationSettingsWhereInput> | null
   campaigns?: Prisma.CampaignListRelationFilter
   campaignRecipients?: Prisma.CampaignRecipientListRelationFilter
   apiKeys?: Prisma.PublicApiKeyListRelationFilter
@@ -366,6 +386,8 @@ export type WorkspaceOrderByWithRelationInput = {
   onboardingData?: Prisma.SortOrder
   onboardingStep?: Prisma.SortOrder
   onboardingCompletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  welcomeBonusGrantedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  welcomeBonusCelebratedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -380,6 +402,7 @@ export type WorkspaceOrderByWithRelationInput = {
   contactTags?: Prisma.ContactTagOrderByRelationAggregateInput
   contactTasks?: Prisma.ContactTaskOrderByRelationAggregateInput
   contactNotes?: Prisma.ContactNoteOrderByRelationAggregateInput
+  conversationNotes?: Prisma.ConversationNoteOrderByRelationAggregateInput
   contactSegments?: Prisma.ContactSegmentOrderByRelationAggregateInput
   contactCustomFields?: Prisma.ContactCustomFieldOrderByRelationAggregateInput
   contactConsentEvents?: Prisma.ContactConsentEventOrderByRelationAggregateInput
@@ -391,6 +414,9 @@ export type WorkspaceOrderByWithRelationInput = {
   automationLogs?: Prisma.AutomationLogOrderByRelationAggregateInput
   workflows?: Prisma.WorkflowOrderByRelationAggregateInput
   workflowRuns?: Prisma.WorkflowRunOrderByRelationAggregateInput
+  sequences?: Prisma.SequenceOrderByRelationAggregateInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentOrderByRelationAggregateInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsOrderByWithRelationInput
   campaigns?: Prisma.CampaignOrderByRelationAggregateInput
   campaignRecipients?: Prisma.CampaignRecipientOrderByRelationAggregateInput
   apiKeys?: Prisma.PublicApiKeyOrderByRelationAggregateInput
@@ -422,6 +448,8 @@ export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
   onboardingData?: Prisma.JsonFilter<"Workspace">
   onboardingStep?: Prisma.IntFilter<"Workspace"> | number
   onboardingCompletedAt?: Prisma.DateTimeNullableFilter<"Workspace"> | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.DateTimeNullableFilter<"Workspace"> | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.DateTimeNullableFilter<"Workspace"> | Date | string | null
   ownerId?: Prisma.UuidFilter<"Workspace"> | string
   createdAt?: Prisma.DateTimeFilter<"Workspace"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Workspace"> | Date | string
@@ -436,6 +464,7 @@ export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
   contactTags?: Prisma.ContactTagListRelationFilter
   contactTasks?: Prisma.ContactTaskListRelationFilter
   contactNotes?: Prisma.ContactNoteListRelationFilter
+  conversationNotes?: Prisma.ConversationNoteListRelationFilter
   contactSegments?: Prisma.ContactSegmentListRelationFilter
   contactCustomFields?: Prisma.ContactCustomFieldListRelationFilter
   contactConsentEvents?: Prisma.ContactConsentEventListRelationFilter
@@ -447,6 +476,9 @@ export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
   automationLogs?: Prisma.AutomationLogListRelationFilter
   workflows?: Prisma.WorkflowListRelationFilter
   workflowRuns?: Prisma.WorkflowRunListRelationFilter
+  sequences?: Prisma.SequenceListRelationFilter
+  sequenceEnrollments?: Prisma.SequenceEnrollmentListRelationFilter
+  automationSettings?: Prisma.XOR<Prisma.WorkspaceAutomationSettingsNullableScalarRelationFilter, Prisma.WorkspaceAutomationSettingsWhereInput> | null
   campaigns?: Prisma.CampaignListRelationFilter
   campaignRecipients?: Prisma.CampaignRecipientListRelationFilter
   apiKeys?: Prisma.PublicApiKeyListRelationFilter
@@ -475,6 +507,8 @@ export type WorkspaceOrderByWithAggregationInput = {
   onboardingData?: Prisma.SortOrder
   onboardingStep?: Prisma.SortOrder
   onboardingCompletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  welcomeBonusGrantedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  welcomeBonusCelebratedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -504,6 +538,8 @@ export type WorkspaceScalarWhereWithAggregatesInput = {
   onboardingData?: Prisma.JsonWithAggregatesFilter<"Workspace">
   onboardingStep?: Prisma.IntWithAggregatesFilter<"Workspace"> | number
   onboardingCompletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Workspace"> | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Workspace"> | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Workspace"> | Date | string | null
   ownerId?: Prisma.UuidWithAggregatesFilter<"Workspace"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Workspace"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Workspace"> | Date | string
@@ -524,6 +560,8 @@ export type WorkspaceCreateInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -537,6 +575,7 @@ export type WorkspaceCreateInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -548,6 +587,9 @@ export type WorkspaceCreateInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -576,6 +618,8 @@ export type WorkspaceUncheckedCreateInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -588,6 +632,7 @@ export type WorkspaceUncheckedCreateInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -599,6 +644,9 @@ export type WorkspaceUncheckedCreateInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -626,6 +674,8 @@ export type WorkspaceUpdateInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -639,6 +689,7 @@ export type WorkspaceUpdateInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -650,6 +701,9 @@ export type WorkspaceUpdateInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -678,6 +732,8 @@ export type WorkspaceUncheckedUpdateInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -690,6 +746,7 @@ export type WorkspaceUncheckedUpdateInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -701,6 +758,9 @@ export type WorkspaceUncheckedUpdateInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -729,6 +789,8 @@ export type WorkspaceCreateManyInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -749,6 +811,8 @@ export type WorkspaceUpdateManyMutationInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -769,6 +833,8 @@ export type WorkspaceUncheckedUpdateManyInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -800,6 +866,8 @@ export type WorkspaceCountOrderByAggregateInput = {
   onboardingData?: Prisma.SortOrder
   onboardingStep?: Prisma.SortOrder
   onboardingCompletedAt?: Prisma.SortOrder
+  welcomeBonusGrantedAt?: Prisma.SortOrder
+  welcomeBonusCelebratedAt?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -824,6 +892,8 @@ export type WorkspaceMaxOrderByAggregateInput = {
   timezone?: Prisma.SortOrder
   onboardingStep?: Prisma.SortOrder
   onboardingCompletedAt?: Prisma.SortOrder
+  welcomeBonusGrantedAt?: Prisma.SortOrder
+  welcomeBonusCelebratedAt?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -844,6 +914,8 @@ export type WorkspaceMinOrderByAggregateInput = {
   timezone?: Prisma.SortOrder
   onboardingStep?: Prisma.SortOrder
   onboardingCompletedAt?: Prisma.SortOrder
+  welcomeBonusGrantedAt?: Prisma.SortOrder
+  welcomeBonusCelebratedAt?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -1053,6 +1125,20 @@ export type WorkspaceUpdateOneRequiredWithoutConversationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutConversationsInput, Prisma.WorkspaceUpdateWithoutConversationsInput>, Prisma.WorkspaceUncheckedUpdateWithoutConversationsInput>
 }
 
+export type WorkspaceCreateNestedOneWithoutConversationNotesInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutConversationNotesInput, Prisma.WorkspaceUncheckedCreateWithoutConversationNotesInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutConversationNotesInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+}
+
+export type WorkspaceUpdateOneRequiredWithoutConversationNotesNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutConversationNotesInput, Prisma.WorkspaceUncheckedCreateWithoutConversationNotesInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutConversationNotesInput
+  upsert?: Prisma.WorkspaceUpsertWithoutConversationNotesInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutConversationNotesInput, Prisma.WorkspaceUpdateWithoutConversationNotesInput>, Prisma.WorkspaceUncheckedUpdateWithoutConversationNotesInput>
+}
+
 export type WorkspaceCreateNestedOneWithoutAssignmentRulesInput = {
   create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutAssignmentRulesInput, Prisma.WorkspaceUncheckedCreateWithoutAssignmentRulesInput>
   connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutAssignmentRulesInput
@@ -1235,6 +1321,48 @@ export type WorkspaceUpdateOneRequiredWithoutWorkflowRunsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutWorkflowRunsInput, Prisma.WorkspaceUpdateWithoutWorkflowRunsInput>, Prisma.WorkspaceUncheckedUpdateWithoutWorkflowRunsInput>
 }
 
+export type WorkspaceCreateNestedOneWithoutSequencesInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutSequencesInput, Prisma.WorkspaceUncheckedCreateWithoutSequencesInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutSequencesInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+}
+
+export type WorkspaceUpdateOneRequiredWithoutSequencesNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutSequencesInput, Prisma.WorkspaceUncheckedCreateWithoutSequencesInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutSequencesInput
+  upsert?: Prisma.WorkspaceUpsertWithoutSequencesInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutSequencesInput, Prisma.WorkspaceUpdateWithoutSequencesInput>, Prisma.WorkspaceUncheckedUpdateWithoutSequencesInput>
+}
+
+export type WorkspaceCreateNestedOneWithoutSequenceEnrollmentsInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutSequenceEnrollmentsInput, Prisma.WorkspaceUncheckedCreateWithoutSequenceEnrollmentsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutSequenceEnrollmentsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+}
+
+export type WorkspaceUpdateOneRequiredWithoutSequenceEnrollmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutSequenceEnrollmentsInput, Prisma.WorkspaceUncheckedCreateWithoutSequenceEnrollmentsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutSequenceEnrollmentsInput
+  upsert?: Prisma.WorkspaceUpsertWithoutSequenceEnrollmentsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutSequenceEnrollmentsInput, Prisma.WorkspaceUpdateWithoutSequenceEnrollmentsInput>, Prisma.WorkspaceUncheckedUpdateWithoutSequenceEnrollmentsInput>
+}
+
+export type WorkspaceCreateNestedOneWithoutAutomationSettingsInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutAutomationSettingsInput, Prisma.WorkspaceUncheckedCreateWithoutAutomationSettingsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutAutomationSettingsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+}
+
+export type WorkspaceUpdateOneRequiredWithoutAutomationSettingsNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutAutomationSettingsInput, Prisma.WorkspaceUncheckedCreateWithoutAutomationSettingsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutAutomationSettingsInput
+  upsert?: Prisma.WorkspaceUpsertWithoutAutomationSettingsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutAutomationSettingsInput, Prisma.WorkspaceUpdateWithoutAutomationSettingsInput>, Prisma.WorkspaceUncheckedUpdateWithoutAutomationSettingsInput>
+}
+
 export type WorkspaceCreateNestedOneWithoutCampaignsInput = {
   create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutCampaignsInput, Prisma.WorkspaceUncheckedCreateWithoutCampaignsInput>
   connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutCampaignsInput
@@ -1392,6 +1520,8 @@ export type WorkspaceCreateWithoutOwnerInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutWorkspacesInput
@@ -1404,6 +1534,7 @@ export type WorkspaceCreateWithoutOwnerInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -1415,6 +1546,9 @@ export type WorkspaceCreateWithoutOwnerInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -1443,6 +1577,8 @@ export type WorkspaceUncheckedCreateWithoutOwnerInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   memberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -1454,6 +1590,7 @@ export type WorkspaceUncheckedCreateWithoutOwnerInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -1465,6 +1602,9 @@ export type WorkspaceUncheckedCreateWithoutOwnerInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -1522,6 +1662,8 @@ export type WorkspaceScalarWhereInput = {
   onboardingData?: Prisma.JsonFilter<"Workspace">
   onboardingStep?: Prisma.IntFilter<"Workspace"> | number
   onboardingCompletedAt?: Prisma.DateTimeNullableFilter<"Workspace"> | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.DateTimeNullableFilter<"Workspace"> | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.DateTimeNullableFilter<"Workspace"> | Date | string | null
   ownerId?: Prisma.UuidFilter<"Workspace"> | string
   createdAt?: Prisma.DateTimeFilter<"Workspace"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Workspace"> | Date | string
@@ -1542,6 +1684,8 @@ export type WorkspaceCreateWithoutTenantInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -1554,6 +1698,7 @@ export type WorkspaceCreateWithoutTenantInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -1565,6 +1710,9 @@ export type WorkspaceCreateWithoutTenantInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -1592,6 +1740,8 @@ export type WorkspaceUncheckedCreateWithoutTenantInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1604,6 +1754,7 @@ export type WorkspaceUncheckedCreateWithoutTenantInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -1615,6 +1766,9 @@ export type WorkspaceUncheckedCreateWithoutTenantInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -1668,6 +1822,8 @@ export type WorkspaceCreateWithoutTemplatesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -1681,6 +1837,7 @@ export type WorkspaceCreateWithoutTemplatesInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -1691,6 +1848,9 @@ export type WorkspaceCreateWithoutTemplatesInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -1719,6 +1879,8 @@ export type WorkspaceUncheckedCreateWithoutTemplatesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1731,6 +1893,7 @@ export type WorkspaceUncheckedCreateWithoutTemplatesInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -1741,6 +1904,9 @@ export type WorkspaceUncheckedCreateWithoutTemplatesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -1784,6 +1950,8 @@ export type WorkspaceUpdateWithoutTemplatesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -1797,6 +1965,7 @@ export type WorkspaceUpdateWithoutTemplatesInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -1807,6 +1976,9 @@ export type WorkspaceUpdateWithoutTemplatesInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -1835,6 +2007,8 @@ export type WorkspaceUncheckedUpdateWithoutTemplatesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1847,6 +2021,7 @@ export type WorkspaceUncheckedUpdateWithoutTemplatesInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -1857,6 +2032,9 @@ export type WorkspaceUncheckedUpdateWithoutTemplatesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -1884,6 +2062,8 @@ export type WorkspaceCreateWithoutApiKeysInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -1897,6 +2077,7 @@ export type WorkspaceCreateWithoutApiKeysInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -1908,6 +2089,9 @@ export type WorkspaceCreateWithoutApiKeysInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutWorkspaceInput
@@ -1935,6 +2119,8 @@ export type WorkspaceUncheckedCreateWithoutApiKeysInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1947,6 +2133,7 @@ export type WorkspaceUncheckedCreateWithoutApiKeysInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -1958,6 +2145,9 @@ export type WorkspaceUncheckedCreateWithoutApiKeysInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -2000,6 +2190,8 @@ export type WorkspaceUpdateWithoutApiKeysInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -2013,6 +2205,7 @@ export type WorkspaceUpdateWithoutApiKeysInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -2024,6 +2217,9 @@ export type WorkspaceUpdateWithoutApiKeysInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutWorkspaceNestedInput
@@ -2051,6 +2247,8 @@ export type WorkspaceUncheckedUpdateWithoutApiKeysInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2063,6 +2261,7 @@ export type WorkspaceUncheckedUpdateWithoutApiKeysInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -2074,6 +2273,9 @@ export type WorkspaceUncheckedUpdateWithoutApiKeysInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -2100,6 +2302,8 @@ export type WorkspaceCreateWithoutWebhookEndpointsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -2113,6 +2317,7 @@ export type WorkspaceCreateWithoutWebhookEndpointsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -2124,6 +2329,9 @@ export type WorkspaceCreateWithoutWebhookEndpointsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -2151,6 +2359,8 @@ export type WorkspaceUncheckedCreateWithoutWebhookEndpointsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2163,6 +2373,7 @@ export type WorkspaceUncheckedCreateWithoutWebhookEndpointsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -2174,6 +2385,9 @@ export type WorkspaceUncheckedCreateWithoutWebhookEndpointsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -2216,6 +2430,8 @@ export type WorkspaceUpdateWithoutWebhookEndpointsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -2229,6 +2445,7 @@ export type WorkspaceUpdateWithoutWebhookEndpointsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -2240,6 +2457,9 @@ export type WorkspaceUpdateWithoutWebhookEndpointsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -2267,6 +2487,8 @@ export type WorkspaceUncheckedUpdateWithoutWebhookEndpointsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2279,6 +2501,7 @@ export type WorkspaceUncheckedUpdateWithoutWebhookEndpointsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -2290,6 +2513,9 @@ export type WorkspaceUncheckedUpdateWithoutWebhookEndpointsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -2316,6 +2542,8 @@ export type WorkspaceCreateWithoutWebhookDeliveriesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -2329,6 +2557,7 @@ export type WorkspaceCreateWithoutWebhookDeliveriesInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -2340,6 +2569,9 @@ export type WorkspaceCreateWithoutWebhookDeliveriesInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -2367,6 +2599,8 @@ export type WorkspaceUncheckedCreateWithoutWebhookDeliveriesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2379,6 +2613,7 @@ export type WorkspaceUncheckedCreateWithoutWebhookDeliveriesInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -2390,6 +2625,9 @@ export type WorkspaceUncheckedCreateWithoutWebhookDeliveriesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -2432,6 +2670,8 @@ export type WorkspaceUpdateWithoutWebhookDeliveriesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -2445,6 +2685,7 @@ export type WorkspaceUpdateWithoutWebhookDeliveriesInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -2456,6 +2697,9 @@ export type WorkspaceUpdateWithoutWebhookDeliveriesInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -2483,6 +2727,8 @@ export type WorkspaceUncheckedUpdateWithoutWebhookDeliveriesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2495,6 +2741,7 @@ export type WorkspaceUncheckedUpdateWithoutWebhookDeliveriesInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -2506,6 +2753,9 @@ export type WorkspaceUncheckedUpdateWithoutWebhookDeliveriesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -2532,6 +2782,8 @@ export type WorkspaceCreateWithoutContactsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -2544,6 +2796,7 @@ export type WorkspaceCreateWithoutContactsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -2555,6 +2808,9 @@ export type WorkspaceCreateWithoutContactsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -2583,6 +2839,8 @@ export type WorkspaceUncheckedCreateWithoutContactsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2594,6 +2852,7 @@ export type WorkspaceUncheckedCreateWithoutContactsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -2605,6 +2864,9 @@ export type WorkspaceUncheckedCreateWithoutContactsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -2648,6 +2910,8 @@ export type WorkspaceUpdateWithoutContactsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -2660,6 +2924,7 @@ export type WorkspaceUpdateWithoutContactsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -2671,6 +2936,9 @@ export type WorkspaceUpdateWithoutContactsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -2699,6 +2967,8 @@ export type WorkspaceUncheckedUpdateWithoutContactsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2710,6 +2980,7 @@ export type WorkspaceUncheckedUpdateWithoutContactsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -2721,6 +2992,9 @@ export type WorkspaceUncheckedUpdateWithoutContactsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -2748,6 +3022,8 @@ export type WorkspaceCreateWithoutContactConsentEventsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -2761,6 +3037,7 @@ export type WorkspaceCreateWithoutContactConsentEventsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
@@ -2771,6 +3048,9 @@ export type WorkspaceCreateWithoutContactConsentEventsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -2799,6 +3079,8 @@ export type WorkspaceUncheckedCreateWithoutContactConsentEventsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2811,6 +3093,7 @@ export type WorkspaceUncheckedCreateWithoutContactConsentEventsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -2821,6 +3104,9 @@ export type WorkspaceUncheckedCreateWithoutContactConsentEventsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -2864,6 +3150,8 @@ export type WorkspaceUpdateWithoutContactConsentEventsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -2877,6 +3165,7 @@ export type WorkspaceUpdateWithoutContactConsentEventsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
@@ -2887,6 +3176,9 @@ export type WorkspaceUpdateWithoutContactConsentEventsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -2915,6 +3207,8 @@ export type WorkspaceUncheckedUpdateWithoutContactConsentEventsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2927,6 +3221,7 @@ export type WorkspaceUncheckedUpdateWithoutContactConsentEventsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -2937,6 +3232,9 @@ export type WorkspaceUncheckedUpdateWithoutContactConsentEventsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -2964,6 +3262,8 @@ export type WorkspaceCreateWithoutConversationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -2977,6 +3277,7 @@ export type WorkspaceCreateWithoutConversationsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -2987,6 +3288,9 @@ export type WorkspaceCreateWithoutConversationsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -3015,6 +3319,8 @@ export type WorkspaceUncheckedCreateWithoutConversationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3027,6 +3333,7 @@ export type WorkspaceUncheckedCreateWithoutConversationsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -3037,6 +3344,9 @@ export type WorkspaceUncheckedCreateWithoutConversationsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -3080,6 +3390,8 @@ export type WorkspaceUpdateWithoutConversationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -3093,6 +3405,7 @@ export type WorkspaceUpdateWithoutConversationsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -3103,6 +3416,9 @@ export type WorkspaceUpdateWithoutConversationsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -3131,6 +3447,248 @@ export type WorkspaceUncheckedUpdateWithoutConversationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
+  apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutWorkspaceNestedInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUncheckedUpdateManyWithoutWorkspaceNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceCreateWithoutConversationNotesInput = {
+  id?: string
+  name: string
+  slug: string
+  companyName?: string | null
+  industry?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: number
+  onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
+  tenant: Prisma.TenantCreateNestedOneWithoutWorkspacesInput
+  memberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
+  apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
+  webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutWorkspaceInput
+  webhookDeliveries?: Prisma.WebhookDeliveryCreateNestedManyWithoutWorkspaceInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceUncheckedCreateWithoutConversationNotesInput = {
+  id?: string
+  tenantId: string
+  name: string
+  slug: string
+  companyName?: string | null
+  industry?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: number
+  onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
+  ownerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
+  apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutWorkspaceInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUncheckedCreateNestedManyWithoutWorkspaceInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceCreateOrConnectWithoutConversationNotesInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutConversationNotesInput, Prisma.WorkspaceUncheckedCreateWithoutConversationNotesInput>
+}
+
+export type WorkspaceUpsertWithoutConversationNotesInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutConversationNotesInput, Prisma.WorkspaceUncheckedUpdateWithoutConversationNotesInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutConversationNotesInput, Prisma.WorkspaceUncheckedCreateWithoutConversationNotesInput>
+  where?: Prisma.WorkspaceWhereInput
+}
+
+export type WorkspaceUpdateToOneWithWhereWithoutConversationNotesInput = {
+  where?: Prisma.WorkspaceWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutConversationNotesInput, Prisma.WorkspaceUncheckedUpdateWithoutConversationNotesInput>
+}
+
+export type WorkspaceUpdateWithoutConversationNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutWorkspacesNestedInput
+  memberships?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
+  apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutWorkspaceNestedInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUpdateManyWithoutWorkspaceNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceUncheckedUpdateWithoutConversationNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3146,6 +3704,7 @@ export type WorkspaceUncheckedUpdateWithoutConversationsInput = {
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
   assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
   templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -3153,6 +3712,9 @@ export type WorkspaceUncheckedUpdateWithoutConversationsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -3180,6 +3742,8 @@ export type WorkspaceCreateWithoutAssignmentRulesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -3193,6 +3757,7 @@ export type WorkspaceCreateWithoutAssignmentRulesInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -3203,6 +3768,9 @@ export type WorkspaceCreateWithoutAssignmentRulesInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -3231,6 +3799,8 @@ export type WorkspaceUncheckedCreateWithoutAssignmentRulesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3243,6 +3813,7 @@ export type WorkspaceUncheckedCreateWithoutAssignmentRulesInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -3253,6 +3824,9 @@ export type WorkspaceUncheckedCreateWithoutAssignmentRulesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -3296,6 +3870,8 @@ export type WorkspaceUpdateWithoutAssignmentRulesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -3309,6 +3885,7 @@ export type WorkspaceUpdateWithoutAssignmentRulesInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -3319,6 +3896,9 @@ export type WorkspaceUpdateWithoutAssignmentRulesInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -3347,6 +3927,8 @@ export type WorkspaceUncheckedUpdateWithoutAssignmentRulesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3359,6 +3941,7 @@ export type WorkspaceUncheckedUpdateWithoutAssignmentRulesInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -3369,6 +3952,9 @@ export type WorkspaceUncheckedUpdateWithoutAssignmentRulesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -3396,6 +3982,8 @@ export type WorkspaceCreateWithoutMessagesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -3409,6 +3997,7 @@ export type WorkspaceCreateWithoutMessagesInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -3419,6 +4008,9 @@ export type WorkspaceCreateWithoutMessagesInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -3447,6 +4039,8 @@ export type WorkspaceUncheckedCreateWithoutMessagesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3459,6 +4053,7 @@ export type WorkspaceUncheckedCreateWithoutMessagesInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -3469,6 +4064,9 @@ export type WorkspaceUncheckedCreateWithoutMessagesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -3512,6 +4110,8 @@ export type WorkspaceUpdateWithoutMessagesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -3525,6 +4125,7 @@ export type WorkspaceUpdateWithoutMessagesInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -3535,6 +4136,9 @@ export type WorkspaceUpdateWithoutMessagesInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -3563,6 +4167,8 @@ export type WorkspaceUncheckedUpdateWithoutMessagesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3575,6 +4181,7 @@ export type WorkspaceUncheckedUpdateWithoutMessagesInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -3585,6 +4192,9 @@ export type WorkspaceUncheckedUpdateWithoutMessagesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -3612,6 +4222,8 @@ export type WorkspaceCreateWithoutContactCustomFieldsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -3625,6 +4237,7 @@ export type WorkspaceCreateWithoutContactCustomFieldsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
@@ -3635,6 +4248,9 @@ export type WorkspaceCreateWithoutContactCustomFieldsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -3663,6 +4279,8 @@ export type WorkspaceUncheckedCreateWithoutContactCustomFieldsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3675,6 +4293,7 @@ export type WorkspaceUncheckedCreateWithoutContactCustomFieldsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -3685,6 +4304,9 @@ export type WorkspaceUncheckedCreateWithoutContactCustomFieldsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -3728,6 +4350,8 @@ export type WorkspaceUpdateWithoutContactCustomFieldsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -3741,6 +4365,7 @@ export type WorkspaceUpdateWithoutContactCustomFieldsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
@@ -3751,6 +4376,9 @@ export type WorkspaceUpdateWithoutContactCustomFieldsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -3779,6 +4407,8 @@ export type WorkspaceUncheckedUpdateWithoutContactCustomFieldsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3791,6 +4421,7 @@ export type WorkspaceUncheckedUpdateWithoutContactCustomFieldsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -3801,6 +4432,9 @@ export type WorkspaceUncheckedUpdateWithoutContactCustomFieldsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -3828,6 +4462,8 @@ export type WorkspaceCreateWithoutContactSegmentsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -3841,6 +4477,7 @@ export type WorkspaceCreateWithoutContactSegmentsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
@@ -3851,6 +4488,9 @@ export type WorkspaceCreateWithoutContactSegmentsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -3879,6 +4519,8 @@ export type WorkspaceUncheckedCreateWithoutContactSegmentsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3891,6 +4533,7 @@ export type WorkspaceUncheckedCreateWithoutContactSegmentsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -3901,6 +4544,9 @@ export type WorkspaceUncheckedCreateWithoutContactSegmentsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -3944,6 +4590,8 @@ export type WorkspaceUpdateWithoutContactSegmentsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -3957,6 +4605,7 @@ export type WorkspaceUpdateWithoutContactSegmentsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
@@ -3967,6 +4616,9 @@ export type WorkspaceUpdateWithoutContactSegmentsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -3995,6 +4647,8 @@ export type WorkspaceUncheckedUpdateWithoutContactSegmentsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4007,6 +4661,7 @@ export type WorkspaceUncheckedUpdateWithoutContactSegmentsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -4017,6 +4672,9 @@ export type WorkspaceUncheckedUpdateWithoutContactSegmentsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -4044,6 +4702,8 @@ export type WorkspaceCreateWithoutContactTasksInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -4056,6 +4716,7 @@ export type WorkspaceCreateWithoutContactTasksInput = {
   contacts?: Prisma.ContactCreateNestedManyWithoutWorkspaceInput
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -4067,6 +4728,9 @@ export type WorkspaceCreateWithoutContactTasksInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -4095,6 +4759,8 @@ export type WorkspaceUncheckedCreateWithoutContactTasksInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4106,6 +4772,7 @@ export type WorkspaceUncheckedCreateWithoutContactTasksInput = {
   contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -4117,6 +4784,9 @@ export type WorkspaceUncheckedCreateWithoutContactTasksInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -4160,6 +4830,8 @@ export type WorkspaceUpdateWithoutContactTasksInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -4172,6 +4844,7 @@ export type WorkspaceUpdateWithoutContactTasksInput = {
   contacts?: Prisma.ContactUpdateManyWithoutWorkspaceNestedInput
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -4183,6 +4856,9 @@ export type WorkspaceUpdateWithoutContactTasksInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -4211,6 +4887,8 @@ export type WorkspaceUncheckedUpdateWithoutContactTasksInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4222,6 +4900,7 @@ export type WorkspaceUncheckedUpdateWithoutContactTasksInput = {
   contacts?: Prisma.ContactUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -4233,6 +4912,9 @@ export type WorkspaceUncheckedUpdateWithoutContactTasksInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -4260,6 +4942,8 @@ export type WorkspaceCreateWithoutContactNotesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -4272,6 +4956,7 @@ export type WorkspaceCreateWithoutContactNotesInput = {
   contacts?: Prisma.ContactCreateNestedManyWithoutWorkspaceInput
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -4283,6 +4968,9 @@ export type WorkspaceCreateWithoutContactNotesInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -4311,6 +4999,8 @@ export type WorkspaceUncheckedCreateWithoutContactNotesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4322,6 +5012,7 @@ export type WorkspaceUncheckedCreateWithoutContactNotesInput = {
   contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -4333,6 +5024,9 @@ export type WorkspaceUncheckedCreateWithoutContactNotesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -4376,6 +5070,8 @@ export type WorkspaceUpdateWithoutContactNotesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -4388,6 +5084,7 @@ export type WorkspaceUpdateWithoutContactNotesInput = {
   contacts?: Prisma.ContactUpdateManyWithoutWorkspaceNestedInput
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -4399,6 +5096,9 @@ export type WorkspaceUpdateWithoutContactNotesInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -4427,6 +5127,8 @@ export type WorkspaceUncheckedUpdateWithoutContactNotesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4438,6 +5140,7 @@ export type WorkspaceUncheckedUpdateWithoutContactNotesInput = {
   contacts?: Prisma.ContactUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -4449,6 +5152,9 @@ export type WorkspaceUncheckedUpdateWithoutContactNotesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -4476,6 +5182,8 @@ export type WorkspaceCreateWithoutContactTagsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -4488,6 +5196,7 @@ export type WorkspaceCreateWithoutContactTagsInput = {
   contacts?: Prisma.ContactCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -4499,6 +5208,9 @@ export type WorkspaceCreateWithoutContactTagsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -4527,6 +5239,8 @@ export type WorkspaceUncheckedCreateWithoutContactTagsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4538,6 +5252,7 @@ export type WorkspaceUncheckedCreateWithoutContactTagsInput = {
   contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -4549,6 +5264,9 @@ export type WorkspaceUncheckedCreateWithoutContactTagsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -4592,6 +5310,8 @@ export type WorkspaceUpdateWithoutContactTagsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -4604,6 +5324,7 @@ export type WorkspaceUpdateWithoutContactTagsInput = {
   contacts?: Prisma.ContactUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -4615,6 +5336,9 @@ export type WorkspaceUpdateWithoutContactTagsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -4643,6 +5367,8 @@ export type WorkspaceUncheckedUpdateWithoutContactTagsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4654,6 +5380,7 @@ export type WorkspaceUncheckedUpdateWithoutContactTagsInput = {
   contacts?: Prisma.ContactUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -4665,6 +5392,9 @@ export type WorkspaceUncheckedUpdateWithoutContactTagsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -4692,6 +5422,8 @@ export type WorkspaceCreateWithoutSetupProgressInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -4704,6 +5436,7 @@ export type WorkspaceCreateWithoutSetupProgressInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -4715,6 +5448,9 @@ export type WorkspaceCreateWithoutSetupProgressInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -4743,6 +5479,8 @@ export type WorkspaceUncheckedCreateWithoutSetupProgressInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4754,6 +5492,7 @@ export type WorkspaceUncheckedCreateWithoutSetupProgressInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -4765,6 +5504,9 @@ export type WorkspaceUncheckedCreateWithoutSetupProgressInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -4808,6 +5550,8 @@ export type WorkspaceUpdateWithoutSetupProgressInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -4820,6 +5564,7 @@ export type WorkspaceUpdateWithoutSetupProgressInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -4831,6 +5576,9 @@ export type WorkspaceUpdateWithoutSetupProgressInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -4859,6 +5607,8 @@ export type WorkspaceUncheckedUpdateWithoutSetupProgressInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4870,6 +5620,7 @@ export type WorkspaceUncheckedUpdateWithoutSetupProgressInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -4881,6 +5632,9 @@ export type WorkspaceUncheckedUpdateWithoutSetupProgressInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -4908,6 +5662,8 @@ export type WorkspaceCreateWithoutWhatsappBusinessAccountsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -4920,6 +5676,7 @@ export type WorkspaceCreateWithoutWhatsappBusinessAccountsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -4931,6 +5688,9 @@ export type WorkspaceCreateWithoutWhatsappBusinessAccountsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -4959,6 +5719,8 @@ export type WorkspaceUncheckedCreateWithoutWhatsappBusinessAccountsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4970,6 +5732,7 @@ export type WorkspaceUncheckedCreateWithoutWhatsappBusinessAccountsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -4981,6 +5744,9 @@ export type WorkspaceUncheckedCreateWithoutWhatsappBusinessAccountsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -5024,6 +5790,8 @@ export type WorkspaceUpdateWithoutWhatsappBusinessAccountsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -5036,6 +5804,7 @@ export type WorkspaceUpdateWithoutWhatsappBusinessAccountsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -5047,6 +5816,9 @@ export type WorkspaceUpdateWithoutWhatsappBusinessAccountsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -5075,6 +5847,8 @@ export type WorkspaceUncheckedUpdateWithoutWhatsappBusinessAccountsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5086,6 +5860,7 @@ export type WorkspaceUncheckedUpdateWithoutWhatsappBusinessAccountsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5097,6 +5872,9 @@ export type WorkspaceUncheckedUpdateWithoutWhatsappBusinessAccountsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5124,6 +5902,8 @@ export type WorkspaceCreateWithoutAutomationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -5137,6 +5917,7 @@ export type WorkspaceCreateWithoutAutomationsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -5147,6 +5928,9 @@ export type WorkspaceCreateWithoutAutomationsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -5175,6 +5959,8 @@ export type WorkspaceUncheckedCreateWithoutAutomationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -5187,6 +5973,7 @@ export type WorkspaceUncheckedCreateWithoutAutomationsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -5197,6 +5984,9 @@ export type WorkspaceUncheckedCreateWithoutAutomationsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -5240,6 +6030,8 @@ export type WorkspaceUpdateWithoutAutomationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -5253,6 +6045,7 @@ export type WorkspaceUpdateWithoutAutomationsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -5263,6 +6056,9 @@ export type WorkspaceUpdateWithoutAutomationsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -5291,6 +6087,8 @@ export type WorkspaceUncheckedUpdateWithoutAutomationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5303,6 +6101,7 @@ export type WorkspaceUncheckedUpdateWithoutAutomationsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5313,6 +6112,9 @@ export type WorkspaceUncheckedUpdateWithoutAutomationsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5340,6 +6142,8 @@ export type WorkspaceCreateWithoutAutomationLogsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -5353,6 +6157,7 @@ export type WorkspaceCreateWithoutAutomationLogsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -5363,6 +6168,9 @@ export type WorkspaceCreateWithoutAutomationLogsInput = {
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -5391,6 +6199,8 @@ export type WorkspaceUncheckedCreateWithoutAutomationLogsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -5403,6 +6213,7 @@ export type WorkspaceUncheckedCreateWithoutAutomationLogsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -5413,6 +6224,9 @@ export type WorkspaceUncheckedCreateWithoutAutomationLogsInput = {
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -5456,6 +6270,8 @@ export type WorkspaceUpdateWithoutAutomationLogsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -5469,6 +6285,7 @@ export type WorkspaceUpdateWithoutAutomationLogsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -5479,6 +6296,9 @@ export type WorkspaceUpdateWithoutAutomationLogsInput = {
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -5507,6 +6327,8 @@ export type WorkspaceUncheckedUpdateWithoutAutomationLogsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5519,6 +6341,7 @@ export type WorkspaceUncheckedUpdateWithoutAutomationLogsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5529,6 +6352,9 @@ export type WorkspaceUncheckedUpdateWithoutAutomationLogsInput = {
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5556,6 +6382,8 @@ export type WorkspaceCreateWithoutWorkflowsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -5569,6 +6397,7 @@ export type WorkspaceCreateWithoutWorkflowsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -5579,6 +6408,9 @@ export type WorkspaceCreateWithoutWorkflowsInput = {
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -5607,6 +6439,8 @@ export type WorkspaceUncheckedCreateWithoutWorkflowsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -5619,6 +6453,7 @@ export type WorkspaceUncheckedCreateWithoutWorkflowsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -5629,6 +6464,9 @@ export type WorkspaceUncheckedCreateWithoutWorkflowsInput = {
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -5672,6 +6510,8 @@ export type WorkspaceUpdateWithoutWorkflowsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -5685,6 +6525,7 @@ export type WorkspaceUpdateWithoutWorkflowsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -5695,6 +6536,9 @@ export type WorkspaceUpdateWithoutWorkflowsInput = {
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -5723,6 +6567,8 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5735,6 +6581,7 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5745,6 +6592,9 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowsInput = {
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5772,6 +6622,8 @@ export type WorkspaceCreateWithoutWorkflowRunsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -5785,6 +6637,7 @@ export type WorkspaceCreateWithoutWorkflowRunsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -5795,6 +6648,9 @@ export type WorkspaceCreateWithoutWorkflowRunsInput = {
   automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -5823,6 +6679,8 @@ export type WorkspaceUncheckedCreateWithoutWorkflowRunsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -5835,6 +6693,7 @@ export type WorkspaceUncheckedCreateWithoutWorkflowRunsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -5845,6 +6704,9 @@ export type WorkspaceUncheckedCreateWithoutWorkflowRunsInput = {
   automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -5888,6 +6750,8 @@ export type WorkspaceUpdateWithoutWorkflowRunsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -5901,6 +6765,7 @@ export type WorkspaceUpdateWithoutWorkflowRunsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -5911,6 +6776,9 @@ export type WorkspaceUpdateWithoutWorkflowRunsInput = {
   automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -5939,6 +6807,8 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowRunsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5951,6 +6821,7 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowRunsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5961,6 +6832,729 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowRunsInput = {
   automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
+  apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutWorkspaceNestedInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUncheckedUpdateManyWithoutWorkspaceNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceCreateWithoutSequencesInput = {
+  id?: string
+  name: string
+  slug: string
+  companyName?: string | null
+  industry?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: number
+  onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
+  tenant: Prisma.TenantCreateNestedOneWithoutWorkspacesInput
+  memberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
+  apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
+  webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutWorkspaceInput
+  webhookDeliveries?: Prisma.WebhookDeliveryCreateNestedManyWithoutWorkspaceInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceUncheckedCreateWithoutSequencesInput = {
+  id?: string
+  tenantId: string
+  name: string
+  slug: string
+  companyName?: string | null
+  industry?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: number
+  onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
+  ownerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
+  apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutWorkspaceInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUncheckedCreateNestedManyWithoutWorkspaceInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceCreateOrConnectWithoutSequencesInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutSequencesInput, Prisma.WorkspaceUncheckedCreateWithoutSequencesInput>
+}
+
+export type WorkspaceUpsertWithoutSequencesInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutSequencesInput, Prisma.WorkspaceUncheckedUpdateWithoutSequencesInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutSequencesInput, Prisma.WorkspaceUncheckedCreateWithoutSequencesInput>
+  where?: Prisma.WorkspaceWhereInput
+}
+
+export type WorkspaceUpdateToOneWithWhereWithoutSequencesInput = {
+  where?: Prisma.WorkspaceWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutSequencesInput, Prisma.WorkspaceUncheckedUpdateWithoutSequencesInput>
+}
+
+export type WorkspaceUpdateWithoutSequencesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutWorkspacesNestedInput
+  memberships?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
+  apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutWorkspaceNestedInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUpdateManyWithoutWorkspaceNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceUncheckedUpdateWithoutSequencesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
+  apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutWorkspaceNestedInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUncheckedUpdateManyWithoutWorkspaceNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceCreateWithoutSequenceEnrollmentsInput = {
+  id?: string
+  name: string
+  slug: string
+  companyName?: string | null
+  industry?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: number
+  onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
+  tenant: Prisma.TenantCreateNestedOneWithoutWorkspacesInput
+  memberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
+  apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
+  webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutWorkspaceInput
+  webhookDeliveries?: Prisma.WebhookDeliveryCreateNestedManyWithoutWorkspaceInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceUncheckedCreateWithoutSequenceEnrollmentsInput = {
+  id?: string
+  tenantId: string
+  name: string
+  slug: string
+  companyName?: string | null
+  industry?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: number
+  onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
+  ownerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
+  apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutWorkspaceInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUncheckedCreateNestedManyWithoutWorkspaceInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceCreateOrConnectWithoutSequenceEnrollmentsInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutSequenceEnrollmentsInput, Prisma.WorkspaceUncheckedCreateWithoutSequenceEnrollmentsInput>
+}
+
+export type WorkspaceUpsertWithoutSequenceEnrollmentsInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutSequenceEnrollmentsInput, Prisma.WorkspaceUncheckedUpdateWithoutSequenceEnrollmentsInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutSequenceEnrollmentsInput, Prisma.WorkspaceUncheckedCreateWithoutSequenceEnrollmentsInput>
+  where?: Prisma.WorkspaceWhereInput
+}
+
+export type WorkspaceUpdateToOneWithWhereWithoutSequenceEnrollmentsInput = {
+  where?: Prisma.WorkspaceWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutSequenceEnrollmentsInput, Prisma.WorkspaceUncheckedUpdateWithoutSequenceEnrollmentsInput>
+}
+
+export type WorkspaceUpdateWithoutSequenceEnrollmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutWorkspacesNestedInput
+  memberships?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
+  apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutWorkspaceNestedInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUpdateManyWithoutWorkspaceNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceUncheckedUpdateWithoutSequenceEnrollmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
+  apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutWorkspaceNestedInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUncheckedUpdateManyWithoutWorkspaceNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutWorkspaceNestedInput
+  walletReservations?: Prisma.WalletReservationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUncheckedUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceCreateWithoutAutomationSettingsInput = {
+  id?: string
+  name: string
+  slug: string
+  companyName?: string | null
+  industry?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: number
+  onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
+  tenant: Prisma.TenantCreateNestedOneWithoutWorkspacesInput
+  memberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
+  apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
+  webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutWorkspaceInput
+  webhookDeliveries?: Prisma.WebhookDeliveryCreateNestedManyWithoutWorkspaceInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutWorkspaceInput
+  walletReservations?: Prisma.WalletReservationCreateNestedManyWithoutWorkspaceInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceUncheckedCreateWithoutAutomationSettingsInput = {
+  id?: string
+  tenantId: string
+  name: string
+  slug: string
+  companyName?: string | null
+  industry?: string | null
+  companyWebsite?: string | null
+  companyLocation?: string | null
+  annualRevenue?: string | null
+  logoData?: string | null
+  country?: string | null
+  timezone?: string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: number
+  onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
+  ownerId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutWorkspaceInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedCreateNestedManyWithoutWorkspaceInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedCreateNestedOneWithoutWorkspaceInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedCreateNestedManyWithoutWorkspaceInput
+  contacts?: Prisma.ContactUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutWorkspaceInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedCreateNestedManyWithoutWorkspaceInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutWorkspaceInput
+  templates?: Prisma.TemplateUncheckedCreateNestedManyWithoutWorkspaceInput
+  automations?: Prisma.AutomationUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
+  apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
+  webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutWorkspaceInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUncheckedCreateNestedManyWithoutWorkspaceInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutWorkspaceInput
+  walletReservations?: Prisma.WalletReservationUncheckedCreateNestedManyWithoutWorkspaceInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUncheckedCreateNestedManyWithoutWorkspaceInput
+  planRequests?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceCreateOrConnectWithoutAutomationSettingsInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutAutomationSettingsInput, Prisma.WorkspaceUncheckedCreateWithoutAutomationSettingsInput>
+}
+
+export type WorkspaceUpsertWithoutAutomationSettingsInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutAutomationSettingsInput, Prisma.WorkspaceUncheckedUpdateWithoutAutomationSettingsInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutAutomationSettingsInput, Prisma.WorkspaceUncheckedCreateWithoutAutomationSettingsInput>
+  where?: Prisma.WorkspaceWhereInput
+}
+
+export type WorkspaceUpdateToOneWithWhereWithoutAutomationSettingsInput = {
+  where?: Prisma.WorkspaceWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutAutomationSettingsInput, Prisma.WorkspaceUncheckedUpdateWithoutAutomationSettingsInput>
+}
+
+export type WorkspaceUpdateWithoutAutomationSettingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutWorkspacesNestedInput
+  memberships?: Prisma.WorkspaceMemberUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
+  apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
+  webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutWorkspaceNestedInput
+  webhookDeliveries?: Prisma.WebhookDeliveryUpdateManyWithoutWorkspaceNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutWorkspaceNestedInput
+  walletReservations?: Prisma.WalletReservationUpdateManyWithoutWorkspaceNestedInput
+  billingSettings?: Prisma.WorkspaceBillingSettingsUpdateOneWithoutWorkspaceNestedInput
+  subscriptions?: Prisma.WorkspaceSubscriptionUpdateManyWithoutWorkspaceNestedInput
+  planRequests?: Prisma.PlanRequestUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceUncheckedUpdateWithoutAutomationSettingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annualRevenue?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  ownerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  memberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  invitations?: Prisma.WorkspaceInvitationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  setupProgress?: Prisma.WorkspaceSetupProgressUncheckedUpdateOneWithoutWorkspaceNestedInput
+  whatsappBusinessAccounts?: Prisma.WhatsAppBusinessAccountUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contacts?: Prisma.ContactUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  assignmentRules?: Prisma.ConversationAssignmentRuleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutWorkspaceNestedInput
+  templates?: Prisma.TemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automations?: Prisma.AutomationUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -5988,6 +7582,8 @@ export type WorkspaceCreateWithoutCampaignsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -6001,6 +7597,7 @@ export type WorkspaceCreateWithoutCampaignsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -6012,6 +7609,9 @@ export type WorkspaceCreateWithoutCampaignsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutWorkspaceInput
@@ -6039,6 +7639,8 @@ export type WorkspaceUncheckedCreateWithoutCampaignsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -6051,6 +7653,7 @@ export type WorkspaceUncheckedCreateWithoutCampaignsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -6062,6 +7665,9 @@ export type WorkspaceUncheckedCreateWithoutCampaignsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -6104,6 +7710,8 @@ export type WorkspaceUpdateWithoutCampaignsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -6117,6 +7725,7 @@ export type WorkspaceUpdateWithoutCampaignsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -6128,6 +7737,9 @@ export type WorkspaceUpdateWithoutCampaignsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutWorkspaceNestedInput
@@ -6155,6 +7767,8 @@ export type WorkspaceUncheckedUpdateWithoutCampaignsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -6167,6 +7781,7 @@ export type WorkspaceUncheckedUpdateWithoutCampaignsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -6178,6 +7793,9 @@ export type WorkspaceUncheckedUpdateWithoutCampaignsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -6204,6 +7822,8 @@ export type WorkspaceCreateWithoutCampaignRecipientsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -6217,6 +7837,7 @@ export type WorkspaceCreateWithoutCampaignRecipientsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -6228,6 +7849,9 @@ export type WorkspaceCreateWithoutCampaignRecipientsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
   webhookEndpoints?: Prisma.WebhookEndpointCreateNestedManyWithoutWorkspaceInput
@@ -6255,6 +7879,8 @@ export type WorkspaceUncheckedCreateWithoutCampaignRecipientsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -6267,6 +7893,7 @@ export type WorkspaceUncheckedCreateWithoutCampaignRecipientsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -6278,6 +7905,9 @@ export type WorkspaceUncheckedCreateWithoutCampaignRecipientsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -6320,6 +7950,8 @@ export type WorkspaceUpdateWithoutCampaignRecipientsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -6333,6 +7965,7 @@ export type WorkspaceUpdateWithoutCampaignRecipientsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -6344,6 +7977,9 @@ export type WorkspaceUpdateWithoutCampaignRecipientsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUpdateManyWithoutWorkspaceNestedInput
@@ -6371,6 +8007,8 @@ export type WorkspaceUncheckedUpdateWithoutCampaignRecipientsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -6383,6 +8021,7 @@ export type WorkspaceUncheckedUpdateWithoutCampaignRecipientsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -6394,6 +8033,9 @@ export type WorkspaceUncheckedUpdateWithoutCampaignRecipientsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
   webhookEndpoints?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -6420,6 +8062,8 @@ export type WorkspaceCreateWithoutMembershipsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -6432,6 +8076,7 @@ export type WorkspaceCreateWithoutMembershipsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -6443,6 +8088,9 @@ export type WorkspaceCreateWithoutMembershipsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -6471,6 +8119,8 @@ export type WorkspaceUncheckedCreateWithoutMembershipsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -6482,6 +8132,7 @@ export type WorkspaceUncheckedCreateWithoutMembershipsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -6493,6 +8144,9 @@ export type WorkspaceUncheckedCreateWithoutMembershipsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -6536,6 +8190,8 @@ export type WorkspaceUpdateWithoutMembershipsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -6548,6 +8204,7 @@ export type WorkspaceUpdateWithoutMembershipsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -6559,6 +8216,9 @@ export type WorkspaceUpdateWithoutMembershipsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -6587,6 +8247,8 @@ export type WorkspaceUncheckedUpdateWithoutMembershipsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -6598,6 +8260,7 @@ export type WorkspaceUncheckedUpdateWithoutMembershipsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -6609,6 +8272,9 @@ export type WorkspaceUncheckedUpdateWithoutMembershipsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -6636,6 +8302,8 @@ export type WorkspaceCreateWithoutRolesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -6648,6 +8316,7 @@ export type WorkspaceCreateWithoutRolesInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -6659,6 +8328,9 @@ export type WorkspaceCreateWithoutRolesInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -6687,6 +8359,8 @@ export type WorkspaceUncheckedCreateWithoutRolesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -6698,6 +8372,7 @@ export type WorkspaceUncheckedCreateWithoutRolesInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -6709,6 +8384,9 @@ export type WorkspaceUncheckedCreateWithoutRolesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -6752,6 +8430,8 @@ export type WorkspaceUpdateWithoutRolesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -6764,6 +8444,7 @@ export type WorkspaceUpdateWithoutRolesInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -6775,6 +8456,9 @@ export type WorkspaceUpdateWithoutRolesInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -6803,6 +8487,8 @@ export type WorkspaceUncheckedUpdateWithoutRolesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -6814,6 +8500,7 @@ export type WorkspaceUncheckedUpdateWithoutRolesInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -6825,6 +8512,9 @@ export type WorkspaceUncheckedUpdateWithoutRolesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -6852,6 +8542,8 @@ export type WorkspaceCreateWithoutInvitationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -6864,6 +8556,7 @@ export type WorkspaceCreateWithoutInvitationsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -6875,6 +8568,9 @@ export type WorkspaceCreateWithoutInvitationsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -6903,6 +8599,8 @@ export type WorkspaceUncheckedCreateWithoutInvitationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -6914,6 +8612,7 @@ export type WorkspaceUncheckedCreateWithoutInvitationsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -6925,6 +8624,9 @@ export type WorkspaceUncheckedCreateWithoutInvitationsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -6968,6 +8670,8 @@ export type WorkspaceUpdateWithoutInvitationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -6980,6 +8684,7 @@ export type WorkspaceUpdateWithoutInvitationsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -6991,6 +8696,9 @@ export type WorkspaceUpdateWithoutInvitationsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -7019,6 +8727,8 @@ export type WorkspaceUncheckedUpdateWithoutInvitationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -7030,6 +8740,7 @@ export type WorkspaceUncheckedUpdateWithoutInvitationsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -7041,6 +8752,9 @@ export type WorkspaceUncheckedUpdateWithoutInvitationsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -7068,6 +8782,8 @@ export type WorkspaceCreateWithoutWalletLedgerEntriesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -7081,6 +8797,7 @@ export type WorkspaceCreateWithoutWalletLedgerEntriesInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -7092,6 +8809,9 @@ export type WorkspaceCreateWithoutWalletLedgerEntriesInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -7119,6 +8839,8 @@ export type WorkspaceUncheckedCreateWithoutWalletLedgerEntriesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -7131,6 +8853,7 @@ export type WorkspaceUncheckedCreateWithoutWalletLedgerEntriesInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -7142,6 +8865,9 @@ export type WorkspaceUncheckedCreateWithoutWalletLedgerEntriesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -7184,6 +8910,8 @@ export type WorkspaceUpdateWithoutWalletLedgerEntriesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -7197,6 +8925,7 @@ export type WorkspaceUpdateWithoutWalletLedgerEntriesInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -7208,6 +8937,9 @@ export type WorkspaceUpdateWithoutWalletLedgerEntriesInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -7235,6 +8967,8 @@ export type WorkspaceUncheckedUpdateWithoutWalletLedgerEntriesInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -7247,6 +8981,7 @@ export type WorkspaceUncheckedUpdateWithoutWalletLedgerEntriesInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -7258,6 +8993,9 @@ export type WorkspaceUncheckedUpdateWithoutWalletLedgerEntriesInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -7284,6 +9022,8 @@ export type WorkspaceCreateWithoutWalletReservationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -7297,6 +9037,7 @@ export type WorkspaceCreateWithoutWalletReservationsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -7308,6 +9049,9 @@ export type WorkspaceCreateWithoutWalletReservationsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -7335,6 +9079,8 @@ export type WorkspaceUncheckedCreateWithoutWalletReservationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -7347,6 +9093,7 @@ export type WorkspaceUncheckedCreateWithoutWalletReservationsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -7358,6 +9105,9 @@ export type WorkspaceUncheckedCreateWithoutWalletReservationsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -7400,6 +9150,8 @@ export type WorkspaceUpdateWithoutWalletReservationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -7413,6 +9165,7 @@ export type WorkspaceUpdateWithoutWalletReservationsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -7424,6 +9177,9 @@ export type WorkspaceUpdateWithoutWalletReservationsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -7451,6 +9207,8 @@ export type WorkspaceUncheckedUpdateWithoutWalletReservationsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -7463,6 +9221,7 @@ export type WorkspaceUncheckedUpdateWithoutWalletReservationsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -7474,6 +9233,9 @@ export type WorkspaceUncheckedUpdateWithoutWalletReservationsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -7500,6 +9262,8 @@ export type WorkspaceCreateWithoutBillingSettingsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -7513,6 +9277,7 @@ export type WorkspaceCreateWithoutBillingSettingsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -7524,6 +9289,9 @@ export type WorkspaceCreateWithoutBillingSettingsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -7551,6 +9319,8 @@ export type WorkspaceUncheckedCreateWithoutBillingSettingsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -7563,6 +9333,7 @@ export type WorkspaceUncheckedCreateWithoutBillingSettingsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -7574,6 +9345,9 @@ export type WorkspaceUncheckedCreateWithoutBillingSettingsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -7616,6 +9390,8 @@ export type WorkspaceUpdateWithoutBillingSettingsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -7629,6 +9405,7 @@ export type WorkspaceUpdateWithoutBillingSettingsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -7640,6 +9417,9 @@ export type WorkspaceUpdateWithoutBillingSettingsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -7667,6 +9447,8 @@ export type WorkspaceUncheckedUpdateWithoutBillingSettingsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -7679,6 +9461,7 @@ export type WorkspaceUncheckedUpdateWithoutBillingSettingsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -7690,6 +9473,9 @@ export type WorkspaceUncheckedUpdateWithoutBillingSettingsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -7716,6 +9502,8 @@ export type WorkspaceCreateWithoutSubscriptionsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -7729,6 +9517,7 @@ export type WorkspaceCreateWithoutSubscriptionsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -7740,6 +9529,9 @@ export type WorkspaceCreateWithoutSubscriptionsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -7767,6 +9559,8 @@ export type WorkspaceUncheckedCreateWithoutSubscriptionsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -7779,6 +9573,7 @@ export type WorkspaceUncheckedCreateWithoutSubscriptionsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -7790,6 +9585,9 @@ export type WorkspaceUncheckedCreateWithoutSubscriptionsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -7832,6 +9630,8 @@ export type WorkspaceUpdateWithoutSubscriptionsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -7845,6 +9645,7 @@ export type WorkspaceUpdateWithoutSubscriptionsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -7856,6 +9657,9 @@ export type WorkspaceUpdateWithoutSubscriptionsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -7883,6 +9687,8 @@ export type WorkspaceUncheckedUpdateWithoutSubscriptionsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -7895,6 +9701,7 @@ export type WorkspaceUncheckedUpdateWithoutSubscriptionsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -7906,6 +9713,9 @@ export type WorkspaceUncheckedUpdateWithoutSubscriptionsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -7932,6 +9742,8 @@ export type WorkspaceCreateWithoutPlanRequestsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   owner: Prisma.UserCreateNestedOneWithoutOwnedWorkspacesInput
@@ -7945,6 +9757,7 @@ export type WorkspaceCreateWithoutPlanRequestsInput = {
   contactTags?: Prisma.ContactTagCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutWorkspaceInput
@@ -7956,6 +9769,9 @@ export type WorkspaceCreateWithoutPlanRequestsInput = {
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyCreateNestedManyWithoutWorkspaceInput
@@ -7983,6 +9799,8 @@ export type WorkspaceUncheckedCreateWithoutPlanRequestsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -7995,6 +9813,7 @@ export type WorkspaceUncheckedCreateWithoutPlanRequestsInput = {
   contactTags?: Prisma.ContactTagUncheckedCreateNestedManyWithoutWorkspaceInput
   contactTasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutWorkspaceInput
   contactNotes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutWorkspaceInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutWorkspaceInput
   contactSegments?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutWorkspaceInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutWorkspaceInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -8006,6 +9825,9 @@ export type WorkspaceUncheckedCreateWithoutPlanRequestsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequences?: Prisma.SequenceUncheckedCreateNestedManyWithoutWorkspaceInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutWorkspaceInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedCreateNestedOneWithoutWorkspaceInput
   campaigns?: Prisma.CampaignUncheckedCreateNestedManyWithoutWorkspaceInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutWorkspaceInput
   apiKeys?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -8048,6 +9870,8 @@ export type WorkspaceUpdateWithoutPlanRequestsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -8061,6 +9885,7 @@ export type WorkspaceUpdateWithoutPlanRequestsInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -8072,6 +9897,9 @@ export type WorkspaceUpdateWithoutPlanRequestsInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -8099,6 +9927,8 @@ export type WorkspaceUncheckedUpdateWithoutPlanRequestsInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -8111,6 +9941,7 @@ export type WorkspaceUncheckedUpdateWithoutPlanRequestsInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -8122,6 +9953,9 @@ export type WorkspaceUncheckedUpdateWithoutPlanRequestsInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -8149,6 +9983,8 @@ export type WorkspaceCreateManyOwnerInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -8168,6 +10004,8 @@ export type WorkspaceUpdateWithoutOwnerInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutWorkspacesNestedInput
@@ -8180,6 +10018,7 @@ export type WorkspaceUpdateWithoutOwnerInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -8191,6 +10030,9 @@ export type WorkspaceUpdateWithoutOwnerInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -8219,6 +10061,8 @@ export type WorkspaceUncheckedUpdateWithoutOwnerInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   memberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -8230,6 +10074,7 @@ export type WorkspaceUncheckedUpdateWithoutOwnerInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -8241,6 +10086,9 @@ export type WorkspaceUncheckedUpdateWithoutOwnerInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -8269,6 +10117,8 @@ export type WorkspaceUncheckedUpdateManyWithoutOwnerInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -8288,6 +10138,8 @@ export type WorkspaceCreateManyTenantInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: number
   onboardingCompletedAt?: Date | string | null
+  welcomeBonusGrantedAt?: Date | string | null
+  welcomeBonusCelebratedAt?: Date | string | null
   ownerId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -8308,6 +10160,8 @@ export type WorkspaceUpdateWithoutTenantInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   owner?: Prisma.UserUpdateOneRequiredWithoutOwnedWorkspacesNestedInput
@@ -8320,6 +10174,7 @@ export type WorkspaceUpdateWithoutTenantInput = {
   contactTags?: Prisma.ContactTagUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutWorkspaceNestedInput
@@ -8331,6 +10186,9 @@ export type WorkspaceUpdateWithoutTenantInput = {
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUpdateManyWithoutWorkspaceNestedInput
@@ -8358,6 +10216,8 @@ export type WorkspaceUncheckedUpdateWithoutTenantInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -8370,6 +10230,7 @@ export type WorkspaceUncheckedUpdateWithoutTenantInput = {
   contactTags?: Prisma.ContactTagUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactTasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactNotes?: Prisma.ContactNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactSegments?: Prisma.ContactSegmentUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactCustomFields?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutWorkspaceNestedInput
   contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -8381,6 +10242,9 @@ export type WorkspaceUncheckedUpdateWithoutTenantInput = {
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequences?: Prisma.SequenceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutWorkspaceNestedInput
+  automationSettings?: Prisma.WorkspaceAutomationSettingsUncheckedUpdateOneWithoutWorkspaceNestedInput
   campaigns?: Prisma.CampaignUncheckedUpdateManyWithoutWorkspaceNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutWorkspaceNestedInput
   apiKeys?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -8408,6 +10272,8 @@ export type WorkspaceUncheckedUpdateManyWithoutTenantInput = {
   onboardingData?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   onboardingStep?: Prisma.IntFieldUpdateOperationsInput | number
   onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusGrantedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  welcomeBonusCelebratedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ownerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -8427,6 +10293,7 @@ export type WorkspaceCountOutputType = {
   contactTags: number
   contactTasks: number
   contactNotes: number
+  conversationNotes: number
   contactSegments: number
   contactCustomFields: number
   contactConsentEvents: number
@@ -8438,6 +10305,8 @@ export type WorkspaceCountOutputType = {
   automationLogs: number
   workflows: number
   workflowRuns: number
+  sequences: number
+  sequenceEnrollments: number
   campaigns: number
   campaignRecipients: number
   apiKeys: number
@@ -8458,6 +10327,7 @@ export type WorkspaceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensi
   contactTags?: boolean | WorkspaceCountOutputTypeCountContactTagsArgs
   contactTasks?: boolean | WorkspaceCountOutputTypeCountContactTasksArgs
   contactNotes?: boolean | WorkspaceCountOutputTypeCountContactNotesArgs
+  conversationNotes?: boolean | WorkspaceCountOutputTypeCountConversationNotesArgs
   contactSegments?: boolean | WorkspaceCountOutputTypeCountContactSegmentsArgs
   contactCustomFields?: boolean | WorkspaceCountOutputTypeCountContactCustomFieldsArgs
   contactConsentEvents?: boolean | WorkspaceCountOutputTypeCountContactConsentEventsArgs
@@ -8469,6 +10339,8 @@ export type WorkspaceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensi
   automationLogs?: boolean | WorkspaceCountOutputTypeCountAutomationLogsArgs
   workflows?: boolean | WorkspaceCountOutputTypeCountWorkflowsArgs
   workflowRuns?: boolean | WorkspaceCountOutputTypeCountWorkflowRunsArgs
+  sequences?: boolean | WorkspaceCountOutputTypeCountSequencesArgs
+  sequenceEnrollments?: boolean | WorkspaceCountOutputTypeCountSequenceEnrollmentsArgs
   campaigns?: boolean | WorkspaceCountOutputTypeCountCampaignsArgs
   campaignRecipients?: boolean | WorkspaceCountOutputTypeCountCampaignRecipientsArgs
   apiKeys?: boolean | WorkspaceCountOutputTypeCountApiKeysArgs
@@ -8544,6 +10416,13 @@ export type WorkspaceCountOutputTypeCountContactTasksArgs<ExtArgs extends runtim
  */
 export type WorkspaceCountOutputTypeCountContactNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ContactNoteWhereInput
+}
+
+/**
+ * WorkspaceCountOutputType without action
+ */
+export type WorkspaceCountOutputTypeCountConversationNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ConversationNoteWhereInput
 }
 
 /**
@@ -8626,6 +10505,20 @@ export type WorkspaceCountOutputTypeCountWorkflowRunsArgs<ExtArgs extends runtim
 /**
  * WorkspaceCountOutputType without action
  */
+export type WorkspaceCountOutputTypeCountSequencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SequenceWhereInput
+}
+
+/**
+ * WorkspaceCountOutputType without action
+ */
+export type WorkspaceCountOutputTypeCountSequenceEnrollmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SequenceEnrollmentWhereInput
+}
+
+/**
+ * WorkspaceCountOutputType without action
+ */
 export type WorkspaceCountOutputTypeCountCampaignsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.CampaignWhereInput
 }
@@ -8703,6 +10596,8 @@ export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   onboardingData?: boolean
   onboardingStep?: boolean
   onboardingCompletedAt?: boolean
+  welcomeBonusGrantedAt?: boolean
+  welcomeBonusCelebratedAt?: boolean
   ownerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -8717,6 +10612,7 @@ export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   contactTags?: boolean | Prisma.Workspace$contactTagsArgs<ExtArgs>
   contactTasks?: boolean | Prisma.Workspace$contactTasksArgs<ExtArgs>
   contactNotes?: boolean | Prisma.Workspace$contactNotesArgs<ExtArgs>
+  conversationNotes?: boolean | Prisma.Workspace$conversationNotesArgs<ExtArgs>
   contactSegments?: boolean | Prisma.Workspace$contactSegmentsArgs<ExtArgs>
   contactCustomFields?: boolean | Prisma.Workspace$contactCustomFieldsArgs<ExtArgs>
   contactConsentEvents?: boolean | Prisma.Workspace$contactConsentEventsArgs<ExtArgs>
@@ -8728,6 +10624,9 @@ export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   automationLogs?: boolean | Prisma.Workspace$automationLogsArgs<ExtArgs>
   workflows?: boolean | Prisma.Workspace$workflowsArgs<ExtArgs>
   workflowRuns?: boolean | Prisma.Workspace$workflowRunsArgs<ExtArgs>
+  sequences?: boolean | Prisma.Workspace$sequencesArgs<ExtArgs>
+  sequenceEnrollments?: boolean | Prisma.Workspace$sequenceEnrollmentsArgs<ExtArgs>
+  automationSettings?: boolean | Prisma.Workspace$automationSettingsArgs<ExtArgs>
   campaigns?: boolean | Prisma.Workspace$campaignsArgs<ExtArgs>
   campaignRecipients?: boolean | Prisma.Workspace$campaignRecipientsArgs<ExtArgs>
   apiKeys?: boolean | Prisma.Workspace$apiKeysArgs<ExtArgs>
@@ -8757,6 +10656,8 @@ export type WorkspaceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   onboardingData?: boolean
   onboardingStep?: boolean
   onboardingCompletedAt?: boolean
+  welcomeBonusGrantedAt?: boolean
+  welcomeBonusCelebratedAt?: boolean
   ownerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -8780,6 +10681,8 @@ export type WorkspaceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   onboardingData?: boolean
   onboardingStep?: boolean
   onboardingCompletedAt?: boolean
+  welcomeBonusGrantedAt?: boolean
+  welcomeBonusCelebratedAt?: boolean
   ownerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -8803,12 +10706,14 @@ export type WorkspaceSelectScalar = {
   onboardingData?: boolean
   onboardingStep?: boolean
   onboardingCompletedAt?: boolean
+  welcomeBonusGrantedAt?: boolean
+  welcomeBonusCelebratedAt?: boolean
   ownerId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type WorkspaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "name" | "slug" | "companyName" | "industry" | "companyWebsite" | "companyLocation" | "annualRevenue" | "logoData" | "country" | "timezone" | "onboardingData" | "onboardingStep" | "onboardingCompletedAt" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["workspace"]>
+export type WorkspaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "name" | "slug" | "companyName" | "industry" | "companyWebsite" | "companyLocation" | "annualRevenue" | "logoData" | "country" | "timezone" | "onboardingData" | "onboardingStep" | "onboardingCompletedAt" | "welcomeBonusGrantedAt" | "welcomeBonusCelebratedAt" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["workspace"]>
 export type WorkspaceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -8821,6 +10726,7 @@ export type WorkspaceInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   contactTags?: boolean | Prisma.Workspace$contactTagsArgs<ExtArgs>
   contactTasks?: boolean | Prisma.Workspace$contactTasksArgs<ExtArgs>
   contactNotes?: boolean | Prisma.Workspace$contactNotesArgs<ExtArgs>
+  conversationNotes?: boolean | Prisma.Workspace$conversationNotesArgs<ExtArgs>
   contactSegments?: boolean | Prisma.Workspace$contactSegmentsArgs<ExtArgs>
   contactCustomFields?: boolean | Prisma.Workspace$contactCustomFieldsArgs<ExtArgs>
   contactConsentEvents?: boolean | Prisma.Workspace$contactConsentEventsArgs<ExtArgs>
@@ -8832,6 +10738,9 @@ export type WorkspaceInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   automationLogs?: boolean | Prisma.Workspace$automationLogsArgs<ExtArgs>
   workflows?: boolean | Prisma.Workspace$workflowsArgs<ExtArgs>
   workflowRuns?: boolean | Prisma.Workspace$workflowRunsArgs<ExtArgs>
+  sequences?: boolean | Prisma.Workspace$sequencesArgs<ExtArgs>
+  sequenceEnrollments?: boolean | Prisma.Workspace$sequenceEnrollmentsArgs<ExtArgs>
+  automationSettings?: boolean | Prisma.Workspace$automationSettingsArgs<ExtArgs>
   campaigns?: boolean | Prisma.Workspace$campaignsArgs<ExtArgs>
   campaignRecipients?: boolean | Prisma.Workspace$campaignRecipientsArgs<ExtArgs>
   apiKeys?: boolean | Prisma.Workspace$apiKeysArgs<ExtArgs>
@@ -8867,6 +10776,7 @@ export type $WorkspacePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     contactTags: Prisma.$ContactTagPayload<ExtArgs>[]
     contactTasks: Prisma.$ContactTaskPayload<ExtArgs>[]
     contactNotes: Prisma.$ContactNotePayload<ExtArgs>[]
+    conversationNotes: Prisma.$ConversationNotePayload<ExtArgs>[]
     contactSegments: Prisma.$ContactSegmentPayload<ExtArgs>[]
     contactCustomFields: Prisma.$ContactCustomFieldPayload<ExtArgs>[]
     contactConsentEvents: Prisma.$ContactConsentEventPayload<ExtArgs>[]
@@ -8878,6 +10788,9 @@ export type $WorkspacePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     automationLogs: Prisma.$AutomationLogPayload<ExtArgs>[]
     workflows: Prisma.$WorkflowPayload<ExtArgs>[]
     workflowRuns: Prisma.$WorkflowRunPayload<ExtArgs>[]
+    sequences: Prisma.$SequencePayload<ExtArgs>[]
+    sequenceEnrollments: Prisma.$SequenceEnrollmentPayload<ExtArgs>[]
+    automationSettings: Prisma.$WorkspaceAutomationSettingsPayload<ExtArgs> | null
     campaigns: Prisma.$CampaignPayload<ExtArgs>[]
     campaignRecipients: Prisma.$CampaignRecipientPayload<ExtArgs>[]
     apiKeys: Prisma.$PublicApiKeyPayload<ExtArgs>[]
@@ -8905,6 +10818,8 @@ export type $WorkspacePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     onboardingData: runtime.JsonValue
     onboardingStep: number
     onboardingCompletedAt: Date | null
+    welcomeBonusGrantedAt: Date | null
+    welcomeBonusCelebratedAt: Date | null
     ownerId: string
     createdAt: Date
     updatedAt: Date
@@ -9313,6 +11228,7 @@ export interface Prisma__WorkspaceClient<T, Null = never, ExtArgs extends runtim
   contactTags<T extends Prisma.Workspace$contactTagsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$contactTagsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   contactTasks<T extends Prisma.Workspace$contactTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$contactTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   contactNotes<T extends Prisma.Workspace$contactNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$contactNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  conversationNotes<T extends Prisma.Workspace$conversationNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$conversationNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   contactSegments<T extends Prisma.Workspace$contactSegmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$contactSegmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactSegmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   contactCustomFields<T extends Prisma.Workspace$contactCustomFieldsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$contactCustomFieldsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactCustomFieldPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   contactConsentEvents<T extends Prisma.Workspace$contactConsentEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$contactConsentEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactConsentEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -9324,6 +11240,9 @@ export interface Prisma__WorkspaceClient<T, Null = never, ExtArgs extends runtim
   automationLogs<T extends Prisma.Workspace$automationLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$automationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AutomationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workflows<T extends Prisma.Workspace$workflowsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$workflowsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workflowRuns<T extends Prisma.Workspace$workflowRunsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$workflowRunsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sequences<T extends Prisma.Workspace$sequencesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$sequencesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SequencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sequenceEnrollments<T extends Prisma.Workspace$sequenceEnrollmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$sequenceEnrollmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SequenceEnrollmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  automationSettings<T extends Prisma.Workspace$automationSettingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$automationSettingsArgs<ExtArgs>>): Prisma.Prisma__WorkspaceAutomationSettingsClient<runtime.Types.Result.GetResult<Prisma.$WorkspaceAutomationSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   campaigns<T extends Prisma.Workspace$campaignsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$campaignsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   campaignRecipients<T extends Prisma.Workspace$campaignRecipientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$campaignRecipientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignRecipientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   apiKeys<T extends Prisma.Workspace$apiKeysArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$apiKeysArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PublicApiKeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -9378,6 +11297,8 @@ export interface WorkspaceFieldRefs {
   readonly onboardingData: Prisma.FieldRef<"Workspace", 'Json'>
   readonly onboardingStep: Prisma.FieldRef<"Workspace", 'Int'>
   readonly onboardingCompletedAt: Prisma.FieldRef<"Workspace", 'DateTime'>
+  readonly welcomeBonusGrantedAt: Prisma.FieldRef<"Workspace", 'DateTime'>
+  readonly welcomeBonusCelebratedAt: Prisma.FieldRef<"Workspace", 'DateTime'>
   readonly ownerId: Prisma.FieldRef<"Workspace", 'String'>
   readonly createdAt: Prisma.FieldRef<"Workspace", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Workspace", 'DateTime'>
@@ -9993,6 +11914,30 @@ export type Workspace$contactNotesArgs<ExtArgs extends runtime.Types.Extensions.
 }
 
 /**
+ * Workspace.conversationNotes
+ */
+export type Workspace$conversationNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ConversationNote
+   */
+  select?: Prisma.ConversationNoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ConversationNote
+   */
+  omit?: Prisma.ConversationNoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ConversationNoteInclude<ExtArgs> | null
+  where?: Prisma.ConversationNoteWhereInput
+  orderBy?: Prisma.ConversationNoteOrderByWithRelationInput | Prisma.ConversationNoteOrderByWithRelationInput[]
+  cursor?: Prisma.ConversationNoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ConversationNoteScalarFieldEnum | Prisma.ConversationNoteScalarFieldEnum[]
+}
+
+/**
  * Workspace.contactSegments
  */
 export type Workspace$contactSegmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -10254,6 +12199,73 @@ export type Workspace$workflowRunsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.WorkflowRunScalarFieldEnum | Prisma.WorkflowRunScalarFieldEnum[]
+}
+
+/**
+ * Workspace.sequences
+ */
+export type Workspace$sequencesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Sequence
+   */
+  select?: Prisma.SequenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Sequence
+   */
+  omit?: Prisma.SequenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SequenceInclude<ExtArgs> | null
+  where?: Prisma.SequenceWhereInput
+  orderBy?: Prisma.SequenceOrderByWithRelationInput | Prisma.SequenceOrderByWithRelationInput[]
+  cursor?: Prisma.SequenceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SequenceScalarFieldEnum | Prisma.SequenceScalarFieldEnum[]
+}
+
+/**
+ * Workspace.sequenceEnrollments
+ */
+export type Workspace$sequenceEnrollmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SequenceEnrollment
+   */
+  select?: Prisma.SequenceEnrollmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SequenceEnrollment
+   */
+  omit?: Prisma.SequenceEnrollmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SequenceEnrollmentInclude<ExtArgs> | null
+  where?: Prisma.SequenceEnrollmentWhereInput
+  orderBy?: Prisma.SequenceEnrollmentOrderByWithRelationInput | Prisma.SequenceEnrollmentOrderByWithRelationInput[]
+  cursor?: Prisma.SequenceEnrollmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SequenceEnrollmentScalarFieldEnum | Prisma.SequenceEnrollmentScalarFieldEnum[]
+}
+
+/**
+ * Workspace.automationSettings
+ */
+export type Workspace$automationSettingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkspaceAutomationSettings
+   */
+  select?: Prisma.WorkspaceAutomationSettingsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkspaceAutomationSettings
+   */
+  omit?: Prisma.WorkspaceAutomationSettingsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceAutomationSettingsInclude<ExtArgs> | null
+  where?: Prisma.WorkspaceAutomationSettingsWhereInput
 }
 
 /**

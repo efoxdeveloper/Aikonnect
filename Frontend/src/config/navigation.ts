@@ -4,7 +4,8 @@ import {
   BlocksIcon as Blocks, ChartNoAxesCombinedIcon as ChartNoAxesCombined,
   ChartSplineIcon as ChartSpline, CreditCardIcon as CreditCard,
   FileTextIcon as FileText, HouseIcon as House, LayoutDashboardIcon as PanelsTopLeft,
-  ListChecksIcon as ListTodo, MegaphoneIcon as Megaphone, MessageCircleIcon as MessageCircle,
+  LinkIcon as Link,
+  ListChecksIcon as ListChecks, ListChecksIcon as ListTodo, MegaphoneIcon as Megaphone, MessageCircleIcon as MessageCircle,
   MessageSquareTextIcon as MessageSquareText,
   SettingsIcon as Settings,
   UserRoundIcon as UserRound,
@@ -66,6 +67,9 @@ export const navigationGroups: NavigationGroup[] = [
     { title: "Campaigns", url: "/campaigns", icon: Megaphone },
     { title: "Templates", url: "/templates", icon: FileText },
     { title: "Automation", url: "/automations", icon: Workflow },
+    { title: "Workflows", url: "/workflows", icon: Workflow },
+    { title: "Sequences", url: "/sequences", icon: ListChecks },
+    { title: "Automation Settings", url: "/automation-settings", icon: Settings },
   ] },
   { title: "Sales & CRM", items: [
     { title: "Contacts", url: "/contacts", icon: Users },
@@ -78,7 +82,7 @@ export const navigationGroups: NavigationGroup[] = [
     { title: "Campaign Analytics", url: "/campaign-analytics", icon: ChartSpline },
   ] },
   { title: "Developer", items: [
-    { title: "Integrations", url: "/integrations", icon: Blocks },
+    { title: "Integrations", url: "/integrations", icon: Link },
     { title: "API & Webhooks", url: "/api-webhooks", icon: Webhook },
   ] },
   { title: "Settings", items: [

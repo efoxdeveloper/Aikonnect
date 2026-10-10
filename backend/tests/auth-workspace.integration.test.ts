@@ -73,7 +73,7 @@ test("account settings routes reject anonymous profile and preference updates", 
   assert.equal(preferencesResponse.status, 401);
 });
 
-test("Google signup creates a verified user, linked identity, workspace, and reusable session", async () => {
+test("Google signup creates a verified user and workspace without crediting the connection bonus", async () => {
   const email = `google-integration-${Date.now()}@gmail.com`;
   createdEmails.push(email);
   const identity = {
@@ -88,6 +88,18 @@ test("Google signup creates a verified user, linked identity, workspace, and reu
   assert.ok(firstLogin.user.emailVerifiedAt);
   assert.ok(firstLogin.workspace?.id);
   assert.ok(firstLogin.accessToken);
+
+  const bonusEntry = await prisma.walletLedgerEntry.findFirst({ where: { workspaceId: firstLogin.workspace!.id, transactionType: "WELCOME_BONUS" } });
+  assert.equal(bonusEntry, null);
+  const bonusHeaders = { authorization: `Bearer ${firstLogin.accessToken}` };
+  const pendingBonusResponse = await fetch(`${baseUrl}/workspaces/${firstLogin.workspace!.id}/wallet/welcome-bonus`, { headers: bonusHeaders });
+  assert.equal(pendingBonusResponse.status, 200);
+  assert.deepEqual((await pendingBonusResponse.json()).data, { amount: "400.00", currency: "INR", granted: false, pending: false, source: null });
+  const markBonusResponse = await fetch(`${baseUrl}/workspaces/${firstLogin.workspace!.id}/wallet/welcome-bonus/celebrated`, { method: "POST", headers: bonusHeaders });
+  assert.equal(markBonusResponse.status, 200);
+  assert.deepEqual((await markBonusResponse.json()).data, { marked: false });
+  const seenBonusResponse = await fetch(`${baseUrl}/workspaces/${firstLogin.workspace!.id}/wallet/welcome-bonus`, { headers: bonusHeaders });
+  assert.deepEqual((await seenBonusResponse.json()).data, { amount: "400.00", currency: "INR", granted: false, pending: false, source: null });
 
   const profileResponse = await fetch(`${baseUrl}/auth/profile`, {
     method: "PATCH",

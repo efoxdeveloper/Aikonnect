@@ -415,9 +415,11 @@ export type ContactWhereInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueListRelationFilter
   consentEvents?: Prisma.ContactConsentEventListRelationFilter
   conversations?: Prisma.ConversationListRelationFilter
+  conversationNotes?: Prisma.ConversationNoteListRelationFilter
   messages?: Prisma.MessageListRelationFilter
   automationLogs?: Prisma.AutomationLogListRelationFilter
   workflowRuns?: Prisma.WorkflowRunListRelationFilter
+  sequenceEnrollments?: Prisma.SequenceEnrollmentListRelationFilter
   campaignRecipients?: Prisma.CampaignRecipientListRelationFilter
 }
 
@@ -462,9 +464,11 @@ export type ContactOrderByWithRelationInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueOrderByRelationAggregateInput
   consentEvents?: Prisma.ContactConsentEventOrderByRelationAggregateInput
   conversations?: Prisma.ConversationOrderByRelationAggregateInput
+  conversationNotes?: Prisma.ConversationNoteOrderByRelationAggregateInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
   automationLogs?: Prisma.AutomationLogOrderByRelationAggregateInput
   workflowRuns?: Prisma.WorkflowRunOrderByRelationAggregateInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentOrderByRelationAggregateInput
   campaignRecipients?: Prisma.CampaignRecipientOrderByRelationAggregateInput
 }
 
@@ -512,9 +516,11 @@ export type ContactWhereUniqueInput = Prisma.AtLeast<{
   customFieldValues?: Prisma.ContactCustomFieldValueListRelationFilter
   consentEvents?: Prisma.ContactConsentEventListRelationFilter
   conversations?: Prisma.ConversationListRelationFilter
+  conversationNotes?: Prisma.ConversationNoteListRelationFilter
   messages?: Prisma.MessageListRelationFilter
   automationLogs?: Prisma.AutomationLogListRelationFilter
   workflowRuns?: Prisma.WorkflowRunListRelationFilter
+  sequenceEnrollments?: Prisma.SequenceEnrollmentListRelationFilter
   campaignRecipients?: Prisma.CampaignRecipientListRelationFilter
 }, "id">
 
@@ -626,9 +632,11 @@ export type ContactCreateInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
 }
 
@@ -668,9 +676,11 @@ export type ContactUncheckedCreateInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
 }
 
@@ -710,9 +720,11 @@ export type ContactUpdateInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
 }
 
@@ -752,9 +764,11 @@ export type ContactUncheckedUpdateInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
 }
 
@@ -1217,6 +1231,20 @@ export type ContactUpdateOneRequiredWithoutConversationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ContactUpdateToOneWithWhereWithoutConversationsInput, Prisma.ContactUpdateWithoutConversationsInput>, Prisma.ContactUncheckedUpdateWithoutConversationsInput>
 }
 
+export type ContactCreateNestedOneWithoutConversationNotesInput = {
+  create?: Prisma.XOR<Prisma.ContactCreateWithoutConversationNotesInput, Prisma.ContactUncheckedCreateWithoutConversationNotesInput>
+  connectOrCreate?: Prisma.ContactCreateOrConnectWithoutConversationNotesInput
+  connect?: Prisma.ContactWhereUniqueInput
+}
+
+export type ContactUpdateOneRequiredWithoutConversationNotesNestedInput = {
+  create?: Prisma.XOR<Prisma.ContactCreateWithoutConversationNotesInput, Prisma.ContactUncheckedCreateWithoutConversationNotesInput>
+  connectOrCreate?: Prisma.ContactCreateOrConnectWithoutConversationNotesInput
+  upsert?: Prisma.ContactUpsertWithoutConversationNotesInput
+  connect?: Prisma.ContactWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ContactUpdateToOneWithWhereWithoutConversationNotesInput, Prisma.ContactUpdateWithoutConversationNotesInput>, Prisma.ContactUncheckedUpdateWithoutConversationNotesInput>
+}
+
 export type ContactCreateNestedOneWithoutMessagesInput = {
   create?: Prisma.XOR<Prisma.ContactCreateWithoutMessagesInput, Prisma.ContactUncheckedCreateWithoutMessagesInput>
   connectOrCreate?: Prisma.ContactCreateOrConnectWithoutMessagesInput
@@ -1317,6 +1345,20 @@ export type ContactUpdateOneRequiredWithoutWorkflowRunsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ContactUpdateToOneWithWhereWithoutWorkflowRunsInput, Prisma.ContactUpdateWithoutWorkflowRunsInput>, Prisma.ContactUncheckedUpdateWithoutWorkflowRunsInput>
 }
 
+export type ContactCreateNestedOneWithoutSequenceEnrollmentsInput = {
+  create?: Prisma.XOR<Prisma.ContactCreateWithoutSequenceEnrollmentsInput, Prisma.ContactUncheckedCreateWithoutSequenceEnrollmentsInput>
+  connectOrCreate?: Prisma.ContactCreateOrConnectWithoutSequenceEnrollmentsInput
+  connect?: Prisma.ContactWhereUniqueInput
+}
+
+export type ContactUpdateOneRequiredWithoutSequenceEnrollmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ContactCreateWithoutSequenceEnrollmentsInput, Prisma.ContactUncheckedCreateWithoutSequenceEnrollmentsInput>
+  connectOrCreate?: Prisma.ContactCreateOrConnectWithoutSequenceEnrollmentsInput
+  upsert?: Prisma.ContactUpsertWithoutSequenceEnrollmentsInput
+  connect?: Prisma.ContactWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ContactUpdateToOneWithWhereWithoutSequenceEnrollmentsInput, Prisma.ContactUpdateWithoutSequenceEnrollmentsInput>, Prisma.ContactUncheckedUpdateWithoutSequenceEnrollmentsInput>
+}
+
 export type ContactCreateNestedOneWithoutCampaignRecipientsInput = {
   create?: Prisma.XOR<Prisma.ContactCreateWithoutCampaignRecipientsInput, Prisma.ContactUncheckedCreateWithoutCampaignRecipientsInput>
   connectOrCreate?: Prisma.ContactCreateOrConnectWithoutCampaignRecipientsInput
@@ -1368,9 +1410,11 @@ export type ContactCreateWithoutCreatedByInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
 }
 
@@ -1409,9 +1453,11 @@ export type ContactUncheckedCreateWithoutCreatedByInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
 }
 
@@ -1460,9 +1506,11 @@ export type ContactCreateWithoutAccountOwnerInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
 }
 
@@ -1501,9 +1549,11 @@ export type ContactUncheckedCreateWithoutAccountOwnerInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
 }
 
@@ -1552,9 +1602,11 @@ export type ContactCreateWithoutUpdatedByInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
 }
 
@@ -1593,9 +1645,11 @@ export type ContactUncheckedCreateWithoutUpdatedByInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
 }
 
@@ -1644,9 +1698,11 @@ export type ContactCreateWithoutDeletedByInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
 }
 
@@ -1685,9 +1741,11 @@ export type ContactUncheckedCreateWithoutDeletedByInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
 }
 
@@ -1835,9 +1893,11 @@ export type ContactCreateWithoutWorkspaceInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
 }
 
@@ -1876,9 +1936,11 @@ export type ContactUncheckedCreateWithoutWorkspaceInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
 }
 
@@ -1943,9 +2005,11 @@ export type ContactCreateWithoutConsentEventsInput = {
   notes?: Prisma.ContactNoteCreateNestedManyWithoutContactInput
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
 }
 
@@ -1984,9 +2048,11 @@ export type ContactUncheckedCreateWithoutConsentEventsInput = {
   notes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutContactInput
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
 }
 
@@ -2041,9 +2107,11 @@ export type ContactUpdateWithoutConsentEventsInput = {
   notes?: Prisma.ContactNoteUpdateManyWithoutContactNestedInput
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
 }
 
@@ -2082,9 +2150,11 @@ export type ContactUncheckedUpdateWithoutConsentEventsInput = {
   notes?: Prisma.ContactNoteUncheckedUpdateManyWithoutContactNestedInput
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
 }
 
@@ -2123,9 +2193,11 @@ export type ContactCreateWithoutConversationsInput = {
   notes?: Prisma.ContactNoteCreateNestedManyWithoutContactInput
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
 }
 
@@ -2164,9 +2236,11 @@ export type ContactUncheckedCreateWithoutConversationsInput = {
   notes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutContactInput
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
 }
 
@@ -2221,9 +2295,11 @@ export type ContactUpdateWithoutConversationsInput = {
   notes?: Prisma.ContactNoteUpdateManyWithoutContactNestedInput
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
 }
 
@@ -2262,9 +2338,199 @@ export type ContactUncheckedUpdateWithoutConversationsInput = {
   notes?: Prisma.ContactNoteUncheckedUpdateManyWithoutContactNestedInput
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
+}
+
+export type ContactCreateWithoutConversationNotesInput = {
+  id?: string
+  name: string
+  phoneE164: string
+  whatsappId?: string | null
+  profileName?: string | null
+  profileImageUrl?: string | null
+  email?: string | null
+  source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: boolean
+  whatsappOptInSource?: string | null
+  whatsappOptedInAt?: Date | string | null
+  whatsappOptOutSource?: string | null
+  whatsappOptedOutAt?: Date | string | null
+  marketingBlocked?: boolean
+  marketingBlockedAt?: Date | string | null
+  marketingBlockSource?: string | null
+  marketingBlockReason?: string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
+  updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
+  deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
+  tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
+  tasks?: Prisma.ContactTaskCreateNestedManyWithoutContactInput
+  notes?: Prisma.ContactNoteCreateNestedManyWithoutContactInput
+  customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
+  consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
+}
+
+export type ContactUncheckedCreateWithoutConversationNotesInput = {
+  id?: string
+  workspaceId: string
+  name: string
+  phoneE164: string
+  whatsappId?: string | null
+  profileName?: string | null
+  profileImageUrl?: string | null
+  email?: string | null
+  source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: boolean
+  whatsappOptInSource?: string | null
+  whatsappOptedInAt?: Date | string | null
+  whatsappOptOutSource?: string | null
+  whatsappOptedOutAt?: Date | string | null
+  marketingBlocked?: boolean
+  marketingBlockedAt?: Date | string | null
+  marketingBlockSource?: string | null
+  marketingBlockReason?: string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: string | null
+  updatedById?: string | null
+  deletedById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  tagAssignments?: Prisma.ContactTagAssignmentUncheckedCreateNestedManyWithoutContactInput
+  tasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutContactInput
+  notes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutContactInput
+  customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
+  consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
+}
+
+export type ContactCreateOrConnectWithoutConversationNotesInput = {
+  where: Prisma.ContactWhereUniqueInput
+  create: Prisma.XOR<Prisma.ContactCreateWithoutConversationNotesInput, Prisma.ContactUncheckedCreateWithoutConversationNotesInput>
+}
+
+export type ContactUpsertWithoutConversationNotesInput = {
+  update: Prisma.XOR<Prisma.ContactUpdateWithoutConversationNotesInput, Prisma.ContactUncheckedUpdateWithoutConversationNotesInput>
+  create: Prisma.XOR<Prisma.ContactCreateWithoutConversationNotesInput, Prisma.ContactUncheckedCreateWithoutConversationNotesInput>
+  where?: Prisma.ContactWhereInput
+}
+
+export type ContactUpdateToOneWithWhereWithoutConversationNotesInput = {
+  where?: Prisma.ContactWhereInput
+  data: Prisma.XOR<Prisma.ContactUpdateWithoutConversationNotesInput, Prisma.ContactUncheckedUpdateWithoutConversationNotesInput>
+}
+
+export type ContactUpdateWithoutConversationNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  whatsappOptOutSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingBlockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlockSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingBlockReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
+  updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
+  deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
+  tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
+  tasks?: Prisma.ContactTaskUpdateManyWithoutContactNestedInput
+  notes?: Prisma.ContactNoteUpdateManyWithoutContactNestedInput
+  customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
+  consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
+}
+
+export type ContactUncheckedUpdateWithoutConversationNotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  whatsappOptOutSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingBlockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlockSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingBlockReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tagAssignments?: Prisma.ContactTagAssignmentUncheckedUpdateManyWithoutContactNestedInput
+  tasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutContactNestedInput
+  notes?: Prisma.ContactNoteUncheckedUpdateManyWithoutContactNestedInput
+  customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
+  consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
 }
 
@@ -2304,8 +2570,10 @@ export type ContactCreateWithoutMessagesInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
 }
 
@@ -2345,8 +2613,10 @@ export type ContactUncheckedCreateWithoutMessagesInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
 }
 
@@ -2402,8 +2672,10 @@ export type ContactUpdateWithoutMessagesInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
 }
 
@@ -2443,8 +2715,10 @@ export type ContactUncheckedUpdateWithoutMessagesInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
 }
 
@@ -2483,9 +2757,11 @@ export type ContactCreateWithoutCustomFieldValuesInput = {
   notes?: Prisma.ContactNoteCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
 }
 
@@ -2524,9 +2800,11 @@ export type ContactUncheckedCreateWithoutCustomFieldValuesInput = {
   notes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
 }
 
@@ -2581,9 +2859,11 @@ export type ContactUpdateWithoutCustomFieldValuesInput = {
   notes?: Prisma.ContactNoteUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
 }
 
@@ -2622,9 +2902,11 @@ export type ContactUncheckedUpdateWithoutCustomFieldValuesInput = {
   notes?: Prisma.ContactNoteUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
 }
 
@@ -2663,9 +2945,11 @@ export type ContactCreateWithoutTasksInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
 }
 
@@ -2704,9 +2988,11 @@ export type ContactUncheckedCreateWithoutTasksInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
 }
 
@@ -2761,9 +3047,11 @@ export type ContactUpdateWithoutTasksInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
 }
 
@@ -2802,9 +3090,11 @@ export type ContactUncheckedUpdateWithoutTasksInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
 }
 
@@ -2843,9 +3133,11 @@ export type ContactCreateWithoutNotesInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
 }
 
@@ -2884,9 +3176,11 @@ export type ContactUncheckedCreateWithoutNotesInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
 }
 
@@ -2941,9 +3235,11 @@ export type ContactUpdateWithoutNotesInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
 }
 
@@ -2982,9 +3278,11 @@ export type ContactUncheckedUpdateWithoutNotesInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
 }
 
@@ -3023,9 +3321,11 @@ export type ContactCreateWithoutTagAssignmentsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
 }
 
@@ -3064,9 +3364,11 @@ export type ContactUncheckedCreateWithoutTagAssignmentsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
 }
 
@@ -3121,9 +3423,11 @@ export type ContactUpdateWithoutTagAssignmentsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
 }
 
@@ -3162,9 +3466,11 @@ export type ContactUncheckedUpdateWithoutTagAssignmentsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
 }
 
@@ -3204,8 +3510,10 @@ export type ContactCreateWithoutAutomationLogsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
 }
 
@@ -3245,8 +3553,10 @@ export type ContactUncheckedCreateWithoutAutomationLogsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
 }
 
@@ -3302,8 +3612,10 @@ export type ContactUpdateWithoutAutomationLogsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
 }
 
@@ -3343,8 +3655,10 @@ export type ContactUncheckedUpdateWithoutAutomationLogsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
 }
 
@@ -3384,8 +3698,10 @@ export type ContactCreateWithoutWorkflowRunsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
 }
 
@@ -3425,8 +3741,10 @@ export type ContactUncheckedCreateWithoutWorkflowRunsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
 }
 
@@ -3482,8 +3800,10 @@ export type ContactUpdateWithoutWorkflowRunsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
 }
 
@@ -3523,8 +3843,198 @@ export type ContactUncheckedUpdateWithoutWorkflowRunsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
+}
+
+export type ContactCreateWithoutSequenceEnrollmentsInput = {
+  id?: string
+  name: string
+  phoneE164: string
+  whatsappId?: string | null
+  profileName?: string | null
+  profileImageUrl?: string | null
+  email?: string | null
+  source?: string
+  status?: string
+  userId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: boolean
+  whatsappOptInSource?: string | null
+  whatsappOptedInAt?: Date | string | null
+  whatsappOptOutSource?: string | null
+  whatsappOptedOutAt?: Date | string | null
+  marketingBlocked?: boolean
+  marketingBlockedAt?: Date | string | null
+  marketingBlockSource?: string | null
+  marketingBlockReason?: string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutContactsInput
+  createdBy?: Prisma.UserCreateNestedOneWithoutContactsCreatedInput
+  accountOwner?: Prisma.UserCreateNestedOneWithoutContactsOwnedInput
+  updatedBy?: Prisma.UserCreateNestedOneWithoutContactsUpdatedInput
+  deletedBy?: Prisma.UserCreateNestedOneWithoutContactsDeletedInput
+  tagAssignments?: Prisma.ContactTagAssignmentCreateNestedManyWithoutContactInput
+  tasks?: Prisma.ContactTaskCreateNestedManyWithoutContactInput
+  notes?: Prisma.ContactNoteCreateNestedManyWithoutContactInput
+  customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
+  consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
+  conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
+  messages?: Prisma.MessageCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  campaignRecipients?: Prisma.CampaignRecipientCreateNestedManyWithoutContactInput
+}
+
+export type ContactUncheckedCreateWithoutSequenceEnrollmentsInput = {
+  id?: string
+  workspaceId: string
+  name: string
+  phoneE164: string
+  whatsappId?: string | null
+  profileName?: string | null
+  profileImageUrl?: string | null
+  email?: string | null
+  source?: string
+  status?: string
+  userId?: string | null
+  accountOwnerId?: string | null
+  dealValue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: boolean
+  whatsappOptInSource?: string | null
+  whatsappOptedInAt?: Date | string | null
+  whatsappOptOutSource?: string | null
+  whatsappOptedOutAt?: Date | string | null
+  marketingBlocked?: boolean
+  marketingBlockedAt?: Date | string | null
+  marketingBlockSource?: string | null
+  marketingBlockReason?: string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: string | null
+  updatedById?: string | null
+  deletedById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  deletedAt?: Date | string | null
+  tagAssignments?: Prisma.ContactTagAssignmentUncheckedCreateNestedManyWithoutContactInput
+  tasks?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutContactInput
+  notes?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutContactInput
+  customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
+  consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
+  conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
+  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
+  automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  campaignRecipients?: Prisma.CampaignRecipientUncheckedCreateNestedManyWithoutContactInput
+}
+
+export type ContactCreateOrConnectWithoutSequenceEnrollmentsInput = {
+  where: Prisma.ContactWhereUniqueInput
+  create: Prisma.XOR<Prisma.ContactCreateWithoutSequenceEnrollmentsInput, Prisma.ContactUncheckedCreateWithoutSequenceEnrollmentsInput>
+}
+
+export type ContactUpsertWithoutSequenceEnrollmentsInput = {
+  update: Prisma.XOR<Prisma.ContactUpdateWithoutSequenceEnrollmentsInput, Prisma.ContactUncheckedUpdateWithoutSequenceEnrollmentsInput>
+  create: Prisma.XOR<Prisma.ContactCreateWithoutSequenceEnrollmentsInput, Prisma.ContactUncheckedCreateWithoutSequenceEnrollmentsInput>
+  where?: Prisma.ContactWhereInput
+}
+
+export type ContactUpdateToOneWithWhereWithoutSequenceEnrollmentsInput = {
+  where?: Prisma.ContactWhereInput
+  data: Prisma.XOR<Prisma.ContactUpdateWithoutSequenceEnrollmentsInput, Prisma.ContactUncheckedUpdateWithoutSequenceEnrollmentsInput>
+}
+
+export type ContactUpdateWithoutSequenceEnrollmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  whatsappOptOutSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingBlockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlockSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingBlockReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutContactsNestedInput
+  createdBy?: Prisma.UserUpdateOneWithoutContactsCreatedNestedInput
+  accountOwner?: Prisma.UserUpdateOneWithoutContactsOwnedNestedInput
+  updatedBy?: Prisma.UserUpdateOneWithoutContactsUpdatedNestedInput
+  deletedBy?: Prisma.UserUpdateOneWithoutContactsDeletedNestedInput
+  tagAssignments?: Prisma.ContactTagAssignmentUpdateManyWithoutContactNestedInput
+  tasks?: Prisma.ContactTaskUpdateManyWithoutContactNestedInput
+  notes?: Prisma.ContactNoteUpdateManyWithoutContactNestedInput
+  customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
+  consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
+  conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
+  messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
+}
+
+export type ContactUncheckedUpdateWithoutSequenceEnrollmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneE164?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsappId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accountOwnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealValue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  whatsappOpted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  whatsappOptInSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  whatsappOptOutSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  whatsappOptedOutAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  marketingBlockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  marketingBlockSource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  marketingBlockReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  customAttributes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tagAssignments?: Prisma.ContactTagAssignmentUncheckedUpdateManyWithoutContactNestedInput
+  tasks?: Prisma.ContactTaskUncheckedUpdateManyWithoutContactNestedInput
+  notes?: Prisma.ContactNoteUncheckedUpdateManyWithoutContactNestedInput
+  customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
+  consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
+  conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
+  messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
+  automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
+  workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
 }
 
@@ -3564,9 +4074,11 @@ export type ContactCreateWithoutCampaignRecipientsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentCreateNestedManyWithoutContactInput
 }
 
 export type ContactUncheckedCreateWithoutCampaignRecipientsInput = {
@@ -3605,9 +4117,11 @@ export type ContactUncheckedCreateWithoutCampaignRecipientsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedCreateNestedManyWithoutContactInput
   consentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutContactInput
   conversations?: Prisma.ConversationUncheckedCreateNestedManyWithoutContactInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutContactInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutContactInput
   automationLogs?: Prisma.AutomationLogUncheckedCreateNestedManyWithoutContactInput
   workflowRuns?: Prisma.WorkflowRunUncheckedCreateNestedManyWithoutContactInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedCreateNestedManyWithoutContactInput
 }
 
 export type ContactCreateOrConnectWithoutCampaignRecipientsInput = {
@@ -3662,9 +4176,11 @@ export type ContactUpdateWithoutCampaignRecipientsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
 }
 
 export type ContactUncheckedUpdateWithoutCampaignRecipientsInput = {
@@ -3703,9 +4219,11 @@ export type ContactUncheckedUpdateWithoutCampaignRecipientsInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
 }
 
 export type ContactCreateManyCreatedByInput = {
@@ -3867,9 +4385,11 @@ export type ContactUpdateWithoutCreatedByInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
 }
 
@@ -3908,9 +4428,11 @@ export type ContactUncheckedUpdateWithoutCreatedByInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
 }
 
@@ -3980,9 +4502,11 @@ export type ContactUpdateWithoutAccountOwnerInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
 }
 
@@ -4021,9 +4545,11 @@ export type ContactUncheckedUpdateWithoutAccountOwnerInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
 }
 
@@ -4093,9 +4619,11 @@ export type ContactUpdateWithoutUpdatedByInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
 }
 
@@ -4134,9 +4662,11 @@ export type ContactUncheckedUpdateWithoutUpdatedByInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
 }
 
@@ -4206,9 +4736,11 @@ export type ContactUpdateWithoutDeletedByInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
 }
 
@@ -4247,9 +4779,11 @@ export type ContactUncheckedUpdateWithoutDeletedByInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
 }
 
@@ -4350,9 +4884,11 @@ export type ContactUpdateWithoutWorkspaceInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUpdateManyWithoutContactNestedInput
 }
 
@@ -4391,9 +4927,11 @@ export type ContactUncheckedUpdateWithoutWorkspaceInput = {
   customFieldValues?: Prisma.ContactCustomFieldValueUncheckedUpdateManyWithoutContactNestedInput
   consentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutContactNestedInput
   conversations?: Prisma.ConversationUncheckedUpdateManyWithoutContactNestedInput
+  conversationNotes?: Prisma.ConversationNoteUncheckedUpdateManyWithoutContactNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutContactNestedInput
   automationLogs?: Prisma.AutomationLogUncheckedUpdateManyWithoutContactNestedInput
   workflowRuns?: Prisma.WorkflowRunUncheckedUpdateManyWithoutContactNestedInput
+  sequenceEnrollments?: Prisma.SequenceEnrollmentUncheckedUpdateManyWithoutContactNestedInput
   campaignRecipients?: Prisma.CampaignRecipientUncheckedUpdateManyWithoutContactNestedInput
 }
 
@@ -4440,9 +4978,11 @@ export type ContactCountOutputType = {
   customFieldValues: number
   consentEvents: number
   conversations: number
+  conversationNotes: number
   messages: number
   automationLogs: number
   workflowRuns: number
+  sequenceEnrollments: number
   campaignRecipients: number
 }
 
@@ -4453,9 +4993,11 @@ export type ContactCountOutputTypeSelect<ExtArgs extends runtime.Types.Extension
   customFieldValues?: boolean | ContactCountOutputTypeCountCustomFieldValuesArgs
   consentEvents?: boolean | ContactCountOutputTypeCountConsentEventsArgs
   conversations?: boolean | ContactCountOutputTypeCountConversationsArgs
+  conversationNotes?: boolean | ContactCountOutputTypeCountConversationNotesArgs
   messages?: boolean | ContactCountOutputTypeCountMessagesArgs
   automationLogs?: boolean | ContactCountOutputTypeCountAutomationLogsArgs
   workflowRuns?: boolean | ContactCountOutputTypeCountWorkflowRunsArgs
+  sequenceEnrollments?: boolean | ContactCountOutputTypeCountSequenceEnrollmentsArgs
   campaignRecipients?: boolean | ContactCountOutputTypeCountCampaignRecipientsArgs
 }
 
@@ -4514,6 +5056,13 @@ export type ContactCountOutputTypeCountConversationsArgs<ExtArgs extends runtime
 /**
  * ContactCountOutputType without action
  */
+export type ContactCountOutputTypeCountConversationNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ConversationNoteWhereInput
+}
+
+/**
+ * ContactCountOutputType without action
+ */
 export type ContactCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.MessageWhereInput
 }
@@ -4530,6 +5079,13 @@ export type ContactCountOutputTypeCountAutomationLogsArgs<ExtArgs extends runtim
  */
 export type ContactCountOutputTypeCountWorkflowRunsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.WorkflowRunWhereInput
+}
+
+/**
+ * ContactCountOutputType without action
+ */
+export type ContactCountOutputTypeCountSequenceEnrollmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SequenceEnrollmentWhereInput
 }
 
 /**
@@ -4581,9 +5137,11 @@ export type ContactSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   customFieldValues?: boolean | Prisma.Contact$customFieldValuesArgs<ExtArgs>
   consentEvents?: boolean | Prisma.Contact$consentEventsArgs<ExtArgs>
   conversations?: boolean | Prisma.Contact$conversationsArgs<ExtArgs>
+  conversationNotes?: boolean | Prisma.Contact$conversationNotesArgs<ExtArgs>
   messages?: boolean | Prisma.Contact$messagesArgs<ExtArgs>
   automationLogs?: boolean | Prisma.Contact$automationLogsArgs<ExtArgs>
   workflowRuns?: boolean | Prisma.Contact$workflowRunsArgs<ExtArgs>
+  sequenceEnrollments?: boolean | Prisma.Contact$sequenceEnrollmentsArgs<ExtArgs>
   campaignRecipients?: boolean | Prisma.Contact$campaignRecipientsArgs<ExtArgs>
   _count?: boolean | Prisma.ContactCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["contact"]>
@@ -4707,9 +5265,11 @@ export type ContactInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs
   customFieldValues?: boolean | Prisma.Contact$customFieldValuesArgs<ExtArgs>
   consentEvents?: boolean | Prisma.Contact$consentEventsArgs<ExtArgs>
   conversations?: boolean | Prisma.Contact$conversationsArgs<ExtArgs>
+  conversationNotes?: boolean | Prisma.Contact$conversationNotesArgs<ExtArgs>
   messages?: boolean | Prisma.Contact$messagesArgs<ExtArgs>
   automationLogs?: boolean | Prisma.Contact$automationLogsArgs<ExtArgs>
   workflowRuns?: boolean | Prisma.Contact$workflowRunsArgs<ExtArgs>
+  sequenceEnrollments?: boolean | Prisma.Contact$sequenceEnrollmentsArgs<ExtArgs>
   campaignRecipients?: boolean | Prisma.Contact$campaignRecipientsArgs<ExtArgs>
   _count?: boolean | Prisma.ContactCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -4742,9 +5302,11 @@ export type $ContactPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     customFieldValues: Prisma.$ContactCustomFieldValuePayload<ExtArgs>[]
     consentEvents: Prisma.$ContactConsentEventPayload<ExtArgs>[]
     conversations: Prisma.$ConversationPayload<ExtArgs>[]
+    conversationNotes: Prisma.$ConversationNotePayload<ExtArgs>[]
     messages: Prisma.$MessagePayload<ExtArgs>[]
     automationLogs: Prisma.$AutomationLogPayload<ExtArgs>[]
     workflowRuns: Prisma.$WorkflowRunPayload<ExtArgs>[]
+    sequenceEnrollments: Prisma.$SequenceEnrollmentPayload<ExtArgs>[]
     campaignRecipients: Prisma.$CampaignRecipientPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -5182,9 +5744,11 @@ export interface Prisma__ContactClient<T, Null = never, ExtArgs extends runtime.
   customFieldValues<T extends Prisma.Contact$customFieldValuesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$customFieldValuesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactCustomFieldValuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   consentEvents<T extends Prisma.Contact$consentEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$consentEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ContactConsentEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   conversations<T extends Prisma.Contact$conversationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$conversationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  conversationNotes<T extends Prisma.Contact$conversationNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$conversationNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ConversationNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messages<T extends Prisma.Contact$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   automationLogs<T extends Prisma.Contact$automationLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$automationLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AutomationLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workflowRuns<T extends Prisma.Contact$workflowRunsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$workflowRunsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sequenceEnrollments<T extends Prisma.Contact$sequenceEnrollmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$sequenceEnrollmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SequenceEnrollmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   campaignRecipients<T extends Prisma.Contact$campaignRecipientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Contact$campaignRecipientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignRecipientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -5865,6 +6429,30 @@ export type Contact$conversationsArgs<ExtArgs extends runtime.Types.Extensions.I
 }
 
 /**
+ * Contact.conversationNotes
+ */
+export type Contact$conversationNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ConversationNote
+   */
+  select?: Prisma.ConversationNoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ConversationNote
+   */
+  omit?: Prisma.ConversationNoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ConversationNoteInclude<ExtArgs> | null
+  where?: Prisma.ConversationNoteWhereInput
+  orderBy?: Prisma.ConversationNoteOrderByWithRelationInput | Prisma.ConversationNoteOrderByWithRelationInput[]
+  cursor?: Prisma.ConversationNoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ConversationNoteScalarFieldEnum | Prisma.ConversationNoteScalarFieldEnum[]
+}
+
+/**
  * Contact.messages
  */
 export type Contact$messagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -5934,6 +6522,30 @@ export type Contact$workflowRunsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.WorkflowRunScalarFieldEnum | Prisma.WorkflowRunScalarFieldEnum[]
+}
+
+/**
+ * Contact.sequenceEnrollments
+ */
+export type Contact$sequenceEnrollmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SequenceEnrollment
+   */
+  select?: Prisma.SequenceEnrollmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SequenceEnrollment
+   */
+  omit?: Prisma.SequenceEnrollmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SequenceEnrollmentInclude<ExtArgs> | null
+  where?: Prisma.SequenceEnrollmentWhereInput
+  orderBy?: Prisma.SequenceEnrollmentOrderByWithRelationInput | Prisma.SequenceEnrollmentOrderByWithRelationInput[]
+  cursor?: Prisma.SequenceEnrollmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SequenceEnrollmentScalarFieldEnum | Prisma.SequenceEnrollmentScalarFieldEnum[]
 }
 
 /**

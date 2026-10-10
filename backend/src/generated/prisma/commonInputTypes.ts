@@ -690,6 +690,23 @@ export type EnumWorkflowRunStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumWorkflowRunStatusFilter<$PrismaModel>
 }
 
+export type EnumSequenceEnrollmentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.SequenceEnrollmentStatus | Prisma.EnumSequenceEnrollmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SequenceEnrollmentStatus[] | Prisma.ListEnumSequenceEnrollmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SequenceEnrollmentStatus[] | Prisma.ListEnumSequenceEnrollmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSequenceEnrollmentStatusFilter<$PrismaModel> | $Enums.SequenceEnrollmentStatus
+}
+
+export type EnumSequenceEnrollmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SequenceEnrollmentStatus | Prisma.EnumSequenceEnrollmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SequenceEnrollmentStatus[] | Prisma.ListEnumSequenceEnrollmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SequenceEnrollmentStatus[] | Prisma.ListEnumSequenceEnrollmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSequenceEnrollmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.SequenceEnrollmentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSequenceEnrollmentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSequenceEnrollmentStatusFilter<$PrismaModel>
+}
+
 export type EnumCampaignKindFilter<$PrismaModel = never> = {
   equals?: $Enums.CampaignKind | Prisma.EnumCampaignKindFieldRefInput<$PrismaModel>
   in?: $Enums.CampaignKind[] | Prisma.ListEnumCampaignKindFieldRefInput<$PrismaModel>
@@ -1553,6 +1570,23 @@ export type NestedEnumWorkflowRunStatusWithAggregatesFilter<$PrismaModel = never
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumWorkflowRunStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumWorkflowRunStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumSequenceEnrollmentStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.SequenceEnrollmentStatus | Prisma.EnumSequenceEnrollmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SequenceEnrollmentStatus[] | Prisma.ListEnumSequenceEnrollmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SequenceEnrollmentStatus[] | Prisma.ListEnumSequenceEnrollmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSequenceEnrollmentStatusFilter<$PrismaModel> | $Enums.SequenceEnrollmentStatus
+}
+
+export type NestedEnumSequenceEnrollmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.SequenceEnrollmentStatus | Prisma.EnumSequenceEnrollmentStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.SequenceEnrollmentStatus[] | Prisma.ListEnumSequenceEnrollmentStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.SequenceEnrollmentStatus[] | Prisma.ListEnumSequenceEnrollmentStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumSequenceEnrollmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.SequenceEnrollmentStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumSequenceEnrollmentStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumSequenceEnrollmentStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumCampaignKindFilter<$PrismaModel = never> = {
