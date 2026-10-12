@@ -63,6 +63,10 @@ describe("global typography", () => {
     expect(stylesheet).toMatch(/\.contact-data-table tbody td\s*\{[\s\S]*?white-space:\s*nowrap;/);
   });
 
+  it("keeps Contact Hub table rows compact", () => {
+    expect(stylesheet).toMatch(/\.contact-data-table tbody tr\s*\{\s*height:\s*36px;/);
+  });
+
   it("uses paragraph typography throughout Contact Hub filters", () => {
     expect(stylesheet).toMatch(/\.contact-filter-toolbar button,[\s\S]*?font-size:\s*14px;/);
     expect(stylesheet).toMatch(/\.contact-filter-toolbar button,[\s\S]*?font-weight:\s*400;/);

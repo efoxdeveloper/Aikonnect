@@ -353,7 +353,7 @@ describe("ContactHub", () => {
     const totalUsers = await screen.findByText(/Total Users:/);
     const table = screen.getByRole("table");
     expect(screen.getAllByTestId("contact-whatsapp-icon").length).toBeGreaterThan(0);
-    expect(table.querySelector("tbody tr:not([data-testid='contact-load-more-row'])")).toHaveClass("h-12");
+    expect(table.querySelector("tbody tr:not([data-testid='contact-load-more-row'])")).toHaveClass("h-9");
 
     expect(screen.getByTestId("contact-page")).toHaveClass(
       "h-full",

@@ -194,7 +194,7 @@ p {
   letter-spacing: .04em;
   text-transform: uppercase;
 }
-.contact-data-table tbody tr { height: 48px; }
+.contact-data-table tbody tr { height: 36px; }
 .contact-data-table tbody td { color: #303733; }
 .campaign-data-table thead { height: 46px; background-color: var(--sidebar-rail-background) !important; }
 .campaign-data-table thead th { height: 46px; vertical-align: middle; border-bottom: 1px solid var(--border-soft); }

@@ -202,24 +202,24 @@ const skeletonWidths: Record<Column, string> = {
 
 function ContactTableSkeletonRows({ columns }: { columns: Column[] }) {
   return Array.from({ length: 8 }, (_, index) => (
-    <tr key={index} data-testid="contact-row-skeleton" className="h-12 border-b">
-      <td className="px-4 py-2"><Skeleton className="size-4 rounded" /></td>
-      {columns.map((column) => <td key={column} className="px-3 py-2"><Skeleton className={cn(column === "Tags" ? "h-6" : "h-4", skeletonWidths[column])} /></td>)}
+    <tr key={index} data-testid="contact-row-skeleton" className="h-9 border-b">
+      <td className="px-4 py-1"><Skeleton className="size-4 rounded" /></td>
+      {columns.map((column) => <td key={column} className="px-3 py-1"><Skeleton className={cn(column === "Tags" ? "h-5" : "h-4", skeletonWidths[column])} /></td>)}
       <td><Skeleton className="size-5 rounded-full" /></td>
     </tr>
   ));
 }
 
 function ContactDataCell({ column, contact }: { column: Column; contact: Contact }) {
-  if (column === "Contact Name") return <td className="max-w-[210px] px-3 py-2"><span className="truncate font-medium text-[#252b28] transition-colors group-hover:text-blue-600 group-hover:underline group-focus-visible:text-blue-600 group-focus-visible:underline">{contact.name}</span></td>;
-  if (column === "Phone Number") return <td className="px-3 py-2">{formatPhoneForTable(contact.phone)}</td>;
-  if (column === "Email ID") return <td className="px-3 py-2">{contact.email}</td>;
-  if (column === "Created On") return <td className="px-3 py-2">{contact.createdOn}</td>;
-  if (column === "Source") return <td className="px-3 py-2">{contact.source}</td>;
+  if (column === "Contact Name") return <td className="max-w-[210px] px-3 py-1"><span className="truncate font-medium text-[#252b28] transition-colors group-hover:text-blue-600 group-hover:underline group-focus-visible:text-blue-600 group-focus-visible:underline">{contact.name}</span></td>;
+  if (column === "Phone Number") return <td className="px-3 py-1">{formatPhoneForTable(contact.phone)}</td>;
+  if (column === "Email ID") return <td className="px-3 py-1">{contact.email}</td>;
+  if (column === "Created On") return <td className="px-3 py-1">{contact.createdOn}</td>;
+  if (column === "Source") return <td className="px-3 py-1">{contact.source}</td>;
   return (
-    <td className="px-3 py-2">
+    <td className="px-3 py-1">
       {contact.tags.length
-        ? contact.tags.map((item) => <span key={item} className="mr-1 inline-flex rounded-full border border-[#d9ccff] bg-[var(--premium-soft)] px-[9px] py-1 text-[12px] font-medium text-[var(--premium)]">{item}</span>)
+        ? contact.tags.map((item) => <span key={item} className="mr-1 inline-flex rounded-full border border-[#d9ccff] bg-[var(--premium-soft)] px-[9px] py-0.5 text-[12px] font-medium text-[var(--premium)]">{item}</span>)
         : "-"}
     </td>
   );
@@ -1381,9 +1381,9 @@ export function ContactHub() {
                     tabIndex={0}
                     onClick={() => navigate(`/contacts/${contact.id}`)}
                     onKeyDown={(event) => { if (event.key === "Enter") navigate(`/contacts/${contact.id}`); }}
-                    className="group h-12 cursor-pointer border-b border-[var(--border-soft)] outline-none hover:bg-[var(--table-hover)] focus-visible:bg-[var(--table-selected)]"
+                    className="group h-9 cursor-pointer border-b border-[var(--border-soft)] outline-none hover:bg-[var(--table-hover)] focus-visible:bg-[var(--table-selected)]"
                   >
-                    <td className="px-4 py-2" onClick={(event) => event.stopPropagation()} onKeyDown={(event) => event.stopPropagation()}>
+                    <td className="px-4 py-1" onClick={(event) => event.stopPropagation()} onKeyDown={(event) => event.stopPropagation()}>
                       <input
                         type="checkbox"
                         aria-label={`Select ${contact.name}`}
@@ -1393,7 +1393,7 @@ export function ContactHub() {
                       />
                     </td>
                     {orderedVisibleColumns.map((column) => <ContactDataCell key={column} column={column} contact={contact} />)}
-                    <td className="px-2 py-2">
+                    <td className="px-2 py-1">
                       <button
                         type="button"
                         aria-label={`Open conversation with ${contact.name}`}
