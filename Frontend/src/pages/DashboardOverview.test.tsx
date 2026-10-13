@@ -29,7 +29,7 @@ function renderDashboard(permissions?: string[]) {
 
 function responseFor(path: string) {
   if (path.endsWith("/setup")) return setup;
-  if (path.endsWith("/whatsapp/status")) return { wabaId: "waba-1", name: "Efox Technologies", status: "ACTIVE", accountReviewStatus: "APPROVED", businessVerificationStatus: "VERIFIED", checkedAt: null };
+  if (path.endsWith("/whatsapp/status")) return { wabaId: "waba-1", name: "Efox Technologies", status: "ACTIVE", accountReviewStatus: "APPROVED", businessVerificationStatus: "verified", checkedAt: null };
   if (path.includes("/usage?")) return { summary: { outgoingMessages: 100, deliveredMessages: 80, readMessages: 50, failedMessages: 2 }, daily: [{ date: "2026-10-01", outgoing: 40, delivered: 30 }, { date: "2026-10-02", outgoing: 60, delivered: 50 }] };
   if (path.endsWith("/wallet/welcome-bonus")) return null;
   if (path.endsWith("/wallet")) return { currency: "INR", balance: "842.50", availableBalance: "700.00", status: "ACTIVE" };
@@ -62,6 +62,7 @@ describe("DashboardOverview", () => {
     expect(accountHealth.getByText("WABA review")).toBeInTheDocument();
     expect(accountHealth.getByText("Meta account status")).toBeInTheDocument();
     expect(accountHealth.getByText("Business verification")).toBeInTheDocument();
+    expect(await accountHealth.findByText("Verified")).toHaveAttribute("data-tone", "green");
     expect(accountHealth.queryByRole("button", { name: "About the WhatsApp connection bonus" })).not.toBeInTheDocument();
     expect(screen.getByRole("img", { name: "Message activity for 2 days" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /New Campaign/ })).toHaveAttribute("href", "/campaigns");

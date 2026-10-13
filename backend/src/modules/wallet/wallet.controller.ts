@@ -5,9 +5,29 @@ import { streamWalletUpdates } from "../../realtime/wallet.js";
 import { prisma } from "../../database/prisma.js";
 import { credit, debit, getBillingSettings, updateBillingSettings, refundReservation, setWalletStatus } from "./wallet.service.js";
 import type { BillingSettingsInput, WalletCreditInput, WalletDebitInput, WalletRefundInput } from "./wallet.schemas.js";
+import * as topups from "./wallet-topups.service.js";
 
 export async function get(request: Request, response: Response) {
   response.status(200).json({ success: true, data: await service.getWallet(request.params.workspaceId as string) });
+}
+
+export async function createTopup(request: Request, response: Response) {
+  const auth = request.auth;
+  if (!auth) throw new Error("Authentication context is missing");
+  const result = await topups.createWalletTopup({ workspaceId: request.params.workspaceId as string, userId: auth.userId, email: auth.email, ...(request.body as { amount: string; idempotencyKey: string }) });
+  response.status(201).json({ success: true, data: result });
+}
+
+export async function getTopup(request: Request, response: Response) {
+  response.status(200).json({ success: true, data: await topups.getWalletTopup(request.params.workspaceId as string, request.params.topupId as string) });
+}
+
+export async function requeryTopup(request: Request, response: Response) {
+  response.status(200).json({ success: true, data: await topups.requeryWalletTopup(request.params.workspaceId as string, request.params.topupId as string) });
+}
+
+export async function mockSuccessTopup(request: Request, response: Response) {
+  response.status(200).json({ success: true, data: await topups.simulateMockWalletTopup(request.params.workspaceId as string, request.params.topupId as string) });
 }
 
 export function events(request: Request, response: Response) {

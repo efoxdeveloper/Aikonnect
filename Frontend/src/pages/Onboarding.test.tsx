@@ -130,6 +130,8 @@ describe("Onboarding", () => {
     renderOnboarding({ ...baseOnboarding, onboardingStep: 3, data: { ...baseOnboarding.data, basicCompleted: true, industry: "technology", industrySubcategory: "B2B services" } });
     expect(await screen.findByRole("heading", { name: "Looking to integrate with a software tool?" })).toBeInTheDocument();
     expect(screen.getByText("Custom Integration")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Marento APIs & Webhooks" })).toBeInTheDocument();
+    expect(screen.queryByText("Interakt APIs & Webhooks")).not.toBeInTheDocument();
     expect(screen.getByText("Popular Tools")).toBeInTheDocument();
     expect(screen.getByText("Payment Provider")).toBeInTheDocument();
     const shopify = screen.getByRole("button", { name: "Shopify" });

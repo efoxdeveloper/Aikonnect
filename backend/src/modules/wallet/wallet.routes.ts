@@ -4,7 +4,7 @@ import { validateBody, validateParams, validateQuery } from "../../middleware/va
 import { requireWorkspacePermission } from "../../middleware/workspace-access.js";
 import { PERMISSIONS } from "../workspaces/permissions.js";
 import * as controller from "./wallet.controller.js";
-import { walletLedgerQuerySchema, walletParamsSchema, billingSettingsSchema } from "./wallet.schemas.js";
+import { walletLedgerQuerySchema, walletParamsSchema, walletTopupParamsSchema, walletTopupSchema, billingSettingsSchema } from "./wallet.schemas.js";
 
 export const walletRouter = Router({ mergeParams: true });
 walletRouter.get("/", requireWorkspacePermission(PERMISSIONS.BILLING_READ), validateParams(walletParamsSchema), asyncHandler(controller.get));
@@ -14,3 +14,7 @@ walletRouter.post("/welcome-bonus/celebrated", requireWorkspacePermission(PERMIS
 walletRouter.get("/ledger", requireWorkspacePermission(PERMISSIONS.BILLING_READ), validateParams(walletParamsSchema), validateQuery(walletLedgerQuerySchema), asyncHandler(controller.ledger));
 walletRouter.get("/settings", requireWorkspacePermission(PERMISSIONS.BILLING_READ), validateParams(walletParamsSchema), asyncHandler(controller.settings));
 walletRouter.patch("/settings", requireWorkspacePermission(PERMISSIONS.BILLING_MANAGE), validateParams(walletParamsSchema), validateBody(billingSettingsSchema), asyncHandler(controller.adminUpdateSettings));
+walletRouter.post("/topups", requireWorkspacePermission(PERMISSIONS.BILLING_MANAGE), validateParams(walletParamsSchema), validateBody(walletTopupSchema), asyncHandler(controller.createTopup));
+walletRouter.get("/topups/:topupId", requireWorkspacePermission(PERMISSIONS.BILLING_READ), validateParams(walletTopupParamsSchema), asyncHandler(controller.getTopup));
+walletRouter.post("/topups/:topupId/requery", requireWorkspacePermission(PERMISSIONS.BILLING_READ), validateParams(walletTopupParamsSchema), asyncHandler(controller.requeryTopup));
+walletRouter.post("/topups/:topupId/mock-success", requireWorkspacePermission(PERMISSIONS.BILLING_MANAGE), validateParams(walletTopupParamsSchema), asyncHandler(controller.mockSuccessTopup));

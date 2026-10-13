@@ -50,3 +50,12 @@ test("allows expired workspaces to submit plan requests", async (t) => {
     request("POST", "/api/v1/workspaces/workspace-1/subscriptions/requests"), {} as any, next,
   );
 });
+
+test("allows expired workspaces to reconcile an existing wallet payment", async (t) => {
+  stub(t, prisma.workspaceMember, "findUnique", async () => ({ ...member, role: { permissions: [{ permission: { key: "billing.read" } }] } }));
+  stub(t, prisma.workspaceSubscription, "findFirst", async () => { assert.fail("payment reconciliation must remain available for pending recharges"); });
+  const next = (error?: unknown) => { assert.equal(error, undefined); };
+  await requireWorkspacePermission("billing.read")(
+    request("POST", "/api/v1/workspaces/workspace-1/wallet/topups/01234567-89ab-cdef-0123-456789abcdef/requery"), {} as any, next,
+  );
+});

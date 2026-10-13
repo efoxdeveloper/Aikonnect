@@ -121,9 +121,17 @@ describe("AppHeader", () => {
     );
 
     const actions = screen.getByTestId("header-utility-actions");
+    const apiDocsLink = screen.getByRole("link", { name: "API Docs" });
     const guideButton = screen.getByRole("button", { name: "Open setup guide" });
     const workspaceButton = screen.getByRole("button", { name: "Switch workspace: Acme Support" });
     expect(actions).toContainElement(guideButton);
+    expect(apiDocsLink).toHaveAttribute("href", "https://documenter.getpostman.com/view/58653027/2sBYHNW3LA");
+    expect(apiDocsLink).toHaveAttribute("target", "_blank");
+    expect(apiDocsLink).toHaveClass("text-[#1769aa]");
+    expect(apiDocsLink).toHaveClass("underline");
+    expect(apiDocsLink.querySelector("svg")).toBeInTheDocument();
+    expect(apiDocsLink).not.toHaveClass("border", "bg-white");
+    expect(apiDocsLink.compareDocumentPosition(guideButton) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(guideButton.compareDocumentPosition(workspaceButton) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(guideButton.querySelector("svg path")).toBeInTheDocument();
 

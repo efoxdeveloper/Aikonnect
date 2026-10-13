@@ -29,6 +29,7 @@
     "deepmerge-ts": "^8.0.0"
   },
   "dependencies": {
+    "@paypilot/ntt": "file:../ntt",
     "@prisma/adapter-pg": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "@types/ws": "^8.18.1",

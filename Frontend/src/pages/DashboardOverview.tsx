@@ -31,7 +31,11 @@ type Tone = "green" | "blue" | "purple" | "amber" | "red" | "neutral";
 const numbers = new Intl.NumberFormat("en-IN");
 const count = (value: number | undefined) => value === undefined ? "—" : numbers.format(value);
 const label = (value?: string | null) => value ? value.toLowerCase().replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase()) : "Unavailable";
-const statusTone = (value?: string | null): Tone => !value ? "neutral" : ["CONNECTED", "APPROVED", "VERIFIED", "ACTIVE"].includes(value) ? "green" : ["ERROR", "REJECTED", "DISABLED"].includes(value) ? "red" : "amber";
+const statusTone = (value?: string | null): Tone => {
+  if (!value) return "neutral";
+  const normalizedValue = value.toUpperCase();
+  return ["CONNECTED", "APPROVED", "VERIFIED", "ACTIVE"].includes(normalizedValue) ? "green" : ["ERROR", "REJECTED", "DISABLED"].includes(normalizedValue) ? "red" : "amber";
+};
 const resourceText = (resource: Resource) => resource.restricted ? "Access restricted" : resource.loading ? "Loading…" : resource.error ? "Unavailable" : "";
 
 export function dashboardDateRange(preset: Exclude<RangeKey, "custom">, now = new Date()): DateRange {

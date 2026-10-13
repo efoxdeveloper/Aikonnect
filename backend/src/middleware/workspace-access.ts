@@ -9,6 +9,10 @@ function isPlanRequestSubmission(request: Parameters<RequestHandler>[0]) {
   return request.method === "POST" && /\/subscriptions\/requests\/?$/.test((request.originalUrl ?? "").split("?")[0] ?? "");
 }
 
+function isWalletPaymentRequery(request: Parameters<RequestHandler>[0]) {
+  return request.method === "POST" && /\/wallet\/topups\/[0-9a-f-]+\/requery\/?$/i.test((request.originalUrl ?? "").split("?")[0] ?? "");
+}
+
 export function requireWorkspacePermission(permission: PermissionKey): RequestHandler {
   return requireAnyWorkspacePermission(permission);
 }
@@ -49,7 +53,7 @@ export function requireAnyWorkspacePermission(...requiredPermissions: Permission
         permissions,
       };
       const isReadRequest = ["GET", "HEAD", "OPTIONS"].includes(request.method ?? "GET");
-      if (!isReadRequest && !isPlanRequestSubmission(request)) await assertWorkspaceWritable(workspaceId);
+      if (!isReadRequest && !isPlanRequestSubmission(request) && !isWalletPaymentRequery(request)) await assertWorkspaceWritable(workspaceId);
       next();
     } catch (error) {
       next(error);

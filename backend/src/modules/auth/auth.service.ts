@@ -275,6 +275,20 @@ export async function refreshSession(refreshToken: string | undefined) {
   return { accessToken, refreshToken: nextRefreshToken, refreshExpiresAt: session.expiresAt };
 }
 
+export async function hasActiveRefreshSession(refreshToken: string | undefined): Promise<boolean> {
+  if (!refreshToken) return false;
+  const session = await prisma.session.findFirst({
+    where: {
+      refreshTokenHash: hashToken(refreshToken),
+      revokedAt: null,
+      expiresAt: { gt: new Date() },
+      user: { status: "ACTIVE" },
+    },
+    select: { id: true },
+  });
+  return Boolean(session);
+}
+
 export async function logout(refreshToken: string | undefined): Promise<void> {
   if (!refreshToken) return;
   await prisma.session.updateMany({

@@ -24,7 +24,7 @@ export * as $Enums from './enums.js'
 export * from "./enums.js"
 /**
  * ## Prisma Client
- * 
+ *
  * Type-safe database client for TypeScript
  * @example
  * ```
@@ -251,6 +251,11 @@ export type Session = Prisma.SessionModel
  * 
  */
 export type Wallet = Prisma.WalletModel
+/**
+ * Model WalletTopup
+ * 
+ */
+export type WalletTopup = Prisma.WalletTopupModel
 /**
  * Model WalletLedgerEntry
  * 

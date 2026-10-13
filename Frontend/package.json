@@ -10,6 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@paypilot/ntt": "file:../ntt",
     "@animateicons/react": "^0.4.3",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",

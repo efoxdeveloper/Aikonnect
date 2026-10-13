@@ -98,6 +98,7 @@ describe("ApiWebhooks", () => {
     ).toBeDisabled();
     expect(screen.queryByTestId("api-docs-section")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("tab", { name: "API Docs" }));
+    expect(screen.getByRole("link", { name: "Open API documentation" })).toHaveAttribute("href", "https://documenter.getpostman.com/view/58653027/2sBYHNW3LA");
     expect(screen.getByTestId("api-docs-section")).toHaveTextContent(
       "Authorization: Basic sk_live_...",
     );

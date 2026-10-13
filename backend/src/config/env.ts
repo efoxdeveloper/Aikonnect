@@ -55,6 +55,22 @@ const envSchema = z.object({
     GROQ_MODEL: z.string().min(1).default("openai/gpt-oss-20b"),
     WALLET_CURRENCY: z.string().regex(/^[A-Z]{3}$/).default("INR"),
     WALLET_OUTBOUND_MESSAGE_RATE_MINOR_UNITS: z.coerce.bigint().nonnegative().default(0n),
+  NTT_MODE: z.enum(["mock", "uat", "live"]).optional(),
+  NTT_MERCHANT_ID: z.string().min(1).optional(),
+  NTT_USER_ID: z.string().min(1).optional(),
+  NTT_TRANSACTION_PASSWORD: z.string().min(1).optional(),
+  NTT_API_SECRET_KEY: z.string().min(1).optional(),
+  NTT_REQUEST_ENCRYPTION_KEY: z.string().min(1).optional(),
+  NTT_RESPONSE_ENCRYPTION_KEY: z.string().min(1).optional(),
+  NTT_REQUEST_HASH_KEY: z.string().min(1).optional(),
+  NTT_RESPONSE_HASH_KEY: z.string().min(1).optional(),
+  NTT_CALLBACK_URL: z.url().optional(),
+  NTT_FRONTEND_RETURN_URL: z.url().optional(),
+  NTT_BASE_URL: z.url().optional(),
+  NTT_AUTH_PATH: z.string().optional(),
+  NTT_STATUS_PATH: z.string().optional(),
+  NTT_PRODUCT_ID: z.string().min(1).optional(),
+  NTT_TIMEOUT_MS: z.coerce.number().int().min(1000).max(120000).default(15000),
   });
 
 const parsedEnv = envSchema.safeParse(process.env);

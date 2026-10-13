@@ -73,6 +73,12 @@ function googleFailureRedirect(code: string): string {
 }
 
 export async function googleStart(request: Request, response: Response) {
+  if (await authService.hasActiveRefreshSession(request.cookies[env.AUTH_COOKIE_NAME] as string | undefined)) {
+    request.log.info({ oauthProvider: "google", oauthStage: "start_blocked_active_session" }, "Google OAuth blocked for an authenticated session");
+    response.redirect(new URL("/dashboard", env.APP_URL).toString());
+    return;
+  }
+
   const state: GoogleOAuthState = {
     state: generateSecureToken(32),
     nonce: generateSecureToken(32),
@@ -128,6 +134,11 @@ export async function googleCallback(request: Request, response: Response) {
   try {
     if (!storedState || !returnedState || !stateMatches) {
       throw new AppError(401, "Google sign-in could not be verified", "GOOGLE_STATE_INVALID");
+    }
+    if (await authService.hasActiveRefreshSession(request.cookies[env.AUTH_COOKIE_NAME] as string | undefined)) {
+      request.log.info({ oauthProvider: "google", oauthStage: "callback_blocked_active_session" }, "Google OAuth callback blocked for an authenticated session");
+      response.redirect(new URL("/dashboard", env.APP_URL).toString());
+      return;
     }
     if (queryValue(request, "error")) {
       response.redirect(googleFailureRedirect("GOOGLE_SIGNIN_CANCELLED"));

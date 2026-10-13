@@ -93,6 +93,7 @@ export const ModelName = {
   WorkspaceInvitation: 'WorkspaceInvitation',
   Session: 'Session',
   Wallet: 'Wallet',
+  WalletTopup: 'WalletTopup',
   WalletLedgerEntry: 'WalletLedgerEntry',
   WalletReservation: 'WalletReservation',
   WorkspaceBillingSettings: 'WorkspaceBillingSettings',
@@ -942,6 +943,31 @@ export const WalletScalarFieldEnum = {
 export type WalletScalarFieldEnum = (typeof WalletScalarFieldEnum)[keyof typeof WalletScalarFieldEnum]
 
 
+export const WalletTopupScalarFieldEnum = {
+  id: 'id',
+  walletId: 'walletId',
+  tenantId: 'tenantId',
+  workspaceId: 'workspaceId',
+  createdById: 'createdById',
+  idempotencyKey: 'idempotencyKey',
+  paymentId: 'paymentId',
+  amount: 'amount',
+  currency: 'currency',
+  status: 'status',
+  transactionDate: 'transactionDate',
+  gatewayRequestId: 'gatewayRequestId',
+  providerPaymentId: 'providerPaymentId',
+  providerTransactionId: 'providerTransactionId',
+  checkout: 'checkout',
+  failureCode: 'failureCode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type WalletTopupScalarFieldEnum = (typeof WalletTopupScalarFieldEnum)[keyof typeof WalletTopupScalarFieldEnum]
+
+
 export const WalletLedgerEntryScalarFieldEnum = {
   id: 'id',
   walletId: 'walletId',
@@ -1153,6 +1179,14 @@ export const JsonNullValueInput = {
 } as const
 
 export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {

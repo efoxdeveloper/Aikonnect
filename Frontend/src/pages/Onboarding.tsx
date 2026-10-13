@@ -82,7 +82,7 @@ const objectives: Array<[Objective, string, string]> = [
 const completionMessages = ["Preparing your workspace", "Getting things ready", "Setting up your Marento experience", "Almost there"];
 type IntegrationOption = { value: Integration; label: string; icon: SimpleIcon | null; group: "custom" | "popular" | "payment" };
 const integrations: IntegrationOption[] = [
-  { value: "apis-webhooks", label: "Interakt APIs & Webhooks", icon: null, group: "custom" },
+  { value: "apis-webhooks", label: "Marento APIs & Webhooks", icon: null, group: "custom" },
   { value: "shopify", label: "Shopify", icon: siShopify, group: "popular" },
   { value: "google-sheets", label: "Google Sheets", icon: siGooglesheets, group: "popular" },
   { value: "facebook-lead-form", label: "Facebook Lead Form", icon: siFacebook, group: "popular" },

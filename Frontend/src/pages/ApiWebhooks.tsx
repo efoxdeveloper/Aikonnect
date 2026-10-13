@@ -41,6 +41,7 @@ type ApiKeyListResponse = { items: ApiKey[] };
 type WebhookCreateResponse = { webhook: WebhookEndpoint; secret: string };
 type WebhookListResponse = { items: WebhookEndpoint[] };
 type ActiveTab = "api-keys" | "webhooks" | "docs";
+const API_DOCUMENTATION_URL = "https://documenter.getpostman.com/view/58653027/2sBYHNW3LA";
 
 const basePath = "/api/v1/public";
 const defaultWebhookEvents = [
@@ -857,6 +858,7 @@ export function ApiWebhooks() {
                 </div>
               </div>
               <div className="space-y-4 p-5 sm:p-6">
+                <a href={API_DOCUMENTATION_URL} target="_blank" rel="noreferrer" className="inline-flex h-9 items-center gap-2 rounded-md bg-[var(--brand)] px-3 text-xs font-medium text-white hover:bg-[var(--brand-hover)]"><BookOpen size={14} aria-hidden="true" />Open API documentation</a>
                 <ApiDocumentation />
                 <div>
                   <p className="mb-1.5 text-xs font-medium text-[var(--text-primary)]">

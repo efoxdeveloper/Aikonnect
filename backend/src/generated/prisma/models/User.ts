@@ -336,6 +336,7 @@ export type UserWhereInput = {
   apiKeysCreated?: Prisma.PublicApiKeyListRelationFilter
   webhookEndpointsCreated?: Prisma.WebhookEndpointListRelationFilter
   walletLedgerEntries?: Prisma.WalletLedgerEntryListRelationFilter
+  walletTopupsCreated?: Prisma.WalletTopupListRelationFilter
   platformAuditLogs?: Prisma.PlatformAuditLogListRelationFilter
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardListRelationFilter
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardListRelationFilter
@@ -398,6 +399,7 @@ export type UserOrderByWithRelationInput = {
   apiKeysCreated?: Prisma.PublicApiKeyOrderByRelationAggregateInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointOrderByRelationAggregateInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryOrderByRelationAggregateInput
+  walletTopupsCreated?: Prisma.WalletTopupOrderByRelationAggregateInput
   platformAuditLogs?: Prisma.PlatformAuditLogOrderByRelationAggregateInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardOrderByRelationAggregateInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardOrderByRelationAggregateInput
@@ -463,6 +465,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   apiKeysCreated?: Prisma.PublicApiKeyListRelationFilter
   webhookEndpointsCreated?: Prisma.WebhookEndpointListRelationFilter
   walletLedgerEntries?: Prisma.WalletLedgerEntryListRelationFilter
+  walletTopupsCreated?: Prisma.WalletTopupListRelationFilter
   platformAuditLogs?: Prisma.PlatformAuditLogListRelationFilter
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardListRelationFilter
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardListRelationFilter
@@ -577,6 +580,7 @@ export type UserCreateInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -639,6 +643,7 @@ export type UserUncheckedCreateInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -701,6 +706,7 @@ export type UserUpdateInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -763,6 +769,7 @@ export type UserUncheckedUpdateInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -1462,6 +1469,20 @@ export type UserUpdateOneRequiredWithoutSessionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSessionsInput, Prisma.UserUpdateWithoutSessionsInput>, Prisma.UserUncheckedUpdateWithoutSessionsInput>
 }
 
+export type UserCreateNestedOneWithoutWalletTopupsCreatedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWalletTopupsCreatedInput, Prisma.UserUncheckedCreateWithoutWalletTopupsCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWalletTopupsCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutWalletTopupsCreatedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWalletTopupsCreatedInput, Prisma.UserUncheckedCreateWithoutWalletTopupsCreatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWalletTopupsCreatedInput
+  upsert?: Prisma.UserUpsertWithoutWalletTopupsCreatedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWalletTopupsCreatedInput, Prisma.UserUpdateWithoutWalletTopupsCreatedInput>, Prisma.UserUncheckedUpdateWithoutWalletTopupsCreatedInput>
+}
+
 export type UserCreateNestedOneWithoutWalletLedgerEntriesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutWalletLedgerEntriesInput, Prisma.UserUncheckedCreateWithoutWalletLedgerEntriesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutWalletLedgerEntriesInput
@@ -1604,6 +1625,7 @@ export type UserCreateWithoutOauthAccountsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -1665,6 +1687,7 @@ export type UserUncheckedCreateWithoutOauthAccountsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -1742,6 +1765,7 @@ export type UserUpdateWithoutOauthAccountsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -1803,6 +1827,7 @@ export type UserUncheckedUpdateWithoutOauthAccountsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -1864,6 +1889,7 @@ export type UserCreateWithoutOwnedTenantsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -1925,6 +1951,7 @@ export type UserUncheckedCreateWithoutOwnedTenantsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -2002,6 +2029,7 @@ export type UserUpdateWithoutOwnedTenantsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -2063,6 +2091,7 @@ export type UserUncheckedUpdateWithoutOwnedTenantsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -2124,6 +2153,7 @@ export type UserCreateWithoutOwnedWorkspacesInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -2185,6 +2215,7 @@ export type UserUncheckedCreateWithoutOwnedWorkspacesInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -2262,6 +2293,7 @@ export type UserUpdateWithoutOwnedWorkspacesInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -2323,6 +2355,7 @@ export type UserUncheckedUpdateWithoutOwnedWorkspacesInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -2384,6 +2417,7 @@ export type UserCreateWithoutTemplatesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -2445,6 +2479,7 @@ export type UserUncheckedCreateWithoutTemplatesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -2511,6 +2546,7 @@ export type UserCreateWithoutTemplatesUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -2572,6 +2608,7 @@ export type UserUncheckedCreateWithoutTemplatesUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -2638,6 +2675,7 @@ export type UserCreateWithoutTemplatesDeletedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -2699,6 +2737,7 @@ export type UserUncheckedCreateWithoutTemplatesDeletedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -2776,6 +2815,7 @@ export type UserUpdateWithoutTemplatesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -2837,6 +2877,7 @@ export type UserUncheckedUpdateWithoutTemplatesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -2909,6 +2950,7 @@ export type UserUpdateWithoutTemplatesUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -2970,6 +3012,7 @@ export type UserUncheckedUpdateWithoutTemplatesUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -3042,6 +3085,7 @@ export type UserUpdateWithoutTemplatesDeletedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -3103,6 +3147,7 @@ export type UserUncheckedUpdateWithoutTemplatesDeletedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -3164,6 +3209,7 @@ export type UserCreateWithoutApiKeysCreatedInput = {
   campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -3225,6 +3271,7 @@ export type UserUncheckedCreateWithoutApiKeysCreatedInput = {
   campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -3302,6 +3349,7 @@ export type UserUpdateWithoutApiKeysCreatedInput = {
   campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -3363,6 +3411,7 @@ export type UserUncheckedUpdateWithoutApiKeysCreatedInput = {
   campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -3424,6 +3473,7 @@ export type UserCreateWithoutWebhookEndpointsCreatedInput = {
   campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -3485,6 +3535,7 @@ export type UserUncheckedCreateWithoutWebhookEndpointsCreatedInput = {
   campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -3562,6 +3613,7 @@ export type UserUpdateWithoutWebhookEndpointsCreatedInput = {
   campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -3623,6 +3675,7 @@ export type UserUncheckedUpdateWithoutWebhookEndpointsCreatedInput = {
   campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -3684,6 +3737,7 @@ export type UserCreateWithoutContactsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -3745,6 +3799,7 @@ export type UserUncheckedCreateWithoutContactsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -3811,6 +3866,7 @@ export type UserCreateWithoutContactsOwnedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -3872,6 +3928,7 @@ export type UserUncheckedCreateWithoutContactsOwnedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -3938,6 +3995,7 @@ export type UserCreateWithoutContactsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -3999,6 +4057,7 @@ export type UserUncheckedCreateWithoutContactsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -4065,6 +4124,7 @@ export type UserCreateWithoutContactsDeletedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -4126,6 +4186,7 @@ export type UserUncheckedCreateWithoutContactsDeletedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -4203,6 +4264,7 @@ export type UserUpdateWithoutContactsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -4264,6 +4326,7 @@ export type UserUncheckedUpdateWithoutContactsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -4336,6 +4399,7 @@ export type UserUpdateWithoutContactsOwnedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -4397,6 +4461,7 @@ export type UserUncheckedUpdateWithoutContactsOwnedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -4469,6 +4534,7 @@ export type UserUpdateWithoutContactsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -4530,6 +4596,7 @@ export type UserUncheckedUpdateWithoutContactsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -4602,6 +4669,7 @@ export type UserUpdateWithoutContactsDeletedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -4663,6 +4731,7 @@ export type UserUncheckedUpdateWithoutContactsDeletedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -4724,6 +4793,7 @@ export type UserCreateWithoutContactConsentEventsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -4785,6 +4855,7 @@ export type UserUncheckedCreateWithoutContactConsentEventsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -4862,6 +4933,7 @@ export type UserUpdateWithoutContactConsentEventsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -4923,6 +4995,7 @@ export type UserUncheckedUpdateWithoutContactConsentEventsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -4984,6 +5057,7 @@ export type UserCreateWithoutConversationNotesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -5045,6 +5119,7 @@ export type UserUncheckedCreateWithoutConversationNotesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -5122,6 +5197,7 @@ export type UserUpdateWithoutConversationNotesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -5183,6 +5259,7 @@ export type UserUncheckedUpdateWithoutConversationNotesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -5244,6 +5321,7 @@ export type UserCreateWithoutMessagesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -5305,6 +5383,7 @@ export type UserUncheckedCreateWithoutMessagesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -5382,6 +5461,7 @@ export type UserUpdateWithoutMessagesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -5443,6 +5523,7 @@ export type UserUncheckedUpdateWithoutMessagesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -5505,6 +5586,7 @@ export type UserCreateWithoutWhatsappRateCardsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
   planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
@@ -5566,6 +5648,7 @@ export type UserUncheckedCreateWithoutWhatsappRateCardsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
   planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
@@ -5632,6 +5715,7 @@ export type UserCreateWithoutWhatsappRateCardsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
@@ -5693,6 +5777,7 @@ export type UserUncheckedCreateWithoutWhatsappRateCardsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
@@ -5770,6 +5855,7 @@ export type UserUpdateWithoutWhatsappRateCardsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
   planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
@@ -5831,6 +5917,7 @@ export type UserUncheckedUpdateWithoutWhatsappRateCardsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
   planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
@@ -5903,6 +5990,7 @@ export type UserUpdateWithoutWhatsappRateCardsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
@@ -5964,6 +6052,7 @@ export type UserUncheckedUpdateWithoutWhatsappRateCardsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
@@ -6024,6 +6113,7 @@ export type UserCreateWithoutContactCustomFieldsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -6085,6 +6175,7 @@ export type UserUncheckedCreateWithoutContactCustomFieldsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -6151,6 +6242,7 @@ export type UserCreateWithoutContactCustomFieldsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -6212,6 +6304,7 @@ export type UserUncheckedCreateWithoutContactCustomFieldsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -6289,6 +6382,7 @@ export type UserUpdateWithoutContactCustomFieldsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -6350,6 +6444,7 @@ export type UserUncheckedUpdateWithoutContactCustomFieldsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -6422,6 +6517,7 @@ export type UserUpdateWithoutContactCustomFieldsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -6483,6 +6579,7 @@ export type UserUncheckedUpdateWithoutContactCustomFieldsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -6544,6 +6641,7 @@ export type UserCreateWithoutContactSegmentsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -6605,6 +6703,7 @@ export type UserUncheckedCreateWithoutContactSegmentsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -6671,6 +6770,7 @@ export type UserCreateWithoutContactSegmentsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -6732,6 +6832,7 @@ export type UserUncheckedCreateWithoutContactSegmentsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -6809,6 +6910,7 @@ export type UserUpdateWithoutContactSegmentsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -6870,6 +6972,7 @@ export type UserUncheckedUpdateWithoutContactSegmentsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -6942,6 +7045,7 @@ export type UserUpdateWithoutContactSegmentsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -7003,6 +7107,7 @@ export type UserUncheckedUpdateWithoutContactSegmentsUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -7064,6 +7169,7 @@ export type UserCreateWithoutContactTasksCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -7125,6 +7231,7 @@ export type UserUncheckedCreateWithoutContactTasksCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -7191,6 +7298,7 @@ export type UserCreateWithoutContactTasksUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -7252,6 +7360,7 @@ export type UserUncheckedCreateWithoutContactTasksUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -7329,6 +7438,7 @@ export type UserUpdateWithoutContactTasksCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -7390,6 +7500,7 @@ export type UserUncheckedUpdateWithoutContactTasksCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -7462,6 +7573,7 @@ export type UserUpdateWithoutContactTasksUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -7523,6 +7635,7 @@ export type UserUncheckedUpdateWithoutContactTasksUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -7584,6 +7697,7 @@ export type UserCreateWithoutContactNotesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -7645,6 +7759,7 @@ export type UserUncheckedCreateWithoutContactNotesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -7711,6 +7826,7 @@ export type UserCreateWithoutContactNotesUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -7772,6 +7888,7 @@ export type UserUncheckedCreateWithoutContactNotesUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -7838,6 +7955,7 @@ export type UserCreateWithoutContactNotesDeletedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -7899,6 +8017,7 @@ export type UserUncheckedCreateWithoutContactNotesDeletedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -7976,6 +8095,7 @@ export type UserUpdateWithoutContactNotesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -8037,6 +8157,7 @@ export type UserUncheckedUpdateWithoutContactNotesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -8109,6 +8230,7 @@ export type UserUpdateWithoutContactNotesUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -8170,6 +8292,7 @@ export type UserUncheckedUpdateWithoutContactNotesUpdatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -8242,6 +8365,7 @@ export type UserUpdateWithoutContactNotesDeletedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -8303,6 +8427,7 @@ export type UserUncheckedUpdateWithoutContactNotesDeletedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -8364,6 +8489,7 @@ export type UserCreateWithoutAutomationsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -8425,6 +8551,7 @@ export type UserUncheckedCreateWithoutAutomationsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -8502,6 +8629,7 @@ export type UserUpdateWithoutAutomationsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -8563,6 +8691,7 @@ export type UserUncheckedUpdateWithoutAutomationsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -8624,6 +8753,7 @@ export type UserCreateWithoutWorkflowsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -8685,6 +8815,7 @@ export type UserUncheckedCreateWithoutWorkflowsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -8762,6 +8893,7 @@ export type UserUpdateWithoutWorkflowsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -8823,6 +8955,7 @@ export type UserUncheckedUpdateWithoutWorkflowsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -8884,6 +9017,7 @@ export type UserCreateWithoutSequencesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -8945,6 +9079,7 @@ export type UserUncheckedCreateWithoutSequencesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -9022,6 +9157,7 @@ export type UserUpdateWithoutSequencesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -9083,6 +9219,7 @@ export type UserUncheckedUpdateWithoutSequencesCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -9144,6 +9281,7 @@ export type UserCreateWithoutCampaignsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -9205,6 +9343,7 @@ export type UserUncheckedCreateWithoutCampaignsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -9282,6 +9421,7 @@ export type UserUpdateWithoutCampaignsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -9343,6 +9483,7 @@ export type UserUncheckedUpdateWithoutCampaignsCreatedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -9404,6 +9545,7 @@ export type UserCreateWithoutMembershipsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -9465,6 +9607,7 @@ export type UserUncheckedCreateWithoutMembershipsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -9542,6 +9685,7 @@ export type UserUpdateWithoutMembershipsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -9603,6 +9747,7 @@ export type UserUncheckedUpdateWithoutMembershipsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -9664,6 +9809,7 @@ export type UserCreateWithoutInvitationsSentInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -9725,6 +9871,7 @@ export type UserUncheckedCreateWithoutInvitationsSentInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -9802,6 +9949,7 @@ export type UserUpdateWithoutInvitationsSentInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -9863,6 +10011,7 @@ export type UserUncheckedUpdateWithoutInvitationsSentInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -9924,6 +10073,7 @@ export type UserCreateWithoutSessionsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -9985,6 +10135,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -10062,6 +10213,7 @@ export type UserUpdateWithoutSessionsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -10093,6 +10245,271 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
   ownedTenants?: Prisma.TenantUncheckedUpdateManyWithoutOwnerNestedInput
   memberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
+  invitationsSent?: Prisma.WorkspaceInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  contactsCreated?: Prisma.ContactUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactsOwned?: Prisma.ContactUncheckedUpdateManyWithoutAccountOwnerNestedInput
+  contactsUpdated?: Prisma.ContactUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactsDeleted?: Prisma.ContactUncheckedUpdateManyWithoutDeletedByNestedInput
+  contactTasksCreated?: Prisma.ContactTaskUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactTasksUpdated?: Prisma.ContactTaskUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactNotesCreated?: Prisma.ContactNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactNotesUpdated?: Prisma.ContactNoteUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactNotesDeleted?: Prisma.ContactNoteUncheckedUpdateManyWithoutDeletedByNestedInput
+  contactSegmentsCreated?: Prisma.ContactSegmentUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutCreatedByNestedInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldUncheckedUpdateManyWithoutUpdatedByNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedUpdateManyWithoutActorUserNestedInput
+  messagesCreated?: Prisma.MessageUncheckedUpdateManyWithoutCreatedByNestedInput
+  conversationNotesCreated?: Prisma.ConversationNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  templatesCreated?: Prisma.TemplateUncheckedUpdateManyWithoutCreatedByNestedInput
+  templatesUpdated?: Prisma.TemplateUncheckedUpdateManyWithoutUpdatedByNestedInput
+  templatesDeleted?: Prisma.TemplateUncheckedUpdateManyWithoutDeletedByNestedInput
+  automationsCreated?: Prisma.AutomationUncheckedUpdateManyWithoutCreatedByNestedInput
+  sequencesCreated?: Prisma.SequenceUncheckedUpdateManyWithoutCreatedByNestedInput
+  workflowsCreated?: Prisma.WorkflowUncheckedUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
+  apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
+  webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
+  platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
+  whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
+  whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedUpdateManyWithoutReviewedByNestedInput
+}
+
+export type UserCreateWithoutWalletTopupsCreatedInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  phone?: string | null
+  status?: $Enums.UserStatus
+  platformRole?: $Enums.PlatformRole
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceCreateNestedManyWithoutOwnerInput
+  ownedTenants?: Prisma.TenantCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.WorkspaceMemberCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountCreateNestedManyWithoutUserInput
+  invitationsSent?: Prisma.WorkspaceInvitationCreateNestedManyWithoutInvitedByInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  contactsCreated?: Prisma.ContactCreateNestedManyWithoutCreatedByInput
+  contactsOwned?: Prisma.ContactCreateNestedManyWithoutAccountOwnerInput
+  contactsUpdated?: Prisma.ContactCreateNestedManyWithoutUpdatedByInput
+  contactsDeleted?: Prisma.ContactCreateNestedManyWithoutDeletedByInput
+  contactTasksCreated?: Prisma.ContactTaskCreateNestedManyWithoutCreatedByInput
+  contactTasksUpdated?: Prisma.ContactTaskCreateNestedManyWithoutUpdatedByInput
+  contactNotesCreated?: Prisma.ContactNoteCreateNestedManyWithoutCreatedByInput
+  contactNotesUpdated?: Prisma.ContactNoteCreateNestedManyWithoutUpdatedByInput
+  contactNotesDeleted?: Prisma.ContactNoteCreateNestedManyWithoutDeletedByInput
+  contactSegmentsCreated?: Prisma.ContactSegmentCreateNestedManyWithoutCreatedByInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentCreateNestedManyWithoutUpdatedByInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldCreateNestedManyWithoutCreatedByInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldCreateNestedManyWithoutUpdatedByInput
+  contactConsentEvents?: Prisma.ContactConsentEventCreateNestedManyWithoutActorUserInput
+  messagesCreated?: Prisma.MessageCreateNestedManyWithoutCreatedByInput
+  conversationNotesCreated?: Prisma.ConversationNoteCreateNestedManyWithoutCreatedByInput
+  templatesCreated?: Prisma.TemplateCreateNestedManyWithoutCreatedByInput
+  templatesUpdated?: Prisma.TemplateCreateNestedManyWithoutUpdatedByInput
+  templatesDeleted?: Prisma.TemplateCreateNestedManyWithoutDeletedByInput
+  automationsCreated?: Prisma.AutomationCreateNestedManyWithoutCreatedByInput
+  sequencesCreated?: Prisma.SequenceCreateNestedManyWithoutCreatedByInput
+  workflowsCreated?: Prisma.WorkflowCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
+  apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
+  webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
+  whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
+  whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestCreateNestedManyWithoutReviewedByInput
+}
+
+export type UserUncheckedCreateWithoutWalletTopupsCreatedInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  firstName: string
+  lastName: string
+  phone?: string | null
+  status?: $Enums.UserStatus
+  platformRole?: $Enums.PlatformRole
+  emailVerifiedAt?: Date | string | null
+  lastLoginAt?: Date | string | null
+  language?: string
+  timezone?: string
+  dateFormat?: string
+  defaultLandingPage?: string
+  notifyProductUpdates?: boolean
+  notifyBillingAlerts?: boolean
+  notifyCampaignAlerts?: boolean
+  notifyWhatsappAlerts?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+  ownedTenants?: Prisma.TenantUncheckedCreateNestedManyWithoutOwnerInput
+  memberships?: Prisma.WorkspaceMemberUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  oauthAccounts?: Prisma.OAuthAccountUncheckedCreateNestedManyWithoutUserInput
+  invitationsSent?: Prisma.WorkspaceInvitationUncheckedCreateNestedManyWithoutInvitedByInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  contactsCreated?: Prisma.ContactUncheckedCreateNestedManyWithoutCreatedByInput
+  contactsOwned?: Prisma.ContactUncheckedCreateNestedManyWithoutAccountOwnerInput
+  contactsUpdated?: Prisma.ContactUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactsDeleted?: Prisma.ContactUncheckedCreateNestedManyWithoutDeletedByInput
+  contactTasksCreated?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutCreatedByInput
+  contactTasksUpdated?: Prisma.ContactTaskUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactNotesCreated?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  contactNotesUpdated?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactNotesDeleted?: Prisma.ContactNoteUncheckedCreateNestedManyWithoutDeletedByInput
+  contactSegmentsCreated?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutCreatedByInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutCreatedByInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldUncheckedCreateNestedManyWithoutUpdatedByInput
+  contactConsentEvents?: Prisma.ContactConsentEventUncheckedCreateNestedManyWithoutActorUserInput
+  messagesCreated?: Prisma.MessageUncheckedCreateNestedManyWithoutCreatedByInput
+  conversationNotesCreated?: Prisma.ConversationNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  templatesCreated?: Prisma.TemplateUncheckedCreateNestedManyWithoutCreatedByInput
+  templatesUpdated?: Prisma.TemplateUncheckedCreateNestedManyWithoutUpdatedByInput
+  templatesDeleted?: Prisma.TemplateUncheckedCreateNestedManyWithoutDeletedByInput
+  automationsCreated?: Prisma.AutomationUncheckedCreateNestedManyWithoutCreatedByInput
+  sequencesCreated?: Prisma.SequenceUncheckedCreateNestedManyWithoutCreatedByInput
+  workflowsCreated?: Prisma.WorkflowUncheckedCreateNestedManyWithoutCreatedByInput
+  campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
+  apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
+  webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
+  whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
+  whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
+  planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
+  planRequestsReviewed?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutReviewedByInput
+}
+
+export type UserCreateOrConnectWithoutWalletTopupsCreatedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutWalletTopupsCreatedInput, Prisma.UserUncheckedCreateWithoutWalletTopupsCreatedInput>
+}
+
+export type UserUpsertWithoutWalletTopupsCreatedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutWalletTopupsCreatedInput, Prisma.UserUncheckedUpdateWithoutWalletTopupsCreatedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutWalletTopupsCreatedInput, Prisma.UserUncheckedCreateWithoutWalletTopupsCreatedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutWalletTopupsCreatedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutWalletTopupsCreatedInput, Prisma.UserUncheckedUpdateWithoutWalletTopupsCreatedInput>
+}
+
+export type UserUpdateWithoutWalletTopupsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUpdateManyWithoutOwnerNestedInput
+  ownedTenants?: Prisma.TenantUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.WorkspaceMemberUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  oauthAccounts?: Prisma.OAuthAccountUpdateManyWithoutUserNestedInput
+  invitationsSent?: Prisma.WorkspaceInvitationUpdateManyWithoutInvitedByNestedInput
+  emailVerificationTokens?: Prisma.EmailVerificationTokenUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  contactsCreated?: Prisma.ContactUpdateManyWithoutCreatedByNestedInput
+  contactsOwned?: Prisma.ContactUpdateManyWithoutAccountOwnerNestedInput
+  contactsUpdated?: Prisma.ContactUpdateManyWithoutUpdatedByNestedInput
+  contactsDeleted?: Prisma.ContactUpdateManyWithoutDeletedByNestedInput
+  contactTasksCreated?: Prisma.ContactTaskUpdateManyWithoutCreatedByNestedInput
+  contactTasksUpdated?: Prisma.ContactTaskUpdateManyWithoutUpdatedByNestedInput
+  contactNotesCreated?: Prisma.ContactNoteUpdateManyWithoutCreatedByNestedInput
+  contactNotesUpdated?: Prisma.ContactNoteUpdateManyWithoutUpdatedByNestedInput
+  contactNotesDeleted?: Prisma.ContactNoteUpdateManyWithoutDeletedByNestedInput
+  contactSegmentsCreated?: Prisma.ContactSegmentUpdateManyWithoutCreatedByNestedInput
+  contactSegmentsUpdated?: Prisma.ContactSegmentUpdateManyWithoutUpdatedByNestedInput
+  contactCustomFieldsCreated?: Prisma.ContactCustomFieldUpdateManyWithoutCreatedByNestedInput
+  contactCustomFieldsUpdated?: Prisma.ContactCustomFieldUpdateManyWithoutUpdatedByNestedInput
+  contactConsentEvents?: Prisma.ContactConsentEventUpdateManyWithoutActorUserNestedInput
+  messagesCreated?: Prisma.MessageUpdateManyWithoutCreatedByNestedInput
+  conversationNotesCreated?: Prisma.ConversationNoteUpdateManyWithoutCreatedByNestedInput
+  templatesCreated?: Prisma.TemplateUpdateManyWithoutCreatedByNestedInput
+  templatesUpdated?: Prisma.TemplateUpdateManyWithoutUpdatedByNestedInput
+  templatesDeleted?: Prisma.TemplateUpdateManyWithoutDeletedByNestedInput
+  automationsCreated?: Prisma.AutomationUpdateManyWithoutCreatedByNestedInput
+  sequencesCreated?: Prisma.SequenceUpdateManyWithoutCreatedByNestedInput
+  workflowsCreated?: Prisma.WorkflowUpdateManyWithoutCreatedByNestedInput
+  campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
+  apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
+  webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
+  walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
+  whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
+  whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
+  planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
+  planRequestsReviewed?: Prisma.PlanRequestUpdateManyWithoutReviewedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutWalletTopupsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  platformRole?: Prisma.EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+  emailVerifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  dateFormat?: Prisma.StringFieldUpdateOperationsInput | string
+  defaultLandingPage?: Prisma.StringFieldUpdateOperationsInput | string
+  notifyProductUpdates?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyBillingAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCampaignAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyWhatsappAlerts?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedWorkspaces?: Prisma.WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+  ownedTenants?: Prisma.TenantUncheckedUpdateManyWithoutOwnerNestedInput
+  memberships?: Prisma.WorkspaceMemberUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   oauthAccounts?: Prisma.OAuthAccountUncheckedUpdateManyWithoutUserNestedInput
   invitationsSent?: Prisma.WorkspaceInvitationUncheckedUpdateManyWithoutInvitedByNestedInput
   emailVerificationTokens?: Prisma.EmailVerificationTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -10184,6 +10601,7 @@ export type UserCreateWithoutWalletLedgerEntriesInput = {
   campaignsCreated?: Prisma.CampaignCreateNestedManyWithoutCreatedByInput
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -10245,6 +10663,7 @@ export type UserUncheckedCreateWithoutWalletLedgerEntriesInput = {
   campaignsCreated?: Prisma.CampaignUncheckedCreateNestedManyWithoutCreatedByInput
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -10322,6 +10741,7 @@ export type UserUpdateWithoutWalletLedgerEntriesInput = {
   campaignsCreated?: Prisma.CampaignUpdateManyWithoutCreatedByNestedInput
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -10383,6 +10803,7 @@ export type UserUncheckedUpdateWithoutWalletLedgerEntriesInput = {
   campaignsCreated?: Prisma.CampaignUncheckedUpdateManyWithoutCreatedByNestedInput
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -10445,6 +10866,7 @@ export type UserCreateWithoutPlanRequestsSubmittedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -10506,6 +10928,7 @@ export type UserUncheckedCreateWithoutPlanRequestsSubmittedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -10572,6 +10995,7 @@ export type UserCreateWithoutPlanRequestsReviewedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -10633,6 +11057,7 @@ export type UserUncheckedCreateWithoutPlanRequestsReviewedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -10710,6 +11135,7 @@ export type UserUpdateWithoutPlanRequestsSubmittedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -10771,6 +11197,7 @@ export type UserUncheckedUpdateWithoutPlanRequestsSubmittedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -10843,6 +11270,7 @@ export type UserUpdateWithoutPlanRequestsReviewedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -10904,6 +11332,7 @@ export type UserUncheckedUpdateWithoutPlanRequestsReviewedInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -10965,6 +11394,7 @@ export type UserCreateWithoutPlatformAuditLogsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
   planRequestsSubmitted?: Prisma.PlanRequestCreateNestedManyWithoutRequestedByInput
@@ -11026,6 +11456,7 @@ export type UserUncheckedCreateWithoutPlatformAuditLogsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
   planRequestsSubmitted?: Prisma.PlanRequestUncheckedCreateNestedManyWithoutRequestedByInput
@@ -11103,6 +11534,7 @@ export type UserUpdateWithoutPlatformAuditLogsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
   planRequestsSubmitted?: Prisma.PlanRequestUpdateManyWithoutRequestedByNestedInput
@@ -11164,6 +11596,7 @@ export type UserUncheckedUpdateWithoutPlatformAuditLogsInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
   planRequestsSubmitted?: Prisma.PlanRequestUncheckedUpdateManyWithoutRequestedByNestedInput
@@ -11224,6 +11657,7 @@ export type UserCreateWithoutEmailVerificationTokensInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -11285,6 +11719,7 @@ export type UserUncheckedCreateWithoutEmailVerificationTokensInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -11362,6 +11797,7 @@ export type UserUpdateWithoutEmailVerificationTokensInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -11423,6 +11859,7 @@ export type UserUncheckedUpdateWithoutEmailVerificationTokensInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -11484,6 +11921,7 @@ export type UserCreateWithoutPasswordResetTokensInput = {
   apiKeysCreated?: Prisma.PublicApiKeyCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardCreateNestedManyWithoutUpdatedByInput
@@ -11545,6 +11983,7 @@ export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedCreateNestedManyWithoutCreatedByInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedCreateNestedManyWithoutCreatedByInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedCreateNestedManyWithoutCreatedByInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedCreateNestedManyWithoutCreatedByInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedCreateNestedManyWithoutActorUserInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutCreatedByInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedCreateNestedManyWithoutUpdatedByInput
@@ -11622,6 +12061,7 @@ export type UserUpdateWithoutPasswordResetTokensInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUpdateManyWithoutUpdatedByNestedInput
@@ -11683,6 +12123,7 @@ export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
   apiKeysCreated?: Prisma.PublicApiKeyUncheckedUpdateManyWithoutCreatedByNestedInput
   webhookEndpointsCreated?: Prisma.WebhookEndpointUncheckedUpdateManyWithoutCreatedByNestedInput
   walletLedgerEntries?: Prisma.WalletLedgerEntryUncheckedUpdateManyWithoutCreatedByNestedInput
+  walletTopupsCreated?: Prisma.WalletTopupUncheckedUpdateManyWithoutCreatedByNestedInput
   platformAuditLogs?: Prisma.PlatformAuditLogUncheckedUpdateManyWithoutActorUserNestedInput
   whatsappRateCardsCreated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutCreatedByNestedInput
   whatsappRateCardsUpdated?: Prisma.WhatsAppRateCardUncheckedUpdateManyWithoutUpdatedByNestedInput
@@ -11730,6 +12171,7 @@ export type UserCountOutputType = {
   apiKeysCreated: number
   webhookEndpointsCreated: number
   walletLedgerEntries: number
+  walletTopupsCreated: number
   platformAuditLogs: number
   whatsappRateCardsCreated: number
   whatsappRateCardsUpdated: number
@@ -11772,6 +12214,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   apiKeysCreated?: boolean | UserCountOutputTypeCountApiKeysCreatedArgs
   webhookEndpointsCreated?: boolean | UserCountOutputTypeCountWebhookEndpointsCreatedArgs
   walletLedgerEntries?: boolean | UserCountOutputTypeCountWalletLedgerEntriesArgs
+  walletTopupsCreated?: boolean | UserCountOutputTypeCountWalletTopupsCreatedArgs
   platformAuditLogs?: boolean | UserCountOutputTypeCountPlatformAuditLogsArgs
   whatsappRateCardsCreated?: boolean | UserCountOutputTypeCountWhatsappRateCardsCreatedArgs
   whatsappRateCardsUpdated?: boolean | UserCountOutputTypeCountWhatsappRateCardsUpdatedArgs
@@ -12030,6 +12473,13 @@ export type UserCountOutputTypeCountWalletLedgerEntriesArgs<ExtArgs extends runt
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountWalletTopupsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WalletTopupWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountPlatformAuditLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PlatformAuditLogWhereInput
 }
@@ -12118,6 +12568,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   apiKeysCreated?: boolean | Prisma.User$apiKeysCreatedArgs<ExtArgs>
   webhookEndpointsCreated?: boolean | Prisma.User$webhookEndpointsCreatedArgs<ExtArgs>
   walletLedgerEntries?: boolean | Prisma.User$walletLedgerEntriesArgs<ExtArgs>
+  walletTopupsCreated?: boolean | Prisma.User$walletTopupsCreatedArgs<ExtArgs>
   platformAuditLogs?: boolean | Prisma.User$platformAuditLogsArgs<ExtArgs>
   whatsappRateCardsCreated?: boolean | Prisma.User$whatsappRateCardsCreatedArgs<ExtArgs>
   whatsappRateCardsUpdated?: boolean | Prisma.User$whatsappRateCardsUpdatedArgs<ExtArgs>
@@ -12231,6 +12682,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   apiKeysCreated?: boolean | Prisma.User$apiKeysCreatedArgs<ExtArgs>
   webhookEndpointsCreated?: boolean | Prisma.User$webhookEndpointsCreatedArgs<ExtArgs>
   walletLedgerEntries?: boolean | Prisma.User$walletLedgerEntriesArgs<ExtArgs>
+  walletTopupsCreated?: boolean | Prisma.User$walletTopupsCreatedArgs<ExtArgs>
   platformAuditLogs?: boolean | Prisma.User$platformAuditLogsArgs<ExtArgs>
   whatsappRateCardsCreated?: boolean | Prisma.User$whatsappRateCardsCreatedArgs<ExtArgs>
   whatsappRateCardsUpdated?: boolean | Prisma.User$whatsappRateCardsUpdatedArgs<ExtArgs>
@@ -12278,6 +12730,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     apiKeysCreated: Prisma.$PublicApiKeyPayload<ExtArgs>[]
     webhookEndpointsCreated: Prisma.$WebhookEndpointPayload<ExtArgs>[]
     walletLedgerEntries: Prisma.$WalletLedgerEntryPayload<ExtArgs>[]
+    walletTopupsCreated: Prisma.$WalletTopupPayload<ExtArgs>[]
     platformAuditLogs: Prisma.$PlatformAuditLogPayload<ExtArgs>[]
     whatsappRateCardsCreated: Prisma.$WhatsAppRateCardPayload<ExtArgs>[]
     whatsappRateCardsUpdated: Prisma.$WhatsAppRateCardPayload<ExtArgs>[]
@@ -12733,6 +13186,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   apiKeysCreated<T extends Prisma.User$apiKeysCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$apiKeysCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PublicApiKeyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   webhookEndpointsCreated<T extends Prisma.User$webhookEndpointsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$webhookEndpointsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WebhookEndpointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   walletLedgerEntries<T extends Prisma.User$walletLedgerEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$walletLedgerEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WalletLedgerEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  walletTopupsCreated<T extends Prisma.User$walletTopupsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$walletTopupsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WalletTopupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   platformAuditLogs<T extends Prisma.User$platformAuditLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$platformAuditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlatformAuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   whatsappRateCardsCreated<T extends Prisma.User$whatsappRateCardsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$whatsappRateCardsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WhatsAppRateCardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   whatsappRateCardsUpdated<T extends Prisma.User$whatsappRateCardsUpdatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$whatsappRateCardsUpdatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WhatsAppRateCardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -13993,6 +14447,30 @@ export type User$walletLedgerEntriesArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.WalletLedgerEntryScalarFieldEnum | Prisma.WalletLedgerEntryScalarFieldEnum[]
+}
+
+/**
+ * User.walletTopupsCreated
+ */
+export type User$walletTopupsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WalletTopup
+   */
+  select?: Prisma.WalletTopupSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WalletTopup
+   */
+  omit?: Prisma.WalletTopupOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WalletTopupInclude<ExtArgs> | null
+  where?: Prisma.WalletTopupWhereInput
+  orderBy?: Prisma.WalletTopupOrderByWithRelationInput | Prisma.WalletTopupOrderByWithRelationInput[]
+  cursor?: Prisma.WalletTopupWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WalletTopupScalarFieldEnum | Prisma.WalletTopupScalarFieldEnum[]
 }
 
 /**

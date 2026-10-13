@@ -1,0 +1,56 @@
+{
+  "name": "@paypilot/ntt",
+  "version": "2.0.0",
+  "description": "Standalone Node.js SDK for NTT Data payment integration",
+  "type": "module",
+  "main": "dist/cjs/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    },
+    "./checkout": {
+      "import": {
+        "types": "./dist/checkout.d.ts",
+        "default": "./dist/checkout.js"
+      },
+      "require": {
+        "types": "./dist/cjs/checkout.d.ts",
+        "default": "./dist/cjs/checkout.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "RELEASE.md",
+    "examples"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "prepack": "npm run build",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "test:package": "node scripts/test-package.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}

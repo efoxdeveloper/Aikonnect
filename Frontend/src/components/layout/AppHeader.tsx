@@ -1,4 +1,5 @@
 import { MenuIcon as Menu } from "@animateicons/react/lucide";
+import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { HeaderActions } from "./HeaderActions";
@@ -7,6 +8,8 @@ import { useAnimatedIcon } from "@/hooks/use-animated-icon";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 import { SetupGuideButton } from "./SetupGuideButton";
 import { TrialExpiredStrip } from "./TrialExpiredStrip";
+
+const API_DOCUMENTATION_URL = "https://documenter.getpostman.com/view/58653027/2sBYHNW3LA";
 
 export function AppHeader() {
   const { isMobile, openMobile, setOpenMobile } = useSidebar();
@@ -22,6 +25,7 @@ export function AppHeader() {
         <div className="pointer-events-auto w-full"><TrialExpiredStrip className="w-full" /></div>
       </div>
       <div data-testid="header-utility-actions" className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+        <a href={API_DOCUMENTATION_URL} target="_blank" rel="noreferrer" aria-label="API Docs" title="API Docs" className="group inline-flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap px-2.5 text-xs font-medium text-[#1769aa] underline decoration-[#b8d5eb] decoration-1 underline-offset-4 transition-colors hover:text-[#12558a] hover:decoration-[#12558a]"><span>API Docs</span><ArrowUpRight size={13} aria-hidden="true" className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" /></a>
         <SetupGuideButton />
         <WorkspaceSwitcher />
         <HeaderActions />

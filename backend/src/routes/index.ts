@@ -5,11 +5,13 @@ import { healthRouter } from "../modules/health/health.routes.js";
 import { workspaceRouter } from "../modules/workspaces/workspace.routes.js";
 import { developerApiRouter } from "../modules/developer-api/developer-api.routes.js";
 import { plansRouter } from "../modules/billing/plans.routes.js";
+import { nttPaymentsRouter } from "../modules/payments/ntt.routes.js";
 
 export const apiRouter = Router();
 
 apiRouter.use("/health", healthRouter);
 apiRouter.use("/plans", plansRouter);
+apiRouter.use("/payments/ntt", nttPaymentsRouter);
 apiRouter.use("/auth", authRouter);
 apiRouter.use("/admin", adminRouter);
 apiRouter.use("/workspaces", workspaceRouter);

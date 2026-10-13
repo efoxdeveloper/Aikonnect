@@ -6,6 +6,7 @@ import { apiRequest } from "@/lib/api";
 import { BillingUsage } from "@/pages/BillingUsage";
 
 vi.mock("@/lib/api", () => ({ apiRequest: vi.fn() }));
+vi.mock("@paypilot/ntt/checkout", () => ({ openCheckout: vi.fn() }));
 
 const auth = (permissions: string[] = ["billing.read"]): AuthContextValue => ({
   status: "authenticated",
@@ -14,6 +15,7 @@ const auth = (permissions: string[] = ["billing.read"]): AuthContextValue => ({
     email: "owner@example.com",
     firstName: "Workspace",
     lastName: "Owner",
+    phone: "+919876543210",
     emailVerifiedAt: "2026-08-22T00:00:00.000Z",
     memberships: [{
       id: "membership-1",
@@ -39,7 +41,7 @@ const usage = {
   daily: [{ date: "2026-08-21", total: 42, incoming: 18, outgoing: 24, delivered: 22 }],
 };
 
-function renderPage(value = auth()) {
+function renderPage(value = auth(["billing.read", "billing.manage"])) {
   return render(<MemoryRouter><AuthContext.Provider value={value}><BillingUsage /></AuthContext.Provider></MemoryRouter>);
 }
 
@@ -60,12 +62,11 @@ describe("BillingUsage", () => {
     expect(screen.getByText("Held for pending delivery; released if delivery fails")).toBeInTheDocument();
     expect(screen.queryByText("Engaged contacts")).not.toBeInTheDocument();
     expect(screen.getByText("42")).toBeInTheDocument();
-    expect(screen.getByText("Meta billing is separate")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Plan usage" })).toBeInTheDocument();
-    expect(screen.getByText(/Growth.*Free trial.*Ends/)).toBeInTheDocument();
-    expect(screen.getByText("125 / 1,000")).toBeInTheDocument();
-    expect(screen.getByText("Locked")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "View plans" })).toHaveAttribute("href", "/billing/plans");
+    expect(screen.queryByText("Meta billing is separate")).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Plan usage" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "View plans" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Message activity" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Usage breakdown" })).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "7 days" }));
     await waitFor(() => expect(vi.mocked(apiRequest).mock.calls.some(([path]) => String(path).includes("/workspaces/workspace-1/usage?"))).toBe(true));
@@ -94,10 +95,65 @@ describe("BillingUsage", () => {
     expect(vi.mocked(apiRequest).mock.calls).toHaveLength(requestCount);
   });
 
+  it("keeps wallet amounts and balance after values on one line", async () => {
+    vi.mocked(apiRequest).mockImplementation(async (path) => String(path).includes("/wallet/ledger")
+      ? { items: [{ id: "entry-1", direction: "CREDIT", amount: "12345.67", closingTotalBalance: "23456.78", transactionType: "RECHARGE", description: "Wallet recharge", createdAt: "2026-10-12T00:00:00.000Z" }], pagination: { page: 1, pageSize: 50, total: 1, totalPages: 1, hasNext: false, hasPrevious: false } }
+      : usage);
+    renderPage();
+    await screen.findByRole("cell", { name: "+₹ 12,345.67" });
+
+    expect(screen.getByRole("columnheader", { name: "Amount" })).toHaveClass("whitespace-nowrap");
+    expect(screen.getByRole("columnheader", { name: "Balance after" })).toHaveClass("whitespace-nowrap");
+    expect(screen.getByRole("cell", { name: "+₹ 12,345.67" })).toHaveClass("whitespace-nowrap");
+    expect(screen.getByRole("cell", { name: "₹ 23,456.78" })).toHaveClass("whitespace-nowrap");
+  });
+
   it("does not request usage without billing permission", () => {
     renderPage(auth([]));
 
     expect(screen.getByRole("heading", { name: "Billing access is restricted" })).toBeInTheDocument();
     expect(apiRequest).not.toHaveBeenCalled();
+  });
+
+  it("uses the workspace owner phone returned by the API for checkout", async () => {
+    const { openCheckout } = await import("@paypilot/ntt/checkout");
+    vi.mocked(apiRequest).mockImplementation(async (path) => String(path).endsWith("/wallet/topups")
+      ? { id: "topup-1", status: "INITIATED", customerMobile: "+919876543210", checkout: { type: "SDK_TOKEN", token: "token-1", merchantId: "merchant-1", environment: "UAT", returnUrl: "https://api.example.test/api/v1/payments/ntt/callback" } }
+      : String(path).includes("/wallet/ledger") ? { items: [], pagination: { page: 1, pageSize: 50, total: 0, totalPages: 1, hasNext: false, hasPrevious: false } } : usage);
+    const value = auth(["billing.read", "billing.manage"]);
+    if (value.user) value.user.phone = null;
+    renderPage(value);
+    await screen.findByText("Total messages");
+    fireEvent.click(screen.getByRole("button", { name: "Add funds" }));
+    fireEvent.change(screen.getByLabelText("Amount (INR)"), { target: { value: "750.50" } });
+    expect(screen.queryByLabelText("Phone with country code")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Proceed" }));
+
+    await waitFor(() => expect(openCheckout).toHaveBeenCalledWith({
+      checkout: expect.objectContaining({ token: "token-1", merchantId: "merchant-1", environment: "UAT" }),
+      customer: { email: "owner@example.com", mobile: "+919876543210" },
+    }));
+    const call = vi.mocked(apiRequest).mock.calls.find(([path]) => String(path).endsWith("/wallet/topups"));
+    expect(JSON.parse(String(call?.[1]?.body))).toMatchObject({ amount: "750.50" });
+    expect(JSON.parse(String(call?.[1]?.body))).not.toHaveProperty("mobile");
+  });
+
+  it("opens Add funds as a popup and closes it with Cancel", async () => {
+    renderPage();
+    await screen.findByText("Total messages");
+    fireEvent.click(screen.getByRole("button", { name: "Add funds" }));
+
+    expect(screen.getByRole("dialog", { name: "Add funds" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Amount (INR)")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+
+    expect(screen.queryByRole("dialog", { name: "Add funds" })).not.toBeInTheDocument();
+    expect(apiRequest).not.toHaveBeenCalledWith(expect.stringMatching(/\/wallet\/topups$/), expect.anything());
+  });
+
+  it("does not offer recharge controls to read-only billing members", async () => {
+    renderPage(auth(["billing.read"]));
+    await screen.findByText("Total messages");
+    expect(screen.queryByRole("button", { name: "Add funds" })).not.toBeInTheDocument();
   });
 });

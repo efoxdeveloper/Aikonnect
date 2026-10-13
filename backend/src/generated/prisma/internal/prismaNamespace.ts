@@ -439,6 +439,7 @@ export const ModelName = {
   WorkspaceInvitation: 'WorkspaceInvitation',
   Session: 'Session',
   Wallet: 'Wallet',
+  WalletTopup: 'WalletTopup',
   WalletLedgerEntry: 'WalletLedgerEntry',
   WalletReservation: 'WalletReservation',
   WorkspaceBillingSettings: 'WorkspaceBillingSettings',
@@ -464,7 +465,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "oAuthAccount" | "tenant" | "workspace" | "template" | "publicApiKey" | "webhookEndpoint" | "webhookDelivery" | "contact" | "contactConsentEvent" | "conversation" | "conversationNote" | "conversationAssignmentRule" | "message" | "whatsAppWebhookEvent" | "whatsAppRateCard" | "contactCustomField" | "contactCustomFieldValue" | "contactSegment" | "contactTask" | "contactNote" | "contactTag" | "contactTagAssignment" | "workspaceSetupProgress" | "whatsAppBusinessAccount" | "whatsAppPhoneNumber" | "automation" | "automationLog" | "workflow" | "workflowRun" | "sequence" | "sequenceEnrollment" | "workspaceAutomationSettings" | "campaign" | "campaignRecipient" | "workspaceMember" | "role" | "permission" | "rolePermission" | "workspaceInvitation" | "session" | "wallet" | "walletLedgerEntry" | "walletReservation" | "workspaceBillingSettings" | "subscriptionPlan" | "workspaceSubscription" | "planRequest" | "platformAuditLog" | "platformConfiguration" | "emailVerificationToken" | "passwordResetToken"
+    modelProps: "user" | "oAuthAccount" | "tenant" | "workspace" | "template" | "publicApiKey" | "webhookEndpoint" | "webhookDelivery" | "contact" | "contactConsentEvent" | "conversation" | "conversationNote" | "conversationAssignmentRule" | "message" | "whatsAppWebhookEvent" | "whatsAppRateCard" | "contactCustomField" | "contactCustomFieldValue" | "contactSegment" | "contactTask" | "contactNote" | "contactTag" | "contactTagAssignment" | "workspaceSetupProgress" | "whatsAppBusinessAccount" | "whatsAppPhoneNumber" | "automation" | "automationLog" | "workflow" | "workflowRun" | "sequence" | "sequenceEnrollment" | "workspaceAutomationSettings" | "campaign" | "campaignRecipient" | "workspaceMember" | "role" | "permission" | "rolePermission" | "workspaceInvitation" | "session" | "wallet" | "walletTopup" | "walletLedgerEntry" | "walletReservation" | "workspaceBillingSettings" | "subscriptionPlan" | "workspaceSubscription" | "planRequest" | "platformAuditLog" | "platformConfiguration" | "emailVerificationToken" | "passwordResetToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3576,6 +3577,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    WalletTopup: {
+      payload: Prisma.$WalletTopupPayload<ExtArgs>
+      fields: Prisma.WalletTopupFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WalletTopupFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletTopupPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WalletTopupFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletTopupPayload>
+        }
+        findFirst: {
+          args: Prisma.WalletTopupFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletTopupPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WalletTopupFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletTopupPayload>
+        }
+        findMany: {
+          args: Prisma.WalletTopupFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletTopupPayload>[]
+        }
+        create: {
+          args: Prisma.WalletTopupCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletTopupPayload>
+        }
+        createMany: {
+          args: Prisma.WalletTopupCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WalletTopupCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletTopupPayload>[]
+        }
+        delete: {
+          args: Prisma.WalletTopupDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletTopupPayload>
+        }
+        update: {
+          args: Prisma.WalletTopupUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletTopupPayload>
+        }
+        deleteMany: {
+          args: Prisma.WalletTopupDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WalletTopupUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WalletTopupUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletTopupPayload>[]
+        }
+        upsert: {
+          args: Prisma.WalletTopupUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WalletTopupPayload>
+        }
+        aggregate: {
+          args: Prisma.WalletTopupAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWalletTopup>
+        }
+        groupBy: {
+          args: Prisma.WalletTopupGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WalletTopupGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WalletTopupCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WalletTopupCountAggregateOutputType> | number
+        }
+      }
+    }
     WalletLedgerEntry: {
       payload: Prisma.$WalletLedgerEntryPayload<ExtArgs>
       fields: Prisma.WalletLedgerEntryFieldRefs
@@ -5176,6 +5251,31 @@ export const WalletScalarFieldEnum = {
 export type WalletScalarFieldEnum = (typeof WalletScalarFieldEnum)[keyof typeof WalletScalarFieldEnum]
 
 
+export const WalletTopupScalarFieldEnum = {
+  id: 'id',
+  walletId: 'walletId',
+  tenantId: 'tenantId',
+  workspaceId: 'workspaceId',
+  createdById: 'createdById',
+  idempotencyKey: 'idempotencyKey',
+  paymentId: 'paymentId',
+  amount: 'amount',
+  currency: 'currency',
+  status: 'status',
+  transactionDate: 'transactionDate',
+  gatewayRequestId: 'gatewayRequestId',
+  providerPaymentId: 'providerPaymentId',
+  providerTransactionId: 'providerTransactionId',
+  checkout: 'checkout',
+  failureCode: 'failureCode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type WalletTopupScalarFieldEnum = (typeof WalletTopupScalarFieldEnum)[keyof typeof WalletTopupScalarFieldEnum]
+
+
 export const WalletLedgerEntryScalarFieldEnum = {
   id: 'id',
   walletId: 'walletId',
@@ -5387,6 +5487,14 @@ export const JsonNullValueInput = {
 } as const
 
 export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -6095,6 +6203,7 @@ export type GlobalOmitConfig = {
   workspaceInvitation?: Prisma.WorkspaceInvitationOmit
   session?: Prisma.SessionOmit
   wallet?: Prisma.WalletOmit
+  walletTopup?: Prisma.WalletTopupOmit
   walletLedgerEntry?: Prisma.WalletLedgerEntryOmit
   walletReservation?: Prisma.WalletReservationOmit
   workspaceBillingSettings?: Prisma.WorkspaceBillingSettingsOmit

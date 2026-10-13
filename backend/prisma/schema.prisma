@@ -257,6 +257,7 @@ model User {
   apiKeysCreated             PublicApiKey[]           @relation("ApiKeyCreator")
   webhookEndpointsCreated    WebhookEndpoint[]        @relation("WebhookEndpointCreator")
   walletLedgerEntries        WalletLedgerEntry[]      @relation("WalletLedgerActor")
+  walletTopupsCreated        WalletTopup[]            @relation("WalletTopupCreator")
   platformAuditLogs          PlatformAuditLog[]       @relation("PlatformAuditActor")
   whatsappRateCardsCreated   WhatsAppRateCard[]       @relation("WhatsAppRateCardCreator")
   whatsappRateCardsUpdated   WhatsAppRateCard[]       @relation("WhatsAppRateCardUpdater")
@@ -294,6 +295,7 @@ model Tenant {
   wallet             Wallet?
   ledgerEntries      WalletLedgerEntry[]
   walletReservations WalletReservation[]
+  walletTopups       WalletTopup[]
 
   @@index([ownerId])
   @@map("tenants")
@@ -353,6 +355,7 @@ model Workspace {
   webhookDeliveries        WebhookDelivery[]
   walletLedgerEntries      WalletLedgerEntry[]
   walletReservations       WalletReservation[]
+  walletTopups             WalletTopup[]
   billingSettings          WorkspaceBillingSettings?
   subscriptions            WorkspaceSubscription[]
   planRequests             PlanRequest[]
@@ -1319,8 +1322,40 @@ model Wallet {
   tenant              Tenant              @relation(fields: [tenantId], references: [id], onDelete: Restrict)
   entries             WalletLedgerEntry[]
   reservations        WalletReservation[]
+  topups              WalletTopup[]
 
   @@map("wallets")
+}
+
+model WalletTopup {
+  id                    String    @id @default(uuid()) @db.Uuid
+  walletId              String    @map("wallet_id") @db.Uuid
+  tenantId              String    @map("tenant_id") @db.Uuid
+  workspaceId           String    @map("workspace_id") @db.Uuid
+  createdById           String    @map("created_by_id") @db.Uuid
+  idempotencyKey        String    @map("idempotency_key") @db.VarChar(255)
+  paymentId             String    @unique @map("payment_id") @db.VarChar(64)
+  amount                Decimal   @db.Decimal(18, 2)
+  currency              String    @db.Char(3)
+  status                String    @default("CREATED") @db.VarChar(30)
+  transactionDate       String?   @map("transaction_date") @db.VarChar(10)
+  gatewayRequestId      String?   @map("gateway_request_id") @db.VarChar(100)
+  providerPaymentId     String?   @map("provider_payment_id") @db.VarChar(100)
+  providerTransactionId String?   @map("provider_transaction_id") @db.VarChar(100)
+  checkout              Json?     @db.JsonB
+  failureCode           String?   @map("failure_code") @db.VarChar(100)
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  completedAt           DateTime? @map("completed_at") @db.Timestamptz(3)
+  wallet                Wallet    @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  tenant                Tenant    @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  workspace             Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy             User      @relation("WalletTopupCreator", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@unique([walletId, idempotencyKey])
+  @@index([workspaceId, createdAt])
+  @@index([status, updatedAt])
+  @@map("wallet_topups")
 }
 
 model WalletLedgerEntry {
