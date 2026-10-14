@@ -4,6 +4,7 @@ export interface CheckoutOptions {
   checkout: NttCheckout;
   customer: NttCustomer;
   returnUrl?: string;
+  onClose?: () => void;
 }
 
 declare global {
@@ -14,6 +15,54 @@ declare global {
 
 let loading: Promise<void> | undefined;
 let loadedEnvironment: string | undefined;
+
+function observeCheckoutClose(existingFrames: Set<HTMLIFrameElement>, onClose?: () => void) {
+  if (!onClose || typeof MutationObserver === 'undefined' || !document.body) return;
+  let checkoutWasVisible = false;
+  let finished = false;
+  let closeTimer: ReturnType<typeof setTimeout> | undefined;
+  const observer = new MutationObserver(check);
+  const isVisible = (frame: HTMLIFrameElement) => {
+    if (!frame.isConnected) return false;
+    let element: HTMLElement | null = frame;
+    while (element) {
+      const style = window.getComputedStyle(element);
+      if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0')
+        return false;
+      element = element.parentElement;
+    }
+    const bounds = frame.getBoundingClientRect();
+    return bounds.width > 0 && bounds.height > 0;
+  };
+  const checkoutFrames = () =>
+    Array.from(document.querySelectorAll('iframe')).filter((frame) => !existingFrames.has(frame));
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    observer.disconnect();
+    if (closeTimer) clearTimeout(closeTimer);
+    onClose();
+  };
+  function check() {
+    const frames = checkoutFrames();
+    if (frames.some(isVisible)) {
+      checkoutWasVisible = true;
+      if (closeTimer) clearTimeout(closeTimer);
+      closeTimer = undefined;
+    } else if (checkoutWasVisible && !closeTimer) {
+      // Let the SDK finish its hide animation and DOM cleanup before reporting close.
+      closeTimer = setTimeout(finish, 250);
+    }
+  }
+  observer.observe(document.body, {
+    attributes: true,
+    attributeFilter: ['class', 'style', 'src'],
+    childList: true,
+    subtree: true,
+  });
+  check();
+  setTimeout(() => observer.disconnect(), 20 * 60 * 1000);
+}
 
 /** Browser-only entry. No credentials, Node imports, or automatic payment confirmation. */
 export async function openCheckout(options: CheckoutOptions): Promise<void> {
@@ -76,6 +125,7 @@ export async function openCheckout(options: CheckoutOptions): Promise<void> {
   }
   await loading;
   if (!window.AtomPaynetz) throw new Error('NTT checkout did not initialize');
+  const existingFrames = new Set(Array.from(document.querySelectorAll('iframe')));
   new window.AtomPaynetz(
     {
       atomTokenId: checkout.token,
@@ -86,4 +136,5 @@ export async function openCheckout(options: CheckoutOptions): Promise<void> {
     },
     checkout.environment.toLowerCase(),
   );
+  observeCheckoutClose(existingFrames, options.onClose);
 }

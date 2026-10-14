@@ -130,14 +130,12 @@ export class NttConfig {
         throw new NttConfigurationError('merchantId must contain 1 to 15 digits');
       if (!this.productId.trim() || this.productId.length > 50)
         throw new NttConfigurationError('productId must contain 1 to 50 characters');
-      if (
-        [this.authPath, this.statusPath, this.refundPath, this.refundStatusPath].some((path) =>
-          path.includes('/otsv2/'),
-        ) &&
-        !this.credentials.apiSecretKey
-      ) {
+      // The legacy AiPay auth URL issued to some UAT merchants does not use
+      // the OTSv2 bearer API secret. Do not block payment initiation for those
+      // accounts because the status/refund endpoints retain their OTSv2 defaults.
+      if (this.authPath.includes('/otsv2/') && !this.credentials.apiSecretKey) {
         throw new NttConfigurationError(
-          'NTT_API_SECRET_KEY is required for otsv2 endpoints; configure NTT-approved legacy paths for accounts without a bearer key',
+          'NTT_API_SECRET_KEY is required for the OTSv2 auth endpoint; configure the NTT-issued legacy AiPay auth path for accounts without a bearer key',
         );
       }
     }

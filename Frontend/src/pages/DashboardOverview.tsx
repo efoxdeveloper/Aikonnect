@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode, type FormEvent, type SVGProps } from "react";
-import { ArrowRight, BarChart3, Building2, CalendarDays, Check, CheckCircle2, Coins, Eye, FileText, Info, Link2, MessageCircle, Phone, Plus, Send, ShieldCheck, Users, WalletCards, Zap, type LucideIcon } from "lucide-react";
+import { ArrowRight, BarChart3, Building2, CalendarDays, Check, CheckCircle2, Coins, Eye, FileText, Info, Link2, MessageCircle, Phone, Plus, RefreshCw, Send, ShieldCheck, Users, WalletCards, Zap, type LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { siWhatsapp } from "simple-icons";
 import { Button } from "@/components/ui/button";
@@ -98,11 +98,15 @@ export function DashboardOverview() {
   const [customTo, setCustomTo] = useState("");
   const [rangeError, setRangeError] = useState("");
   const [customRange, setCustomRange] = useState<DateRange | null>(null);
+  const [metaRefreshLoading, setMetaRefreshLoading] = useState(false);
+  const [metaRefreshError, setMetaRefreshError] = useState<string | null>(null);
+  const [refreshedMeta, setRefreshedMeta] = useState<{ workspaceId: string; data: WhatsAppStatusData } | null>(null);
   const dates = useMemo(() => range === "custom" && customRange ? customRange : dashboardDateRange(range === "custom" ? "7d" : range), [range, customRange]);
   const query = new URLSearchParams(dates).toString();
   const path = (suffix: string, permission: string) => workspaceId && can(permission) ? `/workspaces/${workspaceId}/${suffix}` : null;
   const setup = useDashboardResource<WorkspaceSetupData>(path("setup", "workspace.read"), accessToken);
   const meta = useDashboardResource<WhatsAppStatusData>(setup.data?.whatsapp.status === "CONNECTED" ? path("whatsapp/status", "whatsapp.read") : null, accessToken);
+  const metaData = refreshedMeta?.workspaceId === workspaceId ? refreshedMeta.data : meta.data;
   const usage = useDashboardResource<Usage>(path(`usage?${query}`, "billing.read"), accessToken);
   const wallet = useDashboardResource<Wallet>(path("wallet", "billing.read"), accessToken);
   const welcomeBonus = useDashboardResource<WelcomeBonus>(path("wallet/welcome-bonus", "workspace.read"), accessToken);
@@ -132,6 +136,22 @@ export function DashboardOverview() {
     void apiRequest(`/workspaces/${workspaceId}/wallet/welcome-bonus/celebrated`, { method: "POST", headers: { authorization: `Bearer ${accessToken}` } }).catch(() => {
       // Close this session's modal; if persistence failed, the server will offer it again on the next visit.
     });
+  }
+  async function refreshMetaStatus() {
+    if (!workspaceId || !accessToken || metaRefreshLoading) return;
+    setMetaRefreshLoading(true);
+    setMetaRefreshError(null);
+    try {
+      const data = await apiRequest<WhatsAppStatusData>(`/workspaces/${workspaceId}/whatsapp/status/refresh`, {
+        method: "POST",
+        headers: { authorization: `Bearer ${accessToken}` },
+      });
+      setRefreshedMeta({ workspaceId, data });
+    } catch (caughtError) {
+      setMetaRefreshError(caughtError instanceof Error ? caughtError.message : "Unable to refresh Meta status.");
+    } finally {
+      setMetaRefreshLoading(false);
+    }
   }
   const quickActions = [
     { title: "New Campaign", to: "/campaigns", icon: Send, permission: "campaigns.create" },
@@ -166,7 +186,7 @@ export function DashboardOverview() {
         </section>
         <div className={`${styles.primaryGrid} ${!whatsappConnected ? styles.primaryGridSingle : ""}`}>
           {whatsappConnected && <ActivityChart items={usage.data?.daily ?? []} loading={usage.loading} error={usage.error} restricted={usage.restricted} />}
-          <Panel title="WhatsApp account" icon={WhatsAppBrandIcon} action={can("whatsapp.read") && <PanelLink to="/whatsapp-account">Manage</PanelLink>}>
+          <Panel title="WhatsApp account" icon={WhatsAppBrandIcon} action={can("whatsapp.read") && <div className="flex items-center gap-3"><Button type="button" variant="outline" size="sm" aria-label="Refresh Meta status" onClick={() => void refreshMetaStatus()} disabled={metaRefreshLoading || !whatsappConnected} className="h-8 gap-1.5 px-2.5 text-[11px]"><RefreshCw size={13} className={metaRefreshLoading ? "animate-spin" : undefined} aria-hidden="true" />{metaRefreshLoading ? "Refreshing…" : "Refresh"}</Button><PanelLink to="/whatsapp-account">Manage</PanelLink></div>}>
               {setup.data && !whatsappConnected ? <div className={styles.healthDisconnected}>
                 {Number(welcomeBonusOffer.amount) > 0 && <><TooltipProvider><Tooltip><TooltipTrigger asChild><button type="button" aria-label="About the WhatsApp connection bonus" className="inline-flex h-7 items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 text-[11px] font-medium text-[var(--text-primary)] transition-colors hover:bg-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]"><span>Free</span><Coins size={14} className="text-amber-600" aria-hidden="true" /><span>{welcomeBonusOffer.currency === "INR" ? "Rs. " : `${welcomeBonusOffer.currency} `}{new Intl.NumberFormat("en-IN", { maximumFractionDigits: 2 }).format(Number(welcomeBonusOffer.amount))}</span><Info size={13} className="text-[var(--text-muted)]" aria-hidden="true" /></button></TooltipTrigger><TooltipContent side="top" className="max-w-[260px] text-center leading-5">{welcomeBonusOffer.granted ? "Your welcome credit has already been added to the wallet." : "The credit is added once, after Meta confirms your WhatsApp number is connected."}</TooltipContent></Tooltip></TooltipProvider><span data-testid="connection-bonus-plus" aria-hidden="true" className="-my-1 text-xs font-semibold leading-none text-[var(--text-muted)]">+</span></>}
                 {can("whatsapp.manage") ? <Button type="button" onClick={() => setConnectionGuideOpen(true)} disabled={connecting}>
@@ -174,7 +194,8 @@ export function DashboardOverview() {
                 </Button> : <span>WhatsApp is not connected</span>}
               </div> : <>
                 <div className={styles.healthPrimary}><HealthItem icon={Building2} title="Business name" value={account?.displayName ?? (resourceText(setup) || "Not connected")} /><HealthItem icon={Phone} title="Primary number" value={phone?.displayPhoneNumber ?? "—"} /><HealthItem icon={Link2} title="Connection status" value={setup.data ? label(setup.data.whatsapp.status) : resourceText(setup)} tone={statusTone(setup.data?.whatsapp.status)} /></div>
-                <div className={styles.healthSecondary}><HealthItem icon={ShieldCheck} title="WABA review" value={label(meta.data?.accountReviewStatus)} tone={statusTone(meta.data?.accountReviewStatus)} /><HealthItem icon={Check} title="Meta account status" value={label(meta.data?.status)} tone={statusTone(meta.data?.status)} /><HealthItem icon={ShieldCheck} title="Business verification" value={label(meta.data?.businessVerificationStatus)} tone={statusTone(meta.data?.businessVerificationStatus)} /></div>
+                <div className={styles.healthSecondary}><HealthItem icon={ShieldCheck} title="WABA review" value={label(metaData?.accountReviewStatus)} tone={statusTone(metaData?.accountReviewStatus)} /><HealthItem icon={Check} title="Meta account status" value={label(metaData?.status)} tone={statusTone(metaData?.status)} /><HealthItem icon={ShieldCheck} title="Business verification" value={label(metaData?.businessVerificationStatus)} tone={statusTone(metaData?.businessVerificationStatus)} /></div>
+                {metaRefreshError && <div role="alert" className="px-4 pb-3 text-[11px] text-[var(--danger)]">{metaRefreshError}</div>}
               </>}
           </Panel>
         </div>

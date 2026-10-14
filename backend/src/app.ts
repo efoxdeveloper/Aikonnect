@@ -44,16 +44,25 @@ app.use(
   }),
 );
 app.use(
-  cors({
-    origin(origin, callback) {
-      if (!origin || corsOrigins.includes("*") || corsOrigins.includes(origin)) {
-        callback(null, true);
-        return;
-      }
+  cors((request, callback) => {
+    // NTT posts payment results from its gateway domain. This server-to-server
+    // callback does not need browser CORS headers or the app's browser origin
+    // allowlist; its payload is authenticated by the callback signature.
+    if (request.path === `${env.API_PREFIX}/payments/ntt/callback`) {
+      callback(null, { origin: false });
+      return;
+    }
+    callback(null, {
+      origin(origin, originCallback) {
+        if (!origin || corsOrigins.includes("*") || corsOrigins.includes(origin)) {
+          originCallback(null, true);
+          return;
+        }
 
-      callback(new Error("Origin is not allowed by CORS"));
-    },
-    credentials: true,
+        originCallback(new Error("Origin is not allowed by CORS"));
+      },
+      credentials: true,
+    });
   }),
 );
 app.use(compression());

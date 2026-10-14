@@ -93,6 +93,9 @@ export function BillingUsage() {
   const [topupOpen, setTopupOpen] = useState(false);
   const [topupAmount, setTopupAmount] = useState("");
   const [topupBusy, setTopupBusy] = useState(false);
+  const [topupReturned, setTopupReturned] = useState(false);
+  const [topupRequerying, setTopupRequerying] = useState(false);
+  const [topupFinalStatus, setTopupFinalStatus] = useState<string | null>(null);
   const [topupError, setTopupError] = useState<string | null>(null);
   const [topupNotice, setTopupNotice] = useState<string | null>(null);
   const [activeTopup, setActiveTopup] = useState<{ id: string; status: string; checkoutEnvironment?: string | null; checkout: { type: "SDK_TOKEN"; token: string; merchantId: string; environment: string; returnUrl?: string } | null } | null>(null);
@@ -127,13 +130,16 @@ export function BillingUsage() {
     if (!returnedTopupId || !workspaceId || !accessToken || !canRead) return;
     let active = true;
     setTopupOpen(true);
+    setTopupReturned(true);
+    setTopupRequerying(true);
+    setTopupFinalStatus(null);
     setTopupError(null);
     void apiRequest<{ id: string; status: string; checkoutEnvironment?: string | null; checkout: { type: "SDK_TOKEN"; token: string; merchantId: string; environment: string; returnUrl?: string } | null }>(`/workspaces/${workspaceId}/wallet/topups/${returnedTopupId}`, { headers: { authorization: `Bearer ${accessToken}` } })
       .then((result) => { if (active) { setActiveTopup(result); setTopupNotice("Payment returned from NTT. Checking the verified recharge status…"); } })
       .then(async () => {
         if (!active) return;
         const result = await apiRequest<{ id: string; status: string; checkoutEnvironment?: string | null; checkout: { type: "SDK_TOKEN"; token: string; merchantId: string; environment: string; returnUrl?: string } | null }>(`/workspaces/${workspaceId}/wallet/topups/${returnedTopupId}/requery`, { method: "POST", headers: { authorization: `Bearer ${accessToken}` } });
-        if (active) setActiveTopup(result);
+        if (active) { setActiveTopup(result); setTopupFinalStatus(result.status); setTopupRequerying(false); }
         if (active && result.status === "SUCCESS") {
           setTopupNotice("Recharge complete. Your wallet balance has been updated.");
           const range = appliedRange ?? dateRange(days);
@@ -145,7 +151,7 @@ export function BillingUsage() {
           if (active) { setData(updatedUsage); setLedger(updatedLedger); }
         } else if (active) setTopupNotice(`Recharge status: ${result.status.toLowerCase()}.`);
       })
-      .catch((caughtError) => { if (active) setTopupError(caughtError instanceof Error ? caughtError.message : "Unable to verify the recharge status."); })
+      .catch((caughtError) => { if (active) { setTopupRequerying(false); setTopupError(caughtError instanceof Error ? caughtError.message : "Unable to verify the recharge status."); } })
       .finally(() => { if (active) { searchParams.delete("walletTopup"); searchParams.delete("paymentReturn"); setSearchParams(searchParams, { replace: true }); } });
     return () => { active = false; };
   // The return URL is handled once per payment reference.
@@ -178,7 +184,7 @@ export function BillingUsage() {
   const startTopup = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!workspaceId || !accessToken) return;
-    setTopupBusy(true); setTopupError(null); setTopupNotice(null);
+    setTopupBusy(true); setTopupReturned(false); setTopupError(null); setTopupNotice(null);
     try {
       const result = await apiRequest<{ id: string; status: string; customerMobile: string; checkoutEnvironment?: string | null; checkout: { type: "SDK_TOKEN"; token: string; merchantId: string; environment: string; returnUrl?: string } | null }>(`/workspaces/${workspaceId}/wallet/topups`, {
         method: "POST", headers: { authorization: `Bearer ${accessToken}` },
@@ -186,7 +192,23 @@ export function BillingUsage() {
       });
       setActiveTopup(result);
       if (result.checkout?.environment !== "MOCK" && result.checkout) {
-        await openCheckout({ checkout: result.checkout, customer: { email: user?.email ?? "", mobile: result.customerMobile } });
+        // NTT renders its checkout in the current page. Close the Radix modal
+        // first so its overlay and focus trap do not cover the gateway UI.
+        setTopupOpen(false);
+        setTopupReturned(true);
+        setTopupRequerying(false);
+        setTopupFinalStatus(null);
+        await openCheckout({
+          checkout: result.checkout,
+          customer: { email: user?.email ?? "", mobile: result.customerMobile },
+          onClose: () => {
+            setTopupOpen(true);
+            setTopupReturned(true);
+            setTopupRequerying(true);
+            setTopupFinalStatus(null);
+            void refreshTopup(false, result.id);
+          },
+        });
         setTopupNotice("Complete payment in the NTT checkout window. The wallet updates after the payment is verified.");
       } else if (result.status === "SUCCESS") {
         setTopupNotice("Recharge complete. Your wallet balance has been updated.");
@@ -194,17 +216,21 @@ export function BillingUsage() {
         setTopupNotice("NTT mock mode is active. Use the button below to simulate a verified payment.");
       }
     } catch (caughtError) {
+      setTopupOpen(true);
       setTopupError(caughtError instanceof Error ? caughtError.message : "Unable to start the wallet recharge.");
     } finally { setTopupBusy(false); }
   };
 
-  const refreshTopup = async (mock = false) => {
-    if (!workspaceId || !accessToken || !activeTopup) return;
+  const refreshTopup = async (mock = false, topupId = activeTopup?.id) => {
+    if (!workspaceId || !accessToken || !topupId) return;
+    if (topupReturned) { setTopupRequerying(true); setTopupError(null); }
     setTopupBusy(true); setTopupError(null);
     try {
-      const path = `/workspaces/${workspaceId}/wallet/topups/${activeTopup.id}${mock ? "/mock-success" : "/requery"}`;
+      const path = `/workspaces/${workspaceId}/wallet/topups/${topupId}${mock ? "/mock-success" : "/requery"}`;
       const result = await apiRequest<{ id: string; status: string; checkoutEnvironment?: string | null; checkout: { type: "SDK_TOKEN"; token: string; merchantId: string; environment: string; returnUrl?: string } | null }>(path, { method: "POST", headers: { authorization: `Bearer ${accessToken}` } });
       setActiveTopup(result);
+      setTopupFinalStatus(result.status);
+      setTopupRequerying(false);
       if (result.status === "SUCCESS") {
         setTopupNotice("Recharge complete. Your wallet balance has been updated.");
         const range = appliedRange ?? dateRange(days);
@@ -216,20 +242,25 @@ export function BillingUsage() {
         setData(updatedUsage); setLedger(updatedLedger);
       } else setTopupNotice(`Recharge status: ${result.status.toLowerCase()}.`);
     } catch (caughtError) { setTopupError(caughtError instanceof Error ? caughtError.message : "Unable to refresh payment status."); }
-    finally { setTopupBusy(false); }
+    finally { setTopupRequerying(false); setTopupBusy(false); }
   };
 
   return (
-    <BillingShell><PageFrame title="Billing & Usage" canAddFunds={canManage} onAddFunds={() => { setTopupOpen(true); setTopupError(null); setTopupNotice(null); }}>
+    <BillingShell><PageFrame title="Billing & Usage" canAddFunds={canManage} onAddFunds={() => { setTopupReturned(false); setTopupRequerying(false); setTopupFinalStatus(null); setTopupOpen(true); setTopupError(null); setTopupNotice(null); }}>
       <Dialog.Root open={topupOpen} onOpenChange={setTopupOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-[130] bg-slate-950/45 backdrop-blur-[1px]" />
           <Dialog.Content className="fixed left-1/2 top-1/2 z-[131] flex max-h-[calc(100vh-32px)] w-[calc(100%-32px)] max-w-md -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-white shadow-[0_24px_70px_rgba(15,23,42,.24)]">
             <header className="flex flex-none items-start justify-between gap-4 border-b border-[var(--border-soft)] px-5 py-4">
-              <div><Dialog.Title className="text-sm font-semibold text-[var(--text-primary)]">Add funds</Dialog.Title><Dialog.Description className="mt-1 text-xs text-[var(--text-muted)]">Enter an amount to recharge your wallet.</Dialog.Description></div>
-              <Dialog.Close aria-label="Close recharge dialog" className="flex size-8 shrink-0 items-center justify-center rounded-full border border-[var(--border)] text-lg leading-none text-[var(--text-secondary)] hover:bg-[var(--brand-soft)]">×</Dialog.Close>
+              <div><Dialog.Title className="text-sm font-semibold text-[var(--text-primary)]">{topupReturned ? topupRequerying ? "Checking payment" : topupFinalStatus === "SUCCESS" ? "Payment successful" : topupFinalStatus && ["FAILED", "CANCELLED", "EXPIRED"].includes(topupFinalStatus) ? "Payment not completed" : "Payment status" : "Add funds"}</Dialog.Title><Dialog.Description className="mt-1 text-xs text-[var(--text-muted)]">{topupReturned ? topupRequerying ? "Confirming the transaction with NTT. This may take a moment." : "The verified transaction status is shown below." : "Enter an amount to recharge your wallet."}</Dialog.Description></div>
+              {!topupReturned && <Dialog.Close aria-label="Close recharge dialog" className="flex size-8 shrink-0 items-center justify-center rounded-full border border-[var(--border)] text-lg leading-none text-[var(--text-secondary)] hover:bg-[var(--brand-soft)]">×</Dialog.Close>}
             </header>
-            <form onSubmit={(event) => void startTopup(event)} className="flex min-h-0 flex-1 flex-col">
+            {topupReturned ? <>
+              <div className="flex min-h-40 flex-1 flex-col items-center justify-center gap-3 px-6 py-8 text-center" aria-live="polite">
+                {topupRequerying ? <><span className="size-9 animate-spin rounded-full border-[3px] border-[var(--brand-soft)] border-t-[var(--brand)]" aria-hidden="true" /><p role="status" className="text-sm font-medium text-[var(--text-primary)]">Processing transaction…</p><p className="max-w-xs text-xs leading-5 text-[var(--text-muted)]">Please wait while we confirm the final status.</p></> : topupError ? <><span className="flex size-10 items-center justify-center rounded-full bg-amber-50 text-lg text-amber-700" aria-hidden="true">!</span><p role="alert" className="text-sm font-medium text-[var(--text-primary)]">We couldn’t confirm the payment yet.</p><p className="max-w-xs text-xs leading-5 text-[var(--text-muted)]">{topupError}</p></> : topupFinalStatus === "SUCCESS" ? <><CheckCircle2 size={38} className="text-emerald-600" aria-hidden="true" /><p role="status" className="text-sm font-medium text-[var(--text-primary)]">Recharge complete</p><p className="text-xs text-[var(--text-muted)]">Your wallet balance has been updated.</p></> : topupFinalStatus && ["FAILED", "CANCELLED", "EXPIRED"].includes(topupFinalStatus) ? <><span className="flex size-10 items-center justify-center rounded-full bg-red-50 text-xl text-red-600" aria-hidden="true">×</span><p role="status" className="text-sm font-medium text-[var(--text-primary)]">Transaction {topupFinalStatus.toLowerCase()}</p><p className="text-xs text-[var(--text-muted)]">No funds were added to your wallet.</p></> : <><Info size={36} className="text-amber-600" aria-hidden="true" /><p role="status" className="text-sm font-medium text-[var(--text-primary)]">Payment status: {topupFinalStatus?.toLowerCase() ?? "unknown"}</p><p className="text-xs text-[var(--text-muted)]">The gateway has not reported a final result yet.</p></>}
+              </div>
+              <footer className="flex flex-none justify-end gap-2 border-t border-[var(--border-soft)] px-5 py-4">{(topupError || (topupFinalStatus && !["SUCCESS", "FAILED", "CANCELLED", "EXPIRED"].includes(topupFinalStatus))) && <button type="button" onClick={() => void refreshTopup(false)} disabled={topupBusy || topupRequerying} className="h-9 rounded-md border border-[var(--border)] px-4 text-xs font-medium text-[var(--text-secondary)] disabled:opacity-50">{topupBusy || topupRequerying ? "Checking…" : "Check again"}</button>}<Dialog.Close asChild><button type="button" disabled={topupRequerying} className="h-9 rounded-md bg-[var(--brand)] px-4 text-xs font-medium text-white disabled:opacity-50">{topupRequerying ? "Please wait…" : "Done"}</button></Dialog.Close></footer>
+            </> : <form onSubmit={(event) => void startTopup(event)} className="flex min-h-0 flex-1 flex-col">
               <div className="min-h-0 flex-1 space-y-3 overflow-y-auto px-5 py-5">
                 <label htmlFor="wallet-topup-amount" className="flex flex-col gap-1.5 text-xs font-medium text-[var(--text-secondary)]"><span>Amount (INR)</span><input id="wallet-topup-amount" required min="1" max="99999999" step="0.01" inputMode="decimal" value={topupAmount} onChange={(event) => setTopupAmount(event.target.value)} placeholder="500.00" className="h-10 rounded-md border border-[var(--border)] px-3 text-sm outline-none focus:border-[var(--brand)]" /></label>
                 {topupError && <div role="alert" className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">{topupError}</div>}
@@ -237,7 +268,7 @@ export function BillingUsage() {
                 {activeTopup && activeTopup.status !== "SUCCESS" && <div className="flex flex-wrap gap-2"><button type="button" onClick={() => void refreshTopup(false)} disabled={topupBusy} className="h-8 rounded-md border border-[var(--border)] px-3 text-xs font-medium text-[var(--text-secondary)] disabled:opacity-50">{topupBusy ? "Checking…" : "Check payment status"}</button>{(activeTopup.checkoutEnvironment ?? activeTopup.checkout?.environment) === "MOCK" && <button type="button" onClick={() => void refreshTopup(true)} disabled={topupBusy} className="h-8 rounded-md border border-amber-300 bg-amber-50 px-3 text-xs font-medium text-amber-900 disabled:opacity-50">Simulate mock payment</button>}</div>}
               </div>
               <footer className="flex flex-none justify-end gap-2 border-t border-[var(--border-soft)] px-5 py-4"><Dialog.Close asChild><button type="button" className="h-9 rounded-md border border-[var(--border)] px-4 text-xs font-medium text-[var(--text-secondary)]">Cancel</button></Dialog.Close><button type="submit" disabled={topupBusy || !topupAmount} className="h-9 rounded-md bg-[var(--brand)] px-4 text-xs font-medium text-white disabled:opacity-50">{topupBusy ? "Processing…" : "Proceed"}</button></footer>
-            </form>
+            </form>}
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>

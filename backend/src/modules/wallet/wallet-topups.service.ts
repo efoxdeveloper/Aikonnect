@@ -38,15 +38,15 @@ async function notifyWalletUpdated(tenantId: string) {
 }
 
 function checkoutReturnUrl(mode: string) {
-  if (mode !== "mock" && !env.NTT_CALLBACK_URL) {
-    throw new AppError(503, "NTT callback URL is not configured", "PAYMENT_GATEWAY_NOT_CONFIGURED");
-  }
-  return env.NTT_CALLBACK_URL ?? new URL("/billing", env.APP_URL).toString();
+  if (env.NTT_CALLBACK_URL) return env.NTT_CALLBACK_URL;
+  if (mode === "mock") return new URL("/billing", env.APP_URL).toString();
+  if (env.NTT_FRONTEND_RETURN_URL) return env.NTT_FRONTEND_RETURN_URL;
+  throw new AppError(503, "NTT callback URL or frontend return URL is not configured", "PAYMENT_GATEWAY_NOT_CONFIGURED");
 }
 
 export async function createWalletTopup(input: { workspaceId: string; userId: string; email: string; amount: string; idempotencyKey: string }) {
   const ntt = configuredNtt();
-  const callbackUrl = checkoutReturnUrl(ntt.configuration.mode);
+  const returnUrl = checkoutReturnUrl(ntt.configuration.mode);
   const workspace = await prisma.workspace.findUnique({
     where: { id: input.workspaceId },
     select: { id: true, tenantId: true, ownerId: true, owner: { select: { email: true, firstName: true, lastName: true, phone: true } } },
@@ -78,12 +78,17 @@ export async function createWalletTopup(input: { workspaceId: string; userId: st
   } });
 
   try {
+    const checkoutReturnUrlValue = new URL(returnUrl);
+    if (ntt.configuration.mode !== "mock" && !env.NTT_CALLBACK_URL) {
+      checkoutReturnUrlValue.searchParams.set("walletTopup", topup.id);
+      checkoutReturnUrlValue.searchParams.set("paymentReturn", "pending");
+    }
     const payment = await ntt.payments.create({
       orderId: topup.paymentId,
       amount: Number(fixed(amount)),
       currency: topup.currency,
       customer: { email: input.email, mobile: customerMobile, name: `${workspace.owner.firstName} ${workspace.owner.lastName}`.trim() },
-      returnUrl: callbackUrl,
+      returnUrl: checkoutReturnUrlValue.toString(),
       metadata: { source: "wallet_topup", topupId: topup.id },
     });
     await prisma.walletTopup.update({ where: { id: topup.id }, data: {
