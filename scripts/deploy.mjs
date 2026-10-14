@@ -46,6 +46,8 @@ console.log("Deploying Interakt from " + repositoryRoot + (dryRun ? " (dry run)"
 run("git", ["fetch", "origin", "main"]);
 run("git", ["reset", "--hard", "origin/main"]);
 run("git", ["clean", "-fd"]);
+run(npmCommand, ["install", "--prefix", "ntt", "--no-package-lock"]);
+run(npmCommand, ["--prefix", "ntt", "run", "build"]);
 run(npmCommand, ["--prefix", "backend", "ci"]);
 run(npmCommand, ["--prefix", "Frontend", "ci"]);
 // Treat every deployment as a patch release so the sidebar version identifies
