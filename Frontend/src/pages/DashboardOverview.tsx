@@ -106,7 +106,7 @@ export function DashboardOverview() {
   const path = (suffix: string, permission: string) => workspaceId && can(permission) ? `/workspaces/${workspaceId}/${suffix}` : null;
   const setup = useDashboardResource<WorkspaceSetupData>(path("setup", "workspace.read"), accessToken);
   const meta = useDashboardResource<WhatsAppStatusData>(setup.data?.whatsapp.status === "CONNECTED" ? path("whatsapp/status", "whatsapp.read") : null, accessToken);
-  const metaData = refreshedMeta?.workspaceId === workspaceId ? refreshedMeta.data : meta.data;
+  const metaData = refreshedMeta && refreshedMeta.workspaceId === workspaceId ? refreshedMeta.data : meta.data;
   const usage = useDashboardResource<Usage>(path(`usage?${query}`, "billing.read"), accessToken);
   const wallet = useDashboardResource<Wallet>(path("wallet", "billing.read"), accessToken);
   const welcomeBonus = useDashboardResource<WelcomeBonus>(path("wallet/welcome-bonus", "workspace.read"), accessToken);
